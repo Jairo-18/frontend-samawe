@@ -1,0 +1,144 @@
+// Colores base
+$white-color-base: #ffffff;
+$black-color-base: #000000;
+$black-color-base-10: #ffffff;
+$brand-red-color: #d61a44;
+$brand-red-color-10: #a90429;
+
+// Paleta de colores base
+$light-blue-50: #e3f2fd;
+$light-blue-100: #bbdefb;
+$light-blue-200: #90caf9;
+$light-blue-300: #64b5f6;
+$light-blue-400: #42a5f5;
+$light-blue-500: #2196f3;
+$light-blue-600: #1e88e5;
+$light-blue-700: #1976d2;
+$light-blue-800: #1565c0;
+$light-blue-900: #0d47a1;
+$light-blue-A100: #82b1ff;
+$light-blue-A200: #448aff;
+$light-blue-A400: #2979ff;
+$light-blue-A700: #2962ff;
+$deep-purple-dark: #10172b;
+
+// Colores semánticos principales
+$brand-light-blue-color: #aebfd5;
+$primary-color: $light-blue-500;
+// $secondary-color: $light-blue-900;
+$accent-color: $light-blue-A400;
+$background-color: $light-blue-50;
+$surface-color: $white-color-base;
+$error-color: #b00020;
+$gray-color: #797979;
+
+$heigth-nav-bar: 80px;
+$heigth-footer: 70px;
+
+// Medidas globales
+$brand-height-router-outlet-container: calc(100vh - ($heigth-nav-bar));
+
+// Layout
+$footer-background: linear-gradient(to right, #60a5fa, #024d99);
+$header-background: rgb(5, 181, 37);
+
+// UI Components
+$brand-mobile-font-size: 1rem;
+$brand-web-font-size: 1rem;
+$brand-mobile-icon-button-size: 32px;
+$brand-mobile-icon-size: 20px;
+$brand-mobile-height: 42px;
+$brand-tablet-height: 48px;
+$brand-web-height: 55px;
+$brand-mat-menu-item-size: 20px;
+$brand-mat-menu-active-item-size: 16px;
+
+/*Colores para componentes*/
+$brand-error-color: $brand-red-color;
+$brand-light-blue-color: #3b82f6;
+$brand-gray-color: $gray-color;
+$brand-border-radius: 24px;
+$brand-border-radius-sm: 16px;
+$brand-border-radius-manage-users-cards: 6px;
+$brand-blue-color: #007bff;
+$brand-radio-checked-color: $brand-blue-color;
+$brand-outlined-rounded-inputs-color: $brand-gray-color;
+$brand-outlined-inputs-color: $brand-light-blue-color;
+$brand-icons-color: $brand-light-blue-color;
+$brand-blue-button-color: $brand-blue-color;
+$brand-form-field-focus-color: $brand-blue-color;
+$brand-success-input-color: #13867a;
+$brand-global-height-button: $brand-tablet-height;
+
+// Para tamaños de pantalla
+$max-width-layout: 1440px;
+$max-width-tablet: 899.98px;
+$max-width-phone: 575.98px;
+$min-width-desktop: 576px;
+
+// Colores funcionales adicionales
+$success-color: #4caf50;
+$warning-color: #d82323;
+$info-color: #2196f3;
+
+// Bordes
+$border-radius: 4px;
+$border-width: 1px;
+$border-color: $light-blue-400;
+$global-border: $border-width solid $border-color;
+
+// Variaciones de los colores principales
+$primary-light: $light-blue-300;
+$primary-dark: $light-blue-700;
+
+// Colores de hover para botones
+$button-hover-color: $primary-light;
+$outlined-button-hover-color: $light-blue-100;
+$fab-hover-color: $primary-light;
+$warning-hover-color: #e43e3e;
+
+// Sombras
+$box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+// Tipografía
+$font-size-small: 14px;
+$font-size-medium: 16px;
+$font-size-large: 18px;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+// Espaciado
+$spacing-small: 8px;
+$spacing-medium: 16px;
+$spacing-large: 24px;
+
+// Colores de texto
+$text-primary: $light-blue-900;
+$text-secondary: $light-blue-600;
+$text-disabled: $light-blue-100;
+$text-on-primary: $white-color-base;
+$text-on-secondary: $white-color-base;
+
+// Transiciones
+$transition-fast: 0.3s ease;
+$transition-slow: 0.5s ease;
+
+// Hover
+$primary-hover-color: $light-blue-300;
+$secondary-hover-color: $light-blue-800;
+
+/* toast variables */
+$toast-success-border: #64da4c;
+$toast-warning-border: #ffeeba;
+$toast-error-border: #e42b2b;
+$toast-info-border: #b8daff;
+
+$toast-success-color: #2b753c;
+$toast-warning-color: #856404;
+$toast-error-color: #7a1b25;
+$toast-info-color: #004085;
+
+$toast-success-icon: '\f058';
+$toast-warning-icon: '\f071';
+$toast-error-icon: '\f06a';
+$toast-info-icon: '\f05a';

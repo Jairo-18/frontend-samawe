@@ -1,3 +1,26 @@
 import { Routes } from '@angular/router';
+import { DefaultLayoutComponent } from './default-layout/pages/default-layout/default-layout.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: 'full'
+  },
+  {
+    path: '',
+    component: DefaultLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./public/public.routes').then((m) => m.publicRoutes)
+      }
+    ]
+  },
+
+  {
+    path: '**',
+    redirectTo: '/home'
+  }
+];

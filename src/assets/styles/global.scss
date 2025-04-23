@@ -1,0 +1,155 @@
+@use 'variables' as *;
+// Supports weights 100-900
+@import '@fontsource-variable/noto-serif';
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: $heigth-nav-bar;
+  background-color: black;
+  width: 100%;
+  z-index: 1000;
+}
+
+.color-nav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.color-footer {
+  background: $footer-background;
+}
+
+.app-container {
+  margin-top: 15px;
+  display: flex;
+  min-height: calc(100vh - $heigth-nav-bar + 10px);
+  padding-top: calc($heigth-nav-bar);
+
+  color: white;
+}
+
+.main {
+  color: black;
+  padding-bottom: calc($heigth-footer);
+}
+
+.footer {
+  height: $heigth-footer;
+  width: 100%;
+}
+
+.brand-content-center {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.brand-navigation-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.font-noto-serif {
+  font-family: 'Noto Serif Variable', serif;
+}
+
+/* Toast clases */
+.toast-container {
+  margin-top: $heigth-nav-bar;
+  overflow: hidden;
+
+  &.ngx-toastr {
+    pointer-events: auto;
+    position: fixed;
+    z-index: 9999;
+    width: auto;
+    max-width: 400px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+    animation: slideInRight 0.2s ease-in forwards;
+
+    .toast-icon {
+      font-size: 1.5rem;
+      position: absolute;
+      top: 8px;
+      left: 10px;
+    }
+
+    .toast-body {
+      display: flex;
+      flex-direction: column;
+      margin-left: 40px;
+
+      .toast-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+
+      .toast-message {
+        font-size: 0.95rem;
+      }
+    }
+
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      width: 100%;
+      background-color: transparent;
+    }
+
+    &.brand-toast-success {
+      border: 1px solid $toast-success-border;
+      color: $toast-success-color;
+
+      .toast-progress {
+        background-color: $toast-success-border;
+      }
+    }
+
+    &.brand-toast-warning {
+      border: 1px solid $toast-warning-border;
+      color: $toast-warning-color;
+
+      .toast-progress {
+        background-color: $toast-warning-border;
+      }
+    }
+
+    &.brand-toast-error {
+      border: 1px solid $toast-error-border;
+      color: $toast-error-color;
+
+      .toast-progress {
+        background-color: $toast-error-border;
+      }
+    }
+
+    &.brand-toast-info {
+      border: 1px solid $toast-info-border;
+      color: $toast-info-color;
+
+      .toast-progress {
+        background-color: $toast-info-border;
+      }
+    }
+  }
+}
+
+.brand-text-headline-color {
+  @apply text-transparent bg-gradient-to-r from-blue-300 to-[#024d99] bg-clip-text;
+}
