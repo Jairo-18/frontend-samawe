@@ -1,5 +1,9 @@
-<div class="flex flex-col">
-  <span *ngFor="let i of [].constructor(100); let idx = index">
-    Este es el elemento {{ idx + 1 }}
-  </span>
-</div>
+<article
+  class="h-full w-[70%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+>
+  <div class="flex flex-col">
+    <span *ngFor="let i of array; let idx = index; trackBy: trackByIndex">
+      Este es el elemento {{ idx + 1 }}
+    </span>
+  </div>
+</article>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
@@ -13,8 +13,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-// import { Login } from '../../interfaces/login.interface';
-// import { AuthService } from '../../services/auth.service';
+import { Login } from '../../interfaces/login.interface';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  // private readonly _authService: AuthService = inject(AuthService);
+  private readonly _authService: AuthService = inject(AuthService);
   form: FormGroup;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
@@ -41,15 +41,15 @@ export class LoginComponent {
 
   constructor(private _fb: FormBuilder) {
     this.form = this._fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
   }
   login(): void {
-    // if (this.form.invalid) return this.form.markAllAsTouched();
-    // const data: Login = this.form.value;
-    // this._authService.login(data).subscribe((response) => {
-    //   console.log(response);
-    // });
+    if (this.form.invalid) return this.form.markAllAsTouched();
+    const data: Login = this.form.value;
+    this._authService.login(data).subscribe((response) => {
+      console.log(response);
+    });
   }
 }

@@ -1,11 +1,11 @@
 export interface Login {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface LoginResponse {
   tokens: Tokens;
-  user: User;
+  user: { id: string; role: string };
 }
 
 export interface Tokens {

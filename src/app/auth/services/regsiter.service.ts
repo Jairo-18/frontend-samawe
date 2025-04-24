@@ -6,11 +6,10 @@ import { Observable } from 'rxjs';
 import { ApiResponseCreateInterface } from '../../shared/interfaces/api-response.interface';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegisterService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
-  constructor() {}
 
   registerUser(user: RegisterUser): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(

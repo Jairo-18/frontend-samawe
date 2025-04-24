@@ -2,47 +2,65 @@
 // Supports weights 100-900
 @import '@fontsource-variable/noto-serif';
 
-.nav {
-  position: fixed;
-  padding-inline: 30px;
-  top: 0;
-  left: 0;
-  height: $heigth-nav-bar;
-  background-color: $header-background;
-  width: 100%;
-  z-index: 1000;
-  border-bottom: 1px solid black;
-}
-
 .sidebar {
   position: fixed;
   padding-inline: 15px;
   padding-block: 15px;
-  top: 0;
   left: 0;
   height: 100%;
   background-color: $side-bar-background;
-  width: $width-side-bar;
   border-right: 1px solid black;
+  z-index: 999;
+  transition: width 0.3s ease;
+
+  &.expanded {
+    width: $width-side-bar; // Ej: 240px
+  }
+
+  &.collapsed {
+    width: 75px;
+  }
+
+  // En mobile: flotante sobre el contenido
+  @media (max-width: 768px) {
+    position: absolute;
+    height: 100vh;
+
+    left: 0;
+
+    &.expanded {
+      width: $width-side-bar;
+    }
+
+    &.collapsed {
+      width: 75px;
+    }
+  }
 }
 
 .app-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: $width-side-bar; // Desplaza el contenido a la derecha del sidebar
-  margin-top: $heigth-nav-bar; // Desplaza el contenido debajo del navbar
-  padding: 16px;
-  width: calc(100vw - $width-side-bar);
-  height: calc(100vh - $heigth-nav-bar);
-  overflow-x: auto; // opcional
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  overflow-y: auto;
+  // padding-left: $width-side-bar;
+  height: 100vh;
+
+  // Solo en desktop ajustar el ancho según el sidebar
+  @media (min-width: 769px) {
+    width: calc(100vw - var(--sidebar-width));
+    margin-left: var(--sidebar-width);
+  }
+
+  @media (max-width: 768px) {
+    width: 100vw;
+    margin-left: 0;
+  }
 }
 
 .main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: auto;
   width: 100%;
 }
 
@@ -66,7 +84,6 @@
 
 /* Toast clases */
 .toast-container {
-  margin-top: $heigth-nav-bar;
   overflow: hidden;
 
   &.ngx-toastr {
