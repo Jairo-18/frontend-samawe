@@ -41,7 +41,9 @@
 .app-container {
   transition: margin-left 0.3s ease, width 0.3s ease;
   overflow-y: auto;
-  // padding-left: $width-side-bar;
+  justify-content: center;
+  align-items: center;
+  display: flex;
   height: 100vh;
 
   // Solo en desktop ajustar el ancho según el sidebar
