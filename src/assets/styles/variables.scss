@@ -6,41 +6,41 @@ $brand-red-color: #d61a44;
 $brand-red-color-10: #a90429;
 
 // Paleta de colores base
-$light-blue-50: #e3f2fd;
-$light-blue-100: #bbdefb;
-$light-blue-200: #90caf9;
-$light-blue-300: #64b5f6;
-$light-blue-400: #42a5f5;
-$light-blue-500: #2196f3;
-$light-blue-600: #1e88e5;
-$light-blue-700: #1976d2;
-$light-blue-800: #1565c0;
-$light-blue-900: #0d47a1;
-$light-blue-A100: #82b1ff;
-$light-blue-A200: #448aff;
-$light-blue-A400: #2979ff;
-$light-blue-A700: #2962ff;
-$deep-purple-dark: #10172b;
+$light-green-50: #f0f9f1; // Tonalidad muy clara
+$light-green-100: #d3e9d2; // Tonalidad clara
+$light-green-200: #a9d59f; // Tonalidad suave
+$light-green-300: #7cb86d; // Tonalidad intermedia
+$light-green-400: #57a545; // Tonalidad más fuerte
+$light-green-500: #06a606; // Color base (principal)
+$light-green-600: #069905; // Un poco más oscuro
+$light-green-700: #058b04; // Más oscuro
+$light-green-800: #047d03; // Más oscuro
+$light-green-900: #036e02; // Más oscuro
+$light-green-A100: #8cd38c; // Variante en tonos pasteles
+$light-green-A200: #6ab76a; // Variante más fuerte
+$light-green-A400: #3d9f3d; // Variante más saturada
+$light-green-A700: #238a23;
+$deep-green-dark: #10172b;
 
 // Colores semánticos principales
-$brand-light-blue-color: #aebfd5;
-$primary-color: $light-blue-500;
-// $secondary-color: $light-blue-900;
-$accent-color: $light-blue-A400;
-$background-color: $light-blue-50;
+$brand-light-green-color: #06a606;
+$primary-color: $light-green-500;
+// $secondary-color: $light-green-900;
+$accent-color: $light-green-A400;
+$background-color: $light-green-50;
 $surface-color: $white-color-base;
 $error-color: #b00020;
 $gray-color: #797979;
 
 $heigth-nav-bar: 80px;
-$heigth-footer: 70px;
+$width-side-bar: 300px;
 
 // Medidas globales
 $brand-height-router-outlet-container: calc(100vh - ($heigth-nav-bar));
 
 // Layout
-$footer-background: linear-gradient(to right, #60a5fa, #024d99);
-$header-background: rgb(5, 181, 37);
+$side-bar-background: #06a606;
+$header-background: #ffffff;
 
 // UI Components
 $brand-mobile-font-size: 1rem;
@@ -55,19 +55,19 @@ $brand-mat-menu-active-item-size: 16px;
 
 /*Colores para componentes*/
 $brand-error-color: $brand-red-color;
-$brand-light-blue-color: #3b82f6;
+$brand-light-green-color: #06a606;
 $brand-gray-color: $gray-color;
 $brand-border-radius: 24px;
 $brand-border-radius-sm: 16px;
 $brand-border-radius-manage-users-cards: 6px;
-$brand-blue-color: #007bff;
-$brand-radio-checked-color: $brand-blue-color;
+$brand-green-color: #06a606;
+$brand-radio-checked-color: $brand-green-color;
 $brand-outlined-rounded-inputs-color: $brand-gray-color;
-$brand-outlined-inputs-color: $brand-light-blue-color;
-$brand-icons-color: $brand-light-blue-color;
-$brand-blue-button-color: $brand-blue-color;
-$brand-form-field-focus-color: $brand-blue-color;
-$brand-success-input-color: #13867a;
+$brand-outlined-inputs-color: $brand-light-green-color;
+$brand-icons-color: $brand-light-green-color;
+$brand-green-button-color: $brand-green-color;
+$brand-form-field-focus-color: $brand-green-color;
+$brand-success-input-color: #06a606;
 $brand-global-height-button: $brand-tablet-height;
 
 // Para tamaños de pantalla
@@ -84,16 +84,16 @@ $info-color: #2196f3;
 // Bordes
 $border-radius: 4px;
 $border-width: 1px;
-$border-color: $light-blue-400;
+$border-color: $light-green-400;
 $global-border: $border-width solid $border-color;
 
 // Variaciones de los colores principales
-$primary-light: $light-blue-300;
-$primary-dark: $light-blue-700;
+$primary-light: $light-green-300;
+$primary-dark: $light-green-700;
 
 // Colores de hover para botones
 $button-hover-color: $primary-light;
-$outlined-button-hover-color: $light-blue-100;
+$outlined-button-hover-color: $light-green-100;
 $fab-hover-color: $primary-light;
 $warning-hover-color: #e43e3e;
 
@@ -113,9 +113,9 @@ $spacing-medium: 16px;
 $spacing-large: 24px;
 
 // Colores de texto
-$text-primary: $light-blue-900;
-$text-secondary: $light-blue-600;
-$text-disabled: $light-blue-100;
+$text-primary: $light-green-900;
+$text-secondary: $light-green-600;
+$text-disabled: $light-green-100;
 $text-on-primary: $white-color-base;
 $text-on-secondary: $white-color-base;
 
@@ -124,8 +124,8 @@ $transition-fast: 0.3s ease;
 $transition-slow: 0.5s ease;
 
 // Hover
-$primary-hover-color: $light-blue-300;
-$secondary-hover-color: $light-blue-800;
+$primary-hover-color: $light-green-300;
+$secondary-hover-color: $light-green-800;
 
 /* toast variables */
 $toast-success-border: #64da4c;

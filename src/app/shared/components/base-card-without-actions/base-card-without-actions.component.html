@@ -1,0 +1,13 @@
+<div class="h-full flex flex-col">
+  <h2 class="font-noto-serif text-yellow-400 text-2xl font-semibold py-2">
+    {{ title() }}
+  </h2>
+  <mat-card appearance="outlined" class="flex flex-col flex-grow">
+    <img mat-card-image src="{{ image() }}" alt="Photo of a anything" />
+    <mat-card-content class="flex-grow flex flex-col h-fulll">
+      <p class="text-gray-600 mt-2">
+        {{ description() }}
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

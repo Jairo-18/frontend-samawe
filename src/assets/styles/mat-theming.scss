@@ -144,8 +144,8 @@ mat-form-field {
 /* Remove buttons shadow */
 .mat-mdc-fab {
   box-shadow: none !important;
-  background-color: $light-blue-600 !important;
-  /* Blue brand button */
+  background-color: $light-green-600 !important;
+  /* green brand button */
   &.brand-mat-fab-blue {
     background-color: $primary-color !important; // Color del botón azul
   }
@@ -240,7 +240,7 @@ mat-form-field {
   }
 
   &.mat-mdc-raised-button.mat-primary {
-    background-color: $light-blue-900 !important;
+    background-color: $light-green-900 !important;
     color: $white-color-base !important;
   }
 }
@@ -250,7 +250,7 @@ mat-form-field {
 }
 
 .mdc-fab:hover {
-  background-color: $light-blue-900 !important;
+  background-color: $light-green-900 !important;
   color: $white-color-base !important;
 
   &.mat-warn {

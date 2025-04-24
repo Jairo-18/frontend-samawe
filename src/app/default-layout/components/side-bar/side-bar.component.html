@@ -1,1 +1,54 @@
-<p>side-bar works!</p>
+<article class="sidebar flex flex-col text-black text-sm">
+  <section class="flex h-[30%] w-full justify-center items-center">
+    <img
+      src="../../../../assets/images/Logo Samawe.png"
+      alt="Logo Samawé"
+      class="h-[150px] w-[150px] rounded-full"
+    />
+  </section>
+  <section
+    class="flex flex-col h-[50%] w-full justify-start items-center text-left gap-y-2"
+  >
+    <a
+      class="flex items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+      routerLink="/sales/earnings-sumary"
+    >
+      <mat-icon class="color-icon">attach_money</mat-icon>
+      <span>Resumen de ganancias</span>
+    </a>
+    <a
+      class="flex items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+      routerLink="/invoices/see-invoices"
+    >
+      <mat-icon class="color-icon">receipt_long</mat-icon>
+      <span>Facturas de Venta / Compra</span>
+    </a>
+    <a
+      class="flex items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+      routerLink="/products/see-products"
+    >
+      <mat-icon class="color-icon">inventory_2</mat-icon>
+      <span>Productos / Servicios</span>
+    </a>
+    <a
+      class="flex items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+      routerLink="/organizational/see-users"
+    >
+      <mat-icon class="color-icon">group</mat-icon>
+      <span>Gestionar Usuarios</span>
+    </a>
+  </section>
+
+  <section
+    class="flex flex-col h-[20%] w-full justify-end items-center text-left gap-y-2"
+  >
+    <button
+      routerLink="/auth/login"
+      class="flex content-between items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+    >
+      <mat-icon class="color-icon">exit_to_app</mat-icon>
+      <span> Cerrar Sesión </span>
+    </button>
+    <span class="text-white text-xs">© {{ currentYear }} Ecohotel Samawé.</span>
+  </section>
+</article>

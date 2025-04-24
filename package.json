@@ -23,6 +23,9 @@
     "@angular/router": "^19.1.0",
     "@fontsource-variable/inter": "^5.2.5",
     "@fontsource-variable/noto-serif": "^5.2.6",
+    "@fortawesome/angular-fontawesome": "^1.0.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
