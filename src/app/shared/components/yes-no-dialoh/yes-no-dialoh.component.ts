@@ -7,12 +7,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   selector: 'app-yes-no-dialoh',
   imports: [BaseDialogComponent, MatButtonModule],
   templateUrl: './yes-no-dialoh.component.html',
-  styleUrl: './yes-no-dialoh.component.scss',
+  styleUrl: './yes-no-dialoh.component.scss'
 })
 export class YesNoDialohComponent {
   private readonly _dialogRef: MatDialogRef<YesNoDialohComponent> = inject(
     MatDialogRef<YesNoDialohComponent>
   );
+
   readonly data = inject<{ title: string; description: string }>(
     MAT_DIALOG_DATA
   );

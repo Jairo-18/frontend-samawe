@@ -31,7 +31,7 @@ export class AuthService {
           this._isLoggedEmit();
           this.getLoggedUserData().subscribe({
             next: () => {
-              this._router.navigate([`/`]);
+              this._router.navigate([`/invoices/see-invoices`]);
             }
           });
         })
@@ -103,6 +103,8 @@ export class AuthService {
     this._isLoggedSubject.next(false);
     localStorage.removeItem('session');
     this.currentUser = null;
+
+    this._router.navigate(['/']);
   }
 
   cleanStorageAndRedirectToLogin(): void {
