@@ -1,9 +1,25 @@
 <article
-  class="h-full w-[70%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+  class="relative h-screen w-screen mx-auto overflow-hidden flex items-center justify-center border border-black"
 >
-  <div class="flex flex-col">
-    <span *ngFor="let i of array; let idx = index; trackBy: trackByIndex">
-      Este es el elemento {{ idx + 1 }}
-    </span>
+  <!-- Imagen de fondo -->
+  <img
+    src="../../../../assets/images/Home Father.png"
+    alt="Fondo"
+    class="absolute inset-0 w-full h-screen object-cover z-0"
+  />
+
+  <!-- Capa oscura opcional -->
+  <div class="absolute inset-0 bg-black/40 z-10"></div>
+
+  <!-- Contenido encima de la imagen -->
+  <div class="relative z-20 text-white text-center p-6">
+    <h2 class="text-3xl font-bold mb-4">Texto sobre la imagen</h2>
+    <p class="mb-4">Este es un subtítulo o una descripción.</p>
+    <button
+      routerLink="/auth/login"
+      class="bg-white text-black font-semibold px-6 py-2 rounded-lg hover:bg-gray-200 transition"
+    >
+      Inicia Sesión aquí
+    </button>
   </div>
 </article>
