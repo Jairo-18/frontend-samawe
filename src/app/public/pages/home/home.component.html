@@ -13,13 +13,16 @@
 
   <!-- Contenido encima de la imagen -->
   <div class="relative z-20 text-white text-center p-6">
-    <h2 class="text-3xl font-bold mb-4">Texto sobre la imagen</h2>
-    <p class="mb-4">Este es un subtítulo o una descripción.</p>
-    <button
-      routerLink="/auth/login"
-      class="bg-white text-black font-semibold px-6 py-2 rounded-lg hover:bg-gray-200 transition"
+    <span class="text-3xl font-semibold mb-4"
+      >Administración del Ecohotel Samawé</span
     >
-      Inicia Sesión aquí
-    </button>
+
+    <div
+      class="flex w-full content-between items-center justify-center gap-5 my-2.5"
+    >
+      <button mat-fab extended="true" routerLink="/auth/login">
+        <span class="text-md font-extrabold">Iniciar Sesión</span>
+      </button>
+    </div>
   </div>
 </article>

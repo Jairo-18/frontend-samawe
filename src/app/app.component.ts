@@ -27,17 +27,11 @@ export class AppComponent implements OnDestroy {
   }
 
   /**
-   * Para definir el uso de iconos tipo outlined en la App de manera global
+   * Para que sean clasicos
    * @private
    */
   private _setMaterialOutlinedIconsDefault(): void {
-    const defaultFontSetClasses = this._iconRegistry.getDefaultFontSetClass();
-    const outlinedFontSetClasses = defaultFontSetClasses
-      .filter(
-        (fontSetClass: string): boolean => fontSetClass !== 'material-icons'
-      )
-      .concat(['material-icons-outlined']);
-    this._iconRegistry.setDefaultFontSetClass(...outlinedFontSetClasses);
+    this._iconRegistry.setDefaultFontSetClass('material-icons');
   }
 
   /**

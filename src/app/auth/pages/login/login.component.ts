@@ -45,6 +45,7 @@ export class LoginComponent {
       password: ['', [Validators.required]]
     });
   }
+
   login(): void {
     if (this.form.invalid) return this.form.markAllAsTouched();
     const data: Login = this.form.value;

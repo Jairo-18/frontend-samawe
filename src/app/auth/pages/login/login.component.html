@@ -1,23 +1,20 @@
 <article
-  class="h-[90%] w-[70%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+  class="h-full w-[90%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
 >
-  <section class="h-full w-full flex flex-col text-center px-5 py-10">
-    <div class="flex flex-col">
+  <section class="h-full w-full flex flex-col text-center px-5 py-10 gap-4">
+    <div class="flex flex-col gap-1.5">
       <span class="font-extrabold text-xl">Iniciar Sesión</span>
       <span class="font-medium text-sm"
         >Ingresa tus datos para Iniciar Sesión</span
       >
     </div>
-    <form
-      [formGroup]="form"
-      class="flex flex-col w-full items-center mt-2.5 gap-1.5"
-    >
+    <form [formGroup]="form" class="flex flex-col w-full items-center gap-1.5">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Nombre de usuario</mat-label>
+        <mat-label>Correo electrónico</mat-label>
         <input matInput formControlName="email" />
         <mat-icon matPrefix>account_circle</mat-icon>
         <mat-error *ngIf="form.get('email')?.hasError('required')"
-          >Nombre de usuario requerido</mat-error
+          >Email requerido</mat-error
         >
       </mat-form-field>
 
@@ -43,7 +40,7 @@
       </mat-form-field>
 
       <div
-        class="flex w-[80%] content-between items-center justify-center gap-5 my-2.5"
+        class="flex w-[80%] content-between items-center justify-center gap-5"
       >
         <button mat-fab extended="true" (click)="login()">
           <span class="text-md">Iniciar Sesión</span>
@@ -65,7 +62,7 @@
       >
     </form>
   </section>
-  <section class="h-full w-full flex flex-col">
+  <section class="h-full w-full hidden md:flex flex-col">
     <img
       src="../../../../assets/images/Image Section.png"
       alt="Login Image"
