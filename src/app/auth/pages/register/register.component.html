@@ -101,7 +101,11 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+          <mat-form-field
+            appearance="outline"
+            class="w-full mt-3"
+            [ngClass]="{ 'mb-10 md:mb-4': formStep2.get('password')?.invalid }"
+          >
             <mat-label>Teléfono</mat-label>
             <input matInput formControlName="phone" />
             <mat-icon matPrefix>phone</mat-icon>
@@ -113,7 +117,11 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+          <mat-form-field
+            appearance="outline"
+            class="w-full mt-3"
+            [ngClass]="{ 'mb-10 md:mb-4': formStep2.get('password')?.invalid }"
+          >
             <mat-label>Contraseña</mat-label>
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -172,19 +180,22 @@
             </mat-error>
           </mat-form-field>
 
-          <section actions class="w full md:w-[50%] content-between md:flex">
-            <button
-              mat-stroked-button
-              extended="true"
-              class="!w-full mb-2 md:mb-0"
-              matStepperPrevious
-            >
-              Anterior
-            </button>
-
-            <button mat-fab extended="true" class="!w-full" (click)="save()">
-              Registrarse
-            </button>
+          <section actions class="w full content-between md:flex gap-x-2">
+            <div class="w-full md:w-[50%]">
+              <button
+                mat-stroked-button
+                extended="true"
+                class="!w-full mb-2 md:mb-0"
+                matStepperPrevious
+              >
+                Anterior
+              </button>
+            </div>
+            <div class="w-full md:w-[50%]">
+              <button mat-fab extended="true" class="!w-full" (click)="save()">
+                Registrarse
+              </button>
+            </div>
           </section>
         </form>
       </mat-step>
