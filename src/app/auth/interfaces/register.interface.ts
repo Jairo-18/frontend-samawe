@@ -1,6 +1,6 @@
 export interface RegisterUser {
   id: string;
-  identificationTypeId: string;
+  identificationType: string;
   identificationNumber: string;
   firstName: string;
   lastName: string;

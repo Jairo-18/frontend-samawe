@@ -1,15 +1,15 @@
 <article
-  class="h-full w-[90%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+  class="w-[90%] md:w-full h-full flex content-between justify-center items-stretch border border-black rounded-2xl mx-auto"
 >
   <section class="h-full w-full hidden md:flex flex-col">
     <img
       src="../../../../assets/images/regiser.png"
-      alt="Login Image"
-      class="h-full"
+      alt="Register Image"
+      class="h-full w-full object-cover"
     />
   </section>
 
-  <section class="h-full w-full flex flex-col text-center px-5 gap-4">
+  <section class="h-full w-full flex flex-col text-center py-5 gap-4">
     <div class="flex flex-col gap-1.5">
       <span class="font-extrabold text-xl">Registrarse</span>
       <span class="font-medium text-sm">Crea una nueva cuenta</span>
@@ -60,31 +60,27 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
-            <mat-label>Nombre Completo</mat-label>
+            <mat-label>Nombres Completos</mat-label>
             <input matInput formControlName="firstName" required />
             <mat-icon matPrefix>account_box</mat-icon>
             <mat-error *ngIf="formStep1.get('firstName')?.hasError('required')">
-              Nombre completo requerido
+              Nombres completos requerido
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
-            <mat-label>Nombre Completo</mat-label>
+            <mat-label>Apellidos Completos</mat-label>
             <input matInput formControlName="lastName" required />
             <mat-icon matPrefix>account_box</mat-icon>
             <mat-error *ngIf="formStep1.get('lastName')?.hasError('required')">
-              Nombre completo requerido
+              Apellidos completos requerido
             </mat-error>
           </mat-form-field>
 
-          <div actions class="w-full items-center">
-            <section class="flex flex-col gap-1 items-end">
-              <div class=" ">
-                <button mat-fab extended="true" class="w-full" matStepperNext>
-                  Siguiente
-                </button>
-              </div>
-            </section>
+          <div actions class="w-full flex justify-end">
+            <button mat-fab extended="true" class="flex !w-full" matStepperNext>
+              Siguiente
+            </button>
           </div>
         </form>
       </mat-step>
@@ -93,7 +89,7 @@
         <form [formGroup]="formStep2" class="flex flex-col">
           <ng-template matStepLabel>Tu cuenta</ng-template>
 
-          <mat-form-field appearance="outline" class="w-full mt-3 mb-2 mt-md-0">
+          <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
             <mat-label>Correo Electrónico</mat-label>
             <input matInput formControlName="email" required />
             <mat-icon matPrefix>email</mat-icon>
@@ -176,29 +172,19 @@
             </mat-error>
           </mat-form-field>
 
-          <section actions class="w-full items-center">
-            <div class=" ">
-              <button
-                mat-stroked-button
-                extended="true"
-                class="w-100 mr-3"
-                color="primary"
-                matStepperPrevious
-              >
-                Anterior
-              </button>
-            </div>
-            <div class=" ">
-              <button
-                mat-fab
-                extended="true"
-                color="primary"
-                class="w-100"
-                (click)="save()"
-              >
-                Registrarse
-              </button>
-            </div>
+          <section actions class="w full md:w-[50%] content-between md:flex">
+            <button
+              mat-stroked-button
+              extended="true"
+              class="!w-full mb-2 md:mb-0"
+              matStepperPrevious
+            >
+              Anterior
+            </button>
+
+            <button mat-fab extended="true" class="!w-full" (click)="save()">
+              Registrarse
+            </button>
           </section>
         </form>
       </mat-step>
@@ -208,7 +194,10 @@
       class="text-center mt-0 d-flex flex-column justify-content-center align-items-center"
     >
       <span>¿Ya tienes una cuenta?</span>
-      <a routerLink="/auth/login" class="text-decoration-none">
+      <a
+        routerLink="/auth/login"
+        class="cursor-pointer text-green-700 hover:text-green-400 hover-underline-animation"
+      >
         Inicia sesión aquí
       </a>
     </div>

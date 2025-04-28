@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: '',
+  apiUrl: 'https://backend-samawe.vercel.app/'
 };

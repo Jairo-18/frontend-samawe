@@ -145,7 +145,7 @@ export class RegisterComponent implements OnInit {
     if (this.formStep2.valid && this.formStep1.valid) {
       const userToRegister: RegisterUser = {
         id: uuid.v4(),
-        identificationTypeId: this.formStep1.value.identificationTypeId,
+        identificationType: this.formStep1.value.identificationTypeId,
         identificationNumber: this.formStep1.value.identificationNumber,
         firstName: this.formStep1.value.firstName,
         lastName: this.formStep1.value.lastName,
