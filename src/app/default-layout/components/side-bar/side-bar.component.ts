@@ -52,6 +52,14 @@ export class SideBarComponent {
     }
   ];
 
+  logoutItem = [
+    {
+      icon: 'exit_to_app',
+      label: 'Cerrar Sesión',
+      action: 'logout'
+    }
+  ];
+
   onToggleSidebar() {
     this.toggleSidebar.emit();
   }

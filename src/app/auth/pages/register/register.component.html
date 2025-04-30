@@ -1,5 +1,5 @@
 <article
-  class="w-[90%] md:w-full h-full flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+  class="w-[80%] md:w-full flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
 >
   <section class="h-full w-full hidden md:flex flex-col">
     <img
@@ -11,7 +11,7 @@
 
   <section class="h-full w-full flex flex-col text-center py-5 gap-1">
     <div class="flex flex-col gap-1.5">
-      <span class="font-extrabold text-xl">Registrarse</span>
+      <span class="font-extrabold text-lg md:text-xl">Registrarse</span>
       <span class="font-medium text-sm">Crea una nueva cuenta</span>
     </div>
     <mat-horizontal-stepper
@@ -77,7 +77,7 @@
             </mat-error>
           </mat-form-field>
 
-          <div actions class="w-full flex justify-end">
+          <div actions class="w-full flex justify-end text-sm md:text-base">
             <button mat-fab extended="true" class="flex !w-full" matStepperNext>
               Siguiente
             </button>
@@ -104,7 +104,11 @@
           <mat-form-field
             appearance="outline"
             class="w-full mt-3"
-            [ngClass]="{ 'mb-10 md:mb-4': formStep2.get('password')?.invalid }"
+            [ngClass]="{
+              'mb-10 md:mb-4':
+                formStep2.get('phone')?.invalid &&
+                formStep2.get('phone')?.touched
+            }"
           >
             <mat-label>Teléfono</mat-label>
             <input matInput formControlName="phone" />
@@ -120,7 +124,11 @@
           <mat-form-field
             appearance="outline"
             class="w-full mt-3"
-            [ngClass]="{ 'mb-10 md:mb-4': formStep2.get('password')?.invalid }"
+            [ngClass]="{
+              'mb-10 md:mb-4':
+                formStep2.get('password')?.invalid &&
+                formStep2.get('password')?.touched
+            }"
           >
             <mat-label>Contraseña</mat-label>
             <input
@@ -180,7 +188,10 @@
             </mat-error>
           </mat-form-field>
 
-          <section actions class="w full content-between md:flex gap-x-2">
+          <section
+            actions
+            class="w full content-between md:flex gap-x-2 text-sm md:text-base"
+          >
             <div class="w-full md:w-[50%]">
               <button
                 mat-stroked-button
@@ -202,7 +213,7 @@
     </mat-horizontal-stepper>
 
     <div
-      class="text-center mt-0 d-flex flex-column justify-content-center align-items-center"
+      class="text-center d-flex justify-content-center align-items-center text-sm md:text-base"
     >
       <span>¿Ya tienes una cuenta?</span>
       <a

@@ -1,3 +1,4 @@
+import { isLoggedGuard } from './shared/guards/isLogged.guard';
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './default-layout/pages/default-layout/default-layout.component';
 
@@ -18,6 +19,7 @@ export const routes: Routes = [
       },
       {
         path: 'auth',
+        canActivate: [isLoggedGuard],
         loadChildren: () =>
           import('./auth/auth.routes').then((m) => m.authRoutes)
       },

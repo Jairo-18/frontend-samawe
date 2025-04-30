@@ -45,7 +45,7 @@
   justify-content: center;
   align-items: center;
   display: flex;
-  height: 100%;
+  height: 100vh;
 
   // Solo en desktop ajustar el ancho según el sidebar
   @media (min-width: 769px) {
@@ -67,6 +67,10 @@
   overflow-x: hidden;
   height: 100%;
   width: 100vw;
+
+  @media (max-width: 768px) {
+    margin-left: 75px;
+  }
 }
 
 .brand-content-center {

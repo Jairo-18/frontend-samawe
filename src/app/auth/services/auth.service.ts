@@ -90,13 +90,9 @@ export class AuthService {
     return session ? JSON.parse(session).tokens.refreshToken : '';
   }
 
-  getAllUserData(): LoginResponse {
+  getAllUserData() {
     const session = localStorage.getItem('session');
-    if (!session) {
-      throw new Error('No session found');
-    }
-
-    return JSON.parse(session);
+    return session ? JSON.parse(session) : null;
   }
 
   logout(): void {
