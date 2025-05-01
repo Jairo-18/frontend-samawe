@@ -1,129 +1,168 @@
+import { LocalStorageService } from './../../shared/services/localStorage.service';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Login, LoginResponse } from '../interfaces/login.interface';
 import { environment } from '../../../environments/environment.development';
-import { BehaviorSubject, firstValueFrom, Observable, of, tap } from 'rxjs';
+import { Observable, of, ReplaySubject, tap } from 'rxjs';
+import {
+  LoginResponse,
+  LoginSuccessInterface
+} from '../interfaces/login.interface';
+import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
+
 import { Router } from '@angular/router';
-import { User } from '../../shared/interfaces/user.interface';
+import { UserInterface } from '../../shared/interfaces/user.interface';
+import { LogOutInterface } from '../interfaces/logout.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly _tokensStorageKey: string = '_sessionData';
+  private readonly _localStorageService: LocalStorageService =
+    inject(LocalStorageService);
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _httpUtilities: HttpUtilitiesService =
+    inject(HttpUtilitiesService);
   private _refreshingToken: boolean = false;
+  _isLoggedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private readonly _router: Router = inject(Router);
-  _isLoggedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
-  private currentUser: unknown = null;
 
-  login(data: Login): Observable<ApiResponseInterface<LoginResponse>> {
+  // /**
+  //  * Enviar solicitud de recuperación de contraseña
+  //  * @param email - Correo electrónico del usuario
+  //  * @returns Observable con la respuesta del servidor
+  //  */
+  // sendPasswordResetEmail(email: string): Observable<ChangePassword> {
+  //   const endpoint = `${environment.apiUrl}auth/recovery-password`;
+
+  //   if (!email || !this.isValidEmail(email)) {
+  //     throw new Error('El correo electrónico proporcionado no es válido.');
+  //   }
+
+  //   return this._httpClient.post<ChangePassword>(endpoint, { email });
+  // }
+
+  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  login(
+    credentials: LoginResponse
+  ): Observable<ApiResponseInterface<LoginSuccessInterface>> {
+    const params = this._httpUtilities.httpParamsFromObject(credentials);
     return this._httpClient
-      .post<ApiResponseInterface<LoginResponse>>(
+      .post<ApiResponseInterface<LoginSuccessInterface>>(
         `${environment.apiUrl}auth/sign-in`,
-        data
+        params
       )
       .pipe(
-        tap((response) => {
-          localStorage.setItem('session', JSON.stringify(response?.data));
-          this._isLoggedEmit();
-          this.getLoggedUserData().subscribe({
-            next: () => {
-              this._router.navigate([`/invoices/see-invoices`]);
-            }
-          });
+        tap((res: ApiResponseInterface<LoginSuccessInterface>): void => {
+          this.saveLocalUserData(res.data);
         })
       );
   }
 
-  getAuthToken(): string {
-    const session = localStorage.getItem('session');
-    return session ? JSON.parse(session).tokens.accessToken : '';
+  saveLocalUserData(userData: LoginSuccessInterface): void {
+    localStorage.setItem(this._tokensStorageKey, JSON.stringify(userData));
   }
 
-  set setRefreshingToken(value: boolean) {
-    this._refreshingToken = value;
-  }
-
-  get getRefreshingToken(): boolean {
-    return this._refreshingToken;
-  }
-
-  getLoggedUserData(): Observable<ApiResponseInterface<User>> {
+  logout(data: LogOutInterface): Observable<unknown> {
+    const params = this._httpUtilities.httpParamsFromObject(data);
     return this._httpClient
-      .get<ApiResponseInterface<User>>(`${environment.apiUrl}user/init-data`)
+      .post<unknown>(`${environment.apiUrl}auth/sign-out`, params)
       .pipe(
-        tap((response): void => {
-          this._isLoggedEmit();
+        tap(() => {
+          this._localStorageService.cleanLocalStorage();
+          this._isLoggedSubject.next(false);
+          this._router.navigateByUrl('/auth/login');
         })
       );
-  }
-
-  get currentLoggedUserData() {
-    return firstValueFrom(this.getLoggedUserData());
-  }
-
-  refreshToken(
-    refreshToken: string
-  ): Observable<ApiResponseInterface<LoginResponse>> {
-    this.setRefreshingToken = true;
-    return this._httpClient
-      .post<ApiResponseInterface<LoginResponse>>(
-        `${environment.apiUrl}auth/refresh-token`,
-        {
-          refreshToken
-        }
-      )
-      .pipe(
-        tap((response) => {
-          localStorage.setItem('session', JSON.stringify(response?.data));
-          this.setRefreshingToken = false;
-          this._isLoggedEmit();
-        })
-      );
-  }
-
-  getRefreshToken(): string {
-    const session = localStorage.getItem('session');
-    return session ? JSON.parse(session).tokens.refreshToken : '';
-  }
-
-  getAllUserData() {
-    const session = localStorage.getItem('session');
-    return session ? JSON.parse(session) : null;
-  }
-
-  logout(): void {
-    this._isLoggedSubject.next(false);
-    localStorage.removeItem('session');
-    this.currentUser = null;
-
-    this._router.navigate(['/']);
-  }
-
-  cleanStorageAndRedirectToLogin(): void {
-    this.logout();
-    this._isLoggedEmit();
-    this._router.navigate([`auth/login`]);
-  }
-
-  private _isLoggedEmit(): void {
-    this._isLoggedSubject.next(this.isLogged);
-  }
-
-  get isLogged(): boolean {
-    return !!this.getAuthToken();
   }
 
   isAuthenticated(): boolean {
-    const userData = this.getAllUserData();
+    const userData = this._localStorageService.getAllSessionData();
     return !!userData && !!userData.tokens.accessToken;
   }
 
   isAuthenticatedToGuard() {
     const token = this.isAuthenticated();
     return of(!!token);
+  }
+
+  getAuthToken(): string | undefined {
+    return this._localStorageService.getAllSessionData()?.tokens?.accessToken;
+  }
+
+  getRefreshToken(): string | undefined {
+    return this._localStorageService.getAllSessionData()?.tokens?.refreshToken;
+  }
+
+  set setRefreshingToken(status: boolean) {
+    this._refreshingToken = status;
+  }
+
+  get getRefreshingToken(): boolean {
+    return this._refreshingToken;
+  }
+
+  get isLogged(): boolean {
+    return !!this.getAuthToken();
+  }
+
+  refreshToken(
+    refreshToken: string
+  ): Observable<ApiResponseInterface<LoginSuccessInterface>> {
+    this.setRefreshingToken = true;
+
+    return this._httpClient
+      .post<ApiResponseInterface<LoginSuccessInterface>>(
+        `${environment.apiUrl}auth/refresh-token`,
+        { refreshToken: refreshToken }
+      )
+      .pipe(
+        tap((response: ApiResponseInterface<LoginSuccessInterface>): void => {
+          this._updateAccessToken(response?.data?.tokens?.accessToken);
+          this._isLoggedEmit();
+        })
+      );
+  }
+
+  private _isLoggedEmit(): void {
+    this._isLoggedSubject.next(this.isLogged);
+  }
+
+  private _updateAccessToken(accessToken: string): void {
+    const user: LoginSuccessInterface | null =
+      this._localStorageService.getAllSessionData();
+
+    if (user) {
+      user.tokens.accessToken = accessToken;
+      localStorage.setItem(this._tokensStorageKey, JSON.stringify(user));
+    }
+  }
+
+  cleanStorageAndRedirectToLogin(): void {
+    this._localStorageService.cleanLocalStorage();
+    this._isLoggedEmit();
+
+    this._router.navigate([`auth/login`]);
+  }
+
+  getUserLoggedIn(): UserInterface {
+    return this._localStorageService.getUserData();
+  }
+
+  setRedirectUrl(url: string): void {
+    this._localStorageService.setRedirectUrl(url);
+  }
+
+  getRedirectUrl(): string | null {
+    return this._localStorageService.getRedirectUrl();
+  }
+
+  cleanRedirectUrl(): void {
+    this._localStorageService.cleanRedirectUrl();
   }
 }

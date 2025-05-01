@@ -1,22 +1,34 @@
 import { Routes } from '@angular/router';
 
+// Importaciones estáticas de los componentes
+import { CreateUsersOrEditUsersComponent } from './pages/create-users-or-edit-users/create-users-or-edit-users.component';
+import { SeeUsersComponent } from './pages/see-users/see-users.component';
+
 export const organizationalRoutes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'create-users',
-        loadComponent: () =>
-          import('./pages/create-users/create-users.component').then(
-            (m) => m.CreateUsersComponent
-          )
+        path: '',
+        redirectTo: '/home',
+        pathMatch: 'full'
       },
       {
-        path: 'see-users',
-        loadComponent: () =>
-          import('./pages/see-users/see-users.component').then(
-            (m) => m.SeeUsersComponent
-          )
+        path: 'users',
+        children: [
+          {
+            path: 'create',
+            component: CreateUsersOrEditUsersComponent // Carga estática
+          },
+          {
+            path: 'list',
+            component: SeeUsersComponent // Carga estática
+          },
+          {
+            path: ':id/edit',
+            component: CreateUsersOrEditUsersComponent // Carga estática
+          }
+        ]
       }
     ]
   }

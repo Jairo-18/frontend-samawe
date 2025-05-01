@@ -1,0 +1,39 @@
+<article class="base-page-container mx-auto">
+  <button
+    mat-stroked-button
+    [routerLink]="previusUrl ? previusUrl : '../'"
+    matTooltip="Volver"
+    color="primary"
+    class="back-button"
+  >
+    <mat-icon class="d-flex justify-content-center align-items-center"
+      >arrow_back</mat-icon
+    >
+    Volver
+  </button>
+
+  <article>
+    @if (title) {
+    <header
+      class="w-100 d-flex row base-page-header justify-content-between mx-0 mt-4"
+    >
+      <section class="d-flex flex-column col-12 col-md-6">
+        <span class="brand-text-headline-l fw-medium">{{ title }}</span>
+      </section>
+      <div class="col-12 col-md-6 d-flex justify-content-end mt-3 mt-md-0">
+        <ng-content select="[actions]"></ng-content>
+      </div>
+    </header>
+    } @if (subtitle) {
+    <div class="mb-4">
+      <span class="brand-text-body-m text-black-50 fw-semibold">{{
+        subtitle
+      }}</span>
+    </div>
+    }
+
+    <main class="base-page-content px-0 px-md-3">
+      <ng-content select="[content]"></ng-content>
+    </main>
+  </article>
+</article>

@@ -1,6 +1,6 @@
- 
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './default-layout/pages/default-layout/default-layout.component';
+import { organizationalRoutes } from './organizational/organizational.routes';
 
 export const routes: Routes = [
   {
@@ -19,7 +19,7 @@ export const routes: Routes = [
       },
       {
         path: 'auth',
-      
+
         loadChildren: () =>
           import('./auth/auth.routes').then((m) => m.authRoutes)
       },
@@ -30,10 +30,7 @@ export const routes: Routes = [
       },
       {
         path: 'organizational',
-        loadChildren: () =>
-          import('./organizational/organizational.routes').then(
-            (m) => m.organizationalRoutes
-          )
+        children: organizationalRoutes
       },
       {
         path: 'invoices',

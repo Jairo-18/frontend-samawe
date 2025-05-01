@@ -8,6 +8,25 @@ export interface LoginResponse {
   user: { id: string; role: string };
 }
 
+export interface LoginSuccessInterface {
+  tokens: Tokens;
+  user: User;
+  role: RoleType;
+  session: Session;
+}
+
+export interface RoleType {
+  roleTypeId: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+export interface Session {
+  accessSessionId: string;
+}
+
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
@@ -15,5 +34,5 @@ export interface Tokens {
 
 export interface User {
   id: string;
-  role: string;
+  rol: RoleType;
 }

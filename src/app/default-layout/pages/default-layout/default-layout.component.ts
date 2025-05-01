@@ -2,9 +2,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
-import { User } from '../../../auth/interfaces/login.interface';
-import { filter, finalize } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { UserInterface } from '../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-default-layout',
@@ -15,59 +16,41 @@ import { CommonModule } from '@angular/common';
 })
 export class DefaultLayoutComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
-  router: Router = inject(Router);
+  private readonly _router: Router = inject(Router);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
+  private _subscription: Subscription = new Subscription();
 
-  currentUser?: User;
-  loading: boolean = false;
-  isSidebarExpanded = true;
+  isLoggedUser: boolean = false;
+  userInfo?: UserInterface;
+  isCollapsedSideBar: boolean = true;
+  isPhone: boolean = false;
+  closeSideBar: boolean = false;
 
-  toggleSidebar() {
-    this.isSidebarExpanded = !this.isSidebarExpanded;
-    this._setSidebarWidth();
+  constructor() {
+    this.isPhone = window.innerWidth <= 768;
   }
 
-  ngOnInit() {
-    this.loading = true;
-    this._getCurrentUserDate();
-
-    this.router.events
+  ngOnInit(): void {
+    this._subscription.add(
+      this._authService._isLoggedSubject.subscribe((isLogged) => {
+        this.isLoggedUser = isLogged;
+        this.userInfo = this._localStorage.getUserData();
+      })
+    );
+    this.isLoggedUser = this._authService.isAuthenticated();
+    this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
-        if (!this.currentUser) {
-          this._getCurrentUserDate();
-        }
+        this.isLoggedUser = this._authService.isAuthenticated();
+        this.userInfo = this._localStorage.getUserData();
       });
+
+    this.userInfo = this._localStorage.getUserData();
   }
 
-  private _getCurrentUserDate() {
-    if (this._authService.isLogged) {
-      this._authService
-        .getLoggedUserData()
-        .pipe(finalize(() => (this.loading = false)))
-        .subscribe({
-          next: (res) => {
-            this.currentUser = res?.data;
-            this._setSidebarWidth(); // aplicar ancho cuando se tenga el usuario
-          }
-        });
-    } else {
-      this.loading = false;
-      this._setSidebarWidth(); // asegurarse de ocultar el sidebar
-    }
-  }
-
-  private _setSidebarWidth() {
-    if (this.currentUser) {
-      const width = this.isSidebarExpanded ? '300px' : '75px';
-      document.documentElement.style.setProperty('--sidebar-width', width);
-    } else {
-      document.documentElement.style.setProperty('--sidebar-width', '0px');
-    }
-  }
-
-  logout() {
-    this._authService.logout();
-    this.currentUser = undefined;
-    this._setSidebarWidth(); // quitar espacio del sidebar
+  listenEvent(event: boolean): void {
+    this.isCollapsedSideBar = event;
+    this.closeSideBar = false;
   }
 }

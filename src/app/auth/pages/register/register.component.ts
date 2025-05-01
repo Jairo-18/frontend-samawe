@@ -22,7 +22,7 @@ import {
   IdentificationType,
   RegisterUser
 } from '../../interfaces/register.interface';
-import { RegisterService } from '../../services/regsiter.service';
+import { RegisterService } from '../../services/register.service';
 import { UserService } from '../../../shared/services/user.service';
 
 @Component({

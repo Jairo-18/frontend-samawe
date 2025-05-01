@@ -1,8 +1,7 @@
-import { ApiResponseInterface } from './../interfaces/api-response.interface';
 import {
   HttpErrorResponse,
   HttpInterceptorFn,
-  HttpRequest,
+  HttpRequest
 } from '@angular/common/http';
 import { AuthService } from '../../auth/services/auth.service';
 import { inject, Injector, runInInjectionContext } from '@angular/core';
@@ -12,37 +11,42 @@ import {
   filter,
   switchMap,
   take,
-  throwError,
+  throwError
 } from 'rxjs';
+import { ApiResponseInterface } from '../interfaces/api-response.interface';
+import { LoginSuccessInterface } from '../../auth/interfaces/login.interface';
 import { NotificationsService } from '../services/notifications.service';
-import { LoginResponse } from '../../auth/interfaces/login.interface';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
-  const injector: Injector = inject(Injector);
+  const injector = inject(Injector);
   const notificationsService: NotificationsService =
     inject(NotificationsService);
   const tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
   const authRequest: HttpRequest<unknown> = addTokenToRequest(req);
+
   return next(authRequest).pipe(
     catchError((err: HttpErrorResponse) => {
-      const refreshToken: string = authService.getRefreshToken();
+      const refreshToken = authService.getRefreshToken();
       switch (err.status) {
         case 401:
           if (refreshToken && !authService.getRefreshingToken) {
             tokenSubject.next('');
 
             return authService.refreshToken(refreshToken).pipe(
-              switchMap((response: ApiResponseInterface<LoginResponse>) => {
-                const updateReq = runInInjectionContext(injector, () =>
-                  addTokenToRequest(
-                    authRequest,
-                    response.data?.tokens?.accessToken
-                  )
-                );
-                tokenSubject.next(response.data?.tokens?.accessToken);
-                return next(updateReq);
-              }),
+              switchMap(
+                (newToken: ApiResponseInterface<LoginSuccessInterface>) => {
+                  const updatedRequest = runInInjectionContext(injector, () =>
+                    addTokenToRequest(
+                      authRequest,
+                      newToken.data?.tokens?.accessToken
+                    )
+                  );
+                  tokenSubject.next(newToken.data?.tokens?.accessToken);
+                  return next(updatedRequest);
+                }
+              ),
               catchError((refreshError) => {
                 return throwError(refreshError);
               })
@@ -57,15 +61,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               filter((token: string): boolean => token !== ''),
               take(1),
               switchMap((token: string) => {
-                const updateReq = runInInjectionContext(injector, () =>
-                  addTokenToRequest(authRequest, token)
+                return next(
+                  runInInjectionContext(injector, () =>
+                    addTokenToRequest(authRequest, token)
+                  )
                 );
-                return next(updateReq);
               })
             );
           }
           authService.cleanStorageAndRedirectToLogin();
-
           return throwError(err);
         case 403:
           notificationsService.showNotification(
@@ -74,13 +78,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             'No estás autorizado'
           );
           return throwError(err);
-
         default:
           return throwError(err);
       }
     })
   );
 };
+
 export const addTokenToRequest = (
   req: HttpRequest<unknown>,
   refreshToken?: string
@@ -90,7 +94,7 @@ export const addTokenToRequest = (
 
   return req.clone({
     setHeaders: {
-      Authorization: `Bearer ${authToken}`,
-    },
+      Authorization: `Bearer ${authToken}`
+    }
   });
 };

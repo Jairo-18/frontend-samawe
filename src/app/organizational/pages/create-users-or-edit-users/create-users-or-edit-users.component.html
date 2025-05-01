@@ -1,0 +1,123 @@
+<app-base-page
+  [title]="userId ? 'Editar usuario' : 'Crear usuarios'"
+  subtitle="Aquí puedes crear usuarios con sus respectivos roles para tu grupo de trabajo "
+  [previusUrl]="userId ? '../../list' : '../list'"
+>
+  <div header>Crear usuario</div>
+  <section content class="row">
+    <div content>
+      <form [formGroup]="userForm" class="col-12 col-md-6 d-flex flex-column">
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Rol</mat-label>
+          <mat-select formControlName="roleId" required>
+            <mat-option value="" disabled selected
+              >Seleccione el rol del usuario</mat-option
+            >
+            <mat-option *ngFor="let role of roles" [value]="role.roleTypeId">
+              {{ role.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>library_books</mat-icon>
+          <mat-error *ngIf="userForm.get('roleId')?.hasError('required')">
+            Rol requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Tipo de Identificación</mat-label>
+          <mat-select formControlName="identificationTypeId" required>
+            <mat-option value="" disabled selected
+              >Seleccione el tipo de identificación del usuario</mat-option
+            >
+            <mat-option
+              *ngFor="let type of identificationTypes"
+              [value]="type.identificationTypeId"
+            >
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>table_chart</mat-icon>
+          <mat-error
+            *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
+          >
+            Tipo de identificación requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Identificación</mat-label>
+          <mat-icon matPrefix>credit_card</mat-icon>
+          <input
+            matInput
+            formControlName="identification"
+            (blur)="setPassword()"
+            required
+          />
+          <mat-error
+            *ngIf="userForm.get('identification')?.hasError('required')"
+          >
+            Número de identificación requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Nombre completo</mat-label>
+          <input matInput formControlName="fullName" required />
+          <mat-icon matPrefix>account_box</mat-icon>
+          <mat-error *ngIf="userForm.get('fullName')">
+            Nombre completo requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>URL de Imagen</mat-label>
+          <mat-icon matPrefix>image</mat-icon>
+          <input matInput formControlName="avatarUrl" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Nombre de usuario</mat-label>
+          <input matInput formControlName="username" required />
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="userForm.get('username')">
+            Nombre de usuario requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="phone" />
+          <mat-icon matPrefix>phone</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
+          <mat-label>Correo Electrónico</mat-label>
+          <input matInput formControlName="email" required />
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+            Email requerido
+          </mat-error>
+          <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+            Email inválido
+          </mat-error>
+        </mat-form-field>
+
+        <div actions class="w-100 align-content-center">
+          <section class="d-flex row gap-md-0 gap-1 justify-content-end">
+            <div class="col-12 col-md-5 col-lg-3 px-1">
+              <button
+                mat-fab
+                extended="true"
+                class="w-100"
+                type="button"
+                (click)="save()"
+              >
+                {{ userId ? 'Guardar' : 'Crear usuario' }}
+              </button>
+            </div>
+          </section>
+        </div>
+      </form>
+    </div>
+  </section>
+</app-base-page>

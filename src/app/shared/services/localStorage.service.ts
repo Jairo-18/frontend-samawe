@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LoginResponse } from '../../auth/interfaces/login.interface';
+import { LoginSuccessInterface } from '../../auth/interfaces/login.interface';
 //import { UserDataInterface } from '../interfaces/local-storage.interface';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class LocalStorageService {
   private isLocalStorageAvailable(): boolean {
@@ -32,8 +32,8 @@ export class LocalStorageService {
     return null;
   }
 
-  getAllSessionData(): LoginResponse {
-    const allData = localStorage.getItem('session');
+  getAllSessionData(): LoginSuccessInterface {
+    const allData = localStorage.getItem('_sessionData');
     const parsedData = allData && JSON.parse(allData);
     return parsedData;
   }

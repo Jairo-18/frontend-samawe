@@ -1,6 +1,6 @@
-export interface RegisterUser {
+export interface CreateUserPanel {
   id: string;
-  identificationType: string;
+  identificationTypeId: IdentificationType;
   identificationNumber: string;
   firstName: string;
   lastName: string;
@@ -8,7 +8,7 @@ export interface RegisterUser {
   phone: string;
   password: string;
   confirmPassword: string;
-  role?: string;
+  role?: RoleType;
 }
 
 export interface IdentificationType {

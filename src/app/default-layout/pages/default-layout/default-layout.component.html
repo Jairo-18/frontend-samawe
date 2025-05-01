@@ -1,13 +1,16 @@
-<app-side-bar
-  *ngIf="currentUser"
-  [isExpanded]="isSidebarExpanded"
-  (toggleSidebar)="toggleSidebar()"
-  (logout)="logout()"
-  [currentUser]="currentUser"
-></app-side-bar>
+<article class="flex">
+  @if (isLoggedUser) {
+  <app-side-bar
+    [userRole]="userInfo?.role?.name || ''"
+    class="brand-side-bar"
+    (collapsed)="listenEvent($event)"
+    [closeSideBar]="closeSideBar"
+  ></app-side-bar>
+  }
 
-<div class="app-container">
-  <main class="main">
-    <router-outlet></router-outlet>
-  </main>
-</div>
+  <div class="app-container">
+    <main class="main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</article>

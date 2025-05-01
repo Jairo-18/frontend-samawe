@@ -12,9 +12,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Login } from '../../interfaces/login.interface';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +33,11 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
+
   form: FormGroup;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
@@ -47,10 +51,25 @@ export class LoginComponent {
   }
 
   login(): void {
-    if (this.form.invalid) return this.form.markAllAsTouched();
-    const data: Login = this.form.value;
-    this._authService.login(data).subscribe((response) => {
-      console.log(response);
+    if (this.form.invalid) return;
+
+    const redirectUrl = this._authService.getRedirectUrl();
+    this._authService.login(this.form.value).subscribe({
+      next: () => {
+        if (redirectUrl) {
+          if (redirectUrl.includes('/general/projects/')) {
+            this._router.navigateByUrl(redirectUrl);
+            this._authService.cleanRedirectUrl();
+          } else {
+            this._router.navigateByUrl('./home');
+          }
+        } else {
+          this._router.navigateByUrl('./home');
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
     });
   }
 }

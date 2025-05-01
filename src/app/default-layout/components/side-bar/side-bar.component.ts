@@ -1,66 +1,164 @@
 import {
   Component,
   EventEmitter,
-  input,
+  inject,
   Input,
-  InputSignal,
-  Output
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatIcon } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { User } from '../../../auth/interfaces/login.interface';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { NgClass, NgFor, NgIf } from '@angular/common';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations';
+import {
+  ItemInterface,
+  MenuInterface
+} from '../../../shared/interfaces/menu.interface';
+import {
+  MENU_CONST,
+  ROLE_PERMISSIONS
+} from '../../../shared/constants/menu.constants';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { filter } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-side-bar',
   standalone: true,
-  imports: [RouterLink, MatIcon, CommonModule],
+  imports: [
+    NgClass,
+    NgIf,
+    MatButtonModule,
+    MatIconModule,
+    FontAwesomeModule,
+    RouterLink,
+    MatMenuModule,
+    NgFor,
+    MatTooltipModule
+  ],
   templateUrl: './side-bar.component.html',
-  styleUrl: './side-bar.component.scss'
+  styleUrl: './side-bar.component.scss',
+  animations: [
+    trigger('submenuState', [
+      state(
+        'closed',
+        style({
+          maxHeight: '0px',
+          opacity: 0
+        })
+      ),
+      state(
+        'open',
+        style({
+          maxHeight: '500px',
+          opacity: 1
+        })
+      ),
+      transition('closed <=> open', [animate('0.3s ease-in-out')])
+    ])
+  ]
 })
-export class SideBarComponent {
-  currentUser: InputSignal<User | undefined> = input<User>();
-  @Input() isExpanded = true;
-  @Output() toggleSidebar = new EventEmitter<void>();
-  @Output() logout = new EventEmitter<void>();
+export class SideBarComponent implements OnInit, OnChanges {
+  @Input() userRole!: string;
+  @Input() closeSideBar: boolean = false;
+  @Output() collapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
+  isCollapsed: boolean = true;
+  currentRoute: string = '';
+  menuWithItems: MenuInterface[] = [];
+  itemSelected: string | null = null;
+  moduleSelected: string | null = null;
+  private readonly _router: Router = inject(Router);
 
-  toggle() {
-    this.toggleSidebar.emit();
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+
+  ngOnInit(): void {
+    this.currentRoute = this._router.url;
+
+    this._router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.currentRoute = this._router.url;
+      });
+    this.filterMenuByRole();
   }
-  currentYear: number = new Date().getFullYear();
 
-  menuItems = [
-    {
-      icon: 'attach_money',
-      label: 'Resumen de ganancias',
-      link: '/sales/earnings-sumary'
-    },
-    {
-      icon: 'receipt_long',
-      label: 'Facturas de Venta / Compra',
-      link: '/invoices/see-invoices'
-    },
-    {
-      icon: 'inventory_2',
-      label: 'Productos / Servicios',
-      link: '/products/see-products'
-    },
-    {
-      icon: 'group',
-      label: 'Gestionar Usuarios',
-      link: '/organizational/see-users'
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['closeSideBar']) {
+      if (this.closeSideBar) {
+        this.closeSideBarMethod();
+      }
     }
-  ];
+  }
 
-  logoutItem = [
-    {
-      icon: 'exit_to_app',
-      label: 'Cerrar Sesión',
-      action: 'logout'
+  private filterMenuByRole(): void {
+    if (this.userRole) {
+      console.log(this.userRole);
+
+      if (
+        this.userRole === 'Administrador' ||
+        this.userRole === 'Usuario' ||
+        this.userRole === 'Empleado'
+      ) {
+        this.menuWithItems = MENU_CONST;
+      } else {
+        this.menuWithItems = MENU_CONST.map((module) => ({
+          ...module,
+          items: module.items.filter((item) =>
+            ROLE_PERMISSIONS[this.userRole]?.includes(item.name)
+          )
+        })).filter((module) => module.items.length > 0);
+      }
+    } else {
+      this.menuWithItems = [];
     }
-  ];
+  }
 
-  onToggleSidebar() {
-    this.toggleSidebar.emit();
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
+    if (this.isCollapsed) {
+      this.closeAllSubMenus();
+    }
+
+    this.collapsed.emit(this.isCollapsed);
+  }
+
+  closeSideBarMethod() {
+    this.isCollapsed = !this.isCollapsed;
+    if (this.isCollapsed) {
+      this.closeAllSubMenus();
+    }
+  }
+
+  getActiveElement(routeElement: string): boolean {
+    return this.currentRoute.includes(routeElement);
+  }
+
+  openSubMenu: Record<string, boolean> = {};
+
+  closeAllSubMenus() {
+    this.openSubMenu = {};
+  }
+
+  toggleSubMenu(item: ItemInterface) {
+    if (!this.isCollapsed) {
+      this.openSubMenu[item.name] = !this.openSubMenu[item.name];
+    }
+  }
+
+  closeMenu() {
+    if (this.menuTrigger) {
+      this.menuTrigger.closeMenu();
+    }
   }
 }

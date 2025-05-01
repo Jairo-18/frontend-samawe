@@ -1,17 +1,16 @@
-<article
-  [ngClass]="{ expanded: isExpanded, collapsed: !isExpanded }"
-  class="sidebar flex flex-col text-black text-sm transition-all duration-300 ease-in-out"
+<aside
+  [ngClass]="{ collapsed: isCollapsed }"
+  class="md:py-4 px-4 md:px-5 border-l border-black"
 >
-  <div class="w-full flex justify-center items-center">
-    <button (click)="toggle()">
-      <mat-icon class="text-white">
-        {{ isExpanded ? 'close' : 'menu' }}</mat-icon
-      >
+  <div class="toggle-button-wrapper">
+    <button (click)="toggleSidebar()" mat-icon-button class="toggle-button">
+      <mat-icon *ngIf="isCollapsed">keyboard_arrow_right</mat-icon>
+      <mat-icon *ngIf="!isCollapsed">close</mat-icon>
     </button>
   </div>
   <section
-    class="flex h-[30%] w-full justify-center items-center"
-    *ngIf="isExpanded"
+    class="flex h-[30%] w-full justify-center items-center md:mt-8"
+    [ngClass]="{ collapsed: isCollapsed }"
   >
     <img
       src="../../../../assets/images/Logo Samawe.png"
@@ -19,31 +18,65 @@
       class="h-[150px] w-[150px] rounded-full"
     />
   </section>
+  <nav>
+    <ul class="nav flex flex-col mt-16 md:mt-8">
+      <ng-container *ngFor="let module of menuWithItems; let i = index">
+        <span class="nav-item">
+          <a class="nav-link-father">
+            <mat-icon class="text-black mx-[5px]">{{ module.icon }}</mat-icon>
+            <span *ngIf="!isCollapsed">{{ module.module }}</span>
+          </a>
+        </span>
+        <ng-container *ngFor="let item of module.items; let j = index">
+          <li class="nav-item">
+            <a
+              [matTooltip]="item.name"
+              class="nav-link"
+              role="button"
+              [ngClass]="{ active: getActiveElement(item.route || '') }"
+              [routerLink]="
+                !item?.subItems?.length && item.route ? item?.route : null
+              "
+              (click)="!isCollapsed ? toggleSubMenu(item) : null"
+              [matMenuTriggerFor]="
+                isCollapsed && item?.subItems?.length ? submenu : null
+              "
+              #menuTrigger="matMenuTrigger"
+            >
+              <mat-icon class="color-icon-green">{{ item.icon }}</mat-icon>
+              <span *ngIf="!isCollapsed">{{ item.name }}</span>
+            </a>
 
-  <section
-    class="flex flex-col h-[50%] w-full justify-start items-center text-left gap-y-2"
-  >
-    <a
-      *ngFor="let item of menuItems"
-      [routerLink]="item.link"
-      class="flex items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
-    >
-      <mat-icon class="color-icon">{{ item.icon }}</mat-icon>
-      <span *ngIf="isExpanded">{{ item.label }}</span>
-    </a>
-  </section>
+            <mat-menu #submenu="matMenu" yPosition="above">
+              <ng-container *ngFor="let subItem of item.subItems">
+                <button mat-menu-item [routerLink]="subItem.route">
+                  {{ subItem.name }}
+                </button>
+              </ng-container>
+            </mat-menu>
 
-  <section
-    class="flex flex-col h-[20%] w-full justify-end items-center text-left gap-y-2"
-    *ngIf="isExpanded"
-  >
-    <button
-      (click)="logout.emit()"
-      class="flex content-between items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
-    >
-      <mat-icon class="color-icon">exit_to_app</mat-icon>
-      <span> Cerrar Sesión </span>
-    </button>
-    <span class="text-white text-xs">© {{ currentYear }} Ecohotel Samawé.</span>
-  </section>
-</article>
+            <div
+              class="sub-menu"
+              [@submenuState]="openSubMenu[item.name] ? 'open' : 'closed'"
+              *ngIf="item.subItems?.length"
+            >
+              <ul>
+                <li
+                  *ngFor="let subItem of item.subItems"
+                  class="flex flex-col justify-content-center"
+                >
+                  <a role="button" class="nav-link-subtitem">
+                    <mat-icon class="color-icon-green">{{
+                      subItem.icon
+                    }}</mat-icon>
+                    <span [routerLink]="subItem.route">{{ subItem.name }}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ng-container>
+      </ng-container>
+    </ul>
+  </nav>
+</aside>
