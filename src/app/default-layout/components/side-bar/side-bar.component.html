@@ -12,7 +12,7 @@
       'flex mt-2': isCollapsed,
       'flex ': !isCollapsed
     }"
-    class="h-[10%]"
+    class="h-[6%]"
   >
     <button
       (click)="toggleSidebar()"
@@ -43,7 +43,7 @@
   </div>
 
   <!-- Menú -->
-  <nav class="w-full h-[55%] px-2">
+  <nav class="w-full h-full px-2 overflow-y-auto">
     <div class="mt-[10px] md:mt-0">
       <ul class="flex flex-col transition-all duration-300 ease-in-out">
         <ng-container *ngFor="let module of menuWithItems">
