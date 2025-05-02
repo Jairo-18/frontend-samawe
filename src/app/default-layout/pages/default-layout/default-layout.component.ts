@@ -6,6 +6,7 @@ import { filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
+import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 
 @Component({
   selector: 'app-default-layout',
@@ -20,11 +21,14 @@ export class DefaultLayoutComponent implements OnInit {
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
   private _subscription: Subscription = new Subscription();
+  private _localStorageService: LocalStorageService =
+    inject(LocalStorageService);
 
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
   isCollapsedSideBar: boolean = true;
   isPhone: boolean = false;
+  user?: UserInterface;
   closeSideBar: boolean = false;
 
   constructor() {
@@ -52,5 +56,41 @@ export class DefaultLayoutComponent implements OnInit {
   listenEvent(event: boolean): void {
     this.isCollapsedSideBar = event;
     this.closeSideBar = false;
+  }
+
+  logout() {
+    if (!this.isLoggedUser) {
+      this._router.navigateByUrl('/auth/login');
+    } else {
+      const allSessionData = this._localStorageService.getAllSessionData();
+
+      if (
+        !allSessionData?.user?.id ||
+        !allSessionData?.tokens?.accessToken ||
+        !allSessionData?.session?.accessSessionId
+      ) {
+        console.error('Faltan datos de sesión para cerrar sesión');
+        console.log(allSessionData);
+
+        this._authService.cleanStorageAndRedirectToLogin();
+        return;
+      }
+
+      const sessionDataToLogout: LogOutInterface = {
+        userId: allSessionData.user.id,
+        accessToken: allSessionData.tokens.accessToken,
+        accessSessionId: allSessionData.session.accessSessionId
+      };
+
+      this._authService.logout(sessionDataToLogout).subscribe({
+        next: () => {
+          this._authService.cleanStorageAndRedirectToLogin();
+          this.user = undefined;
+        },
+        error: () => {
+          this._authService.cleanStorageAndRedirectToLogin();
+        }
+      });
+    }
   }
 }

@@ -2,14 +2,13 @@ import { LocalStorageService } from './../../shared/services/localStorage.servic
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { Observable, of, ReplaySubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, ReplaySubject, tap } from 'rxjs';
 import {
-  LoginResponse,
+  LoginCredentials,
   LoginSuccessInterface
 } from '../interfaces/login.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
-
 import { Router } from '@angular/router';
 import { UserInterface } from '../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../interfaces/logout.interface';
@@ -27,6 +26,10 @@ export class AuthService {
   private _refreshingToken: boolean = false;
   _isLoggedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private readonly _router: Router = inject(Router);
+  private _currentUserSubject: BehaviorSubject<UserInterface | null> =
+    new BehaviorSubject<UserInterface | null>(null);
+  public currentUser$: Observable<UserInterface | null> =
+    this._currentUserSubject.asObservable();
 
   // /**
   //  * Enviar solicitud de recuperación de contraseña
@@ -49,7 +52,7 @@ export class AuthService {
   }
 
   login(
-    credentials: LoginResponse
+    credentials: LoginCredentials
   ): Observable<ApiResponseInterface<LoginSuccessInterface>> {
     const params = this._httpUtilities.httpParamsFromObject(credentials);
     return this._httpClient
@@ -60,6 +63,7 @@ export class AuthService {
       .pipe(
         tap((res: ApiResponseInterface<LoginSuccessInterface>): void => {
           this.saveLocalUserData(res.data);
+          console.log(res.data);
         })
       );
   }

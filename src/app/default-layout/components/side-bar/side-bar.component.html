@@ -1,6 +1,6 @@
 <aside
   [ngClass]="{ collapsed: isCollapsed }"
-  class="md:py-4 px-4 md:px-5 border-l border-black"
+  class="pt-4 px-4 md:px-5 border-l border-black h-full"
 >
   <div class="toggle-button-wrapper">
     <button (click)="toggleSidebar()" mat-icon-button class="toggle-button">
@@ -8,8 +8,8 @@
       <mat-icon *ngIf="!isCollapsed">close</mat-icon>
     </button>
   </div>
-  <section
-    class="flex h-[30%] w-full justify-center items-center md:mt-8"
+  <div
+    class="flex h-[30%] w-full justify-center items-center mt-6 md:mt-8"
     [ngClass]="{ collapsed: isCollapsed }"
   >
     <img
@@ -17,9 +17,9 @@
       alt="Logo Samawé"
       class="h-[150px] w-[150px] rounded-full"
     />
-  </section>
+  </div>
   <nav>
-    <ul class="nav flex flex-col mt-16 md:mt-8">
+    <ul class="nav flex flex-col mt-4 md:mt-8">
       <ng-container *ngFor="let module of menuWithItems; let i = index">
         <span class="nav-item">
           <a class="nav-link-father">
@@ -78,5 +78,19 @@
         </ng-container>
       </ng-container>
     </ul>
+    <div
+      class="absolute bottom-0 left-0 flex flex-col h-[20%] w-full justify-end items-center text-left gap-y-2 px-4 md:px-5 pb-4"
+    >
+      <button
+        (click)="logout.emit()"
+        class="flex content-between items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
+      >
+        <mat-icon class="color-icon">exit_to_app</mat-icon>
+        <span> Cerrar Sesión </span>
+      </button>
+      <span class="text-white text-xs"
+        >© {{ currentYear }} Ecohotel Samawé.</span
+      >
+    </div>
   </nav>
 </aside>

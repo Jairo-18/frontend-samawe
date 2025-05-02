@@ -70,17 +70,20 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ]
 })
 export class SideBarComponent implements OnInit, OnChanges {
+  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
   @Input() userRole!: string;
   @Input() closeSideBar: boolean = false;
   @Output() collapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() logout = new EventEmitter<void>();
+
   isCollapsed: boolean = true;
   currentRoute: string = '';
   menuWithItems: MenuInterface[] = [];
   itemSelected: string | null = null;
   moduleSelected: string | null = null;
-  private readonly _router: Router = inject(Router);
+  currentYear: number = new Date().getFullYear();
 
-  @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
+  private readonly _router: Router = inject(Router);
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;

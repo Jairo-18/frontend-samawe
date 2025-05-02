@@ -1,7 +1,7 @@
 import {
   HttpErrorResponse,
   HttpInterceptorFn,
-  HttpResponse,
+  HttpResponse
 } from '@angular/common/http';
 import { NotificationsService } from '../services/notifications.service';
 import { inject } from '@angular/core';

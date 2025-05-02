@@ -1,3 +1,12 @@
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface Session {
+  accessSessionId: string;
+}
+
 export interface Login {
   email: string;
   password: string;
@@ -23,10 +32,6 @@ export interface RoleType {
   deletedAt?: Date;
 }
 
-export interface Session {
-  accessSessionId: string;
-}
-
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
@@ -34,5 +39,5 @@ export interface Tokens {
 
 export interface User {
   id: string;
-  rol: RoleType;
+  roleType: RoleType;
 }
