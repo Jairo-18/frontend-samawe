@@ -1,96 +1,194 @@
 <aside
-  [ngClass]="{ collapsed: isCollapsed }"
-  class="pt-4 px-4 md:px-5 border-l border-black h-full"
+  [ngClass]="{
+    'flex flex-col bg-[#06a606] items-center transition-all duration-300 ease-in-out font-bold': true,
+    'w-[60px]  h-full': isCollapsed,
+    'w-[250px] md:w-[270px] h-full p-2': !isCollapsed,
+    'fixed md:static z-50  ': !isCollapsed
+  }"
 >
-  <div class="toggle-button-wrapper">
-    <button (click)="toggleSidebar()" mat-icon-button class="toggle-button">
+  <!-- Botón toggle -->
+  <div
+    [ngClass]="{
+      'flex mt-2': isCollapsed,
+      'flex ': !isCollapsed
+    }"
+    class="h-[10%]"
+  >
+    <button
+      (click)="toggleSidebar()"
+      mat-icon-button
+      class="w-[40px] h-[40px] flex text-xl bg-white rounded-full shadow-md"
+    >
       <mat-icon *ngIf="isCollapsed">keyboard_arrow_right</mat-icon>
       <mat-icon *ngIf="!isCollapsed">close</mat-icon>
     </button>
   </div>
+
+  <!-- Logo -->
   <div
-    class="flex h-[30%] w-full justify-center items-center mt-6 md:mt-8"
-    [ngClass]="{ collapsed: isCollapsed }"
+    [ngClass]="{
+      hidden: isCollapsed,
+      'flex h-[20%] md:h-[25%] w-full justify-center items-center mt-5 md:mt-0 transition-all duration-300 ease-in-out':
+        !isCollapsed
+    }"
   >
     <img
       src="../../../../assets/images/Logo Samawe.png"
       alt="Logo Samawé"
-      class="h-[150px] w-[150px] rounded-full"
+      [ngClass]="{
+        'h-[120px] md:h-[150px] w-[120px] md:w-[150px] rounded-full transition-all duration-300 ease-in-out':
+          !isCollapsed
+      }"
     />
   </div>
-  <nav>
-    <ul class="nav flex flex-col mt-4 md:mt-8">
-      <ng-container *ngFor="let module of menuWithItems; let i = index">
-        <span class="nav-item">
-          <a class="nav-link-father">
-            <mat-icon class="text-black mx-[5px]">{{ module.icon }}</mat-icon>
-            <span *ngIf="!isCollapsed">{{ module.module }}</span>
-          </a>
-        </span>
-        <ng-container *ngFor="let item of module.items; let j = index">
-          <li class="nav-item">
-            <a
-              [matTooltip]="item.name"
-              class="nav-link"
-              role="button"
-              [ngClass]="{ active: getActiveElement(item.route || '') }"
-              [routerLink]="
-                !item?.subItems?.length && item.route ? item?.route : null
-              "
-              (click)="!isCollapsed ? toggleSubMenu(item) : null"
-              [matMenuTriggerFor]="
-                isCollapsed && item?.subItems?.length ? submenu : null
-              "
-              #menuTrigger="matMenuTrigger"
-            >
-              <mat-icon class="color-icon-green">{{ item.icon }}</mat-icon>
-              <span *ngIf="!isCollapsed">{{ item.name }}</span>
-            </a>
 
-            <mat-menu #submenu="matMenu" yPosition="above">
-              <ng-container *ngFor="let subItem of item.subItems">
-                <button mat-menu-item [routerLink]="subItem.route">
-                  {{ subItem.name }}
-                </button>
-              </ng-container>
-            </mat-menu>
-
-            <div
-              class="sub-menu"
-              [@submenuState]="openSubMenu[item.name] ? 'open' : 'closed'"
-              *ngIf="item.subItems?.length"
+  <!-- Menú -->
+  <nav class="w-full h-[55%] px-2">
+    <div class="mt-[10px] md:mt-0">
+      <ul class="flex flex-col transition-all duration-300 ease-in-out">
+        <ng-container *ngFor="let module of menuWithItems">
+          <div
+            [ngClass]="{
+              'flex  justify-start py-[6px]': !isCollapsed,
+              'flex  justify-center py-[5px] mb-2': isCollapsed
+            }"
+          >
+            <button
+              [ngClass]="{
+                'transition-all duration-300 ease-in-out flex items-center': true,
+                ' ': !isCollapsed,
+                'text-black': isCollapsed
+              }"
             >
-              <ul>
-                <li
-                  *ngFor="let subItem of item.subItems"
-                  class="flex flex-col justify-content-center"
+              <mat-icon
+                [ngClass]="{
+                  '  mx-[5px]': !isCollapsed,
+                  'text-black': isCollapsed,
+                  inline: true
+                }"
+              >
+                {{ module.icon }}
+              </mat-icon>
+              <span *ngIf="!isCollapsed">{{ module.module }}</span>
+            </button>
+          </div>
+
+          <ng-container *ngFor="let item of module.items">
+            <li>
+              <div
+                [ngClass]="{
+                  'flex  justify-start py-[3px] ': !isCollapsed,
+                  'flex  justify-center py-[5px]': isCollapsed
+                }"
+              >
+                <button
+                  [matTooltip]="item.name"
+                  [ngClass]="{
+                    'transition-all duration-300 ease-in-out bg-none':
+                      isCollapsed,
+                    'flex w-full rounded-lg bg-white border border-black py-[5px] my-[3px]':
+                      !isCollapsed,
+                  }"
+                  [routerLink]="
+                    !item?.subItems?.length && item.route ? item?.route : null
+                  "
+                  (click)="!isCollapsed ? toggleSubMenu(item) : null"
+                  [matMenuTriggerFor]="
+                    isCollapsed && item?.subItems?.length ? submenu : null
+                  "
+                  #menuTrigger="matMenuTrigger"
                 >
-                  <a role="button" class="nav-link-subtitem">
-                    <mat-icon class="color-icon-green">{{
-                      subItem.icon
-                    }}</mat-icon>
-                    <span [routerLink]="subItem.route">{{ subItem.name }}</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
+                  <mat-icon
+                    [ngClass]="{
+                      'mx-[5px]': !isCollapsed,
+                      'text-[#06a606]': !isCollapsed,
+                      'text-white': isCollapsed,
+                      inline: true
+                    }"
+                  >
+                    {{ item.icon }}
+                  </mat-icon>
+                  <span *ngIf="!isCollapsed">{{ item.name }}</span>
+                </button>
+              </div>
+
+              <!-- Submenú -->
+              <mat-menu #submenu="matMenu" yPosition="above">
+                <ng-container *ngFor="let subItem of item.subItems">
+                  <button mat-menu-item [routerLink]="subItem.route">
+                    {{ subItem.name }}
+                  </button>
+                </ng-container>
+              </mat-menu>
+
+              <!-- Submenú extendido -->
+              <div
+                *ngIf="item.subItems?.length"
+                [@submenuState]="openSubMenu[item.name] ? 'open' : 'closed'"
+                [ngClass]="{
+                  'transition-all duration-300 ease-in-out overflow-hidden': true,
+                  'max-h-0 opacity-0': !openSubMenu[item.name],
+                  'max-h-[500px] opacity-100': openSubMenu[item.name]
+                }"
+              >
+                <ul class="pl-5 mt-1">
+                  <li *ngFor="let subItem of item.subItems" class="my-1">
+                    <a
+                      role="button"
+                      class="flex items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[3px]"
+                    >
+                      <mat-icon class="text-[#your-color]">
+                        {{ subItem.icon }}
+                      </mat-icon>
+                      <span [routerLink]="subItem.route">{{
+                        subItem.name
+                      }}</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ng-container>
         </ng-container>
-      </ng-container>
-    </ul>
-    <div
-      class="absolute bottom-0 left-0 flex flex-col h-[20%] w-full justify-end items-center text-left gap-y-2 px-4 md:px-5 pb-4"
-    >
-      <button
-        (click)="logout.emit()"
-        class="flex content-between items-center bg-white w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold hover:bg-blue-400 gap-x-2"
-      >
-        <mat-icon class="color-icon">exit_to_app</mat-icon>
-        <span> Cerrar Sesión </span>
-      </button>
-      <span class="text-white text-xs"
-        >© {{ currentYear }} Ecohotel Samawé.</span
-      >
+      </ul>
     </div>
   </nav>
+
+  <!-- Footer -->
+  <div
+    class="flex flex-col justify-end h-[10%] w-full items-center text-left gap-y-2"
+  >
+    <button
+      (click)="logout.emit()"
+      class=""
+      [ngClass]="{
+          'flex items-center justify-between w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold bg-white hover:bg-blue-400 gap-x-2': !isCollapsed,
+          '': isCollapsed,
+        }"
+    >
+      <mat-icon
+        [ngClass]="{
+          '  mx-[5px]': !isCollapsed,
+          'text-black': isCollapsed,
+          inline: true
+        }"
+        >exit_to_app</mat-icon
+      >
+      <span
+        [ngClass]="{
+          ' flex': !isCollapsed,
+          'hidden': isCollapsed,
+        }"
+        >Cerrar Sesión</span
+      >
+    </button>
+    <span
+      class="text-white text-xs"
+      [ngClass]="{
+          ' flex': !isCollapsed,
+          'hidden': isCollapsed,
+        }"
+      >© {{ currentYear }} Ecohotel Samawé.</span
+    >
+  </div>
 </aside>

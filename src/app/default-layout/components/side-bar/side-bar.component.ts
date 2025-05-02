@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import {
   animate,
@@ -45,7 +45,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     RouterLink,
     MatMenuModule,
     NgFor,
-    MatTooltipModule
+    MatTooltipModule,
+    CommonModule
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',

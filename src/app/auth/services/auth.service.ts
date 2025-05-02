@@ -2,10 +2,11 @@ import { LocalStorageService } from './../../shared/services/localStorage.servic
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { BehaviorSubject, Observable, of, ReplaySubject, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, ReplaySubject, tap } from 'rxjs';
 import {
   LoginCredentials,
-  LoginSuccessInterface
+  LoginSuccessInterface,
+  RawLoginResponse
 } from '../interfaces/login.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
@@ -55,13 +56,37 @@ export class AuthService {
     credentials: LoginCredentials
   ): Observable<ApiResponseInterface<LoginSuccessInterface>> {
     const params = this._httpUtilities.httpParamsFromObject(credentials);
+
     return this._httpClient
-      .post<ApiResponseInterface<LoginSuccessInterface>>(
+      .post<ApiResponseInterface<RawLoginResponse>>(
         `${environment.apiUrl}auth/sign-in`,
         params
       )
       .pipe(
-        tap((res: ApiResponseInterface<LoginSuccessInterface>): void => {
+        map(
+          (
+            res: ApiResponseInterface<RawLoginResponse>
+          ): ApiResponseInterface<LoginSuccessInterface> => {
+            const raw = res.data;
+
+            const loginSuccessData: LoginSuccessInterface = {
+              tokens: raw.tokens,
+              user: {
+                id: raw.user.id,
+                role: raw.user.role
+              },
+              session: {
+                accessSessionId: raw.accessSessionId
+              }
+            };
+
+            return {
+              ...res,
+              data: loginSuccessData
+            };
+          }
+        ),
+        tap((res) => {
           this.saveLocalUserData(res.data);
           console.log(res.data);
         })

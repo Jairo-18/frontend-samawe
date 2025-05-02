@@ -7,6 +7,12 @@ export interface Session {
   accessSessionId: string;
 }
 
+export interface RawLoginResponse {
+  tokens: Tokens;
+  user: User;
+  accessSessionId: string;
+}
+
 export interface Login {
   email: string;
   password: string;
@@ -20,7 +26,7 @@ export interface LoginResponse {
 export interface LoginSuccessInterface {
   tokens: Tokens;
   user: User;
-  role: RoleType;
+  // role: RoleType;
   session: Session;
 }
 
@@ -39,5 +45,5 @@ export interface Tokens {
 
 export interface User {
   id: string;
-  roleType: RoleType;
+  role: RoleType;
 }
