@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon } from '@angular/material/icon';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CreateUserPanel } from '../../interfaces/register.interface';
 import {
   IdentificationType,
@@ -22,7 +22,6 @@ import {
 } from '../../../auth/interfaces/register.interface';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
-import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
   selector: 'app-create-users-or-edit-users',
@@ -38,7 +37,7 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     MatButtonModule,
     FontAwesomeModule,
     MatIcon,
-    BasePageComponent
+    RouterLink
   ],
   templateUrl: './create-users-or-edit-users.component.html',
   styleUrl: './create-users-or-edit-users.component.scss'
