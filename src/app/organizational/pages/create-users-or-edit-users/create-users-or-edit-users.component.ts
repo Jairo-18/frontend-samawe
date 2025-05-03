@@ -59,19 +59,15 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
 
   constructor(private _fb: FormBuilder) {
     this.userForm = this._fb.group({
-      fullName: ['', Validators.required],
-      username: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      roleTypeId: ['', Validators.required],
+      identificationTypeId: ['', [Validators.required]],
+      identificationNumber: ['', [Validators.required]],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required, Validators.email],
       phone: [''],
-      identification: ['', Validators.required],
-      identificationTypeId: ['', Validators.required],
-      avatarUrl: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      passwordConfirmation: [
-        '',
-        [Validators.required, Validators.minLength(6)]
-      ],
-      roleId: ['', Validators.required]
+      confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
     });
     this.userLogged = this._authService.getUserLoggedIn();
   }
@@ -128,6 +124,7 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
     if (this.userForm.valid) {
       const userToRegister: CreateUserPanel = {
         id: uuid.v4(),
+        roleTypeId: this.userForm.value.roleTypeId,
         identificationTypeId: this.userForm.value.identificationTypeId,
         identificationNumber: this.userForm.value.identificationNumber,
         firstName: this.userForm.value.firstName,

@@ -8,7 +8,7 @@ export interface CreateUserPanel {
   phone: string;
   password: string;
   confirmPassword: string;
-  role?: RoleType;
+  roleTypeId?: RoleType;
 }
 
 export interface IdentificationType {

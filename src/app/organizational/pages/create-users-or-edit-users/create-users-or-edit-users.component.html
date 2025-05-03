@@ -4,119 +4,184 @@
   [previusUrl]="userId ? '../../list' : '../list'"
 >
   <div header>Crear usuario</div>
-  <section content class="row">
+  <section content>
     <div content>
-      <form [formGroup]="userForm" class="col-12 col-md-6 d-flex flex-column">
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Rol</mat-label>
-          <mat-select formControlName="roleId" required>
-            <mat-option value="" disabled selected
-              >Seleccione el rol del usuario</mat-option
-            >
-            <mat-option *ngFor="let role of roles" [value]="role.roleTypeId">
-              {{ role.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>library_books</mat-icon>
-          <mat-error *ngIf="userForm.get('roleId')?.hasError('required')">
-            Rol requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Tipo de Identificación</mat-label>
-          <mat-select formControlName="identificationTypeId" required>
-            <mat-option value="" disabled selected
-              >Seleccione el tipo de identificación del usuario</mat-option
-            >
-            <mat-option
-              *ngFor="let type of identificationTypes"
-              [value]="type.identificationTypeId"
-            >
-              {{ type.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>table_chart</mat-icon>
-          <mat-error
-            *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
-          >
-            Tipo de identificación requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Identificación</mat-label>
-          <mat-icon matPrefix>credit_card</mat-icon>
-          <input
-            matInput
-            formControlName="identification"
-            (blur)="setPassword()"
-            required
-          />
-          <mat-error
-            *ngIf="userForm.get('identification')?.hasError('required')"
-          >
-            Número de identificación requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Nombre completo</mat-label>
-          <input matInput formControlName="fullName" required />
-          <mat-icon matPrefix>account_box</mat-icon>
-          <mat-error *ngIf="userForm.get('fullName')">
-            Nombre completo requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>URL de Imagen</mat-label>
-          <mat-icon matPrefix>image</mat-icon>
-          <input matInput formControlName="avatarUrl" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Nombre de usuario</mat-label>
-          <input matInput formControlName="username" required />
-          <mat-icon matPrefix>person</mat-icon>
-          <mat-error *ngIf="userForm.get('username')">
-            Nombre de usuario requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Teléfono</mat-label>
-          <input matInput formControlName="phone" />
-          <mat-icon matPrefix>phone</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-100 mt-3 mb-2 mt-md-0">
-          <mat-label>Correo Electrónico</mat-label>
-          <input matInput formControlName="email" required />
-          <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="userForm.get('email')?.hasError('required')">
-            Email requerido
-          </mat-error>
-          <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-            Email inválido
-          </mat-error>
-        </mat-form-field>
-
-        <div actions class="w-100 align-content-center">
-          <section class="d-flex row gap-md-0 gap-1 justify-content-end">
-            <div class="col-12 col-md-5 col-lg-3 px-1">
-              <button
-                mat-fab
-                extended="true"
-                class="w-100"
-                type="button"
-                (click)="save()"
+      <form [formGroup]="userForm" class="flex flex-col md:flex-row gap-x-5">
+        <section class="flex flex-col w-full md:w-[50%]">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="roleTypeId" required>
+              <mat-option value="" disabled selected
+                >Seleccione el rol</mat-option
               >
-                {{ userId ? 'Guardar' : 'Crear usuario' }}
-              </button>
-            </div>
-          </section>
-        </div>
+              <mat-option *ngFor="let role of roles" [value]="role.roleTypeId">
+                {{ role.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>library_books</mat-icon>
+            <mat-error *ngIf="userForm.get('roleTypeId')?.hasError('required')">
+              Rol requerido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tipo de Identificación</mat-label>
+            <mat-select formControlName="identificationTypeId" required>
+              <mat-option value="" disabled selected
+                >Seleccione el tipo de identificación</mat-option
+              >
+              <mat-option
+                *ngFor="let type of identificationTypes"
+                [value]="type.identificationTypeId"
+              >
+                {{ type.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>table_chart</mat-icon>
+            <mat-error
+              *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
+            >
+              Tipo de identificación requerido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Identificación</mat-label>
+            <mat-icon matPrefix>credit_card</mat-icon>
+            <input
+              matInput
+              formControlName="identificationNumber"
+              (blur)="setPassword()"
+              required
+            />
+            <mat-error
+              *ngIf="userForm.get('identificationNumber')?.hasError('required')"
+            >
+              Número de identificación requerido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nombres completos</mat-label>
+            <input matInput formControlName="firstName" required />
+            <mat-icon matPrefix>account_box</mat-icon>
+            <mat-error *ngIf="userForm.get('firstName')">
+              Nombres completos requeridos
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Apellidos completos</mat-label>
+            <input matInput formControlName="lastName" required />
+            <mat-icon matPrefix>account_box</mat-icon>
+            <mat-error *ngIf="userForm.get('lastName')">
+              Apellidos completos requeridos
+            </mat-error>
+          </mat-form-field>
+        </section>
+
+        <section class="flex flex-col w-full md:w-[50%]">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput formControlName="email" required />
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+              Email requerido
+            </mat-error>
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+              Email inválido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="phone" />
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field
+            appearance="outline"
+            class="w-full mt-3"
+            [ngClass]="{
+              'mb-10 md:mb-4':
+                userForm.get('password')?.invalid &&
+                userForm.get('password')?.touched
+            }"
+          >
+            <mat-label>Contraseña</mat-label>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              matInput
+              formControlName="password"
+              required
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button
+              matSuffix
+              mat-icon-button
+              (click)="showPassword = !showPassword"
+            >
+              <mat-icon>{{
+                showPassword ? 'visibility' : 'visibility_off'
+              }}</mat-icon>
+            </button>
+            <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+              Contraseña requerida
+            </mat-error>
+            <mat-error
+              *ngIf="
+                !userForm.get('password')?.hasError('required') &&
+                userForm.get('password')?.hasError('passwordStrength')
+              "
+              >La contraseña debe tener 6 caracteres, con mayúscula, minúscula y
+              un carácter especial.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Confirmar Contraseña</mat-label>
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              matInput
+              formControlName="confirmPassword"
+              required
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button
+              matSuffix
+              mat-icon-button
+              (click)="showConfirmPassword = !showConfirmPassword"
+            >
+              <mat-icon>{{
+                showConfirmPassword ? 'visibility' : 'visibility_off'
+              }}</mat-icon>
+            </button>
+            <mat-error
+              *ngIf="userForm.get('confirmPassword')?.hasError('required')"
+            >
+              Contraseña requerida
+            </mat-error>
+            <mat-error *ngIf="userForm.hasError('passwordMismatch')">
+              Las contraseñas no coinciden
+            </mat-error>
+          </mat-form-field>
+
+          <div actions class="w-100 align-content-center">
+            <section class="d-flex row gap-md-0 gap-1 justify-content-end">
+              <div class="col-12 col-md-5 col-lg-3 px-1">
+                <button
+                  mat-fab
+                  extended="true"
+                  class="w-100"
+                  type="button"
+                  (click)="save()"
+                >
+                  {{ userId ? 'Guardar' : 'Crear usuario' }}
+                </button>
+              </div>
+            </section>
+          </div>
+        </section>
       </form>
     </div>
   </section>

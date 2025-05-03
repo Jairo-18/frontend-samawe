@@ -1,5 +1,5 @@
 <article
-  class="w-[80%] md:w-full flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+  class="w-[80%] md:w-full h-full flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
 >
   <section class="h-full w-full hidden md:flex flex-col">
     <img
@@ -47,7 +47,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
-            <mat-label>Identificación</mat-label>
+            <mat-label>Número de identificación</mat-label>
             <input matInput formControlName="identificationNumber" required />
             <mat-icon matPrefix>credit_card</mat-icon>
             <mat-error
@@ -114,7 +114,7 @@
             <input matInput formControlName="phone" />
             <mat-icon matPrefix>phone</mat-icon>
             <mat-error *ngIf="formStep2.get('phone')?.hasError('required')">
-              Email requerido
+              Teléfono requerido
             </mat-error>
             <mat-error *ngIf="formStep2.get('phone')?.hasError('pattern')">
               El número debe empezar por 3 y tener un máximo de 10 números
