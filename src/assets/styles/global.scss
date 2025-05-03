@@ -2,42 +2,6 @@
 // Supports weights 100-900
 @import '@fontsource-variable/noto-serif';
 
-.sidebar {
-  position: fixed;
-  padding-inline: 15px;
-  padding-block: 15px;
-  left: 0;
-  height: 100%;
-  background-color: $side-bar-background;
-  border-right: 1px solid black;
-  z-index: 999;
-  transition: width 0.3s ease;
-
-  &.expanded {
-    width: $width-side-bar; // Ej: 240px
-  }
-
-  &.collapsed {
-    width: 75px;
-  }
-
-  // En mobile: flotante sobre el contenido
-  @media (max-width: 768px) {
-    position: absolute;
-    height: 100vh;
-
-    left: 0;
-
-    &.expanded {
-      width: $width-side-bar;
-    }
-
-    &.collapsed {
-      width: 75px;
-    }
-  }
-}
-
 .app-container {
   transition: margin-left 0.3s ease, width 0.3s ease;
   overflow-y: auto;

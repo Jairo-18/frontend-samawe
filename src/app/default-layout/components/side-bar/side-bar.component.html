@@ -1,23 +1,23 @@
 <aside
   [ngClass]="{
-    'flex flex-col bg-[#06a606] items-center transition-all duration-300 ease-in-out font-bold': true,
-    'w-[60px]  h-full': isCollapsed,
-    'w-[250px] md:w-[270px] h-full p-2': !isCollapsed,
-    'fixed md:static z-50  ': !isCollapsed
+    'flex flex-col bg-[#06a606] items-center transition-all duration-300 ease-in-out font-bold border-r border-black': true,
+    'w-16 h-full': isCollapsed,
+    'w-64 md:w-72 h-full p-2': !isCollapsed,
+    'fixed md:static z-50': !isCollapsed
   }"
 >
   <!-- Botón toggle -->
   <div
+    class="flex h-[6%] transition-all duration-300 ease-in-out"
     [ngClass]="{
-      'flex mt-2': isCollapsed,
-      'flex ': !isCollapsed
+      'mt-2 md:mt-4 justify-center': isCollapsed,
+      'justify-start': !isCollapsed
     }"
-    class="h-[6%]"
   >
     <button
       (click)="toggleSidebar()"
       mat-icon-button
-      class="w-[40px] h-[40px] flex text-xl bg-white rounded-full shadow-md"
+      class="w-[40px] h-[40px] flex text-xl bg-white rounded-full shadow-md transition-all duration-300 ease-in-out"
     >
       <mat-icon *ngIf="isCollapsed">keyboard_arrow_right</mat-icon>
       <mat-icon *ngIf="!isCollapsed">close</mat-icon>
@@ -26,50 +26,55 @@
 
   <!-- Logo -->
   <div
+    class="transition-all duration-300 ease-in-out overflow-hidden h-[30%] md:h-[35%]"
     [ngClass]="{
-      hidden: isCollapsed,
-      'flex h-[20%] md:h-[25%] w-full justify-center items-center mt-5 md:mt-0 transition-all duration-300 ease-in-out':
+      'scale-0 opacity-0 h-[150px] hidden': isCollapsed,
+      'scale-100 opacity-100 mt-5 md:mt-3 flex w-full justify-center items-center ':
         !isCollapsed
     }"
   >
     <img
       src="../../../../assets/images/Logo Samawe.png"
       alt="Logo Samawé"
+      class="transition-all duration-300 ease-in-out"
       [ngClass]="{
-        'h-[120px] md:h-[150px] w-[120px] md:w-[150px] rounded-full transition-all duration-300 ease-in-out':
+        'h-[120px] md:h-[150px] w-[120px] md:w-[150px] rounded-full border border-black':
           !isCollapsed
       }"
     />
   </div>
 
   <!-- Menú -->
-  <nav class="w-full h-full px-2 overflow-y-auto">
+  <nav class="w-full h-full px-2 overflow-y-auto mt-0 md:mt-3">
     <div class="mt-[10px] md:mt-0">
       <ul class="flex flex-col transition-all duration-300 ease-in-out">
         <ng-container *ngFor="let module of menuWithItems">
           <div
             [ngClass]="{
-              'flex  justify-start py-[6px]': !isCollapsed,
-              'flex  justify-center py-[5px] mb-2': isCollapsed
+              'flex justify-start py-[6px] transition-all duration-300 ease-in-out':
+                !isCollapsed,
+              'flex justify-center py-[5px] mb-2 transition-all duration-300 ease-in-out':
+                isCollapsed
             }"
           >
             <button
-              [ngClass]="{
-                'transition-all duration-300 ease-in-out flex items-center': true,
-                ' ': !isCollapsed,
-                'text-black': isCollapsed
-              }"
+              class="transition-all duration-300 ease-in-out flex items-center"
+              [ngClass]="{ 'text-black': isCollapsed }"
             >
               <mat-icon
                 [ngClass]="{
-                  '  mx-[5px]': !isCollapsed,
+                  'mx-[5px]': !isCollapsed,
                   'text-black': isCollapsed,
                   inline: true
                 }"
               >
                 {{ module.icon }}
               </mat-icon>
-              <span *ngIf="!isCollapsed">{{ module.module }}</span>
+              <span
+                *ngIf="!isCollapsed"
+                class="transition-all duration-300 ease-in-out"
+                >{{ module.module }}</span
+              >
             </button>
           </div>
 
@@ -77,17 +82,19 @@
             <li>
               <div
                 [ngClass]="{
-                  'flex  justify-start py-[3px] ': !isCollapsed,
-                  'flex  justify-center py-[5px]': isCollapsed
+                  'flex justify-start py-[3px] transition-all duration-300 ease-in-out':
+                    !isCollapsed,
+                  'flex justify-center py-[5px] transition-all duration-300 ease-in-out':
+                    isCollapsed
                 }"
               >
                 <button
                   [matTooltip]="item.name"
+                  class="transition-all duration-300 ease-in-out"
                   [ngClass]="{
-                    'transition-all duration-300 ease-in-out bg-none':
-                      isCollapsed,
+                    'bg-none': isCollapsed,
                     'flex w-full rounded-lg bg-white border border-black py-[5px] my-[3px]':
-                      !isCollapsed,
+                      !isCollapsed
                   }"
                   [routerLink]="
                     !item?.subItems?.length && item.route ? item?.route : null
@@ -100,15 +107,18 @@
                 >
                   <mat-icon
                     [ngClass]="{
-                      'mx-[5px]': !isCollapsed,
-                      'text-[#06a606]': !isCollapsed,
+                      'mx-[5px] text-[#06a606]': !isCollapsed,
                       'text-white': isCollapsed,
                       inline: true
                     }"
                   >
                     {{ item.icon }}
                   </mat-icon>
-                  <span *ngIf="!isCollapsed">{{ item.name }}</span>
+                  <span
+                    *ngIf="!isCollapsed"
+                    class="transition-all duration-300 ease-in-out"
+                    >{{ item.name }}</span
+                  >
                 </button>
               </div>
 
@@ -125,8 +135,8 @@
               <div
                 *ngIf="item.subItems?.length"
                 [@submenuState]="openSubMenu[item.name] ? 'open' : 'closed'"
+                class="transition-all duration-300 ease-in-out overflow-hidden"
                 [ngClass]="{
-                  'transition-all duration-300 ease-in-out overflow-hidden': true,
                   'max-h-0 opacity-0': !openSubMenu[item.name],
                   'max-h-[500px] opacity-100': openSubMenu[item.name]
                 }"
@@ -135,9 +145,9 @@
                   <li *ngFor="let subItem of item.subItems" class="my-1">
                     <a
                       role="button"
-                      class="flex items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[3px]"
+                      class="flex items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[3px] transition-all duration-300 ease-in-out"
                     >
-                      <mat-icon class="text-[#your-color]">
+                      <mat-icon class="text-[#06a606]">
                         {{ subItem.icon }}
                       </mat-icon>
                       <span [routerLink]="subItem.route">{{
@@ -156,38 +166,41 @@
 
   <!-- Footer -->
   <div
-    class="flex flex-col justify-end h-[10%] w-full items-center text-left gap-y-2"
+    class="flex flex-col justify-end h-[10%] w-full items-center gap-y-2 px-2 mt-0 md:mt-3"
   >
     <button
       (click)="logout.emit()"
-      class=""
+      class="transition-all duration-300 ease-in-out"
       [ngClass]="{
-          'flex items-center justify-between w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold bg-white hover:bg-blue-400 gap-x-2': !isCollapsed,
-          '': isCollapsed,
-        }"
+        'flex items-center w-full px-[10px] py-[5px] border border-black rounded-lg font-extrabold bg-white hover:bg-blue-400 gap-x-2':
+          !isCollapsed,
+        hidden: isCollapsed
+      }"
     >
       <mat-icon
         [ngClass]="{
-          '  mx-[5px]': !isCollapsed,
+          'text-[#06a606]': !isCollapsed,
           'text-black': isCollapsed,
           inline: true
         }"
-        >exit_to_app</mat-icon
       >
+        exit_to_app
+      </mat-icon>
       <span
         [ngClass]="{
-          ' flex': !isCollapsed,
-          'hidden': isCollapsed,
+          'flex transition-all duration-300 ease-in-out': !isCollapsed,
+          hidden: isCollapsed
         }"
         >Cerrar Sesión</span
       >
     </button>
+
     <span
-      class="text-white text-xs"
+      class="text-white text-xs transition-all duration-300 ease-in-out"
       [ngClass]="{
-          ' flex': !isCollapsed,
-          'hidden': isCollapsed,
-        }"
+        flex: !isCollapsed,
+        hidden: isCollapsed
+      }"
       >© {{ currentYear }} Ecohotel Samawé.</span
     >
   </div>
