@@ -1,5 +1,5 @@
 export interface RegisterUser {
-  id: string;
+  userId: string;
   identificationType: string;
   identificationNumber: string;
   firstName: string;
@@ -8,7 +8,12 @@ export interface RegisterUser {
   phone: string;
   password: string;
   confirmPassword: string;
-  role?: string;
+  roleType?: string;
+}
+
+export interface CreateRegisterData {
+  identificationType: IdentificationType[];
+  roleType: RoleType[];
 }
 
 export interface IdentificationType {

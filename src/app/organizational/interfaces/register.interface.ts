@@ -1,6 +1,6 @@
 export interface CreateUserPanel {
-  id: string;
-  identificationTypeId: IdentificationType;
+  userId: string;
+  identificationType: string;
   identificationNumber: string;
   firstName: string;
   lastName: string;
@@ -8,7 +8,7 @@ export interface CreateUserPanel {
   phone: string;
   password: string;
   confirmPassword: string;
-  roleTypeId?: RoleType;
+  roleType?: string;
 }
 
 export interface IdentificationType {

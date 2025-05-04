@@ -22,6 +22,7 @@ import {
 } from '../../../auth/interfaces/register.interface';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
+import { RelatedDataService } from '../../../shared/services/relatedData.service';
 
 @Component({
   selector: 'app-create-users-or-edit-users',
@@ -48,10 +49,12 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
   showConfirmPassword: boolean = false;
   userId: string = '';
   user?: CreateUserPanel;
-  identificationTypes: IdentificationType[] = [];
-  roles: RoleType[] = [];
-  userLogged: CreateUserPanel;
+  identificationType: IdentificationType[] = [];
+  roleType: RoleType[] = [];
+
   private readonly _usersService: UsersService = inject(UsersService);
+  private readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
@@ -63,30 +66,18 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
       identificationNumber: ['', [Validators.required]],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', Validators.required, Validators.email],
+      email: ['', [Validators.required, Validators.email]],
       phone: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
     });
-    this.userLogged = this._authService.getUserLoggedIn();
   }
 
   ngOnInit(): void {
-    // this.loadRelatedData();
+    this.getRelatedData();
     this.userId = this._activatedRoute.snapshot.params['id'];
     if (this.userId) this._getUserToEdit(this.userId);
   }
-
-  // loadRelatedData(): void {
-  //   this._usersService.createUsersRelatedData().subscribe({
-  //     next: (response) => {
-  //       this.identificationTypes = response.data.identificationTypes;
-  //       this.roles = response.data.roles;
-  //     },
-  //     error: (error) =>
-  //       console.error('Error al cargar datos relacionados:', error)
-  //   });
-  // }
 
   private _getUserToEdit(userId: string): void {
     this._usersService.getUserProfile(userId).subscribe({
@@ -109,6 +100,24 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
     this.setPassword();
   }
 
+  /**
+   * @param getRelatedData - Obtiene los tipos de identificación.
+   */
+  getRelatedData(): void {
+    this._relatedDataService.createRegisterData().subscribe({
+      next: (res) => {
+        this.roleType = res.data?.roleType || [];
+        this.identificationType = res.data?.identificationType || [];
+
+        console.log(this.roleType);
+
+        console.log(res);
+      },
+      error: (error) =>
+        console.error('Error al cargar datos relacionados:', error)
+    });
+  }
+
   setPassword() {
     const identificationValue = this.userForm.get('identification')?.value;
     if (identificationValue) {
@@ -122,9 +131,9 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
   save() {
     if (this.userForm.valid) {
       const userToRegister: CreateUserPanel = {
-        id: uuid.v4(),
-        roleTypeId: this.userForm.value.roleTypeId,
-        identificationTypeId: this.userForm.value.identificationTypeId,
+        userId: uuid.v4(),
+        roleType: this.userForm.value.roleTypeId,
+        identificationType: this.userForm.value.identificationTypeId,
         identificationNumber: this.userForm.value.identificationNumber,
         firstName: this.userForm.value.firstName,
         lastName: this.userForm.value.lastName,
@@ -134,37 +143,18 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
         confirmPassword: this.userForm.get('confirmPassword')?.value
       };
 
-      if (this.userId) {
-        const userUpdate = {
-          username: this.userForm.get('username')?.value,
-          fullName: this.userForm.get('fullName')?.value,
-          phone: Number(this.userForm.get('phone')?.value),
-          avatarUrl: this.userForm.get('avatarUrl')?.value
-        };
-
-        if (this.userForm.invalid) return;
-        this._usersService.updateUser(this.userId, userUpdate).subscribe({
-          next: () => {
-            this._router.navigateByUrl('/organizational/users/list');
-          },
-          error: (error) => {
-            console.error('Error al actualizar el usuario', error);
+      this._usersService.createUser(userToRegister).subscribe({
+        next: () => {
+          this._router.navigateByUrl('/organizational/users/list');
+        },
+        error: (err) => {
+          if (err.error && err.error.message) {
+            console.error('Error al registrar usuario:', err.error.message);
+          } else {
+            console.error('Error desconocido:', err);
           }
-        });
-      } else {
-        this._usersService.createUser(userToRegister).subscribe({
-          next: () => {
-            this._router.navigateByUrl('/organizational/users/list');
-          },
-          error: (err) => {
-            if (err.error && err.error.message) {
-              console.error('Error al registrar usuario:', err.error.message);
-            } else {
-              console.error('Error desconocido:', err);
-            }
-          }
-        });
-      }
+        }
+      });
     } else {
       console.error('Formulario no válido', this.userForm.errors);
       return this.userForm.markAllAsTouched();

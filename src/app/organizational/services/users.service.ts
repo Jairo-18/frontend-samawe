@@ -14,13 +14,6 @@ import { CreateUserPanel } from '../interfaces/register.interface';
 export class UsersService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
 
-  CreateUser(user: CreateUserPanel): Observable<ApiResponseCreateInterface> {
-    return this._httpClient.post<ApiResponseCreateInterface>(
-      `${environment.apiUrl}user/register`,
-      user
-    );
-  }
-
   getUserProfile(
     userId: string
   ): Observable<ApiResponseInterface<CreateUserPanel>> {
@@ -35,9 +28,10 @@ export class UsersService {
       body
     );
   }
+
   createUser(user: CreateUserPanel): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
-      `${environment.apiUrl}user/create`,
+      `${environment.apiUrl}user/register`,
       user
     );
   }

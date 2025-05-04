@@ -23,7 +23,7 @@ import {
   RegisterUser
 } from '../../interfaces/register.interface';
 import { RegisterService } from '../../services/register.service';
-import { UserService } from '../../../shared/services/user.service';
+import { RelatedDataService } from '../../../shared/services/relatedData.service';
 
 @Component({
   selector: 'app-register',
@@ -53,9 +53,10 @@ export class RegisterComponent implements OnInit {
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
 
-  private readonly _userService: UserService = inject(UserService);
   private readonly _registerService: RegisterService = inject(RegisterService);
   private readonly _router: Router = inject(Router);
+  private readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
   );
@@ -122,7 +123,7 @@ export class RegisterComponent implements OnInit {
    * @param getRelatedData - Obtiene los tipos de identificación.
    */
   getRelatedData(): void {
-    this._userService.registerRelatedData().subscribe({
+    this._relatedDataService.registerRelatedData().subscribe({
       next: (res) => {
         this.identificationType = res.data?.identificationType || [];
       }
@@ -144,7 +145,7 @@ export class RegisterComponent implements OnInit {
   save() {
     if (this.formStep2.valid && this.formStep1.valid) {
       const userToRegister: RegisterUser = {
-        id: uuid.v4(),
+        userId: uuid.v4(),
         identificationType: this.formStep1.value.identificationTypeId,
         identificationNumber: this.formStep1.value.identificationNumber,
         firstName: this.formStep1.value.firstName,
