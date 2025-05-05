@@ -1,4 +1,4 @@
-<div class="brand-content-center">
+<div class="brand-content-center py-5">
   <article
     class="w-[90%] md:w-full h-max md:h-[90%] my-10 md:my-0 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
   >
@@ -113,6 +113,28 @@
               </mat-error>
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+              <mat-label>Tipo de prefijo</mat-label>
+              <mat-select formControlName="phoneCodeId" required>
+                <mat-option value="" disabled selected
+                  >Seleccione el prefijo de su teléfono</mat-option
+                >
+                <mat-option
+                  *ngFor="let type of phoneCode"
+                  [value]="type.phoneCodeId"
+                >
+                  {{ type.code }}
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>table_chart</mat-icon>
+              <mat-error
+                *ngIf="formStep1.get('phoneCodeId')?.hasError('required')"
+              >
+                Prefijo requerido
+              </mat-error>
+            </mat-form-field>
+
             <mat-form-field
               appearance="outline"
               class="w-full mt-3"
@@ -129,7 +151,7 @@
                 Teléfono requerido
               </mat-error>
               <mat-error *ngIf="formStep2.get('phone')?.hasError('pattern')">
-                El número debe empezar por 3 y tener un máximo de 10 números
+                Solo números, máximo 15 dígitos
               </mat-error>
             </mat-form-field>
 

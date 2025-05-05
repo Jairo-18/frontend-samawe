@@ -1,3 +1,4 @@
+import { PhoneCode } from './../../../auth/interfaces/register.interface';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
@@ -15,7 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CreateUserPanel } from '../../interfaces/register.interface';
 import {
   IdentificationType,
   RoleType
@@ -23,6 +23,7 @@ import {
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import { CreateUserPanel } from '../../interfaces/create.interface';
 
 @Component({
   selector: 'app-create-users-or-edit-users',
@@ -51,6 +52,7 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
   user?: CreateUserPanel;
   identificationType: IdentificationType[] = [];
   roleType: RoleType[] = [];
+  phoneCode: PhoneCode[] = [];
 
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _relatedDataService: RelatedDataService =
@@ -67,7 +69,8 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: [''],
+      phoneCodeId: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
     });
@@ -104,14 +107,11 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
    * @param getRelatedData - Obtiene los tipos de identificación.
    */
   getRelatedData(): void {
-    this._relatedDataService.createRegisterData().subscribe({
+    this._relatedDataService.createRelatedData().subscribe({
       next: (res) => {
         this.roleType = res.data?.roleType || [];
         this.identificationType = res.data?.identificationType || [];
-
-        console.log(this.roleType);
-
-        console.log(res);
+        this.phoneCode = res.data?.phoneCode || [];
       },
       error: (error) =>
         console.error('Error al cargar datos relacionados:', error)
@@ -138,6 +138,7 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
         firstName: this.userForm.value.firstName,
         lastName: this.userForm.value.lastName,
         email: this.userForm.value.email,
+        phoneCode: this.userForm.value.phoneCodeId,
         phone: this.userForm.value.phone,
         password: this.userForm.value.password,
         confirmPassword: this.userForm.get('confirmPassword')?.value

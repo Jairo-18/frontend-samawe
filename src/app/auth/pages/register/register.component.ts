@@ -1,3 +1,4 @@
+import { PhoneCode } from './../../interfaces/register.interface';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -52,6 +53,7 @@ export class RegisterComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
+  phoneCode: PhoneCode[] = [];
 
   private readonly _registerService: RegisterService = inject(RegisterService);
   private readonly _router: Router = inject(Router);
@@ -82,7 +84,8 @@ export class RegisterComponent implements OnInit {
     this.formStep2 = this._fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
-        phone: ['', [Validators.required, Validators.pattern('^3\\d{9}$')]],
+        phoneCodeId: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
         password: [
           '',
           [
@@ -126,6 +129,7 @@ export class RegisterComponent implements OnInit {
     this._relatedDataService.registerRelatedData().subscribe({
       next: (res) => {
         this.identificationType = res.data?.identificationType || [];
+        this.phoneCode = res.data?.phoneCode || [];
       }
     });
   }
@@ -151,6 +155,7 @@ export class RegisterComponent implements OnInit {
         firstName: this.formStep1.value.firstName,
         lastName: this.formStep1.value.lastName,
         email: this.formStep2.value.email,
+        phoneCode: this.formStep2.value.phoneCodeId,
         phone: this.formStep2.value.phone,
         password: this.formStep2.value.password,
         confirmPassword: this.formStep2.get('confirmPassword')?.value

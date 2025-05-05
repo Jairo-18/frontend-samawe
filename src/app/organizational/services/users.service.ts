@@ -6,7 +6,7 @@ import {
   ApiResponseCreateInterface,
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
-import { CreateUserPanel } from '../interfaces/register.interface';
+import { CreateUserPanel } from '../interfaces/create.interface';
 
 @Injectable({
   providedIn: 'root'

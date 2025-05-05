@@ -5,15 +5,22 @@ export interface RegisterUser {
   firstName: string;
   lastName: string;
   email: string;
+  phoneCode: string;
   phone: string;
   password: string;
   confirmPassword: string;
   roleType?: string;
 }
 
-export interface CreateRegisterData {
+export interface CreateUserData {
   identificationType: IdentificationType[];
   roleType: RoleType[];
+  phoneCode: PhoneCode[];
+}
+
+export interface RegisterUserData {
+  identificationType: IdentificationType[];
+  phoneCode: PhoneCode[];
 }
 
 export interface IdentificationType {
@@ -30,4 +37,10 @@ export interface RoleType {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+}
+
+export interface PhoneCode {
+  phoneCodeId: string;
+  code?: string;
+  name: Date;
 }

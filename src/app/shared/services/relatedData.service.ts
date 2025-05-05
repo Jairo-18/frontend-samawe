@@ -1,10 +1,10 @@
-import { CreateRegisterData } from '../../auth/interfaces/register.interface';
+import { CreateUserData } from './../../auth/interfaces/register.interface';
+import { RegisterUserData } from '../../auth/interfaces/register.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
-import { IdentificationType } from '../../auth/interfaces/register.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +12,14 @@ import { IdentificationType } from '../../auth/interfaces/register.interface';
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
 
-  registerRelatedData(): Observable<
-    ApiResponseInterface<{ identificationType: IdentificationType[] }>
-  > {
-    return this._httpClient.get<
-      ApiResponseInterface<{ identificationType: IdentificationType[] }>
-    >(`${environment.apiUrl}user/register/related-data`);
+  registerRelatedData(): Observable<ApiResponseInterface<RegisterUserData>> {
+    return this._httpClient.get<ApiResponseInterface<RegisterUserData>>(
+      `${environment.apiUrl}user/register/related-data`
+    );
   }
 
-  createRegisterData(): Observable<ApiResponseInterface<CreateRegisterData>> {
-    return this._httpClient.get<ApiResponseInterface<CreateRegisterData>>(
+  createRelatedData(): Observable<ApiResponseInterface<CreateUserData>> {
+    return this._httpClient.get<ApiResponseInterface<CreateUserData>>(
       `${environment.apiUrl}user/create/related-data`
     );
   }
