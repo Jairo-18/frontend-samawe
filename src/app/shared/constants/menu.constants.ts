@@ -13,7 +13,7 @@ export const MENU_CONST: MenuInterface[] = [
         order: 1,
         subItems: [
           {
-            name: 'Crear usuario',
+            name: 'Crear usuarios',
             icon: 'person_add',
             route: '/organizational/users/create'
           },
@@ -78,13 +78,39 @@ export const MENU_CONST: MenuInterface[] = [
 ];
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
-  Empledo: ['profile', 'Mis Proyectos', 'Mis Tareas', 'Reportes', 'Calendario']
+  Usuario: [''],
+  Empleado: [
+    'Gestión de usuarios',
+    'Crear usuarios',
+    'Ver usuarios',
+    'Gestión de productos',
+    'Crear productos',
+    'Ver productos',
+    'Facturación',
+    'Crear facturas',
+    'Ver facturas',
+    'Usuarios'
+  ],
+  Administrador: [
+    'Gestión de usuarios',
+    'Crear usuarios',
+    'Ver usuarios',
+    'Gestión de productos',
+    'Crear productos',
+    'Ver productos',
+    'Facturación',
+    'Crear facturas',
+    'Ver facturas',
+    'Usuarios'
+  ]
 };
 
-export const ROUTE_MAP: Record<string, string> = {
-  'Mis Proyectos': '/organizational/summary',
-  'Mis Tareas': '/general/tasks',
-  Reportes: '/general/reports',
-  Calendario: '/general/calendar',
-  profile: '/profile'
-};
+// export const ROUTE_MAP: Record<string, string> = {
+//   'Crear usuario': '/organizational/users/create',
+//   'Ver usuarios': '/organizational/users/list',
+//   'Crear productos': '/products/create-products',
+//   'Ver productos': '/products/see-products',
+//   'Crear facturas': '/invoices/create-invoices',
+//   'Ver facturas': '/invoices/see-invoices',
+//   Usuarios: '/organizational/users/list' // del panel de admin
+// };

@@ -7,12 +7,27 @@ import {
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
 import { CreateUserPanel } from '../interfaces/create.interface';
+import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _httpUtilities: HttpUtilitiesService =
+    inject(HttpUtilitiesService);
+
+  getUserWithPagination(query: object): Observable<{
+    pagination: PaginationInterface;
+    data: CreateUserPanel[];
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: CreateUserPanel[];
+    }>(`${environment.apiUrl}user/paginated-list`, { params });
+  }
 
   getUserProfile(
     userId: string

@@ -1,13 +1,15 @@
 export interface UserInterface {
-  id: string;
+  userId: string;
   identificationTypeId: IdentificationType;
   identificationNumber: string;
   firstName: string;
   lastName: string;
   email: string;
+  phoneCode: PhoneCode;
   phone: string;
   password: string;
   confirmPassword: string;
+  roleType?: RoleType;
   role?: RoleType;
   createdAt: Date;
   updatedAt: Date;
@@ -27,4 +29,10 @@ export interface RoleType {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+}
+
+export interface PhoneCode {
+  phoneCodeId: string;
+  code?: string;
+  name: Date;
 }

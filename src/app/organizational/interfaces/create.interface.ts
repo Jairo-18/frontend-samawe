@@ -12,6 +12,20 @@ export interface CreateUserPanel {
   roleType?: string;
 }
 
+export interface UserValidate {
+  userId: string;
+  identificationType: IdentificationType;
+  identificationNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneCode: PhoneCode;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  roleType?: RoleType;
+}
+
 export interface IdentificationType {
   identificationTypeId: string;
   name?: string;
@@ -26,4 +40,10 @@ export interface RoleType {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+}
+
+export interface PhoneCode {
+  phoneCodeId: string;
+  code?: string;
+  name: string;
 }

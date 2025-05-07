@@ -1,6 +1,6 @@
-<div class="brand-content-center">
+<div class="brand-content-center py-5">
   <article
-    class="h-[70%] w-[90%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+    class="h-full md:h-full w-[90%] md:w-[90%] flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
   >
     <section
       class="h-full w-full flex flex-col text-center justify-center items-center px-5 py-10 gap-4"
@@ -18,10 +18,13 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Correo electrónico</mat-label>
           <input matInput formControlName="email" />
-          <mat-icon matPrefix>account_circle</mat-icon>
+          <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="form.get('email')?.hasError('required')"
-            >Email requerido</mat-error
+            >Correo electrónico requerido</mat-error
           >
+          <mat-error *ngIf="form.get('email')?.hasError('email')">
+            Correo electrónico inválido
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
@@ -46,14 +49,14 @@
         </mat-form-field>
 
         <div
-          class="flex w-[80%] content-between items-center justify-center gap-5"
+          class="flex w-full content-between items-center justify-center gap-5"
         >
-          <button mat-fab extended="true" (click)="login()">
+          <button mat-fab extended="true" (click)="login()" class="!w-full">
             <span class="text-sm md:text-base">Iniciar Sesión</span>
           </button>
         </div>
 
-        <div>
+        <div class="w-full md:w-[70%]">
           <a
             routerLink="/auth/recovery-password"
             class="cursor-pointer text-green-700 hover:text-green-400 hover-underline-animation text-sm md:text-base"
@@ -70,11 +73,11 @@
         </div>
       </form>
     </section>
-    <section class="h-full w-full hidden md:flex flex-col">
+    <section class="md:h-full w-full hidden md:flex flex-col">
       <img
         src="../../../../assets/images/Image Section.png"
         alt="Login Image"
-        class="h-full"
+        class="md:h-full"
       />
     </section>
   </article>

@@ -24,6 +24,7 @@ import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { CreateUserPanel } from '../../interfaces/create.interface';
+import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
 
 @Component({
   selector: 'app-create-users-or-edit-users',
@@ -57,23 +58,34 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _customValidations: CustomValidationsService = inject(
+    CustomValidationsService
+  );
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
 
   constructor(private _fb: FormBuilder) {
-    this.userForm = this._fb.group({
-      roleTypeId: ['', Validators.required],
-      identificationTypeId: ['', [Validators.required]],
-      identificationNumber: ['', [Validators.required]],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phoneCodeId: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
-    });
+    this.userForm = this._fb.group(
+      {
+        roleTypeId: ['', Validators.required],
+        identificationTypeId: ['', [Validators.required]],
+        identificationNumber: ['', [Validators.required]],
+        firstName: ['', Validators.required],
+        lastName: ['', Validators.required],
+        email: ['', [Validators.required]],
+        phoneCodeId: ['', Validators.required],
+        phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
+        password: ['', [Validators.required]],
+        confirmPassword: ['', [Validators.required]]
+      },
+      {
+        validators: this._customValidations.passwordsMatch(
+          'password',
+          'confirmPassword'
+        )
+      }
+    );
   }
 
   ngOnInit(): void {

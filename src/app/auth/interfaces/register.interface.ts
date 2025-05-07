@@ -42,5 +42,5 @@ export interface RoleType {
 export interface PhoneCode {
   phoneCodeId: string;
   code?: string;
-  name: Date;
+  name: string;
 }

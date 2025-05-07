@@ -1,7 +1,7 @@
 <aside
   [ngClass]="{
     'flex flex-col bg-[#06a606] items-center transition-all duration-300 ease-in-out font-bold border-r border-black': true,
-    'w-16 h-full': isCollapsed,
+    'w-16 !h-full': isCollapsed,
     'w-64 md:w-72 h-full p-2': !isCollapsed,
     'fixed md:static z-50': !isCollapsed
   }"
@@ -82,7 +82,7 @@
             <li>
               <div
                 [ngClass]="{
-                  'flex justify-start py-[3px] transition-all duration-300 ease-in-out':
+                  'flex justify-start py-[1.5px] transition-all duration-300 ease-in-out':
                     !isCollapsed,
                   'flex justify-center py-[5px] transition-all duration-300 ease-in-out':
                     isCollapsed
@@ -93,7 +93,7 @@
                   class="transition-all duration-300 ease-in-out"
                   [ngClass]="{
                     'bg-none': isCollapsed,
-                    'flex w-full rounded-lg bg-white border border-black py-[5px] mt-[3px]':
+                    'flex w-full rounded-lg bg-white border border-black py-[5px]  ':
                       !isCollapsed
                   }"
                   [routerLink]="
@@ -123,10 +123,15 @@
               </div>
 
               <!-- Submenú -->
-              <mat-menu #submenu="matMenu" yPosition="above">
+              <mat-menu #submenu="matMenu" xPosition="after">
                 <ng-container *ngFor="let subItem of item.subItems">
                   <button mat-menu-item [routerLink]="subItem.route">
-                    {{ subItem.name }}
+                    <mat-icon class="text-[#06a606]">{{
+                      subItem.icon
+                    }}</mat-icon>
+                    <span class="transition-all duration-300 ease-in-out">{{
+                      subItem.name
+                    }}</span>
                   </button>
                 </ng-container>
               </mat-menu>
@@ -137,23 +142,23 @@
                 [@submenuState]="openSubMenu[item.name] ? 'open' : 'closed'"
                 class="transition-all duration-300 ease-in-out overflow-hidden"
                 [ngClass]="{
-                  'max-h-0 opacity-0': !openSubMenu[item.name],
-                  'max-h-[500px] opacity-100': openSubMenu[item.name]
+                  'max-h-0 opacity-0 ': !openSubMenu[item.name],
+                  'max-h-[500px] opacity-100 ': openSubMenu[item.name]
                 }"
               >
-                <ul class="pl-5 mt-1">
+                <ul class="pl-5">
                   <li *ngFor="let subItem of item.subItems" class="my-1">
-                    <a
-                      role="button"
-                      class="flex items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[3px] transition-all duration-300 ease-in-out"
+                    <button
+                      class="flex w-full items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[5px] transition-all duration-300 ease-in-out"
                     >
                       <mat-icon class="text-[#06a606]">
                         {{ subItem.icon }}
                       </mat-icon>
+
                       <span [routerLink]="subItem.route">{{
                         subItem.name
                       }}</span>
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>

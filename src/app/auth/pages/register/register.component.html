@@ -1,6 +1,6 @@
 <div class="brand-content-center py-5">
   <article
-    class="w-[90%] md:w-full h-max md:h-[90%] my-10 md:my-0 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+    class="w-[90%] md:w-[90%] h-full md:h-full my-10 md:my-0 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
   >
     <section class="h-full w-full hidden md:flex flex-col">
       <img
@@ -30,7 +30,7 @@
               <mat-label>Tipo de Identificación</mat-label>
               <mat-select formControlName="identificationTypeId" required>
                 <mat-option value="" disabled selected
-                  >Seleccione su tipo de documento</mat-option
+                  >Seleccione su tipo de identificación</mat-option
                 >
                 <mat-option
                   *ngFor="let type of identificationType"
@@ -65,7 +65,7 @@
             <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
               <mat-label>Nombres Completos</mat-label>
               <input matInput formControlName="firstName" required />
-              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-icon matPrefix>person</mat-icon>
               <mat-error
                 *ngIf="formStep1.get('firstName')?.hasError('required')"
               >
@@ -76,7 +76,7 @@
             <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
               <mat-label>Apellidos Completos</mat-label>
               <input matInput formControlName="lastName" required />
-              <mat-icon matPrefix>account_box</mat-icon>
+              <mat-icon matPrefix>people</mat-icon>
               <mat-error
                 *ngIf="formStep1.get('lastName')?.hasError('required')"
               >
@@ -106,18 +106,18 @@
               <input matInput formControlName="email" required />
               <mat-icon matPrefix>email</mat-icon>
               <mat-error *ngIf="formStep2.get('email')?.hasError('required')">
-                Email requerido
+                Correo electrónico requerido
               </mat-error>
               <mat-error *ngIf="formStep2.get('email')?.hasError('email')">
-                Email inválido
+                Correo electrónico inválido
               </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
-              <mat-label>Tipo de prefijo</mat-label>
+              <mat-label>País</mat-label>
               <mat-select formControlName="phoneCodeId" required>
                 <mat-option value="" disabled selected
-                  >Seleccione el prefijo de su teléfono</mat-option
+                  >Seleccione su país</mat-option
                 >
                 <mat-option
                   *ngFor="let type of phoneCode"
@@ -127,26 +127,18 @@
                   {{ type.name }}
                 </mat-option>
               </mat-select>
-              <mat-icon matPrefix>table_chart</mat-icon>
+              <mat-icon matPrefix>flag</mat-icon>
               <mat-error
-                *ngIf="formStep1.get('phoneCodeId')?.hasError('required')"
+                *ngIf="formStep2.get('phoneCodeId')?.hasError('required')"
               >
-                Prefijo requerido
+                País requerido
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field
-              appearance="outline"
-              class="w-full mt-3"
-              [ngClass]="{
-                'mb-10 md:mb-4':
-                  formStep2.get('phone')?.invalid &&
-                  formStep2.get('phone')?.touched
-              }"
-            >
+            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
               <mat-label>Teléfono</mat-label>
               <input matInput formControlName="phone" />
-              <mat-icon matPrefix>phone</mat-icon>
+              <mat-icon matPrefix>phone_iphone</mat-icon>
               <mat-error *ngIf="formStep2.get('phone')?.hasError('required')">
                 Teléfono requerido
               </mat-error>

@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   inject,
@@ -52,25 +53,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   styleUrl: './side-bar.component.scss',
   animations: [
     trigger('submenuState', [
-      state(
-        'closed',
-        style({
-          maxHeight: '0px',
-          opacity: 0
-        })
-      ),
-      state(
-        'open',
-        style({
-          maxHeight: '500px',
-          opacity: 1
-        })
-      ),
+      state('closed', style({ maxHeight: '0px', opacity: 0 })),
+      state('open', style({ maxHeight: '500px', opacity: 1 })),
       transition('closed <=> open', [animate('0.3s ease-in-out')])
     ])
   ]
 })
-export class SideBarComponent implements OnInit, OnChanges {
+export class SideBarComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
   @Input() userRole!: string;
   @Input() closeSideBar: boolean = false;
@@ -83,8 +72,13 @@ export class SideBarComponent implements OnInit, OnChanges {
   itemSelected: string | null = null;
   moduleSelected: string | null = null;
   currentYear: number = new Date().getFullYear();
+  openSubMenu: Record<string, boolean> = {};
 
   private readonly _router: Router = inject(Router);
+
+  ngAfterViewInit(): void {
+    console.log(this.userRole);
+  }
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;
@@ -94,61 +88,46 @@ export class SideBarComponent implements OnInit, OnChanges {
       .subscribe(() => {
         this.currentRoute = this._router.url;
       });
+
     this.filterMenuByRole();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['closeSideBar']) {
-      if (this.closeSideBar) {
-        this.closeSideBarMethod();
-      }
+    if (changes['closeSideBar'] && this.closeSideBar) {
+      this.closeSideBarMethod();
     }
   }
 
   private filterMenuByRole(): void {
-    if (this.userRole) {
-      console.log(this.userRole);
+    const allowedItems = ROLE_PERMISSIONS[this.userRole] || [];
 
-      if (
-        this.userRole === 'Administrador' ||
-        this.userRole === 'Usuario' ||
-        this.userRole === 'Empleado'
-      ) {
-        this.menuWithItems = MENU_CONST;
-      } else {
-        this.menuWithItems = MENU_CONST.map((module) => ({
-          ...module,
-          items: module.items.filter((item) =>
-            ROLE_PERMISSIONS[this.userRole]?.includes(item.name)
+    this.menuWithItems = MENU_CONST.map((module) => ({
+      ...module,
+      items: module.items
+        .map((item) => ({
+          ...item,
+          subItems: item.subItems?.filter((sub) =>
+            allowedItems.includes(sub.name)
           )
-        })).filter((module) => module.items.length > 0);
-      }
-    } else {
-      this.menuWithItems = [];
-    }
+        }))
+        .filter(
+          (item) =>
+            allowedItems.includes(item.name) ||
+            (item.subItems && item.subItems.length > 0)
+        )
+    })).filter((module) => module.items.length > 0);
   }
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
-    if (this.isCollapsed) {
-      this.closeAllSubMenus();
-    }
-
+    if (this.isCollapsed) this.closeAllSubMenus();
     this.collapsed.emit(this.isCollapsed);
   }
 
   closeSideBarMethod() {
     this.isCollapsed = !this.isCollapsed;
-    if (this.isCollapsed) {
-      this.closeAllSubMenus();
-    }
+    if (this.isCollapsed) this.closeAllSubMenus();
   }
-
-  getActiveElement(routeElement: string): boolean {
-    return this.currentRoute.includes(routeElement);
-  }
-
-  openSubMenu: Record<string, boolean> = {};
 
   closeAllSubMenus() {
     this.openSubMenu = {};
@@ -158,6 +137,10 @@ export class SideBarComponent implements OnInit, OnChanges {
     if (!this.isCollapsed) {
       this.openSubMenu[item.name] = !this.openSubMenu[item.name];
     }
+  }
+
+  getActiveElement(routeElement: string): boolean {
+    return this.currentRoute.includes(routeElement);
   }
 
   closeMenu() {
