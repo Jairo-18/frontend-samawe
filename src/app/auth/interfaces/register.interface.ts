@@ -1,3 +1,9 @@
+import {
+  IdentificationType,
+  PhoneCode,
+  RoleType
+} from '../../shared/interfaces/user.interface';
+
 export interface RegisterUser {
   userId: string;
   identificationType: string;
@@ -21,26 +27,4 @@ export interface CreateUserData {
 export interface RegisterUserData {
   identificationType: IdentificationType[];
   phoneCode: PhoneCode[];
-}
-
-export interface IdentificationType {
-  identificationTypeId: string;
-  name?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
-
-export interface RoleType {
-  roleTypeId: string;
-  name?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
-
-export interface PhoneCode {
-  phoneCodeId: string;
-  code?: string;
-  name: string;
 }

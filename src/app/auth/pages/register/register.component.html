@@ -1,6 +1,6 @@
 <div class="brand-content-center py-5">
   <article
-    class="w-[90%] md:w-[90%] h-full md:h-full my-10 md:my-0 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+    class="w-[90%] xl:w-[70%] lg:w-[90%] h-full md:h-full my-10 md:my-0 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
   >
     <section class="h-full w-full hidden md:flex flex-col">
       <img
@@ -23,10 +23,13 @@
         class="w-full h-full bg-white"
       >
         <mat-step [stepControl]="formStep1">
-          <form [formGroup]="formStep1" class="flex flex-col">
+          <form
+            [formGroup]="formStep1"
+            class="flex flex-col gap-[25px] md:gap-2 mt-5"
+          >
             <ng-template matStepLabel>Información Personal</ng-template>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Tipo de Identificación</mat-label>
               <mat-select formControlName="identificationTypeId" required>
                 <mat-option value="" disabled selected
@@ -49,7 +52,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Número de identificación</mat-label>
               <input matInput formControlName="identificationNumber" required />
               <mat-icon matPrefix>credit_card</mat-icon>
@@ -62,7 +65,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Nombres Completos</mat-label>
               <input matInput formControlName="firstName" required />
               <mat-icon matPrefix>person</mat-icon>
@@ -73,7 +76,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Apellidos Completos</mat-label>
               <input matInput formControlName="lastName" required />
               <mat-icon matPrefix>people</mat-icon>
@@ -98,10 +101,13 @@
         </mat-step>
 
         <mat-step [stepControl]="formStep2">
-          <form [formGroup]="formStep2" class="flex flex-col">
+          <form
+            [formGroup]="formStep2"
+            class="flex flex-col gap-[25px] md:gap-2 mt-5"
+          >
             <ng-template matStepLabel>Tu cuenta</ng-template>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Correo Electrónico</mat-label>
               <input matInput formControlName="email" required />
               <mat-icon matPrefix>email</mat-icon>
@@ -113,7 +119,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>País</mat-label>
               <mat-select formControlName="phoneCodeId" required>
                 <mat-option value="" disabled selected
@@ -135,7 +141,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Teléfono</mat-label>
               <input matInput formControlName="phone" />
               <mat-icon matPrefix>phone_iphone</mat-icon>
@@ -147,15 +153,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field
-              appearance="outline"
-              class="w-full mt-3"
-              [ngClass]="{
-                'mb-10 md:mb-4':
-                  formStep2.get('password')?.invalid &&
-                  formStep2.get('password')?.touched
-              }"
-            >
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Contraseña</mat-label>
               <input
                 [type]="showPassword ? 'text' : 'password'"
@@ -188,7 +186,7 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-full mt-3 mb-2">
+            <mat-form-field appearance="outline" class="w-full">
               <mat-label>Confirmar Contraseña</mat-label>
               <input
                 [type]="showConfirmPassword ? 'text' : 'password'"

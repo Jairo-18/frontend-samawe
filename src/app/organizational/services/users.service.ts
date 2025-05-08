@@ -6,7 +6,7 @@ import {
   ApiResponseCreateInterface,
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
-import { CreateUserPanel } from '../interfaces/create.interface';
+import { CreateUserPanel, UserComplete } from '../interfaces/create.interface';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 
@@ -29,10 +29,10 @@ export class UsersService {
     }>(`${environment.apiUrl}user/paginated-list`, { params });
   }
 
-  getUserProfile(
+  getUserEditPanel(
     userId: string
-  ): Observable<ApiResponseInterface<CreateUserPanel>> {
-    return this._httpClient.get<ApiResponseInterface<CreateUserPanel>>(
+  ): Observable<ApiResponseInterface<UserComplete>> {
+    return this._httpClient.get<ApiResponseInterface<UserComplete>>(
       `${environment.apiUrl}user/${userId}`
     );
   }
@@ -51,14 +51,14 @@ export class UsersService {
     );
   }
 
-  deleteUser(userId: string): Observable<unknown> {
-    return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
-  }
-
   updateUser(userId: string, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}user/${userId}`,
       body
     );
+  }
+
+  deleteUser(userId: string): Observable<unknown> {
+    return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
   }
 }

@@ -1,6 +1,6 @@
 <article class="brand-content-center">
   <article
-    class="w-[90%] md:w-[90%] h-max md:h-full py-7 md:py-7 px-5 md:px-7 my-5 rounded-2xl border border-[#06a606]"
+    class="w-[90%] xl:w-[70%] lg:w-[90%] h-max md:h-full py-7 md:py-7 px-5 md:px-7 my-5 rounded-2xl border border-[#06a606]"
   >
     <button
       mat-stroked-button
@@ -15,17 +15,23 @@
     <section
       class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[#06a606]"
     >
-      <span class="text-2xl md:text-3xl">Crear usuario</span>
+      <span class="text-2xl md:text-3xl">
+        {{ isEditMode ? 'Editar usuario' : 'Crear usuario' }}</span
+      >
     </section>
     <div class="mb-4">
-      <span class="brand-text-body-m text-black-50 fw-semibold"
-        >Aquí puedes crear usuarios con sus respectivos roles
+      <span class="brand-text-body-m text-black-50 fw-semibold">
+        {{
+          isEditMode
+            ? 'Edita los campos que desees'
+            : 'Aquí puedes crear usuarios con sus respectivos roles'
+        }}
       </span>
     </div>
 
     <form [formGroup]="userForm" class="flex flex-col">
-      <div class="flex flex-col md:flex-row gap-x-10">
-        <section class="flex flex-col w-full md:w-[50%]">
+      <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
+        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Rol</mat-label>
             <mat-select formControlName="roleTypeId" required>
@@ -69,12 +75,7 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Número de identificación</mat-label>
             <mat-icon matPrefix>credit_card</mat-icon>
-            <input
-              matInput
-              formControlName="identificationNumber"
-              (blur)="setPassword()"
-              required
-            />
+            <input matInput formControlName="identificationNumber" required />
             <mat-error
               *ngIf="userForm.get('identificationNumber')?.hasError('required')"
             >
@@ -101,7 +102,7 @@
           </mat-form-field>
         </section>
 
-        <section class="flex flex-col w-full md:w-[50%]">
+        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Correo Electrónico</mat-label>
             <input matInput formControlName="email" required />
@@ -145,7 +146,11 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
+          <!-- <mat-form-field
+            *ngIf="!isEditMode"
+            appearance="outline"
+            class="w-full"
+          >
             <mat-label>Contraseña</mat-label>
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -168,7 +173,11 @@
             </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
+          <mat-form-field
+            *ngIf="!isEditMode"
+            appearance="outline"
+            class="w-full"
+          >
             <mat-label>Confirmar Contraseña</mat-label>
             <input
               [type]="showConfirmPassword ? 'text' : 'password'"
@@ -194,7 +203,7 @@
             <mat-error *ngIf="userForm.hasError('passwordMismatch')">
               Las contraseñas no coinciden
             </mat-error>
-          </mat-form-field>
+          </mat-form-field> -->
         </section>
       </div>
 
@@ -204,7 +213,7 @@
       >
         <div class="w-full md:w-[25%]">
           <button mat-fab extended="true" class="!w-full" (click)="save()">
-            {{ userId ? 'Guardar' : 'Crear usuario' }}
+            {{ isEditMode ? 'Guardar cambios' : 'Crear usuario' }}
           </button>
         </div>
       </section>

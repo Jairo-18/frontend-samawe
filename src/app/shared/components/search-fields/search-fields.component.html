@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <div class="grid grid-cols-2 gap-2 grow">
+  <div class="flex flex-col md:grid grid-cols-2 gap-2 grow">
     @for (field of searchFields; track $index) { @if (field.type !==
     'dateRange') {
     <mat-form-field appearance="outline">

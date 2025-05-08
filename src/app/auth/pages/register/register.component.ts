@@ -1,4 +1,3 @@
-import { PhoneCode } from './../../interfaces/register.interface';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -18,13 +17,13 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import * as uuid from 'uuid';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
-
-import {
-  IdentificationType,
-  RegisterUser
-} from '../../interfaces/register.interface';
+import { RegisterUser } from '../../interfaces/register.interface';
 import { RegisterService } from '../../services/register.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import {
+  IdentificationType,
+  PhoneCode
+} from '../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-register',

@@ -17,16 +17,18 @@ import {
 } from '@angular/material/paginator';
 import {
   CreateUserPanel,
-  IdentificationType,
-  PhoneCode,
-  RoleType,
   UserValidate
 } from '../../interfaces/create.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
-import { UserInterface } from '../../../shared/interfaces/user.interface';
+import {
+  IdentificationType,
+  PhoneCode,
+  RoleType,
+  UserInterface
+} from '../../../shared/interfaces/user.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
@@ -286,9 +288,9 @@ export class SeeUsersComponent implements OnInit {
   /**
    * @param _deleteUser - Ellimina un usuario.
    */
-  private _deleteUser(id: string): void {
+  private _deleteUser(userId: string): void {
     this.loading = true;
-    this._usersService.deleteUser(id).subscribe({
+    this._usersService.deleteUser(userId).subscribe({
       next: () => {
         this.loadUsers();
         this.loading = false;
