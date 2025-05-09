@@ -16,11 +16,11 @@ export const authGuard: CanActivateFn = (route, state) => {
         router.navigate(['/auth/login']);
         return false;
       }
-      const userRole = localStorageService.getUserData()?.role?.toLowerCase();
-
+      const userData = localStorageService.getUserData();
+      const roleName = userData?.role?.name?.toLowerCase();
       const currentRoute = state.url;
 
-      if (userRole === 'admin' || userRole === 'superadmin') {
+      if (roleName === 'administrador' || roleName === 'empleado') {
         return true;
       }
       return false;

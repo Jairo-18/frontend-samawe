@@ -53,19 +53,12 @@ export class LoginComponent {
   login(): void {
     if (this.form.invalid) return;
 
-    const redirectUrl = this._authService.getRedirectUrl();
     this._authService.login(this.form.value).subscribe({
       next: () => {
-        if (redirectUrl) {
-          if (redirectUrl.includes('/general/projects/')) {
-            this._router.navigateByUrl(redirectUrl);
-            this._authService.cleanRedirectUrl();
-          } else {
-            this._router.navigateByUrl('./home');
-          }
-        } else {
-          this._router.navigateByUrl('./home');
-        }
+        // Forzar redirección a '/sales/earnings-sumary'
+        this._router.navigateByUrl('/sales/earnings-sumary');
+        // Limpiar la URL de redirección si es necesario
+        this._authService.cleanRedirectUrl();
       },
       error: (error) => {
         console.error(error);

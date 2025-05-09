@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { DefaultLayoutComponent } from './default-layout/pages/default-layout/default-layout.component';
 import { organizationalRoutes } from './organizational/organizational.routes';
+import { adminGuard } from './shared/guards/admin.guard';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,25 +21,28 @@ export const routes: Routes = [
       },
       {
         path: 'auth',
-
         loadChildren: () =>
           import('./auth/auth.routes').then((m) => m.authRoutes)
       },
       {
+        canActivate: [authGuard, adminGuard],
         path: 'products',
         loadChildren: () =>
           import('./products/products.routes').then((m) => m.productsRoutes)
       },
       {
+        canActivate: [authGuard, adminGuard],
         path: 'organizational',
         children: organizationalRoutes
       },
       {
+        canActivate: [authGuard, adminGuard],
         path: 'invoices',
         loadChildren: () =>
           import('./invoices/invoices.routes').then((m) => m.invoicesRoutes)
       },
       {
+        canActivate: [authGuard, adminGuard],
         path: 'sales',
         loadChildren: () =>
           import('./sales/sales.routes').then((m) => m.salesRoutes)

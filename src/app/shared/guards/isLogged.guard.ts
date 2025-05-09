@@ -11,7 +11,7 @@ export const isLoggedGuard: CanActivateFn = (route, state) => {
   return authService.isAuthenticatedToGuard().pipe(
     map((isAuthenticated) => {
       if (isAuthenticated) {
-        router.navigate(['/sales/earnings/summary']);
+        router.navigate(['home']);
         return false;
       }
       return true;

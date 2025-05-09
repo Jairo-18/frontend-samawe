@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   inject,
@@ -59,7 +58,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ])
   ]
 })
-export class SideBarComponent implements OnInit, OnChanges, AfterViewInit {
+export class SideBarComponent implements OnInit, OnChanges {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
   @Input() userRole!: string;
   @Input() closeSideBar: boolean = false;
@@ -75,10 +74,6 @@ export class SideBarComponent implements OnInit, OnChanges, AfterViewInit {
   openSubMenu: Record<string, boolean> = {};
 
   private readonly _router: Router = inject(Router);
-
-  ngAfterViewInit(): void {
-    console.log(this.userRole);
-  }
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;
