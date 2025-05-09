@@ -267,14 +267,14 @@
                   <button
                     mat-icon-button
                     color="primary"
-                    [routerLink]="['..', user.id, 'edit']"
+                    [routerLink]="['..', user.userId, 'edit']"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
                   <button
                     mat-icon-button
                     color="warn"
-                    (click)="openDeleteUserDialog(user.id)"
+                    (click)="openDeleteUserDialog(user.userId)"
                   >
                     <mat-icon>delete</mat-icon>
                   </button>
