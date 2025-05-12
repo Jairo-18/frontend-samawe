@@ -72,8 +72,8 @@ export class AuthService {
             const loginSuccessData: LoginSuccessInterface = {
               tokens: raw.tokens,
               user: {
-                id: raw.user.id,
-                role: raw.user.role
+                userId: raw.user.userId,
+                roleType: raw.user.roleType
               },
               session: {
                 accessSessionId: raw.accessSessionId

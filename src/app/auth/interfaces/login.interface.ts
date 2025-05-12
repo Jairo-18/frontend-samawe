@@ -26,24 +26,20 @@ export interface LoginResponse {
 export interface LoginSuccessInterface {
   tokens: Tokens;
   user: User;
-  // role: RoleType;
   session: Session;
+}
+
+export interface User {
+  userId: string;
+  roleType: RoleType;
 }
 
 export interface RoleType {
   roleTypeId: string;
-  name?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  name: string;
 }
 
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
-}
-
-export interface User {
-  id: string;
-  role: RoleType;
 }

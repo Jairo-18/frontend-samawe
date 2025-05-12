@@ -59,7 +59,7 @@
               >
               <mat-option
                 *ngFor="let type of identificationType"
-                [value]="type.identificationTypeId"
+                [value]="type.identificationTypeId.toString()"
               >
                 {{ type.name }}
               </mat-option>
@@ -120,7 +120,7 @@
               >
               <mat-option
                 *ngFor="let type of phoneCode"
-                [value]="type.phoneCodeId"
+                [value]="type.phoneCodeId.toString()"
               >
                 {{ type.code }}
                 {{ type.name }}

@@ -112,12 +112,13 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
         this.userForm.patchValue({
           userId: user.userId,
           roleTypeId: user.roleType?.roleTypeId,
-          identificationTypeId: user.identificationType?.identificationTypeId,
+          identificationTypeId:
+            user.identificationType?.identificationTypeId.toString(),
           identificationNumber: user.identificationNumber,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          phoneCodeId: user.phoneCode?.phoneCodeId,
+          phoneCodeId: user.phoneCode?.phoneCodeId.toString(),
           phone: user.phone
         });
       },

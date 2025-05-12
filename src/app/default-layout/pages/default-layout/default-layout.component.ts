@@ -65,7 +65,7 @@ export class DefaultLayoutComponent implements OnInit {
       const allSessionData = this._localStorageService.getAllSessionData();
 
       if (
-        !allSessionData?.user?.id ||
+        !allSessionData?.user?.userId ||
         !allSessionData?.tokens?.accessToken ||
         !allSessionData?.session?.accessSessionId
       ) {
@@ -77,7 +77,7 @@ export class DefaultLayoutComponent implements OnInit {
       }
 
       const sessionDataToLogout: LogOutInterface = {
-        userId: allSessionData.user.id,
+        userId: allSessionData.user.userId,
         accessToken: allSessionData.tokens.accessToken,
         accessSessionId: allSessionData.session.accessSessionId
       };

@@ -17,7 +17,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         return false;
       }
       const userData = localStorageService.getUserData();
-      const roleName = userData?.role?.name?.toLowerCase();
+      const roleName = userData?.roleType?.name?.toLowerCase();
       const currentRoute = state.url;
 
       if (
