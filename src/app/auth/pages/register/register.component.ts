@@ -125,7 +125,7 @@ export class RegisterComponent implements OnInit {
    * @param getRelatedData - Obtiene los tipos de identificación.
    */
   getRelatedData(): void {
-    this._relatedDataService.registerRelatedData().subscribe({
+    this._relatedDataService.registerUserRelatedData().subscribe({
       next: (res) => {
         this.identificationType = res.data?.identificationType || [];
         this.phoneCode = res.data?.phoneCode || [];

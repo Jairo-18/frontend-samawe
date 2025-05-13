@@ -58,7 +58,7 @@ export class UsersService {
     );
   }
 
-  deleteUser(userId: string): Observable<unknown> {
+  deleteUserPanel(userId: string): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
   }
 }

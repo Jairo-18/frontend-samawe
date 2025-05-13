@@ -33,12 +33,12 @@ export const MENU_CONST: MenuInterface[] = [
           {
             name: 'Crear productos',
             icon: 'add_shopping_cart',
-            route: '/products/create-products'
+            route: '/products/product/create'
           },
           {
             name: 'Ver productos',
             icon: 'shopping_car',
-            route: '/products/see-products'
+            route: '/products/product/list'
           }
         ]
       },

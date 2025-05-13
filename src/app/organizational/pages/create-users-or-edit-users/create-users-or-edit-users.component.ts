@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
@@ -51,7 +50,6 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   userId: string = '';
-  user?: CreateUserPanel;
   identificationType: IdentificationType[] = [];
   roleType: RoleType[] = [];
   phoneCode: PhoneCode[] = [];
@@ -132,7 +130,7 @@ export class CreateUsersOrEditUsersComponent implements OnInit {
    * @param getRelatedData - Obtiene los tipos de identificación.
    */
   getRelatedData(): void {
-    this._relatedDataService.createRelatedData().subscribe({
+    this._relatedDataService.createUserRelatedData().subscribe({
       next: (res) => {
         this.roleType = res.data?.roleType || [];
         this.identificationType = res.data?.identificationType || [];

@@ -1,0 +1,34 @@
+export interface CreateProductPanel {
+  productId?: number;
+  name: string;
+  description?: string;
+  amount: number;
+  priceBuy: number;
+  priceSale: number;
+  categoryTypeId: number;
+}
+
+export interface ProductComplete {
+  productId: number;
+  name: string;
+  description?: string;
+  amount: number;
+  priceBuy: number;
+  priceSale: number;
+  categoryType: CategoryType;
+  updatedAt: Date;
+  createdAt: Date;
+  deletedAt: Date;
+}
+
+export interface CategoryType {
+  categoryTypeId: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
+
+export interface CreateProductRelatedData {
+  categoryType: CategoryType[];
+}

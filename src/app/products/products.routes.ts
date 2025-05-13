@@ -1,22 +1,32 @@
 import { Routes } from '@angular/router';
+import { CreateProductsOrEditProductsComponent } from './pages/create-products-or-edit-products/create-products-or-edit-products.component';
+import { SeeProductsComponent } from './pages/see-products/see-products.component';
 
 export const productsRoutes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'create-products',
-        loadComponent: () =>
-          import('./pages/create-products/create-products.component').then(
-            (m) => m.CreateProductsComponent
-          )
+        path: '',
+        redirectTo: '/home',
+        pathMatch: 'full'
       },
       {
-        path: 'see-products',
-        loadComponent: () =>
-          import('./pages/see-products/see-products.component').then(
-            (m) => m.SeeProductsComponent
-          )
+        path: 'product',
+        children: [
+          {
+            path: 'create',
+            component: CreateProductsOrEditProductsComponent // Carga estática
+          },
+          {
+            path: 'list',
+            component: SeeProductsComponent // Carga estática
+          },
+          {
+            path: ':id/edit',
+            component: CreateProductsOrEditProductsComponent // Carga estática
+          }
+        ]
       }
     ]
   }

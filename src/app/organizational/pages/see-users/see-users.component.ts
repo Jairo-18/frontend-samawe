@@ -17,7 +17,7 @@ import {
 } from '@angular/material/paginator';
 import {
   CreateUserPanel,
-  UserValidate
+  UserComplete
 } from '../../interfaces/create.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
@@ -160,7 +160,7 @@ export class SeeUsersComponent implements OnInit {
    * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
    */
   private _getDataForFields(): void {
-    this._relatedDataService.createRelatedData().subscribe({
+    this._relatedDataService.createUserRelatedData().subscribe({
       next: (res) => {
         const role = res.data?.roleType || [];
         const identificationType = res.data?.identificationType || [];
@@ -288,9 +288,9 @@ export class SeeUsersComponent implements OnInit {
   /**
    * @param _deleteUser - Ellimina un usuario.
    */
-  private _deleteUser(userId: string): void {
+  private deleteUser(userId: string): void {
     this.loading = true;
-    this._usersService.deleteUser(userId).subscribe({
+    this._usersService.deleteUserPanel(userId).subscribe({
       next: () => {
         this.loadUsers();
         this.loading = false;
@@ -315,12 +315,12 @@ export class SeeUsersComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
-        this._deleteUser(id);
+        this.deleteUser(id);
       }
     });
   }
 
-  validateIfCanEditUserOrDelete(user: UserValidate): boolean {
+  validateIfCanEditUserOrDelete(user: UserComplete): boolean {
     return (
       this.userLogged?.roleType?.name === 'Administrador' &&
       user.roleType?.name === 'Usuario'

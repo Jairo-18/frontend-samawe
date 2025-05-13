@@ -18,13 +18,13 @@ export interface RegisterUser {
   roleType?: string;
 }
 
-export interface CreateUserData {
+export interface CreateUserRelatedData {
   identificationType: IdentificationType[];
   roleType: RoleType[];
   phoneCode: PhoneCode[];
 }
 
-export interface RegisterUserData {
+export interface RegisterUserRelatedData {
   identificationType: IdentificationType[];
   phoneCode: PhoneCode[];
 }
