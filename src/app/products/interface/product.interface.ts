@@ -1,5 +1,6 @@
 export interface CreateProductPanel {
   productId?: number;
+  code: number;
   name: string;
   description?: string;
   amount: number;
@@ -10,6 +11,7 @@ export interface CreateProductPanel {
 
 export interface ProductComplete {
   productId: number;
+  code: number;
   name: string;
   description?: string;
   amount: number;

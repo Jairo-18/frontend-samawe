@@ -134,7 +134,8 @@ export class SideBarComponent implements OnInit, OnChanges {
     }
   }
 
-  getActiveElement(routeElement: string): boolean {
+  getActiveElement(routeElement?: string): boolean {
+    if (!routeElement) return false;
     return this.currentRoute.includes(routeElement);
   }
 

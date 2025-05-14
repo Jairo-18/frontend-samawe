@@ -93,8 +93,11 @@
                   class="transition-all duration-300 ease-in-out"
                   [ngClass]="{
                     'bg-none': isCollapsed,
-                    'flex w-full rounded-lg bg-white border border-black py-[5px]  ':
-                      !isCollapsed
+                    'flex w-full rounded-lg bg-white border border-black py-[5px]':
+                      !isCollapsed,
+                    'hover:bg-yellow-400': !isCollapsed,
+                    'bg-yellow-400':
+                      getActiveElement(item.route) && !isCollapsed
                   }"
                   [routerLink]="
                     !item?.subItems?.length && item.route ? item?.route : null

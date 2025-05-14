@@ -54,6 +54,15 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Código del producto</mat-label>
+            <mat-icon matPrefix>qr_code</mat-icon>
+            <input matInput formControlName="code" required />
+            <mat-error *ngIf="productForm.get('code')?.hasError('required')">
+              Código del producto requerido
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nombre del producto</mat-label>
             <mat-icon matPrefix>inventory</mat-icon>
             <input matInput formControlName="name" required />
@@ -76,7 +85,9 @@
               {{ descTextarea.value ? descTextarea.value.length : 0 }}/250
             </mat-hint>
           </mat-form-field>
+        </section>
 
+        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Unidades</mat-label>
             <input
@@ -92,9 +103,7 @@
               Unidades requeridas
             </mat-error>
           </mat-form-field>
-        </section>
 
-        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Precio de compra</mat-label>
             <input

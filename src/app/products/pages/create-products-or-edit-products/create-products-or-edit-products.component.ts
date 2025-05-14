@@ -59,6 +59,10 @@ export class CreateProductsOrEditProductsComponent implements OnInit {
   constructor(private _fb: FormBuilder) {
     this.productForm = this._fb.group({
       categoryTypeId: [null, [Validators.required]],
+      code: [
+        null,
+        [Validators.required, Validators.pattern(/^\d+$/), Validators.min(0)]
+      ],
       name: ['', [Validators.required]],
       description: ['', [Validators.maxLength(250)]],
       amount: [
@@ -78,23 +82,24 @@ export class CreateProductsOrEditProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getRelatedData();
     this.productId = this._activatedRoute.snapshot.params['id'];
     this.isEditMode = !!this.productId;
 
-    if (this.isEditMode) {
-      this.getProductToEdit(this.productId);
-    }
+    this.getRelatedData().then(() => {
+      if (this.isEditMode) {
+        this.getProductToEdit(this.productId);
+      }
+    });
   }
 
   private getProductToEdit(productId: number): void {
     this._productsService.getProductEditPanel(productId).subscribe({
       next: (res) => {
         const product = res.data;
-
         this.productForm.patchValue({
           productId: product.productId,
           categoryTypeId: product.categoryType?.categoryTypeId,
+          code: product.code,
           name: product.name,
           description: product.description,
           amount: product.amount,
@@ -108,16 +113,18 @@ export class CreateProductsOrEditProductsComponent implements OnInit {
     });
   }
 
-  /**
-   * @param getRelatedData - Obtiene los tipos de categoría.
-   */
-  getRelatedData(): void {
-    this._relatedDataService.createProductRelatedData().subscribe({
-      next: (res) => {
-        this.categoryType = res.data?.categoryType || [];
-      },
-      error: (error) =>
-        console.error('Error al cargar datos relacionados:', error)
+  getRelatedData(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this._relatedDataService.createProductRelatedData().subscribe({
+        next: (res) => {
+          this.categoryType = res.data?.categoryType || [];
+          resolve();
+        },
+        error: (error) => {
+          console.error('Error al cargar datos relacionados:', error);
+          reject(error);
+        }
+      });
     });
   }
 
@@ -126,6 +133,7 @@ export class CreateProductsOrEditProductsComponent implements OnInit {
       const formValue = this.productForm.value;
       const userSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : 0, // En creación envía 0 (o valor temporal)
+        code: Math.trunc(Number(formValue.code)),
         categoryTypeId: formValue.categoryTypeId,
         name: formValue.name,
         description: formValue.description,
