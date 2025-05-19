@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SearchField } from './../../../shared/interfaces/search.interface';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,7 +32,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
   CategoryType,
-  CreateProductPanel
+  CreateProductPanel,
+  ProductComplete
 } from '../../interface/product.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
@@ -51,6 +59,11 @@ import { ProductsService } from '../../services/products.service';
   styleUrl: './see-products.component.scss'
 })
 export class SeeProductsComponent implements OnInit {
+  @Input() searchFields: any[] = [];
+  @Input() categoryTypes: CategoryType[] = [];
+  @Output() productSelected = new EventEmitter<ProductComplete>();
+  @Output() productClean = new EventEmitter<number>();
+
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _productsService: ProductsService = inject(ProductsService);
@@ -72,7 +85,7 @@ export class SeeProductsComponent implements OnInit {
   ];
 
   dataSource = new MatTableDataSource<CreateProductPanel>([]);
-  categoryType: CategoryType[] = [];
+
   userLogged: UserInterface;
   form!: FormGroup;
   showClearButton: boolean = false;
@@ -90,54 +103,10 @@ export class SeeProductsComponent implements OnInit {
   };
 
   /**
-   * @param searchFields - Creación del buscador.
-   */
-  searchFields: SearchField[] = [
-    {
-      name: 'categoryType',
-      label: 'Categoría',
-      type: 'select',
-      options: [],
-      placeholder: 'Buscar por categoría'
-    },
-    {
-      name: 'code',
-      label: 'Código',
-      type: 'text',
-      placeholder: 'Buscar por código'
-    },
-    {
-      name: 'name',
-      label: 'Nombre de producto',
-      type: 'text',
-      placeholder: 'Buscar por nombre de producto'
-    },
-    {
-      name: 'amount',
-      label: 'Unidades',
-      type: 'text',
-      placeholder: 'Buscar por unidades'
-    },
-    {
-      name: 'priceBuy',
-      label: 'Precio de compra',
-      type: 'text',
-      placeholder: 'Buscar por precio de compra'
-    },
-    {
-      name: 'priceSale',
-      label: 'Precio de venta',
-      type: 'text',
-      placeholder: 'Buscar por precio de venta'
-    }
-  ];
-
-  /**
    * @param ngOnInit - Inicialización de las funciones.
    */
   ngOnInit(): void {
     this.loadProducts();
-    this.getDataForFields();
   }
 
   constructor() {
@@ -146,36 +115,8 @@ export class SeeProductsComponent implements OnInit {
     this.userLogged = this._authService.getUserLoggedIn();
   }
 
-  /**
-   * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
-   */
-  private getDataForFields(): void {
-    this._relatedDataService.createProductRelatedData().subscribe({
-      next: (res) => {
-        const categoryType = res.data?.categoryType || [];
-
-        // Guardar para uso en los métodos getXXXName
-        this.categoryType = categoryType;
-
-        const categoryTypeOption = this.searchFields.find(
-          (field) => field.name === 'categoryType'
-        );
-
-        if (categoryTypeOption) {
-          categoryTypeOption.options = categoryType.map((type) => ({
-            value: type.categoryTypeId,
-            label: type.name || ''
-          }));
-        }
-      },
-      error: (err) => {
-        console.error('Error cargando datos relacionados', err);
-      }
-    });
-  }
-
   getCategoryTypeName(id: number): string {
-    return this.categoryType.find((r) => r.categoryTypeId === id)?.name || '';
+    return this.categoryTypes.find((r) => r.categoryTypeId === id)?.name || '';
   }
 
   /**
@@ -248,6 +189,8 @@ export class SeeProductsComponent implements OnInit {
     this._productsService.deleteProductPanel(productId).subscribe({
       next: () => {
         this.loadProducts();
+        this.cleanQueryParamDelete(productId);
+
         this.loading = false;
       },
       error: (error) => {
@@ -273,6 +216,24 @@ export class SeeProductsComponent implements OnInit {
         this.deleteProduct(id);
       }
     });
+  }
+
+  cleanQueryParamDelete(id: number) {
+    const queryParams = this._activatedRoute.snapshot.queryParams;
+    if (queryParams['editProduct']) {
+      const productId = Number(queryParams['editProduct']);
+      if (productId === id) {
+        this._router.navigate(
+          [], // La misma ruta actual (segmentos de ruta)
+          {
+            queryParams: {}, // Pasa un objeto vacío para eliminar los query parameters
+            queryParamsHandling: '', // 'merge' es el comportamiento predeterminado, pero explícito por claridad
+            replaceUrl: true // Importante: Reemplaza la URL actual en el historial sin recargar
+          }
+        );
+        this.productClean.emit(id);
+      }
+    }
   }
 
   validateIfCanEditUserOrDelete(user: UserComplete): boolean {

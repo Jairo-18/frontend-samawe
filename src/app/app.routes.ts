@@ -26,14 +26,16 @@ export const routes: Routes = [
       },
       {
         canActivate: [authGuard, adminGuard],
-        path: 'products',
-        loadChildren: () =>
-          import('./products/products.routes').then((m) => m.productsRoutes)
+        path: 'organizational',
+        children: organizationalRoutes
       },
       {
         canActivate: [authGuard, adminGuard],
-        path: 'organizational',
-        children: organizationalRoutes
+        path: 'service-and-product',
+        loadChildren: () =>
+          import('./service-and-product/service-and-product.routes').then(
+            (m) => m.serviceAndProductRoutes
+          )
       },
       {
         canActivate: [authGuard, adminGuard],

@@ -13,17 +13,17 @@ export const MENU_CONST: MenuInterface[] = [
         order: 1,
         subItems: []
       },
+      // {
+      //   name: 'Productos',
+      //   route: '/products/product/list',
+      //   icon: 'add_shopping_cart',
+      //   order: 2,
+      //   subItems: []
+      // },
       {
-        name: 'Productos',
-        route: '/products/product/list',
+        name: 'Productos y servicios',
+        route: '/service-and-product/general',
         icon: 'add_shopping_cart',
-        order: 2,
-        subItems: []
-      },
-      {
-        name: 'Hospedajes / Pasadias',
-        route: '/experiences/experience/list',
-        icon: 'hotel',
         order: 3,
         subItems: []
       }
@@ -46,8 +46,8 @@ export const MENU_CONST: MenuInterface[] = [
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Usuario: [''],
-  Empleado: ['Usuarios', 'Productos', 'Hospedajes / Pasadias'],
-  Administrador: ['Usuarios', 'Productos', 'Hospedajes / Pasadias']
+  Empleado: ['Usuarios', 'Productos', 'Productos y servicios'],
+  Administrador: ['Usuarios', 'Productos', 'Productos y servicios']
 };
 
 // export const ROUTE_MAP: Record<string, string> = {

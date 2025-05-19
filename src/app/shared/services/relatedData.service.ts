@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
-import { CreateProductRelatedData } from '../../products/interface/product.interface';
+import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 
 @Injectable({
   providedIn: 'root'

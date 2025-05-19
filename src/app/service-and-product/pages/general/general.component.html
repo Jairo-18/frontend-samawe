@@ -1,0 +1,29 @@
+<article class="brand-content-center">
+  <article
+    class="w-[90%] xl:w-[70%] lg:w-[90%] h-max md:h-full py-7 md:py-7 px-5 md:px-7 my-5 rounded-2xl border border-[#06a606]"
+  >
+    <mat-tab-group>
+      <mat-tab label="Productos"
+        ><app-create-or-edit-product
+          [categoryTypes]="categoryTypes"
+          (productSaved)="reloadProducts(); tabGroup.selectedIndex = 0"
+          [currentProduct]="currentProduct"
+        ></app-create-or-edit-product
+        ><app-see-products
+          [searchFields]="searchFields"
+          [categoryTypes]="categoryTypes"
+          (productSelected)="currentProduct = $event"
+          (productClean)="cleanProduct()"
+        ></app-see-products
+      ></mat-tab>
+      <mat-tab label="Pasadía"
+        ><app-create-or-edit-excursion></app-create-or-edit-excursion
+        ><app-see-excursions></app-see-excursions
+      ></mat-tab>
+      <mat-tab label="Hospedajes"
+        ><app-create-or-edit-accommodation></app-create-or-edit-accommodation
+        ><app-see-accommodations></app-see-accommodations
+      ></mat-tab>
+    </mat-tab-group>
+  </article>
+</article>
