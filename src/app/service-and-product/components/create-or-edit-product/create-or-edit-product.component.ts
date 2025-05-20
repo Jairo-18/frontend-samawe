@@ -1,7 +1,4 @@
-import {
-  CategoryType,
-  ProductComplete
-} from '../../interface/product.interface';
+import { ProductComplete } from '../../interface/product.interface';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -28,11 +25,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
-import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
 import { ProductsService } from '../../services/products.service';
 import { CreateProductPanel } from '../../interface/product.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
+import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
 
 @Component({
   selector: 'app-create-or-edit-product',
@@ -62,14 +58,8 @@ export class CreateOrEditProductComponent implements OnChanges {
   productForm: FormGroup;
   productId: number = 0;
   isEditMode: boolean = false;
-  showValidationErrors: boolean = false;
 
   private readonly _productsService: ProductsService = inject(ProductsService);
-  private readonly _relatedDataService: RelatedDataService =
-    inject(RelatedDataService);
-  private readonly _customValidations: CustomValidationsService = inject(
-    CustomValidationsService
-  );
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
 
@@ -166,12 +156,11 @@ export class CreateOrEditProductComponent implements OnChanges {
   }
 
   save() {
-    this.showValidationErrors = true;
     if (this.productForm.valid) {
       const formValue = this.productForm.value;
 
       // Creamos un objeto base con todos los campos necesarios
-      const userSave: CreateProductPanel = {
+      const productSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : undefined,
         code: Math.trunc(Number(formValue.code)),
         categoryTypeId: formValue.categoryTypeId,
@@ -184,7 +173,7 @@ export class CreateOrEditProductComponent implements OnChanges {
 
       if (this.isEditMode) {
         // Para actualizar, podemos quitar el productId del objeto que enviamos
-        const updateData = { ...userSave };
+        const updateData = { ...productSave };
         delete updateData.productId; // Lo quitamos para la actualización
 
         this._productsService
@@ -201,7 +190,7 @@ export class CreateOrEditProductComponent implements OnChanges {
           });
       } else {
         // Para crear, enviamos el objeto completo con productId = 0
-        this._productsService.createProductPanel(userSave).subscribe({
+        this._productsService.createProductPanel(productSave).subscribe({
           next: () => {
             this.productSaved.emit();
             this.resetForm();

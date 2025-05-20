@@ -1,3 +1,5 @@
+import { CategoryType } from '../../shared/interfaces/relatedDataServiceAndProduct.interface';
+
 export interface CreateProductPanel {
   productId?: number;
   code: number;
@@ -20,14 +22,6 @@ export interface ProductComplete {
   categoryType: CategoryType;
   updatedAt: Date;
   createdAt: Date;
-  deletedAt: Date;
-}
-
-export interface CategoryType {
-  categoryTypeId: number;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
   deletedAt: Date;
 }
 

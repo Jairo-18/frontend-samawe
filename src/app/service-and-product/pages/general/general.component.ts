@@ -2,10 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { SeeProductsComponent } from '../../components/see-products/see-products.component';
 import { ActivatedRoute } from '@angular/router';
-import {
-  CategoryType,
-  ProductComplete
-} from '../../interface/product.interface';
+import { ProductComplete } from '../../interface/product.interface';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { SearchField } from '../../../shared/interfaces/search.interface';
 import { CreateOrEditProductComponent } from '../../components/create-or-edit-product/create-or-edit-product.component';
@@ -13,6 +10,12 @@ import { CreateOrEditExcursionComponent } from '../../components/create-or-edit-
 import { SeeExcursionsComponent } from '../../components/see-excursions/see-excursions.component';
 import { CreateOrEditAccommodationComponent } from '../../components/create-or-edit-accommodation/create-or-edit-accommodation.component';
 import { SeeAccommodationsComponent } from '../../components/see-accommodations/see-accommodations.component';
+import {
+  BedType,
+  CategoryType,
+  StateType
+} from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+import { AccommodationComplete } from '../../interface/accommodation.interface';
 
 @Component({
   selector: 'app-general',
@@ -36,9 +39,13 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   createOrEditProductComponent!: CreateOrEditProductComponent;
 
   currentProduct?: ProductComplete;
+  currentAccommodation?: AccommodationComplete;
+  categoryTypes: CategoryType[] = [];
+  stateTypes: StateType[] = [];
+  bedTypes: BedType[] = [];
 
   constructor(
-    private route: ActivatedRoute,
+    private _route: ActivatedRoute,
     private _relatedDataService: RelatedDataService
   ) {}
 
@@ -47,18 +54,14 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    this.route.queryParams.subscribe((params) => {
+    this._route.queryParams.subscribe((params) => {
       if (params['editProduct']) {
         this.tabGroup.selectedIndex = 0;
       }
     });
   }
 
-  categoryTypes: CategoryType[] = [];
-  /**
-   * @param searchFields - Creación del buscador.
-   */
-  searchFields: SearchField[] = [
+  searchFieldsProducts: SearchField[] = [
     {
       name: 'categoryType',
       label: 'Categoría',
@@ -98,6 +101,9 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     }
   ];
 
+  searchFieldsAccommodations: SearchField[] = [];
+  searchFieldsExcursions: SearchField[] = [];
+
   ngOnInit(): void {
     this.loadRelatedData();
   }
@@ -106,26 +112,60 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     this._relatedDataService.createProductRelatedData().subscribe({
       next: (res) => {
         this.categoryTypes = res.data?.categoryType || [];
-        this.updateCategoryTypeOptions(); // Actualizar las opciones para los hijos
+        this.updateCategoryTypeOptions();
       },
-      error: (error) => {
-        console.error('Error al cargar datos relacionados en el padre:', error);
-        // Manejar el error apropiadamente
-      }
+      error: (err) => console.error('Error productos:', err)
+    });
+
+    this._relatedDataService.createAccommodationRelatedData().subscribe({
+      next: (res) => {
+        // ¡No sobreescribas categoryTypes aquí!
+        this.stateTypes = res.data?.stateType || [];
+        this.bedTypes = res.data?.bedType || [];
+      },
+      error: (err) => console.error('Error hospedajes:', err)
     });
   }
 
   updateCategoryTypeOptions(): void {
-    const categoryTypeOption = this.searchFields.find(
-      (field) => field.name === 'categoryType'
+    const updateOptions = (
+      searchFields: SearchField[],
+      fieldName: string,
+      options: { value: number; label: string }[]
+    ) => {
+      const field = searchFields.find((f) => f.name === fieldName);
+      if (field) {
+        field.options = options;
+      }
+    };
+
+    // Category Type
+    const categoryOptions = this.categoryTypes.map((type) => ({
+      value: type.categoryTypeId,
+      label: type.name || ''
+    }));
+    updateOptions(this.searchFieldsProducts, 'categoryType', categoryOptions);
+    updateOptions(this.searchFieldsExcursions, 'categoryType', categoryOptions);
+    updateOptions(
+      this.searchFieldsAccommodations,
+      'categoryType',
+      categoryOptions
     );
 
-    if (categoryTypeOption) {
-      categoryTypeOption.options = this.categoryTypes.map((type) => ({
-        value: type.categoryTypeId,
-        label: type.name || ''
-      }));
-    }
+    // State Type
+    const stateOptions = this.stateTypes.map((type) => ({
+      value: type.stateTypeId,
+      label: type.name || ''
+    }));
+    updateOptions(this.searchFieldsExcursions, 'stateType', stateOptions);
+    updateOptions(this.searchFieldsAccommodations, 'stateType', stateOptions);
+
+    // Bed Type
+    const bedOptions = this.bedTypes.map((type) => ({
+      value: type.bedTypeId,
+      label: type.name || ''
+    }));
+    updateOptions(this.searchFieldsAccommodations, 'bedType', bedOptions);
   }
 
   reloadProducts(): void {

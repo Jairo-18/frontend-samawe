@@ -285,6 +285,9 @@
               <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </table>
           </div>
+          <div *ngIf="!loading && dataSource.data.length === 0">
+            <p>No se encontraron usuarios.</p>
+          </div>
           <mat-paginator
             [length]="paginationParams.total"
             [pageSize]="paginationParams.perPage"
@@ -292,9 +295,6 @@
             [pageIndex]="(paginationParams.page || 0) - 1"
             (page)="onChangePagination($event)"
           ></mat-paginator>
-          <div *ngIf="!loading && dataSource.data.length === 0">
-            <p>No se encontraron usuarios.</p>
-          </div>
         </div>
       </mat-tab>
     </mat-tab-group>

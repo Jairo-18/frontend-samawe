@@ -31,12 +31,12 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
-  CategoryType,
   CreateProductPanel,
   ProductComplete
 } from '../../interface/product.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
+import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
 @Component({
   selector: 'app-see-products',
   standalone: true,

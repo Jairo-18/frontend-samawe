@@ -41,11 +41,11 @@ export class ProductsService {
   }
 
   createProductPanel(
-    user: CreateProductPanel
+    product: CreateProductPanel
   ): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}product/create`,
-      user
+      product
     );
   }
 

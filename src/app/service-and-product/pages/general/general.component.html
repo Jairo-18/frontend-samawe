@@ -10,7 +10,7 @@
           [currentProduct]="currentProduct"
         ></app-create-or-edit-product
         ><app-see-products
-          [searchFields]="searchFields"
+          [searchFields]="searchFieldsProducts"
           [categoryTypes]="categoryTypes"
           (productSelected)="currentProduct = $event"
           (productClean)="cleanProduct()"
@@ -21,8 +21,18 @@
         ><app-see-excursions></app-see-excursions
       ></mat-tab>
       <mat-tab label="Hospedajes"
-        ><app-create-or-edit-accommodation></app-create-or-edit-accommodation
-        ><app-see-accommodations></app-see-accommodations
+        ><app-create-or-edit-accommodation
+          [categoryTypes]="categoryTypes"
+          [stateTypes]="stateTypes"
+          [bedTypes]="bedTypes"
+          [currentAccommodation]="currentAccommodation"
+        ></app-create-or-edit-accommodation
+        ><app-see-accommodations
+          [searchFields]="searchFieldsAccommodations"
+          [categoryTypes]="categoryTypes"
+          [stateTypes]="stateTypes"
+          [bedTypes]="bedTypes"
+        ></app-see-accommodations
       ></mat-tab>
     </mat-tab-group>
   </article>
