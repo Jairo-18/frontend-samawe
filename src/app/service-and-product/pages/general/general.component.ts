@@ -1,3 +1,5 @@
+import { SeeAccommodationsComponent } from './../../components/see-accommodations/see-accommodations.component';
+import { CreateOrEditAccommodationComponent } from './../../components/create-or-edit-accommodation/create-or-edit-accommodation.component';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { SeeProductsComponent } from '../../components/see-products/see-products.component';
@@ -8,8 +10,6 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
 import { CreateOrEditProductComponent } from '../../components/create-or-edit-product/create-or-edit-product.component';
 import { CreateOrEditExcursionComponent } from '../../components/create-or-edit-excursion/create-or-edit-excursion.component';
 import { SeeExcursionsComponent } from '../../components/see-excursions/see-excursions.component';
-import { CreateOrEditAccommodationComponent } from '../../components/create-or-edit-accommodation/create-or-edit-accommodation.component';
-import { SeeAccommodationsComponent } from '../../components/see-accommodations/see-accommodations.component';
 import {
   BedType,
   CategoryType,
@@ -35,8 +35,12 @@ import { AccommodationComplete } from '../../interface/accommodation.interface';
 export class GeneralComponent implements AfterViewInit, OnInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
   @ViewChild(SeeProductsComponent) seeProductsComponent!: SeeProductsComponent;
+  @ViewChild(SeeAccommodationsComponent)
+  seeAccommodationsComponent!: SeeAccommodationsComponent;
   @ViewChild(CreateOrEditProductComponent)
   createOrEditProductComponent!: CreateOrEditProductComponent;
+  @ViewChild(CreateOrEditAccommodationComponent)
+  createOrEditAccommodationComponent!: CreateOrEditAccommodationComponent;
 
   currentProduct?: ProductComplete;
   currentAccommodation?: AccommodationComplete;
@@ -52,11 +56,19 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   cleanProduct() {
     this.createOrEditProductComponent.resetForm();
   }
+  cleanAccommodation() {
+    this.createOrEditAccommodationComponent.resetForm();
+  }
 
   ngAfterViewInit() {
     this._route.queryParams.subscribe((params) => {
       if (params['editProduct']) {
         this.tabGroup.selectedIndex = 0;
+      }
+    });
+    this._route.queryParams.subscribe((params) => {
+      if (params['editAccommodation']) {
+        this.tabGroup.selectedIndex = 2;
       }
     });
   }
@@ -101,7 +113,71 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     }
   ];
 
-  searchFieldsAccommodations: SearchField[] = [];
+  searchFieldsAccommodations: SearchField[] = [
+    {
+      name: 'categoryType',
+      label: 'Categoría',
+      type: 'select',
+      options: [],
+      placeholder: 'Buscar por categoría'
+    },
+    {
+      name: 'bedType',
+      label: 'Camas',
+      type: 'select',
+      options: [],
+      placeholder: 'Buscar por camas'
+    },
+    {
+      name: 'stateType',
+      label: 'Estado',
+      type: 'select',
+      options: [],
+      placeholder: 'Buscar por estado'
+    },
+    {
+      name: 'code',
+      label: 'Código',
+      type: 'text',
+      placeholder: 'Buscar por código'
+    },
+    {
+      name: 'name',
+      label: 'Nombre de producto',
+      type: 'text',
+      placeholder: 'Buscar por nombre de producto'
+    },
+    {
+      name: 'amountPerson',
+      label: 'Personas',
+      type: 'text',
+      placeholder: 'Buscar por personas'
+    },
+    {
+      name: 'amountRoom',
+      label: 'Habitaciones',
+      type: 'text',
+      placeholder: 'Buscar por habitaciones'
+    },
+    {
+      name: 'amountBathroom',
+      label: 'Baños',
+      type: 'text',
+      placeholder: 'Buscar por baños'
+    },
+    {
+      name: 'priceBuy',
+      label: 'Precio de compra',
+      type: 'text',
+      placeholder: 'Buscar por precio de compra'
+    },
+    {
+      name: 'priceSale',
+      label: 'Precio de venta',
+      type: 'text',
+      placeholder: 'Buscar por precio de venta'
+    }
+  ];
   searchFieldsExcursions: SearchField[] = [];
 
   ngOnInit(): void {
@@ -171,6 +247,19 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   reloadProducts(): void {
     if (this.seeProductsComponent && this.seeProductsComponent.loadProducts) {
       this.seeProductsComponent.loadProducts();
+    } else {
+      console.warn(
+        'SeeProductsComponent o su método loadProducts no están disponibles.'
+      );
+    }
+  }
+
+  reloadAccommodations(): void {
+    if (
+      this.seeAccommodationsComponent &&
+      this.seeAccommodationsComponent.loadAccommodations
+    ) {
+      this.seeAccommodationsComponent.loadAccommodations();
     } else {
       console.warn(
         'SeeProductsComponent o su método loadProducts no están disponibles.'

@@ -20,9 +20,7 @@
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <!-- Categoría -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>
-          <mat-icon class="mr-1">category</mat-icon>Categoría</mat-label
-        >
+        <mat-label>Categoría</mat-label>
         <mat-select formControlName="categoryTypeId" required>
           <mat-option value="" disabled selected
             >Seleccione la categoría</mat-option
@@ -34,7 +32,7 @@
             {{ category.name }}
           </mat-option>
         </mat-select>
-
+        <mat-icon matPrefix>category</mat-icon>
         <mat-error
           *ngIf="accommodationForm.get('categoryTypeId')?.hasError('required')"
         >
@@ -44,9 +42,7 @@
 
       <!-- Tipo de cama -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>
-          <mat-icon class="mr-1">bed</mat-icon>Tipo de cama</mat-label
-        >
+        <mat-label>Tipo de cama</mat-label>
         <mat-select formControlName="bedTypeId" required>
           <mat-option value="" disabled selected
             >Seleccione el tipo de cama</mat-option
@@ -55,7 +51,7 @@
             {{ bed.name }}
           </mat-option>
         </mat-select>
-
+        <mat-icon matPrefix>bed</mat-icon>
         <mat-error
           *ngIf="accommodationForm.get('bedTypeId')?.hasError('required')"
         >

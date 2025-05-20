@@ -24,7 +24,6 @@ import {
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
@@ -37,6 +36,7 @@ import {
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
 import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -59,13 +59,11 @@ import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndPr
   styleUrl: './see-products.component.scss'
 })
 export class SeeProductsComponent implements OnInit {
-  @Input() searchFields: any[] = [];
+  @Input() searchFieldsProducts: any[] = [];
   @Input() categoryTypes: CategoryType[] = [];
   @Output() productSelected = new EventEmitter<ProductComplete>();
   @Output() productClean = new EventEmitter<number>();
 
-  private readonly _relatedDataService: RelatedDataService =
-    inject(RelatedDataService);
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router = inject(Router);

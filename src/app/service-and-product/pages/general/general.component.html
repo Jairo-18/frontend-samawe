@@ -10,7 +10,7 @@
           [currentProduct]="currentProduct"
         ></app-create-or-edit-product
         ><app-see-products
-          [searchFields]="searchFieldsProducts"
+          [searchFieldsProducts]="searchFieldsProducts"
           [categoryTypes]="categoryTypes"
           (productSelected)="currentProduct = $event"
           (productClean)="cleanProduct()"
@@ -25,13 +25,18 @@
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypes"
           [bedTypes]="bedTypes"
+          (accommodationSaved)="
+            reloadAccommodations(); tabGroup.selectedIndex = 2
+          "
           [currentAccommodation]="currentAccommodation"
         ></app-create-or-edit-accommodation
         ><app-see-accommodations
-          [searchFields]="searchFieldsAccommodations"
+          [searchFieldsAccommodations]="searchFieldsAccommodations"
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypes"
           [bedTypes]="bedTypes"
+          (accommodationSelect)="currentAccommodation = $event"
+          (accommodationClean)="cleanAccommodation()"
         ></app-see-accommodations
       ></mat-tab>
     </mat-tab-group>

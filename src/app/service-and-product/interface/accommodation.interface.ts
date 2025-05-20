@@ -6,7 +6,7 @@ import {
 
 export interface CreateAccommodationPanel {
   accommodationId?: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amountPerson: number;
@@ -22,7 +22,7 @@ export interface CreateAccommodationPanel {
 
 export interface AccommodationComplete {
   accommodationId: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amountPerson: number;

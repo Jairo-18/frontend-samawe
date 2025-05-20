@@ -2,7 +2,7 @@ import { CategoryType } from '../../shared/interfaces/relatedDataServiceAndProdu
 
 export interface CreateProductPanel {
   productId?: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amount: number;
@@ -13,7 +13,7 @@ export interface CreateProductPanel {
 
 export interface ProductComplete {
   productId: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amount: number;

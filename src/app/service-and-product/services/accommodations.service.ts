@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { HttpClient } from '@angular/common/http';
+import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,17 @@ export class AccommodationsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
+
+  getAccommodationWithPagination(query: object): Observable<{
+    pagination: PaginationInterface;
+    data: CreateAccommodationPanel[];
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: CreateAccommodationPanel[];
+    }>(`${environment.apiUrl}accommodation/paginated-list`, { params });
+  }
 
   getAccommodationEditPanel(
     accommodationId: number

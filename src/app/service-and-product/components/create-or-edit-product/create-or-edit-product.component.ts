@@ -69,18 +69,19 @@ export class CreateOrEditProductComponent implements OnChanges {
         this.currentProduct?.categoryType?.categoryTypeId,
         [Validators.required]
       ],
-      code: [
-        this.currentProduct?.code,
-        [Validators.required, Validators.pattern(/^\d+$/), Validators.min(0)]
-      ],
+      code: [this.currentProduct?.code, [Validators.required]],
       name: [this.currentProduct?.name, [Validators.required]],
       description: [
         this.currentProduct?.description,
-        [Validators.maxLength(250)]
+        [Validators.maxLength(500)]
       ],
       amount: [
         this.currentProduct?.amount,
-        [Validators.required, Validators.pattern(/^\d+$/), Validators.min(0)]
+        [
+          Validators.required,
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
+          Validators.min(0.01)
+        ]
       ],
       priceBuy: [
         this.currentProduct?.priceBuy,
@@ -92,7 +93,11 @@ export class CreateOrEditProductComponent implements OnChanges {
       ],
       priceSale: [
         this.currentProduct?.priceSale,
-        [Validators.required, Validators.min(0.01)]
+        [
+          Validators.required,
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
+          Validators.min(0.01)
+        ]
       ]
     });
   }
@@ -162,11 +167,11 @@ export class CreateOrEditProductComponent implements OnChanges {
       // Creamos un objeto base con todos los campos necesarios
       const productSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : undefined,
-        code: Math.trunc(Number(formValue.code)),
+        code: formValue.code,
         categoryTypeId: formValue.categoryTypeId,
         name: formValue.name,
         description: formValue.description,
-        amount: Math.trunc(Number(formValue.amount)),
+        amount: Math.abs(Number(formValue.amount)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale))
       };

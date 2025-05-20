@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
@@ -17,8 +16,6 @@ import {
 })
 export class ExcursionsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
-  private readonly _httpUtilities: HttpUtilitiesService =
-    inject(HttpUtilitiesService);
 
   getProductEditPanel(
     excursionId: number

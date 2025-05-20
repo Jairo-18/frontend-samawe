@@ -80,10 +80,7 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
         this.currentAccommodation?.bedType.bedTypeId ?? null,
         Validators.required
       ],
-      code: [
-        this.currentAccommodation?.code ?? 0,
-        [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
-      ],
+      code: [this.currentAccommodation?.code ?? '', Validators.required],
       name: [this.currentAccommodation?.name ?? '', Validators.required],
       description: [
         this.currentAccommodation?.description ?? '',
@@ -204,7 +201,7 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
       // Creamos un objeto base con todos los campos necesarios
       const accommodationSave: CreateAccommodationPanel = {
         accommodationId: this.isEditMode ? this.accommodationId : undefined,
-        code: Math.trunc(Number(formValue.code)),
+        code: formValue.code,
         name: formValue.name,
         description: formValue.description,
         amountPerson: Math.trunc(Number(formValue.amountPerson)),
