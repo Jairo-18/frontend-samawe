@@ -145,6 +145,7 @@ export class SeeAccommodationsComponent implements OnInit {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadAccommodations();
+    console.log(values);
   }
 
   /**
@@ -163,8 +164,15 @@ export class SeeAccommodationsComponent implements OnInit {
     this.selectedTabIndex = index;
   }
 
-  onSearchChange(values: any): void {
-    this.showClearButton = !!values.length;
+  // onSearchChange(values: any): void {
+  //   this.showClearButton = !!values.length;
+  //   console.log(values);
+  // }
+
+  onSearchChange(form: any): void {
+    this.showClearButton = !!form.length;
+    this.params = form?.value;
+    this.loadAccommodations();
   }
 
   /**
@@ -173,6 +181,7 @@ export class SeeAccommodationsComponent implements OnInit {
    */
   loadAccommodations(filter: string = ''): void {
     this.loading = true;
+
     const query = {
       page: this.paginationParams.page,
       perPage: this.paginationParams.perPage,

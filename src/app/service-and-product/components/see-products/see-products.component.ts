@@ -142,15 +142,10 @@ export class SeeProductsComponent implements OnInit {
     this.selectedTabIndex = index;
   }
 
-  onSearchChange(values: any): void {
-    this.showClearButton = !!values.length;
-  }
-
-  /**
-   * @param goToCreateUser - Ir a crear usuarios
-   */
-  goToCreateUser(): void {
-    this._router.navigate(['/users/create']);
+  onSearchChange(form: any): void {
+    this.showClearButton = !!form.length;
+    this.params = form?.value;
+    this.loadProducts();
   }
 
   /**

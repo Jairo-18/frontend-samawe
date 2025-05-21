@@ -91,10 +91,9 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(1)]
       ],
       jacuzzi: [
-        this.currentAccommodation?.jacuzzi ? 1 : 0,
+        this.currentAccommodation?.jacuzzi ?? false,
         Validators.required
       ],
-
       amountRoom: [
         this.currentAccommodation?.amountRoom ?? 0,
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
@@ -205,7 +204,7 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
         name: formValue.name,
         description: formValue.description,
         amountPerson: Math.trunc(Number(formValue.amountPerson)),
-        jacuzzi: formValue.jacuzzi === 1,
+        jacuzzi: formValue.jacuzzi,
         amountRoom: Math.trunc(Number(formValue.amountRoom)),
         amountBathroom: Math.trunc(Number(formValue.amountBathroom)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
@@ -256,6 +255,8 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
       }
     } else {
       console.error('Formulario no válido', this.accommodationForm);
+      console.log(this.accommodationForm);
+
       this.accommodationForm.markAllAsTouched();
     }
   }

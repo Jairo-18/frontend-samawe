@@ -60,7 +60,8 @@ export class SearchFieldsComponent implements OnInit {
       .pipe(
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
-        )
+        ),
+        debounceTime(this.debounceTime)
       )
       .subscribe((value) => {
         this.emitSearchChange(value);

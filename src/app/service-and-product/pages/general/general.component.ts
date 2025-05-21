@@ -1,3 +1,4 @@
+import { SeeExcursionsComponent } from './../../components/see-excursions/see-excursions.component';
 import { SeeAccommodationsComponent } from './../../components/see-accommodations/see-accommodations.component';
 import { CreateOrEditAccommodationComponent } from './../../components/create-or-edit-accommodation/create-or-edit-accommodation.component';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
@@ -9,13 +10,18 @@ import { RelatedDataService } from '../../../shared/services/relatedData.service
 import { SearchField } from '../../../shared/interfaces/search.interface';
 import { CreateOrEditProductComponent } from '../../components/create-or-edit-product/create-or-edit-product.component';
 import { CreateOrEditExcursionComponent } from '../../components/create-or-edit-excursion/create-or-edit-excursion.component';
-import { SeeExcursionsComponent } from '../../components/see-excursions/see-excursions.component';
 import {
   BedType,
   CategoryType,
   StateType
 } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
 import { AccommodationComplete } from '../../interface/accommodation.interface';
+import {
+  searchFieldsAccommodations,
+  searchFieldsExcursions,
+  searchFieldsProducts
+} from '../../constants/searchFields.constants';
+import { ExcursionComplete } from '../../interface/excursion.interface';
 
 @Component({
   selector: 'app-general',
@@ -34,30 +40,40 @@ import { AccommodationComplete } from '../../interface/accommodation.interface';
 })
 export class GeneralComponent implements AfterViewInit, OnInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
+
   @ViewChild(SeeProductsComponent) seeProductsComponent!: SeeProductsComponent;
   @ViewChild(SeeAccommodationsComponent)
   seeAccommodationsComponent!: SeeAccommodationsComponent;
+  @ViewChild(SeeExcursionsComponent)
+  seeExcursionComponent!: SeeExcursionsComponent;
+
   @ViewChild(CreateOrEditProductComponent)
   createOrEditProductComponent!: CreateOrEditProductComponent;
   @ViewChild(CreateOrEditAccommodationComponent)
   createOrEditAccommodationComponent!: CreateOrEditAccommodationComponent;
+  @ViewChild(CreateOrEditExcursionComponent)
+  createOrEditExcursionComponent!: CreateOrEditExcursionComponent;
 
   currentProduct?: ProductComplete;
   currentAccommodation?: AccommodationComplete;
+  currentExcursion?: ExcursionComplete;
   categoryTypes: CategoryType[] = [];
   stateTypes: StateType[] = [];
   bedTypes: BedType[] = [];
+  searchFieldsProducts: SearchField[] = searchFieldsProducts;
+  searchFieldsAccommodations: SearchField[] = searchFieldsAccommodations;
+  searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
 
   constructor(
     private _route: ActivatedRoute,
     private _relatedDataService: RelatedDataService
   ) {}
 
-  cleanProduct() {
-    this.createOrEditProductComponent.resetForm();
-  }
-  cleanAccommodation() {
-    this.createOrEditAccommodationComponent.resetForm();
+  ngOnInit(): void {
+    // this._route.queryParams.subscribe(() => {
+    //   this.tabGroup.selectedIndex = 1;
+    // });
+    this.loadRelatedData();
   }
 
   ngAfterViewInit() {
@@ -67,139 +83,47 @@ export class GeneralComponent implements AfterViewInit, OnInit {
       }
     });
     this._route.queryParams.subscribe((params) => {
+      if (params['editExcursion']) {
+        this.tabGroup.selectedIndex = 1;
+      }
+    });
+    this._route.queryParams.subscribe((params) => {
       if (params['editAccommodation']) {
         this.tabGroup.selectedIndex = 2;
       }
     });
   }
 
-  searchFieldsProducts: SearchField[] = [
-    {
-      name: 'categoryType',
-      label: 'Categoría',
-      type: 'select',
-      options: [],
-      placeholder: 'Buscar por categoría'
-    },
-    {
-      name: 'code',
-      label: 'Código',
-      type: 'text',
-      placeholder: 'Buscar por código'
-    },
-    {
-      name: 'name',
-      label: 'Nombre de producto',
-      type: 'text',
-      placeholder: 'Buscar por nombre de producto'
-    },
-    {
-      name: 'amount',
-      label: 'Unidades',
-      type: 'text',
-      placeholder: 'Buscar por unidades'
-    },
-    {
-      name: 'priceBuy',
-      label: 'Precio de compra',
-      type: 'text',
-      placeholder: 'Buscar por precio de compra'
-    },
-    {
-      name: 'priceSale',
-      label: 'Precio de venta',
-      type: 'text',
-      placeholder: 'Buscar por precio de venta'
+  goToTop(): void {
+    const main = document.querySelector('main');
+    if (main) {
+      main.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
-  ];
+  }
 
-  searchFieldsAccommodations: SearchField[] = [
-    {
-      name: 'categoryType',
-      label: 'Categoría',
-      type: 'select',
-      options: [],
-      placeholder: 'Buscar por categoría'
-    },
-    {
-      name: 'bedType',
-      label: 'Camas',
-      type: 'select',
-      options: [],
-      placeholder: 'Buscar por camas'
-    },
-    {
-      name: 'stateType',
-      label: 'Estado',
-      type: 'select',
-      options: [],
-      placeholder: 'Buscar por estado'
-    },
-    {
-      name: 'code',
-      label: 'Código',
-      type: 'text',
-      placeholder: 'Buscar por código'
-    },
-    {
-      name: 'name',
-      label: 'Nombre de producto',
-      type: 'text',
-      placeholder: 'Buscar por nombre de producto'
-    },
-    {
-      name: 'amountPerson',
-      label: 'Personas',
-      type: 'text',
-      placeholder: 'Buscar por personas'
-    },
-    {
-      name: 'amountRoom',
-      label: 'Habitaciones',
-      type: 'text',
-      placeholder: 'Buscar por habitaciones'
-    },
-    {
-      name: 'amountBathroom',
-      label: 'Baños',
-      type: 'text',
-      placeholder: 'Buscar por baños'
-    },
-    {
-      name: 'priceBuy',
-      label: 'Precio de compra',
-      type: 'text',
-      placeholder: 'Buscar por precio de compra'
-    },
-    {
-      name: 'priceSale',
-      label: 'Precio de venta',
-      type: 'text',
-      placeholder: 'Buscar por precio de venta'
-    }
-  ];
-  searchFieldsExcursions: SearchField[] = [];
-
-  ngOnInit(): void {
-    this.loadRelatedData();
+  cleanProduct() {
+    this.createOrEditProductComponent.resetForm();
+  }
+  cleanAccommodation() {
+    this.createOrEditAccommodationComponent.resetForm();
+  }
+  cleanExcursion() {
+    this.createOrEditExcursionComponent.resetForm();
   }
 
   loadRelatedData(): void {
-    this._relatedDataService.createProductRelatedData().subscribe({
-      next: (res) => {
-        this.categoryTypes = res.data?.categoryType || [];
-        this.updateCategoryTypeOptions();
-      },
-      error: (err) => console.error('Error productos:', err)
-    });
-
     this._relatedDataService.createAccommodationRelatedData().subscribe({
       next: (res) => {
-        // ¡No sobreescribas categoryTypes aquí!
+        this.categoryTypes = res.data?.categoryType || [];
         this.stateTypes = res.data?.stateType || [];
         this.bedTypes = res.data?.bedType || [];
+
+        this.updateCategoryTypeOptions();
       },
-      error: (err) => console.error('Error hospedajes:', err)
+      error: (err) => console.error('Error al cargar datos de select:', err)
     });
   }
 
@@ -260,6 +184,19 @@ export class GeneralComponent implements AfterViewInit, OnInit {
       this.seeAccommodationsComponent.loadAccommodations
     ) {
       this.seeAccommodationsComponent.loadAccommodations();
+    } else {
+      console.warn(
+        'SeeProductsComponent o su método loadProducts no están disponibles.'
+      );
+    }
+  }
+
+  reloadExcursion(): void {
+    if (
+      this.seeExcursionComponent &&
+      this.seeExcursionComponent.loadExcursions
+    ) {
+      this.seeExcursionComponent.loadExcursions();
     } else {
       console.warn(
         'SeeProductsComponent o su método loadProducts no están disponibles.'

@@ -60,7 +60,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de cama</mat-label>
+        <mat-label>Tipo de estado</mat-label>
         <mat-select formControlName="stateTypeId" required>
           <mat-option value="" disabled selected
             >Seleccione el tipo de estado</mat-option
@@ -92,7 +92,7 @@
 
       <!-- Nombre -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Nombre del alojamiento</mat-label>
+        <mat-label>Nombre del hospedaje</mat-label>
         <mat-icon matPrefix>home</mat-icon>
         <input matInput formControlName="name" required />
         <mat-error *ngIf="accommodationForm.get('name')?.hasError('required')">
@@ -134,8 +134,9 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>¿Tiene jacuzzi?</mat-label>
         <mat-select formControlName="jacuzzi">
-          <mat-option [value]="0">No</mat-option>
-          <mat-option [value]="1">Sí</mat-option>
+          <mat-option [value]="true">Sí</mat-option>
+          <mat-option [value]="false">No</mat-option>
+          <!-- opcional para reset -->
         </mat-select>
       </mat-form-field>
 

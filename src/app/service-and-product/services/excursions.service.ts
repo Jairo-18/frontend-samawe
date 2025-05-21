@@ -10,14 +10,29 @@ import {
   ApiResponseCreateInterface,
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
+import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
+import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExcursionsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _httpUtilities: HttpUtilitiesService =
+    inject(HttpUtilitiesService);
 
-  getProductEditPanel(
+  getExcursionWithPagination(query: object): Observable<{
+    pagination: PaginationInterface;
+    data: CreateExcursionPanel[];
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: CreateExcursionPanel[];
+    }>(`${environment.apiUrl}excursion/paginated-list`, { params });
+  }
+
+  getExcursionEditPanel(
     excursionId: number
   ): Observable<ApiResponseInterface<ExcursionComplete>> {
     return this._httpClient.get<ApiResponseInterface<ExcursionComplete>>(
@@ -25,7 +40,7 @@ export class ExcursionsService {
     );
   }
 
-  createProductPanel(
+  createExcursionPanel(
     excursion: CreateExcursionPanel
   ): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
@@ -34,7 +49,7 @@ export class ExcursionsService {
     );
   }
 
-  updateProductPanel(excursionId: number, body: unknown): Observable<void> {
+  updateExcursionPanel(excursionId: number, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}excursion/${excursionId}`,
       body

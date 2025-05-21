@@ -5,7 +5,7 @@ import {
 
 export interface CreateExcursionPanel {
   excursionId?: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amountPerson: number;
@@ -17,7 +17,7 @@ export interface CreateExcursionPanel {
 
 export interface ExcursionComplete {
   excursionId: number;
-  code: number;
+  code: string;
   name: string;
   description?: string;
   amountPerson: number;
