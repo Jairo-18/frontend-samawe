@@ -2,7 +2,7 @@ import {
   BedType,
   CategoryType,
   StateType
-} from '../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../shared/interfaces/relatedDataGeneral';
 
 export interface CreateAccommodationPanel {
   accommodationId?: number;

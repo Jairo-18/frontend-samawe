@@ -1,3 +1,8 @@
+import {
+  IdentificationType,
+  PhoneCode,
+  RoleType
+} from './../../../shared/interfaces/relatedDataGeneral';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchField } from './../../../shared/interfaces/search.interface';
 import { CommonModule } from '@angular/common';
@@ -23,16 +28,12 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
-import {
-  IdentificationType,
-  PhoneCode,
-  RoleType,
-  UserInterface
-} from '../../../shared/interfaces/user.interface';
+import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
   selector: 'app-see-users',
@@ -50,7 +51,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     SearchFieldsComponent,
     LoaderComponent,
     MatTab,
-    MatTabGroup
+    MatTabGroup,
+    BasePageComponent
   ],
   templateUrl: './see-users.component.html',
   styleUrl: './see-users.component.scss'
@@ -248,8 +250,10 @@ export class SeeUsersComponent implements OnInit {
     this.selectedTabIndex = index;
   }
 
-  onSearchChange(values: any): void {
-    this.showClearButton = !!values.length;
+  onSearchChange(form: any): void {
+    this.showClearButton = !!form.length;
+    this.params = form?.value;
+    this.loadUsers();
   }
 
   /**

@@ -5,16 +5,36 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponseInterface } from '../interfaces/api-response.interface';
+import {
+  ApiResponseCreateInterface,
+  ApiResponseInterface
+} from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
 import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
+import { CreateType } from '../interfaces/relatedDataGeneral';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+
+  // getAllTypes(): Observable<ApiResponseListInterface> {
+  //   return this._httpClient.get<ApiResponseListInterface>(
+  //     `${environment.apiUrl}type/all`
+  //   );
+  // }
+
+  createType(
+    type: string,
+    data: CreateType
+  ): Observable<ApiResponseCreateInterface> {
+    return this._httpClient.post<ApiResponseCreateInterface>(
+      `${environment.apiUrl}type/create/${type}`,
+      data
+    );
+  }
 
   registerUserRelatedData(): Observable<
     ApiResponseInterface<RegisterUserRelatedData>

@@ -1,0 +1,24 @@
+<app-base-page>
+  <!-- Encabezado -->
+  <section
+    class="w-full flex row pb-2 mb-3 md:mb-5 justify-between mt-4 border-b-2 border-b-[#06a606]"
+  >
+    <span class="text-2xl md:text-3xl">Gestiona tu hotel</span>
+  </section>
+
+  <div class="mb-4">
+    <span class="brand-text-body-m text-black-50 fw-semibold">
+      Crea y edita información de tu interés
+    </span>
+  </div>
+
+  <!-- Botón para abrir el modal -->
+  <section class="w-full flex justify-end text-sm md:text-base">
+    <div class="w-full md:w-[25%]">
+      <button mat-fab extended="true" class="!w-full" (click)="openDialog()">
+        Crear tipos
+      </button>
+    </div>
+  </section>
+  <!-- <app-card-types [types]="typesData"></app-card-types> -->
+</app-base-page>

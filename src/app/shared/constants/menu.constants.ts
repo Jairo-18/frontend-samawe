@@ -28,26 +28,26 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       }
     ]
+  },
+  {
+    module: 'Panel de administrador',
+    icon: 'work',
+    order: 2,
+    items: [
+      {
+        name: 'Gestión',
+        route: '/organizational/types/manage',
+        icon: 'category',
+        order: 1
+      }
+    ]
   }
-  // {
-  //   module: 'Panel de administrador',
-  //   icon: 'work',
-  //   order: 2,
-  //   items: [
-  //     {
-  //       name: 'Usuarios',
-  //       route: '/organizational/users/list',
-  //       icon: 'person',
-  //       order: 1
-  //     }
-  //   ]
-  // }
 ];
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Usuario: [''],
-  Empleado: ['Usuarios', 'Productos', 'Productos y servicios'],
-  Administrador: ['Usuarios', 'Productos', 'Productos y servicios']
+  Empleado: ['Usuarios', 'Productos y servicios'],
+  Administrador: ['Usuarios', 'Productos y servicios', 'Gestión']
 };
 
 // export const ROUTE_MAP: Record<string, string> = {

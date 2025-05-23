@@ -146,13 +146,6 @@ export const searchFieldsExcursions: SearchField[] = [
     placeholder: 'Buscar por nombre de producto'
   },
   {
-    name: 'amountPerson',
-    label: 'Personas',
-    type: 'text',
-    placeholder: 'Buscar por personas'
-  },
-
-  {
     name: 'priceBuy',
     label: 'Precio de compra',
     type: 'text',

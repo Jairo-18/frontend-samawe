@@ -23,7 +23,7 @@ import { RelatedDataService } from '../../../shared/services/relatedData.service
 import {
   IdentificationType,
   PhoneCode
-} from '../../../shared/interfaces/user.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
 
 @Component({
   selector: 'app-register',

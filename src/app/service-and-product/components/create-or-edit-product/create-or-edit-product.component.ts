@@ -28,7 +28,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '../../services/products.service';
 import { CreateProductPanel } from '../../interface/product.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
-import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
 
 @Component({
   selector: 'app-create-or-edit-product',

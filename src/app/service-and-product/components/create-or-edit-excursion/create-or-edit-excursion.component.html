@@ -99,18 +99,6 @@
     </section>
 
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-      <!-- Cantidad de personas -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Capacidad de personas</mat-label>
-        <input matInput formControlName="amountPerson" type="number" required />
-        <mat-icon matSuffix>group</mat-icon>
-        <mat-error
-          *ngIf="excursionForm.get('amountPerson')?.hasError('required')"
-        >
-          Campo requerido
-        </mat-error>
-      </mat-form-field>
-
       <!-- Precio de compra -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Precio de compra</mat-label>

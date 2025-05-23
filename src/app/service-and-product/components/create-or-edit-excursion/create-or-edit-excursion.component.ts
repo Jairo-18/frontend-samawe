@@ -27,7 +27,7 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 import {
   CategoryType,
   StateType
-} from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
 import {
   CreateExcursionPanel,
   ExcursionComplete
@@ -82,23 +82,19 @@ export class CreateOrEditExcursionComponent implements OnChanges {
         this.currentExcursion?.description ?? '',
         Validators.maxLength(250)
       ],
-      amountPerson: [
-        this.currentExcursion?.amountPerson ?? 1,
-        [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(1)]
-      ],
       priceBuy: [
-        this.currentExcursion?.priceBuy ?? 0.01,
+        this.currentExcursion?.priceBuy,
         [
           Validators.required,
-          Validators.pattern('^\\d+(\\.\\d{1,2})?$'),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
           Validators.min(0.01)
         ]
       ],
       priceSale: [
-        this.currentExcursion?.priceSale ?? 0.01,
+        this.currentExcursion?.priceSale,
         [
           Validators.required,
-          Validators.pattern('^\\d+(\\.\\d{1,2})?$'),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
           Validators.min(0.01)
         ]
       ],
@@ -156,7 +152,6 @@ export class CreateOrEditExcursionComponent implements OnChanges {
           code: excursion.code,
           name: excursion.name,
           description: excursion.description,
-          amountPerson: excursion.amountPerson,
           priceBuy: excursion.priceBuy,
           priceSale: excursion.priceSale,
           stateTypeId: excursion.stateType?.stateTypeId
@@ -181,7 +176,6 @@ export class CreateOrEditExcursionComponent implements OnChanges {
         code: formValue.code,
         name: formValue.name,
         description: formValue.description,
-        amountPerson: Math.trunc(Number(formValue.amountPerson)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
         categoryTypeId: formValue.categoryTypeId,

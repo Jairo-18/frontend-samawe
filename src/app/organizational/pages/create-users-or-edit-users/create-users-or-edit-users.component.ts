@@ -24,7 +24,8 @@ import {
   IdentificationType,
   PhoneCode,
   RoleType
-} from '../../../shared/interfaces/user.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
   selector: 'app-create-users-or-edit-users',
@@ -40,7 +41,8 @@ import {
     MatButtonModule,
     FontAwesomeModule,
     MatIcon,
-    RouterLink
+    RouterLink,
+    BasePageComponent
   ],
   templateUrl: './create-users-or-edit-users.component.html',
   styleUrl: './create-users-or-edit-users.component.scss'

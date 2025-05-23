@@ -35,7 +35,7 @@ import {
 } from '../../interface/product.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
-import { CategoryType } from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
 
 @Component({
   selector: 'app-see-products',

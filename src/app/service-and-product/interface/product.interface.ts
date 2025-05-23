@@ -1,4 +1,4 @@
-import { CategoryType } from '../../shared/interfaces/relatedDataServiceAndProduct.interface';
+import { CategoryType } from '../../shared/interfaces/relatedDataGeneral';
 
 export interface CreateProductPanel {
   productId?: number;

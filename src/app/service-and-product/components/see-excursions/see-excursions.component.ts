@@ -33,7 +33,7 @@ import { UserComplete } from '../../../organizational/interfaces/create.interfac
 import {
   CategoryType,
   StateType
-} from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
 import {
   CreateExcursionPanel,
   ExcursionComplete
@@ -82,7 +82,6 @@ export class SeeExcursionsComponent implements OnInit {
     'stateType',
     'code',
     'name',
-    'amountPerson',
     'priceBuy',
     'priceSale',
     'actions'

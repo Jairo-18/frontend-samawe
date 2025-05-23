@@ -4,7 +4,7 @@ import { Component, input, InputSignal } from '@angular/core';
   selector: 'app-base-dialog',
   imports: [],
   templateUrl: './base-dialog.component.html',
-  styleUrl: './base-dialog.component.scss',
+  styleUrl: './base-dialog.component.scss'
 })
 export class BaseDialogComponent {
   title: InputSignal<string> = input('');

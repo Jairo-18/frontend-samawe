@@ -31,7 +31,7 @@ import {
   BedType,
   CategoryType,
   StateType
-} from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
 
 @Component({
   selector: 'app-create-or-edit-accommodation',
@@ -103,18 +103,18 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(0)]
       ],
       priceBuy: [
-        this.currentAccommodation?.priceBuy ?? 0.01,
+        this.currentAccommodation?.priceBuy,
         [
           Validators.required,
-          Validators.pattern('^\\d+(\\.\\d{1,2})?$'),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
           Validators.min(0.01)
         ]
       ],
       priceSale: [
-        this.currentAccommodation?.priceSale ?? 0.01,
+        this.currentAccommodation?.priceSale,
         [
           Validators.required,
-          Validators.pattern('^\\d+(\\.\\d{1,2})?$'),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
           Validators.min(0.01)
         ]
       ],

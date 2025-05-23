@@ -1,14 +1,13 @@
 import {
   CategoryType,
   StateType
-} from '../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../shared/interfaces/relatedDataGeneral';
 
 export interface CreateExcursionPanel {
   excursionId?: number;
   code: string;
   name: string;
   description?: string;
-  amountPerson: number;
   priceBuy: number;
   priceSale: number;
   stateTypeId: number;
@@ -20,7 +19,6 @@ export interface ExcursionComplete {
   code: string;
   name: string;
   description?: string;
-  amountPerson: number;
   priceBuy: number;
   priceSale: number;
   stateType: StateType;

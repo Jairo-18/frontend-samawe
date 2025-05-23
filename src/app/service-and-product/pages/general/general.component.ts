@@ -1,7 +1,13 @@
 import { SeeExcursionsComponent } from './../../components/see-excursions/see-excursions.component';
 import { SeeAccommodationsComponent } from './../../components/see-accommodations/see-accommodations.component';
 import { CreateOrEditAccommodationComponent } from './../../components/create-or-edit-accommodation/create-or-edit-accommodation.component';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { SeeProductsComponent } from '../../components/see-products/see-products.component';
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +20,7 @@ import {
   BedType,
   CategoryType,
   StateType
-} from '../../../shared/interfaces/relatedDataServiceAndProduct.interface';
+} from '../../../shared/interfaces/relatedDataGeneral';
 import { AccommodationComplete } from '../../interface/accommodation.interface';
 import {
   searchFieldsAccommodations,
@@ -22,6 +28,7 @@ import {
   searchFieldsProducts
 } from '../../constants/searchFields.constants';
 import { ExcursionComplete } from '../../interface/excursion.interface';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
   selector: 'app-general',
@@ -33,7 +40,8 @@ import { ExcursionComplete } from '../../interface/excursion.interface';
     CreateOrEditExcursionComponent,
     SeeExcursionsComponent,
     CreateOrEditAccommodationComponent,
-    SeeAccommodationsComponent
+    SeeAccommodationsComponent,
+    BasePageComponent
   ],
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
@@ -54,6 +62,10 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   @ViewChild(CreateOrEditExcursionComponent)
   createOrEditExcursionComponent!: CreateOrEditExcursionComponent;
 
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
+
   currentProduct?: ProductComplete;
   currentAccommodation?: AccommodationComplete;
   currentExcursion?: ExcursionComplete;
@@ -63,11 +75,6 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   searchFieldsProducts: SearchField[] = searchFieldsProducts;
   searchFieldsAccommodations: SearchField[] = searchFieldsAccommodations;
   searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
-
-  constructor(
-    private _route: ActivatedRoute,
-    private _relatedDataService: RelatedDataService
-  ) {}
 
   ngOnInit(): void {
     // this._route.queryParams.subscribe(() => {

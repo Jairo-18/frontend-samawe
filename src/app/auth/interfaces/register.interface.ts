@@ -2,7 +2,7 @@ import {
   IdentificationType,
   PhoneCode,
   RoleType
-} from '../../shared/interfaces/user.interface';
+} from '../../shared/interfaces/relatedDataGeneral';
 
 export interface RegisterUser {
   userId: string;
