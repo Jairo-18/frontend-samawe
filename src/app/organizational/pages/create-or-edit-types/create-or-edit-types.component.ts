@@ -5,11 +5,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateTypeDialogComponent } from '../../components/create-type-dialog/create-type-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { CardTypesComponent } from '../../components/card-types/card-types.component';
 
 @Component({
   selector: 'app-create-or-edit-types',
   standalone: true,
-  imports: [BasePageComponent, ReactiveFormsModule, MatButtonModule],
+  imports: [
+    BasePageComponent,
+    ReactiveFormsModule,
+    MatButtonModule,
+    CardTypesComponent
+  ],
   templateUrl: './create-or-edit-types.component.html',
   styleUrls: ['./create-or-edit-types.component.scss']
 })
