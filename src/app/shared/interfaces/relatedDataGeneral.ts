@@ -56,3 +56,31 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
+
+export interface IdentificationType {
+  identificationTypeId: string;
+  code?: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+export interface AllTypes {
+  additionalType: TypeItem[];
+  bedType: TypeItem[];
+  categoryType: TypeItem[];
+  identificationType: TypeItem[];
+  paidType: TypeItem[];
+  payType: TypeItem[];
+  phoneCode: TypeItem[];
+  roleType: TypeItem[];
+  stateType: TypeItem[];
+  taxeType: TypeItem[];
+}
+
+export interface TypeItem {
+  id: number;
+  code: string;
+  name: string;
+}

@@ -1,1 +1,20 @@
-<p>card-types works!</p>
+<div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div
+    *ngFor="let group of groupedTypes"
+    class="bg-white rounded-xl shadow-lg p-6 border hover:shadow-xl transition-shadow duration-300"
+  >
+    <h2 class="text-2xl font-semibold text-indigo-600 mb-4 capitalize">
+      {{ group.typeName }}
+    </h2>
+
+    <div *ngFor="let item of group.items" class="mb-4 border-b pb-2">
+      <p class="text-lg font-medium text-gray-800">
+        {{ item.name }}
+      </p>
+      <p class="text-gray-600">
+        Código: <span class="font-mono">{{ item.code }}</span>
+      </p>
+      <p class="text-gray-400 text-sm">ID: {{ item.name }}</p>
+    </div>
+  </div>
+</div>

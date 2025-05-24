@@ -12,7 +12,7 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import { CreateType } from '../interfaces/relatedDataGeneral';
+import { AllTypes, CreateType } from '../interfaces/relatedDataGeneral';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +20,11 @@ import { CreateType } from '../interfaces/relatedDataGeneral';
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
 
-  // getAllTypes(): Observable<ApiResponseListInterface> {
-  //   return this._httpClient.get<ApiResponseListInterface>(
-  //     `${environment.apiUrl}type/all`
-  //   );
-  // }
+  getAllTypes(): Observable<ApiResponseInterface<AllTypes>> {
+    return this._httpClient.get<ApiResponseInterface<AllTypes>>(
+      `${environment.apiUrl}type`
+    );
+  }
 
   createType(
     type: string,
