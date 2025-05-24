@@ -41,7 +41,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 export class SearchFieldsComponent implements OnInit {
   @Input() searchFields: SearchField[] = [];
   @Input() form!: FormGroup;
-  @Input() debounceTime: number = 300;
+  @Input() debounceTime: number = 500;
 
   @Output() searchChange = new EventEmitter<any>();
   @Output() searchSubmit = new EventEmitter<any>();

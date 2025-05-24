@@ -12,18 +12,30 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import { AllTypes, CreateType } from '../interfaces/relatedDataGeneral';
+import { CreateType, TypeItem } from '../interfaces/relatedDataGeneral';
+import {
+  PaginationInterface,
+  ParamsPaginationInterface
+} from '../interfaces/pagination.interface';
+import { HttpUtilitiesService } from '../utilities/http-utilities.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _httpUtilities: HttpUtilitiesService =
+    inject(HttpUtilitiesService);
 
-  getAllTypes(): Observable<ApiResponseInterface<AllTypes>> {
-    return this._httpClient.get<ApiResponseInterface<AllTypes>>(
-      `${environment.apiUrl}type`
-    );
+  getEntitiesWithPagination(
+    type: string,
+    query: ParamsPaginationInterface
+  ): Observable<{ pagination: PaginationInterface; data: TypeItem[] }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: TypeItem[];
+    }>(`${environment.apiUrl}type/${type}/paginated`, { params });
   }
 
   createType(

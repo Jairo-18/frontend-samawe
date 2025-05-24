@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
@@ -61,7 +61,6 @@ export class SeeUsersComponent implements OnInit {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _usersService: UsersService = inject(UsersService);
-  private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router = inject(Router);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _authService: AuthService = inject(AuthService);
@@ -84,7 +83,6 @@ export class SeeUsersComponent implements OnInit {
   phoneCode: PhoneCode[] = [];
   userLogged: UserInterface;
   form!: FormGroup;
-  projectId: string = '';
   showClearButton: boolean = false;
   loading: boolean = false;
   isMobile: boolean = false;
@@ -149,7 +147,6 @@ export class SeeUsersComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
     this._getDataForFields();
-    this.projectId = this._activatedRoute.snapshot.params?.['email'];
   }
 
   constructor() {

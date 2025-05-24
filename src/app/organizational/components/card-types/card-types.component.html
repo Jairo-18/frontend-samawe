@@ -1,20 +1,34 @@
-<div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <div
-    *ngFor="let group of groupedTypes"
-    class="bg-white rounded-xl shadow-lg p-6 border hover:shadow-xl transition-shadow duration-300"
-  >
-    <h2 class="text-2xl font-semibold text-indigo-600 mb-4 capitalize">
-      {{ group.typeName }}
-    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <ng-container *ngFor="let group of groupedTypes; let i = index">
+    <div
+      class="bg-white rounded-xl shadow-lg p-6 border hover:shadow-xl transition-shadow duration-300 mt-4"
+    >
+      <app-search-fields
+        [searchFields]="searchFields"
+        [debounceTime]="300"
+        (searchSubmit)="onSearchSubmit({ groupIndex: i, values: $event })"
+        (searchChange)="onSearchChange({ groupIndex: i, value: $event })"
+      ></app-search-fields>
+      <h2 class="text-2xl font-semibold text-indigo-600 mb-4 capitalize">
+        {{ group.label }}
+      </h2>
 
-    <div *ngFor="let item of group.items" class="mb-4 border-b pb-2">
-      <p class="text-lg font-medium text-gray-800">
-        {{ item.name }}
-      </p>
-      <p class="text-gray-600">
-        Código: <span class="font-mono">{{ item.code }}</span>
-      </p>
-      <p class="text-gray-400 text-sm">ID: {{ item.name }}</p>
+      <div *ngFor="let item of group.items" class="mb-4 border-b pb-2">
+        <p class="text-lg font-medium text-gray-800">{{ item.name }}</p>
+        <p class="text-gray-600">
+          Código: <span class="font-mono">{{ item.code }}</span>
+        </p>
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <mat-paginator
+          [length]="group.pagination.total"
+          [pageSize]="group.pagination.perPage"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [pageIndex]="(group.pagination.page || 1) - 1"
+          (page)="onChangePagination($event, i)"
+        ></mat-paginator>
+      </div>
     </div>
-  </div>
+  </ng-container>
 </div>
