@@ -76,6 +76,7 @@ export interface AllTypes {
   categoryType: TypeItem[];
   identificationType: TypeItem[];
   paidType: TypeItem[];
+  invoiceType: TypeItem[];
   payType: TypeItem[];
   phoneCode: TypeItem[];
   roleType: TypeItem[];
