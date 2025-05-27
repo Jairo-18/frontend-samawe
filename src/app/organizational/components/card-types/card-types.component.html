@@ -1,34 +1,38 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  <ng-container *ngFor="let group of groupedTypes; let i = index">
-    <div
-      class="bg-white rounded-xl shadow-lg p-6 border hover:shadow-xl transition-shadow duration-300 mt-4"
-    >
-      <app-search-fields
-        [searchFields]="searchFields"
-        [debounceTime]="300"
-        (searchSubmit)="onSearchSubmit({ groupIndex: i, values: $event })"
-        (searchChange)="onSearchChange({ groupIndex: i, value: $event })"
-      ></app-search-fields>
-      <h2 class="text-2xl font-semibold text-indigo-600 mb-4 capitalize">
-        {{ group.label }}
-      </h2>
+<article class="flex flex-col">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (item of infoTypes; track $index) {
 
-      <div *ngFor="let item of group.items" class="mb-4 border-b pb-2">
-        <p class="text-lg font-medium text-gray-800">{{ item.name }}</p>
-        <p class="text-gray-600">
-          Código: <span class="font-mono">{{ item.code }}</span>
-        </p>
-      </div>
+    <div class="p-4 rounded-2xl border border-[#06a606]">
+      <section class="w-full flex justify-end">
+        <button mat-icon-button color="primary">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </section>
+      <section class="flex flex-col gap-2">
+        <div class="text-sm text-gray-500">Código / prefijo:</div>
+        <div class="text-base font-semibold text-gray-800">
+          {{ item.code }}
+        </div>
 
-      <div class="mt-6 flex justify-center">
-        <mat-paginator
-          [length]="group.pagination.total"
-          [pageSize]="group.pagination.perPage"
-          [pageSizeOptions]="[5, 10, 25, 100]"
-          [pageIndex]="(group.pagination.page || 1) - 1"
-          (page)="onChangePagination($event, i)"
-        ></mat-paginator>
-      </div>
+        <div class="text-sm text-gray-500 mt-2">Nombre:</div>
+        <div class="text-base font-semibold text-gray-800">
+          {{ item.name }}
+        </div>
+      </section>
     </div>
-  </ng-container>
-</div>
+
+    }
+  </div>
+
+  <mat-paginator
+    class="w-full mt-4"
+    [length]="paginationParams.total"
+    [pageSize]="paginationParams.perPage"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    [pageIndex]="(paginationParams.page || 1) - 1"
+    (page)="page.emit($event)"
+  ></mat-paginator>
+</article>

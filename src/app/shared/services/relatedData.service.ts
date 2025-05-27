@@ -35,7 +35,7 @@ export class RelatedDataService {
     return this._httpClient.get<{
       pagination: PaginationInterface;
       data: TypeItem[];
-    }>(`${environment.apiUrl}type/${type}/paginated`, { params });
+    }>(`${environment.apiUrl}type/paginated/${type}`, { params });
   }
 
   createType(
