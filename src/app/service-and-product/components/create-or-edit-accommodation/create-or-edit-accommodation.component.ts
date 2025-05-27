@@ -255,7 +255,6 @@ export class CreateOrEditAccommodationComponent implements OnChanges {
       }
     } else {
       console.error('Formulario no válido', this.accommodationForm);
-      console.log(this.accommodationForm);
 
       this.accommodationForm.markAllAsTouched();
     }

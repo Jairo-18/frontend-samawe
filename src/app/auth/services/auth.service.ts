@@ -88,7 +88,6 @@ export class AuthService {
         ),
         tap((res) => {
           this.saveLocalUserData(res.data);
-          console.log(res.data);
         })
       );
   }

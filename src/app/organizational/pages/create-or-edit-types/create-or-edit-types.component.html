@@ -1,70 +1,56 @@
-<app-base-page>
-  <!-- Encabezado -->
-  <section
-    class="w-full flex row pb-2 mb-3 md:mb-5 justify-between mt-4 border-b-2 border-b-[#06a606]"
-  >
-    <span class="text-2xl md:text-3xl">Gestiona tu hotel</span>
-  </section>
+<app-base-dialog
+  [title]="data?.editMode ? 'Editar tipo' : 'Crear nuevo tipo'"
+  [description]="
+    data?.editMode
+      ? 'Edita los campos necesarios.'
+      : 'Llena el formulario para registrar un nuevo tipo en el sistema.'
+  "
+>
+  <form form [formGroup]="formType">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tipos</mat-label>
+      <mat-select formControlName="selectedType" required>
+        <mat-option value="" disabled selected>Seleccione el tipo</mat-option>
+        <mat-option *ngFor="let type of typeOptions" [value]="type.key">
+          {{ type.value }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>table_chart</mat-icon>
+      <mat-error *ngIf="formType.get('selectedType')?.hasError('required')">
+        Tipo requerido
+      </mat-error>
+    </mat-form-field>
 
-  <div class="mb-4">
-    <span class="brand-text-body-m text-black-50 fw-semibold">
-      Crea y edita información de tu interés
-    </span>
-  </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Código o prefijo</mat-label>
+      <input matInput formControlName="code" required />
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-error *ngIf="formType.get('code')"> Código requerido </mat-error>
+    </mat-form-field>
 
-  <!-- Botón para abrir el modal -->
-  <section class="w-full flex justify-end text-sm md:text-base mb-0 md:mb-4">
-    <div class="w-full md:w-[25%]">
-      <button mat-fab extended="true" class="!w-full" (click)="openDialog()">
-        Crear tipos
-      </button>
-    </div>
-  </section>
-  <section class="flex flex-col md:flex-row">
-    <div
-      class="w-[20%] border-r-2 border-[#06a606]0 hidden md:flex flex-col pr-0 md:pr-4 gap-3"
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-error *ngIf="formType.get('name')"> Nombre requerido </mat-error>
+    </mat-form-field>
+
+    <section
+      actions
+      class="w-full flex content-between gap-x-2 items-center justify-end"
     >
-      @for (button of buttonLabel; track $index) {
       <button
-        class="text-left border border-[#06a606] rounded-lg px-2 py-1 transition-colors duration-200"
-        [ngClass]="{
-          'bg-[#06a606] text-white': selectedType === button[0],
-          'hover:bg-green-100': selectedType !== button[0]
-        }"
-        (click)="onButtonSelect(button[0])"
-      >
-        {{ button[1] }}
-      </button>
-
-      }
-    </div>
-    <div class="flex md:hidden my-4 border-b-2 border-green-700">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipos</mat-label>
-        <mat-select [formControl]="buttonsControll">
-          @for (button of buttonLabel; track $index) {
-          <mat-option [value]="button[0]"> {{ button[1] }}</mat-option
-          >}
-        </mat-select>
-        <mat-icon matPrefix>table_chart</mat-icon>
-      </mat-form-field>
-    </div>
-    <div
-      class="flex flex-col justify-center items-center min-h-[50dvh] w-full md:w-[80%] ml-0 md:ml-4"
-    >
-      @if (!results) {
-      <app-loader></app-loader>
-      } @else if (hasContent(results)) {
-      <app-card-types
         class="w-full"
-        [infoTypes]="results"
-        [paginationParams]="paginationParams"
-        (page)="onChangePagination($event)"
-        >></app-card-types
+        mat-fab
+        extended="true"
+        color="warn"
+        (click)="cancel()"
       >
-      } @else {
-      <span> No hay contenido registrado aún.</span>
-      }
-    </div>
-  </section>
-</app-base-page>
+        Cancelar
+      </button>
+      <button class="w-full" mat-fab extended="true" (click)="save()">
+        Guardar
+      </button>
+    </section>
+  </form>
+</app-base-dialog>

@@ -1,129 +1,107 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
-import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { CreateTypeDialogComponent } from '../../components/create-type-dialog/create-type-dialog.component';
-import { MatButtonModule } from '@angular/material/button';
-import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { CardTypesComponent } from '../../components/card-types/card-types.component';
-import { TypeItem } from '../../../shared/interfaces/relatedDataGeneral';
-import { UserInterface } from '../../../shared/interfaces/user.interface';
-import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
-import { LoaderComponent } from '../../../shared/components/loader/loader.component';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, Inject, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
 
 @Component({
   selector: 'app-create-or-edit-types',
-  standalone: true,
   imports: [
-    BasePageComponent,
+    BaseDialogComponent,
+    CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule,
+    MatInputModule,
     MatSelectModule,
-    CardTypesComponent,
-    LoaderComponent,
-    CommonModule
+    MatIconModule
   ],
   templateUrl: './create-or-edit-types.component.html',
-  styleUrls: ['./create-or-edit-types.component.scss']
+  styleUrl: './create-or-edit-types.component.scss'
 })
-export class CreateOrEditTypesComponent implements OnInit {
-  results?: TypeItem[];
-  loading: boolean = false;
-  showClearButton: boolean = false;
-  isMobile: boolean = false;
-  selectedType: string = 'additionalType';
+export class CreateOrEditTypesComponent {
+  formType!: FormGroup;
+  isEditMode = false;
+  private _id?: string;
 
-  userLogged?: UserInterface;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  params: any = {};
-  paginationParams: PaginationInterface = {
-    page: 1,
-    perPage: 5,
-    total: 0,
-    pageCount: 0,
-    hasPreviousPage: false,
-    hasNextPage: false
-  };
+  typeOptions = Object.entries(TYPE_ENTITY_LABELS_ES).map(([key, value]) => ({
+    key,
+    value
+  }));
 
+  private readonly _dialogRef = inject(
+    MatDialogRef<CreateOrEditTypesComponent>
+  );
   private readonly _relatedDataService = inject(RelatedDataService);
-  private readonly _matDialog: MatDialog = inject(MatDialog);
+  private readonly _fb = inject(FormBuilder);
 
-  buttons: Record<string, string> = TYPE_ENTITY_LABELS_ES;
-  buttonsControll: FormControl = new FormControl('additionalType');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+    this.isEditMode = !!data?.editMode;
+    this._id = data?.id ? data.id.toString() : undefined;
 
-  ngOnInit(): void {
-    this.loadGroupData('additionalType');
-    this.buttonsControll.valueChanges.subscribe((value) => {
-      this.selectedType = value;
-      this.loadGroupData(value);
-    });
-  }
-
-  public onButtonSelect(type: string) {
-    this.selectedType = type;
-    this.loadGroupData(type);
-  }
-
-  hasContent(data: TypeItem[]): boolean {
-    return data.length > 0;
-  }
-
-  get buttonLabel() {
-    return Object.entries(this.buttons) || [];
-  }
-
-  openDialog() {
-    const dialogRef = this._matDialog.open(CreateTypeDialogComponent, {
-      width: 'auto'
+    this.formType = this._fb.group({
+      selectedType: [data?.selectedType || '', Validators.required],
+      code: [data?.code || '', Validators.required],
+      name: [data?.name || '', Validators.required]
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this._relatedDataService
-          .createType(result.selectedType, {
-            code: result.code,
-            name: result.name
-          })
-          .subscribe({
-            error: (err) =>
-              alert('Error: ' + (err.error?.message || err.message))
-          });
-      }
-    });
+    // Si está en edición, deshabilitar la selección del tipo para evitar cambios
+    if (this.isEditMode) {
+      this.formType.get('selectedType')?.disable();
+    }
   }
 
-  onChangePagination(event: PageEvent): void {
-    this.paginationParams.page = event.pageIndex + 1;
-    this.paginationParams.perPage = event.pageSize;
-    this.loadGroupData(this.selectedType);
-  }
+  save(): void {
+    if (this.formType.invalid) {
+      this.formType.markAllAsTouched();
+      return;
+    }
 
-  loadGroupData(type: string): void {
-    const query = {
-      page: this.paginationParams.page,
-      perPage: this.paginationParams.perPage,
-      ...this.params
+    // Para editar, el selectedType está deshabilitado, por eso accedemos al valor con getRawValue
+    const values = this.formType.getRawValue();
+    const type = values.selectedType?.trim();
+
+    if (!type) {
+      this.formType.get('selectedType')?.setErrors({ required: true });
+      return;
+    }
+
+    const payload = {
+      code: values.code.trim(),
+      name: values.name.trim()
     };
 
-    this.loading = true;
-    this._relatedDataService.getEntitiesWithPagination(type, query).subscribe({
-      next: (res) => {
-        this.results = res.data || [];
-        this.paginationParams = res?.pagination;
-        this.loading = false;
-      },
+    let action$;
+
+    if (this.isEditMode && this._id) {
+      action$ = this._relatedDataService.updateType(type, this._id, payload);
+    } else {
+      action$ = this._relatedDataService.createType(type, payload);
+    }
+
+    action$.subscribe({
+      next: () => this._dialogRef.close(true),
       error: (err) => {
-        console.error(`Error cargando grupo ${type}`, err);
-        this.loading = false;
+        console.error('Error en guardado:', err);
       }
     });
+  }
+
+  cancel(): void {
+    this._dialogRef.close(null);
   }
 }

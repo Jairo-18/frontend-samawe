@@ -3,14 +3,26 @@
     @for (item of infoTypes; track $index) {
 
     <div class="p-4 rounded-2xl border border-[#06a606]">
+      <!-- Botones de acción -->
       <section class="w-full flex justify-end">
-        <button mat-icon-button color="primary">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="edit.emit({ type: selectedType, id: item[getIdKey(item)] })"
+        >
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="
+            remove.emit({ type: selectedType, id: item[getIdKey(item)] })
+          "
+        >
           <mat-icon>delete</mat-icon>
         </button>
       </section>
+
       <section class="flex flex-col gap-2">
         <div class="text-sm text-gray-500">Código / prefijo:</div>
         <div class="text-base font-semibold text-gray-800">

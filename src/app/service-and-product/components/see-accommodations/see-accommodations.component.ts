@@ -145,7 +145,6 @@ export class SeeAccommodationsComponent implements OnInit {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadAccommodations();
-    console.log(values);
   }
 
   /**
@@ -163,11 +162,6 @@ export class SeeAccommodationsComponent implements OnInit {
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
-  // onSearchChange(values: any): void {
-  //   this.showClearButton = !!values.length;
-  //   console.log(values);
-  // }
 
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;

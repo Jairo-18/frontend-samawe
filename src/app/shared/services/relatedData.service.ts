@@ -12,7 +12,11 @@ import {
 import { environment } from '../../../environments/environment.development';
 import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import { CreateType, TypeItem } from '../interfaces/relatedDataGeneral';
+import {
+  CreateType,
+  TypeForEditResponse,
+  TypeItem
+} from '../interfaces/relatedDataGeneral';
 import {
   PaginationInterface,
   ParamsPaginationInterface
@@ -46,6 +50,27 @@ export class RelatedDataService {
       `${environment.apiUrl}type/create/${type}`,
       data
     );
+  }
+
+  getTypeForEdit<T extends CreateType>(
+    type: string,
+    id: string
+  ): Observable<ApiResponseInterface<TypeForEditResponse<T>>> {
+    return this._httpClient.get<ApiResponseInterface<TypeForEditResponse<T>>>(
+      `${environment.apiUrl}type/${type}/${id}`
+    );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateType(type: string, id: string, body: any): Observable<any> {
+    return this._httpClient.patch(
+      `${environment.apiUrl}type/${type}/${id}`,
+      body
+    );
+  }
+
+  deleteType(type: string, id: string): Observable<unknown> {
+    return this._httpClient.delete(`${environment.apiUrl}type/${type}/${id}`);
   }
 
   registerUserRelatedData(): Observable<

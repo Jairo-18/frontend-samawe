@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 
 // Importaciones estáticas de los componentes
-import { CreateUsersOrEditUsersComponent } from './pages/create-users-or-edit-users/create-users-or-edit-users.component';
+
 import { SeeUsersComponent } from './pages/see-users/see-users.component';
-import { CreateOrEditTypesComponent } from './pages/create-or-edit-types/create-or-edit-types.component';
+import { SeeTypesComponent } from './pages/see-types/see-types.component';
+import { CreateOrEditUsersComponent } from './pages/create-or-edit-users/create-or-edit-users.component';
 
 export const organizationalRoutes: Routes = [
   {
@@ -19,7 +20,7 @@ export const organizationalRoutes: Routes = [
         children: [
           {
             path: 'create',
-            component: CreateUsersOrEditUsersComponent // Carga estática
+            component: CreateOrEditUsersComponent // Carga estática
           },
           {
             path: 'list',
@@ -27,7 +28,7 @@ export const organizationalRoutes: Routes = [
           },
           {
             path: ':id/edit',
-            component: CreateUsersOrEditUsersComponent // Carga estática
+            component: CreateOrEditUsersComponent // Carga estática
           }
         ]
       },
@@ -36,7 +37,7 @@ export const organizationalRoutes: Routes = [
         children: [
           {
             path: 'manage',
-            component: CreateOrEditTypesComponent
+            component: SeeTypesComponent
           }
         ]
       }

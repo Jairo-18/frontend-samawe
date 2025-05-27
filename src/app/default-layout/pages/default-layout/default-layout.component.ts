@@ -70,7 +70,6 @@ export class DefaultLayoutComponent implements OnInit {
         !allSessionData?.session?.accessSessionId
       ) {
         console.error('Faltan datos de sesión para cerrar sesión');
-        console.log(allSessionData);
 
         this._authService.cleanStorageAndRedirectToLogin();
         return;

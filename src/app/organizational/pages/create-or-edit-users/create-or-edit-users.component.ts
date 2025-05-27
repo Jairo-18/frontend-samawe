@@ -28,7 +28,7 @@ import {
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
-  selector: 'app-create-users-or-edit-users',
+  selector: 'app-create-or-edit-users',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,10 +44,10 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     RouterLink,
     BasePageComponent
   ],
-  templateUrl: './create-users-or-edit-users.component.html',
-  styleUrl: './create-users-or-edit-users.component.scss'
+  templateUrl: './create-or-edit-users.component.html',
+  styleUrl: './create-or-edit-users.component.scss'
 })
-export class CreateUsersOrEditUsersComponent implements OnInit {
+export class CreateOrEditUsersComponent implements OnInit {
   userForm: FormGroup;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;

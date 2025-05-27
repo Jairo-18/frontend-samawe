@@ -3,6 +3,10 @@ export interface CreateType {
   name: string;
 }
 
+export interface TypeForEditResponse<T extends CreateType> {
+  type: T;
+}
+
 export interface CategoryType {
   categoryTypeId: number;
   code?: string;
@@ -80,7 +84,9 @@ export interface AllTypes {
 }
 
 export interface TypeItem {
-  id: number;
+  id: string;
   code: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
