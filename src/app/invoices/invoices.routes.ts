@@ -1,22 +1,28 @@
 import { Routes } from '@angular/router';
+import { CreateInvoicesComponent } from './pages/create-invoices/create-invoices.component';
+import { SeeInvoicesComponent } from './pages/see-invoices/see-invoices.component';
 
 export const invoicesRoutes: Routes = [
   {
     path: '',
     children: [
       {
-        path: 'create-invoices',
-        loadComponent: () =>
-          import('./pages/create-invoices/create-invoices.component').then(
-            (m) => m.CreateInvoicesComponent
-          )
+        path: '',
+        redirectTo: '/home',
+        pathMatch: 'full'
       },
       {
-        path: 'see-invoices',
-        loadComponent: () =>
-          import('./pages/see-invoices/see-invoices.component').then(
-            (m) => m.SeeInvoicesComponent
-          )
+        path: 'invoices',
+        children: [
+          {
+            path: 'create',
+            component: CreateInvoicesComponent
+          },
+          {
+            path: 'list',
+            component: SeeInvoicesComponent
+          }
+        ]
       }
     ]
   }

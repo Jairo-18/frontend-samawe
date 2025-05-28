@@ -3,6 +3,7 @@ import { DefaultLayoutComponent } from './default-layout/pages/default-layout/de
 import { organizationalRoutes } from './organizational/organizational.routes';
 import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
+import { invoicesRoutes } from './invoices/invoices.routes';
 
 export const routes: Routes = [
   {
@@ -39,9 +40,8 @@ export const routes: Routes = [
       },
       {
         canActivate: [authGuard, adminGuard],
-        path: 'invoices',
-        loadChildren: () =>
-          import('./invoices/invoices.routes').then((m) => m.invoicesRoutes)
+        path: 'invoice',
+        children: invoicesRoutes
       },
       {
         canActivate: [authGuard, adminGuard],

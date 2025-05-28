@@ -26,6 +26,13 @@ export const MENU_CONST: MenuInterface[] = [
         icon: 'add_shopping_cart',
         order: 3,
         subItems: []
+      },
+      {
+        name: 'Facturas',
+        route: '/invoice/invoices/create',
+        icon: 'notes',
+        order: 3,
+        subItems: []
       }
     ]
   },
@@ -46,8 +53,8 @@ export const MENU_CONST: MenuInterface[] = [
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Usuario: [''],
-  Empleado: ['Usuarios', 'Productos y servicios'],
-  Administrador: ['Usuarios', 'Productos y servicios', 'Gestión']
+  Empleado: ['Usuarios', 'Productos y servicios', 'Facturas'],
+  Administrador: ['Usuarios', 'Productos y servicios', 'Gestión', 'Facturas']
 };
 
 // export const ROUTE_MAP: Record<string, string> = {
