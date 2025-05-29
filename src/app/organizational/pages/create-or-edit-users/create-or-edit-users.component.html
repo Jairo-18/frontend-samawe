@@ -1,31 +1,18 @@
-<app-base-page>
-  <button
-    mat-stroked-button
-    routerLink="/organizational/users/list"
-    matTooltip="Volver"
-    color="primary"
-    class="top-0 left-0 border-none"
-  >
-    <mat-icon class="flex justify-center items-center">arrow_back</mat-icon>
-    Volver
-  </button>
-  <section
-    class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[#06a606]"
-  >
-    <span class="text-2xl md:text-3xl">
-      {{ isEditMode ? 'Editar usuario' : 'Crear usuario' }}</span
-    >
-  </section>
-  <div class="mb-4">
-    <span class="brand-text-body-m text-black-50 fw-semibold">
-      {{
-        isEditMode
-          ? 'Edita los campos que desees'
-          : 'Aquí puedes crear usuarios con sus respectivos roles'
-      }}
-    </span>
-  </div>
-
+<app-base-page
+  [headerTitle]="isEditMode ? 'Editar usuario' : 'Crear usuario'"
+  [contentInfo]="
+    isEditMode
+      ? 'Edita los campos que desees'
+      : 'Aquí puedes crear usuarios con sus respectivos roles'
+  "
+  [showBackButton]="true"
+  backButtonRoute="/organizational/users/list"
+  backButtonText="Volver"
+  backButtonTooltip="Volver a la lista"
+  [showActions]="false"
+  [showContentTitle]="true"
+  [showContentInfo]="true"
+>
   <form [formGroup]="userForm" class="flex flex-col">
     <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
       <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">

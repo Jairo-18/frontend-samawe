@@ -1,14 +1,7 @@
-<section
-  class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[#06a606]"
->
-  <span class="text-2xl md:text-3xl">Gestionar pasadías</span>
-</section>
-<div class="mb-4">
-  <span class="brand-text-body-m text-black-50 fw-semibold"
-    >Gestiona las pasadías registradas en tu hotel
-  </span>
-</div>
-
+<app-section-header
+  [title]="'Gestionar pasadías'"
+  [subtitle]="'Gestiona las pasadías registradas en tu hotel'"
+></app-section-header>
 @if (!isMobile) {
 <app-search-fields
   [searchFields]="searchFieldsExcursions"

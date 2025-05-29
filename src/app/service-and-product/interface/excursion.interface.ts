@@ -27,8 +27,3 @@ export interface ExcursionComplete {
   createdAt: Date;
   deletedAt: Date;
 }
-
-export interface CreateExcursionRelatedData {
-  categoryType: CategoryType[];
-  stateType: StateType[];
-}

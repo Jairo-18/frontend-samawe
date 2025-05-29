@@ -5,73 +5,15 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  ApiResponseCreateInterface,
-  ApiResponseInterface
-} from '../interfaces/api-response.interface';
+import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
-import { CreateProductRelatedData } from '../../service-and-product/interface/product.interface';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import {
-  CreateType,
-  TypeForEditResponse,
-  TypeItem
-} from '../interfaces/relatedDataGeneral';
-import {
-  PaginationInterface,
-  ParamsPaginationInterface
-} from '../interfaces/pagination.interface';
-import { HttpUtilitiesService } from '../utilities/http-utilities.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
-  private readonly _httpUtilities: HttpUtilitiesService =
-    inject(HttpUtilitiesService);
-
-  getEntitiesWithPagination(
-    type: string,
-    query: ParamsPaginationInterface
-  ): Observable<{ pagination: PaginationInterface; data: TypeItem[] }> {
-    const params = this._httpUtilities.httpParamsFromObject(query);
-    return this._httpClient.get<{
-      pagination: PaginationInterface;
-      data: TypeItem[];
-    }>(`${environment.apiUrl}type/paginated/${type}`, { params });
-  }
-
-  createType(
-    type: string,
-    data: CreateType
-  ): Observable<ApiResponseCreateInterface> {
-    return this._httpClient.post<ApiResponseCreateInterface>(
-      `${environment.apiUrl}type/create/${type}`,
-      data
-    );
-  }
-
-  getTypeForEdit<T extends CreateType>(
-    type: string,
-    id: string
-  ): Observable<ApiResponseInterface<TypeForEditResponse<T>>> {
-    return this._httpClient.get<ApiResponseInterface<TypeForEditResponse<T>>>(
-      `${environment.apiUrl}type/${type}/${id}`
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateType(type: string, id: string, body: any): Observable<any> {
-    return this._httpClient.patch(
-      `${environment.apiUrl}type/${type}/${id}`,
-      body
-    );
-  }
-
-  deleteType(type: string, id: string): Observable<unknown> {
-    return this._httpClient.delete(`${environment.apiUrl}type/${type}/${id}`);
-  }
 
   registerUserRelatedData(): Observable<
     ApiResponseInterface<RegisterUserRelatedData>
@@ -86,14 +28,6 @@ export class RelatedDataService {
   > {
     return this._httpClient.get<ApiResponseInterface<CreateUserRelatedData>>(
       `${environment.apiUrl}user/create/related-data`
-    );
-  }
-
-  createProductRelatedData(): Observable<
-    ApiResponseInterface<CreateProductRelatedData>
-  > {
-    return this._httpClient.get<ApiResponseInterface<CreateProductRelatedData>>(
-      `${environment.apiUrl}product/create/related-data`
     );
   }
 

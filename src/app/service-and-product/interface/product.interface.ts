@@ -24,7 +24,3 @@ export interface ProductComplete {
   createdAt: Date;
   deletedAt: Date;
 }
-
-export interface CreateProductRelatedData {
-  categoryType: CategoryType[];
-}

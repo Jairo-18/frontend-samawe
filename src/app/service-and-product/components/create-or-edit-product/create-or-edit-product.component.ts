@@ -29,6 +29,7 @@ import { ProductsService } from '../../services/products.service';
 import { CreateProductPanel } from '../../interface/product.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-create-or-edit-product',
@@ -44,7 +45,8 @@ import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
     MatButtonModule,
     FontAwesomeModule,
     MatIcon,
-    CurrencyFormatDirective
+    CurrencyFormatDirective,
+    SectionHeaderComponent
   ],
   templateUrl: './create-or-edit-product.component.html',
   styleUrl: './create-or-edit-product.component.scss',

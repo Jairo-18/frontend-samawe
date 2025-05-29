@@ -1,19 +1,11 @@
-<section
-  class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[#06a606]"
->
-  <span class="text-2xl md:text-3xl">
-    {{ isEditMode ? 'Editar pasadía' : 'Crear pasadía' }}</span
-  >
-</section>
-<div class="mb-4">
-  <span class="brand-text-body-m text-black-50 fw-semibold">
-    {{
-      isEditMode
-        ? 'Edita los campos que desees'
-        : 'Aquí puedes crear pasadías con sus respectivos campos'
-    }}
-  </span>
-</div>
+<app-section-header
+  [title]="isEditMode ? 'Editar pasadía' : 'Crear pasadía'"
+  [subtitle]="
+    isEditMode
+      ? 'Edita los campos que desees'
+      : 'Aquí puedes crear pasadías con sus respectivos campos'
+  "
+></app-section-header>
 
 <form [formGroup]="excursionForm" class="flex flex-col">
   <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">

@@ -36,6 +36,7 @@ import {
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
 import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-see-products',
@@ -53,7 +54,8 @@ import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
     SearchFieldsComponent,
     LoaderComponent,
     MatTab,
-    MatTabGroup
+    MatTabGroup,
+    SectionHeaderComponent
   ],
   templateUrl: './see-products.component.html',
   styleUrl: './see-products.component.scss'

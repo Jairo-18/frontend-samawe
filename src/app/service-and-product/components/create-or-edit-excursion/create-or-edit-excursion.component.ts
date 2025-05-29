@@ -33,6 +33,7 @@ import {
   ExcursionComplete
 } from '../../interface/excursion.interface';
 import { ExcursionsService } from '../../services/excursions.service';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-create-or-edit-excursion',
@@ -49,7 +50,8 @@ import { ExcursionsService } from '../../services/excursions.service';
     FontAwesomeModule,
     MatIcon,
     MatIconModule,
-    CurrencyFormatDirective
+    CurrencyFormatDirective,
+    SectionHeaderComponent
   ],
   templateUrl: './create-or-edit-excursion.component.html',
   styleUrl: './create-or-edit-excursion.component.scss'

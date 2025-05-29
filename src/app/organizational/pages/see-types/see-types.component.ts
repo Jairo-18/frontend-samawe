@@ -1,9 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-
 import { MatButtonModule } from '@angular/material/button';
 import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,6 +15,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-edit-types.component';
+import { TypesService } from '../../services/types.service';
 
 @Component({
   selector: 'app-see-types',
@@ -36,7 +35,7 @@ import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-ed
   styleUrls: ['./see-types.component.scss']
 })
 export class SeeTypesComponent implements OnInit {
-  private readonly _relatedDataService = inject(RelatedDataService);
+  private readonly _typesService = inject(TypesService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
 
   results?: TypeItem[];
@@ -99,7 +98,7 @@ export class SeeTypesComponent implements OnInit {
   }
 
   onEditType(event: { type: string; id: number | string }) {
-    this._relatedDataService
+    this._typesService
       .getTypeForEdit(event.type, event.id.toString())
       .subscribe({
         next: (res) => {
@@ -144,7 +143,7 @@ export class SeeTypesComponent implements OnInit {
     };
 
     this.loading = true;
-    this._relatedDataService.getEntitiesWithPagination(type, query).subscribe({
+    this._typesService.getEntitiesWithPagination(type, query).subscribe({
       next: (res) => {
         this.results = res.data || [];
         this.paginationParams = res.pagination;
@@ -170,7 +169,7 @@ export class SeeTypesComponent implements OnInit {
         const type = event.type.trim();
         const id = event.id.toString();
 
-        this._relatedDataService.deleteType(type, id).subscribe({
+        this._typesService.deleteType(type, id).subscribe({
           next: () => this.loadGroupData(this.selectedType),
           error: (err) => console.error('Error al eliminar', err)
         });

@@ -32,6 +32,7 @@ import {
   CategoryType,
   StateType
 } from '../../../shared/interfaces/relatedDataGeneral';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-create-or-edit-accommodation',
@@ -48,7 +49,8 @@ import {
     FontAwesomeModule,
     MatIcon,
     MatIconModule,
-    CurrencyFormatDirective
+    CurrencyFormatDirective,
+    SectionHeaderComponent
   ],
   templateUrl: './create-or-edit-accommodation.component.html',
   styleUrl: './create-or-edit-accommodation.component.scss'

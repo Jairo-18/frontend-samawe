@@ -40,6 +40,7 @@ import {
   CreateAccommodationPanel
 } from '../../interface/accommodation.interface';
 import { AccommodationsService } from '../../services/accommodations.service';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-see-accommodations',
@@ -57,7 +58,8 @@ import { AccommodationsService } from '../../services/accommodations.service';
     SearchFieldsComponent,
     LoaderComponent,
     MatTab,
-    MatTabGroup
+    MatTabGroup,
+    SectionHeaderComponent
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'

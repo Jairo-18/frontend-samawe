@@ -77,9 +77,6 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
 
   ngOnInit(): void {
-    // this._route.queryParams.subscribe(() => {
-    //   this.tabGroup.selectedIndex = 1;
-    // });
     this.loadRelatedData();
   }
 

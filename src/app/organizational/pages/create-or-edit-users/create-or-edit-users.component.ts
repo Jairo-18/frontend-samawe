@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -41,7 +41,6 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     MatButtonModule,
     FontAwesomeModule,
     MatIcon,
-    RouterLink,
     BasePageComponent
   ],
   templateUrl: './create-or-edit-users.component.html',

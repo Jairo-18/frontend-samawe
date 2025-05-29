@@ -6,7 +6,6 @@ import {
   Validators
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
+import { TypesService } from '../../services/types.service';
 
 @Component({
   selector: 'app-create-or-edit-types',
@@ -45,7 +44,7 @@ export class CreateOrEditTypesComponent {
   private readonly _dialogRef = inject(
     MatDialogRef<CreateOrEditTypesComponent>
   );
-  private readonly _relatedDataService = inject(RelatedDataService);
+  private readonly _typesService = inject(TypesService);
   private readonly _fb = inject(FormBuilder);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,9 +87,9 @@ export class CreateOrEditTypesComponent {
     let action$;
 
     if (this.isEditMode && this._id) {
-      action$ = this._relatedDataService.updateType(type, this._id, payload);
+      action$ = this._typesService.updateType(type, this._id, payload);
     } else {
-      action$ = this._relatedDataService.createType(type, payload);
+      action$ = this._typesService.createType(type, payload);
     }
 
     action$.subscribe({

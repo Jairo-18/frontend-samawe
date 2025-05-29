@@ -39,6 +39,7 @@ import {
   ExcursionComplete
 } from '../../interface/excursion.interface';
 import { ExcursionsService } from '../../services/excursions.service';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-see-excursions',
@@ -56,7 +57,8 @@ import { ExcursionsService } from '../../services/excursions.service';
     SearchFieldsComponent,
     LoaderComponent,
     MatTab,
-    MatTabGroup
+    MatTabGroup,
+    SectionHeaderComponent
   ],
   templateUrl: './see-excursions.component.html',
   styleUrl: './see-excursions.component.scss'
