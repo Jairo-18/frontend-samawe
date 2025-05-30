@@ -70,6 +70,42 @@ export interface IdentificationType {
   deletedAt?: Date;
 }
 
+export interface TaxeType {
+  taxeTipeId: string;
+  code?: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+export interface PayType {
+  payTypeId: string;
+  code?: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+export interface PaidType {
+  paidTypeId: string;
+  code?: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+export interface InvoiceType {
+  invoiceTypeId: string;
+  code?: string;
+  name?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
 export interface AllTypes {
   additionalType: TypeItem[];
   bedType: TypeItem[];

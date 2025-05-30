@@ -29,7 +29,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Facturas',
-        route: '/invoice/invoices/create',
+        route: '/invoice/invoices/list',
         icon: 'notes',
         order: 3,
         subItems: []

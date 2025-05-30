@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
+import { createInvoiceRelatedData } from '../../invoices/interface/invoice.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,13 @@ export class RelatedDataService {
     return this._httpClient.get<
       ApiResponseInterface<CreateAccommodationRelatedData>
     >(`${environment.apiUrl}accommodation/create/related-data`);
+  }
+
+  createInvoiceRelatedData(): Observable<
+    ApiResponseInterface<createInvoiceRelatedData>
+  > {
+    return this._httpClient.get<ApiResponseInterface<createInvoiceRelatedData>>(
+      `${environment.apiUrl}invoices/create/related-data`
+    );
   }
 }

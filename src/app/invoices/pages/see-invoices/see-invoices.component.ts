@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 @Component({
   selector: 'app-see-invoices',
   standalone: true,
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, BasePageComponent],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
 })
