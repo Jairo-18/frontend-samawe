@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { CreateInvoicesComponent } from './pages/create-invoices/create-invoices.component';
 import { SeeInvoicesComponent } from './pages/see-invoices/see-invoices.component';
+import { EditInvoiceComponent } from './pages/edit-invoice/edit-invoice.component';
 
 export const invoicesRoutes: Routes = [
   {
@@ -15,8 +15,8 @@ export const invoicesRoutes: Routes = [
         path: 'invoices',
         children: [
           {
-            path: 'create',
-            component: CreateInvoicesComponent
+            path: ':id/edit',
+            component: EditInvoiceComponent
           },
           {
             path: 'list',

@@ -37,6 +37,7 @@ import {
   startWith
 } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-invoice-dialog',
@@ -65,15 +66,16 @@ export class CreateInvoiceDialogComponent implements OnInit {
   selectedUser: CreateUserPanel | null = null;
   isLoadingUsers = false;
 
-  private readonly _dialogRef = inject(
-    MatDialogRef<CreateInvoiceDialogComponent>
-  );
-  private readonly _fb = inject(FormBuilder);
-  private readonly _invoiceService = inject(InvoiceService);
-  private readonly _relatedDataService = inject(RelatedDataService);
-  private readonly _userService = inject(UsersService);
-  private readonly _authService = inject(AuthService);
+  private readonly _dialogRef: MatDialogRef<CreateInvoiceDialogComponent> =
+    inject(MatDialogRef<CreateInvoiceDialogComponent>);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _invoiceService: InvoiceService = inject(InvoiceService);
+  private readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
+  private readonly _userService: UsersService = inject(UsersService);
+  private readonly _authService: AuthService = inject(AuthService);
   private readonly _tokensStorageKey = '_sessionData';
+  private readonly _router: Router = inject(Router);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
@@ -126,7 +128,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
         this.invoiceTypes = res.data.invoiceType || [];
       },
       error: (err) => {
-        console.error('Error loading invoice types', err);
+        console.error('Error al cargar los tipos de factura', err);
       }
     });
   }
@@ -139,18 +141,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
       })
       .pipe(
         map((response) => {
-          // Verificar que la respuesta tenga la estructura esperada
-          console.log('searchUsers - Full API response:', response);
-          console.log('searchUsers - Users data:', response.data);
-
-          if (response.data && response.data.length > 0) {
-            console.log('searchUsers - First user example:', response.data[0]);
-            console.log(
-              'searchUsers - First user keys:',
-              Object.keys(response.data[0])
-            );
-          }
-
           return response.data || [];
         }),
         catchError((error) => {
@@ -171,32 +161,20 @@ export class CreateInvoiceDialogComponent implements OnInit {
 
   onUserSelected(event: MatAutocompleteSelectedEvent): void {
     if (!event.option.value) {
-      console.log('onUserSelected: No value in event.option');
       return;
     }
 
     const user: CreateUserPanel = event.option.value;
-    console.log('onUserSelected - Selected user:', user);
-    console.log('onUserSelected - User properties:', {
-      userId: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      identificationNumber: user.identificationNumber
-    });
-
     this.selectedUser = user;
 
     // Verificar que el usuario tenga userId
     if (user.userId) {
       this.form.patchValue({ userId: user.userId });
-      console.log('Form updated with userId:', user.userId);
     } else {
       console.error('El usuario seleccionado no tiene userId:', user);
     }
 
-    // Actualizar el valor mostrado en el input
     const displayValue = this.displayUser(user);
-    console.log('Setting userFilterControl to:', displayValue);
     this.userFilterControl.setValue(displayValue, { emitEvent: false });
   }
 
@@ -214,7 +192,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     // Usar el método del AuthService si existe
     const userId = this._authService.getCurrentUserId?.();
     if (userId) {
-      console.log('UserId obtenido del AuthService:', userId);
       return userId;
     }
 
@@ -227,11 +204,8 @@ export class CreateInvoiceDialogComponent implements OnInit {
       }
 
       const parsed = JSON.parse(rawUserData);
-      console.log('Parsed user data (fallback):', parsed);
 
-      // Basado en tu estructura: {tokens: {...}, user: {userId: "..."}, session: {...}}
       if (parsed.user && parsed.user.userId) {
-        console.log('UserId obtenido del fallback:', parsed.user.userId);
         return parsed.user.userId;
       }
 
@@ -249,8 +223,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      console.log('Form errors:', this.form.errors);
-      console.log('Form values:', this.form.value);
       return;
     }
 
@@ -266,16 +238,13 @@ export class CreateInvoiceDialogComponent implements OnInit {
       endDate: new Date().toISOString().split('T')[0]
     };
 
-    console.log('Creating invoice with payload:', payload); // Para debug
-
     this._invoiceService.createInvoice(payload).subscribe({
       next: (res) => {
-        console.log('Invoice created successfully:', res);
         this._dialogRef.close(res.data.rowId);
+        this._router.navigateByUrl(`/invoice/invoices/${res.data.rowId}/edit`);
       },
       error: (err) => {
         console.error('Error creating invoice', err);
-        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
   }

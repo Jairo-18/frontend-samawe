@@ -24,7 +24,7 @@ export const MENU_CONST: MenuInterface[] = [
         name: 'Productos y servicios',
         route: '/service-and-product/general',
         icon: 'add_shopping_cart',
-        order: 3,
+        order: 2,
         subItems: []
       },
       {

@@ -1,6 +1,9 @@
 <article class="brand-content-center">
   <article
-    class="w-[90%] xl:w-[80%] lg:w-[90%] h-max md:h-full py-7 md:py-7 px-5 md:px-7 my-5 rounded-2xl border border-[#06a606]"
+    class="w-[90%] xl:w-[80%] lg:w-[90%] h-max md:h-full py-7 md:py-7 px-5 md:px-7 my-5 rounded-2xl"
+    [ngClass]="{
+      'border border-[#06a606]': showBorder
+    }"
   >
     <!-- Back Button Section -->
     @if (showBackButton) {
