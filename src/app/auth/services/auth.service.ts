@@ -94,6 +94,7 @@ export class AuthService {
 
   saveLocalUserData(userData: LoginSuccessInterface): void {
     localStorage.setItem(this._tokensStorageKey, JSON.stringify(userData));
+    console.log(userData);
   }
 
   logout(data: LogOutInterface): Observable<unknown> {
@@ -192,5 +193,25 @@ export class AuthService {
 
   cleanRedirectUrl(): void {
     this._localStorageService.cleanRedirectUrl();
+  }
+
+  getCurrentUserId(): string | null {
+    try {
+      const userData = this._localStorageService.getAllSessionData();
+      return userData?.user?.userId || null;
+    } catch (error) {
+      console.error('Error getting current user ID:', error);
+      return null;
+    }
+  }
+
+  // También puedes agregar este método si lo necesitas
+  getCurrentUser(): UserInterface | null {
+    try {
+      return this.getUserLoggedIn();
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
   }
 }
