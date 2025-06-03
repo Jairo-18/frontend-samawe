@@ -146,7 +146,7 @@ export class SeeUsersComponent implements OnInit {
    */
   ngOnInit(): void {
     this.loadUsers();
-    this._getDataForFields();
+    this.getDataForFields();
   }
 
   constructor() {
@@ -158,7 +158,7 @@ export class SeeUsersComponent implements OnInit {
   /**
    * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
    */
-  private _getDataForFields(): void {
+  private getDataForFields(): void {
     this._relatedDataService.createUserRelatedData().subscribe({
       next: (res) => {
         const role = res.data?.roleType || [];

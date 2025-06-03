@@ -1,3 +1,4 @@
+import { createInvoiceRelatedData } from './../../invoices/interface/invoice.interface';
 import {
   CreateUserRelatedData,
   RegisterUserRelatedData
@@ -8,7 +9,6 @@ import { Observable } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import { createInvoiceRelatedData } from '../../invoices/interface/invoice.interface';
 
 @Injectable({
   providedIn: 'root'

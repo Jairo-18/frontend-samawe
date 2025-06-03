@@ -1,6 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
@@ -16,6 +21,8 @@ import { CommonModule } from '@angular/common';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-edit-types.component';
 import { TypesService } from '../../services/types.service';
+import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component'; // Agregado
+import { SearchField } from '../../../shared/interfaces/search.interface';
 
 @Component({
   selector: 'app-see-types',
@@ -29,7 +36,8 @@ import { TypesService } from '../../services/types.service';
     MatSelectModule,
     CardTypesComponent,
     LoaderComponent,
-    CommonModule
+    CommonModule,
+    SearchFieldsComponent // Agregado
   ],
   templateUrl: './see-types.component.html',
   styleUrls: ['./see-types.component.scss']
@@ -37,13 +45,13 @@ import { TypesService } from '../../services/types.service';
 export class SeeTypesComponent implements OnInit {
   private readonly _typesService = inject(TypesService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
+  private readonly _fb: FormBuilder = inject(FormBuilder); // Agregado
 
   results?: TypeItem[];
   loading: boolean = false;
   showClearButton: boolean = false;
   isMobile: boolean = false;
   selectedType: string = 'additionalType';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any = {};
   paginationParams: PaginationInterface = {
     page: 1,
@@ -56,12 +64,55 @@ export class SeeTypesComponent implements OnInit {
   buttons: Record<string, string> = TYPE_ENTITY_LABELS_ES;
   buttonsControll: FormControl = new FormControl('additionalType');
 
+  form!: FormGroup;
+
+  searchFields: SearchField[] = [
+    {
+      name: 'code', // ← obligatorio
+      label: 'Código',
+
+      type: 'text',
+      placeholder: 'Buscar por código'
+    },
+    {
+      name: 'name', // ← obligatorio
+      label: 'Nombre',
+
+      type: 'text',
+      placeholder: 'Buscar por nombre'
+    }
+  ];
+
   ngOnInit(): void {
+    this.form = this._fb.group({
+      code: [''],
+      name: ['']
+    });
+
     this.loadGroupData(this.selectedType);
+
     this.buttonsControll.valueChanges.subscribe((value) => {
       this.selectedType = value;
       this.loadGroupData(value);
     });
+  }
+
+  onSearchSubmit(values: any): void {
+    this.params = values;
+    this.paginationParams.page = 1;
+    this.loadGroupData(this.selectedType);
+  }
+
+  onSearchChange(form: any): void {
+    this.showClearButton = !!form.length;
+    this.params = form?.value;
+    this.loadGroupData(this.selectedType);
+  }
+
+  onClearSearch() {
+    this.params = {};
+    this.paginationParams.page = 1;
+    this.loadGroupData(this.selectedType);
   }
 
   public onButtonSelect(type: string) {
@@ -78,12 +129,12 @@ export class SeeTypesComponent implements OnInit {
   }
 
   openDialog() {
-    const isMobile = window.innerWidth <= 768; // Ajusta el breakpoint según tu necesidad
+    const isMobile = window.innerWidth <= 768;
 
     const dialogRef = this._matDialog.open(CreateOrEditTypesComponent, {
-      width: isMobile ? '90vw' : 'auto', // 90% del viewport width en móvil, 100% en escritorio
+      width: isMobile ? '90vw' : 'auto',
       height: 'auto',
-      maxWidth: '100vw', // Para evitar que supere el ancho de la pantalla
+      maxWidth: '100vw',
       data: {
         selectedType: this.selectedType,
         editMode: false
@@ -105,13 +156,13 @@ export class SeeTypesComponent implements OnInit {
           const data = res.data.type;
           const isMobile = window.innerWidth <= 768;
           const dialogRef = this._matDialog.open(CreateOrEditTypesComponent, {
-            width: isMobile ? '90vw' : 'auto', // 90% del viewport width en móvil, 100% en escritorio
+            width: isMobile ? '90vw' : 'auto',
             height: 'auto',
-            maxWidth: '100vw', // Para evitar que supere el ancho de la pantalla
+            maxWidth: '100vw',
             data: {
               editMode: true,
               selectedType: event.type,
-              id: event.id.toString(), // Aquí uso el id del evento directamente
+              id: event.id.toString(),
               code: data.code,
               name: data.name
             }

@@ -71,7 +71,7 @@ export interface IdentificationType {
 }
 
 export interface TaxeType {
-  taxeTipeId: string;
+  taxeTypeId: string;
   code?: string;
   name?: string;
   createdAt: Date;

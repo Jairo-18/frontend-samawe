@@ -4,10 +4,25 @@ import { HttpClient } from '@angular/common/http';
 import { ApiResponseCreateInterface } from '../../shared/interfaces/api-response.interface';
 import { Observable } from 'rxjs';
 import { CreateInvoice } from '../interface/invoice.interface';
+import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
+import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _httpUtilities: HttpUtilitiesService =
+    inject(HttpUtilitiesService);
+
+  getInvoiceWithPagination(query: object): Observable<{
+    pagination: PaginationInterface;
+    data: CreateInvoice[];
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: CreateInvoice[];
+    }>(`${environment.apiUrl}invoices/paginated-list`, { params });
+  }
 
   createInvoice(
     invoice: CreateInvoice
@@ -15,6 +30,12 @@ export class InvoiceService {
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}invoices/create`,
       invoice
+    );
+  }
+
+  deleteInvoice(invoiceId: number): Observable<unknown> {
+    return this._httpClient.delete(
+      `${environment.apiUrl}invoices/${invoiceId}`
     );
   }
 }

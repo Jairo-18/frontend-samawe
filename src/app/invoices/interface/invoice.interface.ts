@@ -1,4 +1,5 @@
 import {
+  IdentificationType,
   InvoiceType,
   PaidType,
   PayType,
@@ -26,6 +27,7 @@ export interface InvoiceDetail {
 }
 
 export interface createInvoiceRelatedData {
+  identificationType: IdentificationType[];
   invoiceType: InvoiceType[];
   taxeType: TaxeType[];
   payType: PayType[];

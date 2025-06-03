@@ -11,7 +11,6 @@ import { InvoiceService } from '../../services/invoice.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { InvoiceType } from '../../../shared/interfaces/relatedDataGeneral';
 import { CreateUserPanel } from '../../../organizational/interfaces/create.interface';
-import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { UsersService } from '../../../organizational/services/users.service';
 import { CreateInvoice } from '../../interface/invoice.interface';
 import { MatButtonModule } from '@angular/material/button';
@@ -70,8 +69,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     inject(MatDialogRef<CreateInvoiceDialogComponent>);
   private readonly _fb: FormBuilder = inject(FormBuilder);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
-  private readonly _relatedDataService: RelatedDataService =
-    inject(RelatedDataService);
   private readonly _userService: UsersService = inject(UsersService);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _tokensStorageKey = '_sessionData';
@@ -83,7 +80,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.setupUserAutocomplete();
-    this.loadInvoiceTypes();
+    this.invoiceTypes = this.data?.relatedData?.invoiceType || [];
   }
 
   private initForm(): void {
@@ -120,17 +117,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
         this.filteredUsers = users;
         this.isLoadingUsers = false;
       });
-  }
-
-  private loadInvoiceTypes(): void {
-    this._relatedDataService.createInvoiceRelatedData().subscribe({
-      next: (res) => {
-        this.invoiceTypes = res.data.invoiceType || [];
-      },
-      error: (err) => {
-        console.error('Error al cargar los tipos de factura', err);
-      }
-    });
   }
 
   private searchUsers(query: string): Observable<CreateUserPanel[]> {
