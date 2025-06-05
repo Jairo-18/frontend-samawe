@@ -57,13 +57,14 @@ export class SeeInvoicesComponent implements OnInit {
   displayedColumns: string[] = [
     'invoiceType',
     'code',
-    'clientName',
+    'identificationType',
     'clientIdentification',
+    'clientName',
     'employeeName',
-    'total',
     'payType',
     'paidType',
-    'taxeType',
+    'invoiceElectronic',
+    'total',
     'actions'
   ];
 
@@ -100,10 +101,17 @@ export class SeeInvoicesComponent implements OnInit {
     },
     {
       name: 'identificationTypeId',
-      label: 'Tipo identificación',
+      label: 'Tipo identificación Cliente',
       type: 'select',
       options: [],
       placeholder: 'Buscar por tipo de identificación'
+    },
+
+    {
+      name: 'clientIdentification',
+      label: 'Identificación Cliente',
+      type: 'text',
+      placeholder: 'Buscar por identificación'
     },
     {
       name: 'clientName',
@@ -143,8 +151,20 @@ export class SeeInvoicesComponent implements OnInit {
       type: 'select',
       options: [],
       placeholder: 'Buscar por tipo de impuesto'
+    },
+    {
+      // <-- CAMBIO: Se agregaron las opciones para el filtro de Sí/No
+      name: 'invoiceElectronic',
+      label: 'Facturación electrónica',
+      type: 'select',
+      options: [
+        { value: 'true', label: 'Sí' },
+        { value: 'false', label: 'No' }
+      ],
+      placeholder: 'Buscar por facturación electrónica'
     }
   ];
+  // <-- FIN DE CAMBIOS EN searchFields
 
   constructor() {
     this.isMobile = window.innerWidth <= 768;
@@ -172,16 +192,17 @@ export class SeeInvoicesComponent implements OnInit {
           const key = field.name as keyof typeof optionMap;
 
           const options = optionMap[key];
-          return options
-            ? {
-                ...field,
-                name: key,
-                options: options.map((t: any) => ({
-                  value: t[key], // Aquí también puedes hacer un cast o usar el id concreto (ej: t.invoiceTypeId)
-                  label: t.name ?? 'Sin nombre'
-                }))
-              }
-            : field;
+          if (options) {
+            // Verificamos si encontramos opciones para este campo
+            return {
+              ...field,
+              options: options.map((t: any) => ({
+                value: t[key],
+                label: t.name ?? 'Sin nombre'
+              }))
+            };
+          }
+          return field; // Si no hay opciones (como en 'invoiceElectronic'), lo devolvemos como está
         });
       },
       error: (err) => {
@@ -196,7 +217,7 @@ export class SeeInvoicesComponent implements OnInit {
     this._relatedDataService.createInvoiceRelatedData().subscribe({
       next: (relatedData) => {
         const dialogRef = this._matDialog.open(CreateInvoiceDialogComponent, {
-          width: isMobile ? '90vw' : 'auto',
+          width: isMobile ? '90vw' : '60vw',
           height: 'auto',
           maxWidth: '100vw',
           data: {
@@ -218,7 +239,15 @@ export class SeeInvoicesComponent implements OnInit {
   }
 
   onSearchSubmit(values: any): void {
-    this.params = values;
+    // <-- CAMBIO: Se formatea el objeto de búsqueda para asegurar tipos correctos
+    const formattedParams = { ...values };
+    for (const key in formattedParams) {
+      // Convierte los campos que terminan en "Id" a número si tienen valor
+      if (key.endsWith('Id') && formattedParams[key]) {
+        formattedParams[key] = Number(formattedParams[key]);
+      }
+    }
+    this.params = formattedParams;
     this.paginationParams.page = 1;
     this.loadInvoices();
   }
@@ -250,7 +279,6 @@ export class SeeInvoicesComponent implements OnInit {
 
     this._invoiceService.getInvoiceWithPagination(query).subscribe({
       next: (res) => {
-        // Transformar los datos para que coincidan con la tabla
         const transformedData = res.data.map((invoice: any) => ({
           ...invoice,
           clientName: invoice.user
@@ -262,7 +290,12 @@ export class SeeInvoicesComponent implements OnInit {
           employeeName: invoice.employee
             ? `${invoice.employee.firstName} ${invoice.employee.lastName}`
             : '---',
-          taxeType: invoice.invoiceDetails?.[0]?.taxeType || null
+          taxeType: invoice.invoiceDetails?.[0]?.taxeType || null,
+          // <-- CAMBIO: Normalizar el valor de invoiceElectronic a un booleano puro
+          invoiceElectronic:
+            invoice.invoiceElectronic === true ||
+            invoice.invoiceElectronic === 'true' ||
+            invoice.invoiceElectronic === 1
         }));
 
         this.dataSource.data = transformedData;

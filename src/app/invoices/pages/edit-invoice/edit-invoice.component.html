@@ -7,8 +7,10 @@
   backButtonText="Volver"
   backButtonTooltip="Volver a la lista"
 >
+  @if (loading) {
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
     <!-- Columna izquierda -->
+
     <div class="flex flex-col w-full md:w-[75%] gap-3">
       <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
         <span class="text-lg md:text-xl font-extrabold">
@@ -80,4 +82,9 @@
       ></app-invoice-summary>
     </div>
   </article>
+  } @else {
+  <div class="h-full w-hull justify-center items-center flex">
+    <app-loader></app-loader>
+  </div>
+  }
 </app-base-page>

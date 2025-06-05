@@ -9,7 +9,11 @@ import {
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { InvoiceService } from '../../services/invoice.service';
 import { AuthService } from '../../../auth/services/auth.service';
-import { InvoiceType } from '../../../shared/interfaces/relatedDataGeneral';
+import {
+  InvoiceType,
+  PaidType,
+  PayType
+} from '../../../shared/interfaces/relatedDataGeneral';
 import { CreateUserPanel } from '../../../organizational/interfaces/create.interface';
 import { UsersService } from '../../../organizational/services/users.service';
 import { CreateInvoice } from '../../interface/invoice.interface';
@@ -47,9 +51,9 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatOptionModule,
+    MatInputModule,
     CommonModule,
     MatSelectModule,
-    MatInputModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatIconModule
@@ -60,6 +64,8 @@ import { Router } from '@angular/router';
 export class CreateInvoiceDialogComponent implements OnInit {
   form!: FormGroup;
   invoiceTypes: InvoiceType[] = [];
+  paidTypes: PaidType[] = [];
+  payTypes: PayType[] = [];
   filteredUsers: CreateUserPanel[] = [];
   userFilterControl: FormControl<string | null> = new FormControl('');
   selectedUser: CreateUserPanel | null = null;
@@ -81,13 +87,18 @@ export class CreateInvoiceDialogComponent implements OnInit {
     this.initForm();
     this.setupUserAutocomplete();
     this.invoiceTypes = this.data?.relatedData?.invoiceType || [];
+    this.paidTypes = this.data?.relatedData?.paidType || [];
+    this.payTypes = this.data?.relatedData?.payType || [];
   }
 
   private initForm(): void {
     this.form = this._fb.group({
       invoiceTypeId: ['', Validators.required],
       code: ['', Validators.required],
-      userId: ['', Validators.required]
+      userId: ['', Validators.required],
+      invoiceElectronic: [false, Validators.required],
+      paidTypeId: ['', Validators.required],
+      payTypeId: ['', Validators.required]
     });
   }
 
@@ -217,9 +228,9 @@ export class CreateInvoiceDialogComponent implements OnInit {
       userId: this.form.value.userId,
       invoiceTypeId: this.form.value.invoiceTypeId,
       code: this.form.value.code,
-      details: [],
-      payTypeId: 1,
-      paidTypeId: 1,
+      invoiceElectronic: this.form.value.invoiceElectronic, // Aquí se añade
+      payTypeId: this.form.value.payTypeId,
+      paidTypeId: this.form.value.paidTypeId,
       startDate: new Date().toISOString().split('T')[0],
       endDate: new Date().toISOString().split('T')[0]
     };

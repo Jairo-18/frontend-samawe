@@ -16,10 +16,11 @@ export interface CreateInvoice {
   code: string;
   userId: string;
   startDate: string;
+  invoiceElectronic?: boolean;
   endDate: string;
   payTypeId: number;
   paidTypeId: number;
-  details: InvoiceDetail[];
+  details?: InvoiceDetail[];
 }
 
 export interface InvoiceDetail {

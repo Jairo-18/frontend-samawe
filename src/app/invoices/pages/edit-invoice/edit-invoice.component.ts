@@ -18,6 +18,7 @@ import { InvoiceService } from '../../services/invoice.service';
 import { ApiResponseInterface } from '../../../shared/interfaces/api-response.interface';
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -30,7 +31,8 @@ import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoic
     AddAccommodationComponent,
     AddExcursionComponent,
     InvoiceDetaillComponent,
-    InvoiceSummaryComponent
+    InvoiceSummaryComponent,
+    LoaderComponent
   ],
   templateUrl: './edit-invoice.component.html',
   styleUrl: './edit-invoice.component.scss'
@@ -48,6 +50,7 @@ export class EditInvoiceComponent implements OnInit {
 
   invoiceData?: Invoice;
   invoiceId?: number;
+  loading: boolean = false;
 
   ngOnInit(): void {
     this.loadRelatedData();
@@ -74,8 +77,8 @@ export class EditInvoiceComponent implements OnInit {
   getInvoiceToEdit(invoiceId: number): void {
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
       next: (response: ApiResponseInterface<Invoice>) => {
+        this.loading = true;
         this.invoiceData = response.data;
-        console.log('✅ Factura cargada correctamente:', this.invoiceData);
       },
       error: (error) => {
         console.error('❌ Error al cargar la factura:', error);

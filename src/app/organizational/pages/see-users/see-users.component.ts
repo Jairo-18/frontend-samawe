@@ -214,7 +214,7 @@ export class SeeUsersComponent implements OnInit {
   getIdentificationTypeName(id: string): string {
     return (
       this.identificationType.find((t) => t.identificationTypeId === id)
-        ?.name || ''
+        ?.code || ''
     );
   }
 

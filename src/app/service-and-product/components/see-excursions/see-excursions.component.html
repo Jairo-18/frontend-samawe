@@ -33,49 +33,49 @@
     } @else if (dataSource.data.length > 0) {
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="categoryType">
-        <th mat-header-cell *matHeaderCellDef>Categoría</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">Categoría</th>
         <td mat-cell *matCellDef="let excursion">
           {{ getCategoryTypeName(excursion.categoryTypeId) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="stateType">
-        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">Estado</th>
         <td mat-cell *matCellDef="let excursion">
           {{ getStateTypeName(excursion.stateTypeId) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef>Código</th>
-        <td mat-cell *matCellDef="let excursion">
+        <th mat-header-cell *matHeaderCellDef class="center-text">Código</th>
+        <td mat-cell *matCellDef="let excursion" class="center-text">
           {{ excursion.code }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">Nombre</th>
         <td mat-cell *matCellDef="let excursion">
           {{ excursion.name }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="priceBuy">
-        <th mat-header-cell *matHeaderCellDef>P. Compra</th>
-        <td mat-cell *matCellDef="let excursion">
+        <th mat-header-cell *matHeaderCellDef class="center-text">P. Compra</th>
+        <td mat-cell *matCellDef="let excursion" class="right-text">
           {{ excursion.priceBuy | currency : 'COP' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="priceSale">
-        <th mat-header-cell *matHeaderCellDef>P. Venta</th>
-        <td mat-cell *matCellDef="let excursion">
+        <th mat-header-cell *matHeaderCellDef class="center-text">P. Venta</th>
+        <td mat-cell *matCellDef="let excursion" class="right-text">
           {{ excursion.priceSale | currency : 'COP' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">Acciones</th>
         <td mat-cell *matCellDef="let excursion">
           <button
             mat-icon-button
@@ -164,49 +164,63 @@
       >
         <table mat-table [dataSource]="dataSource" matSort>
           <ng-container matColumnDef="categoryType">
-            <th mat-header-cell *matHeaderCellDef>Categoría</th>
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              Categoría
+            </th>
             <td mat-cell *matCellDef="let excursion">
               {{ getCategoryTypeName(excursion.categoryTypeId) }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="stateType">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              Estado
+            </th>
             <td mat-cell *matCellDef="let excursion">
               {{ getStateTypeName(excursion.stateTypeId) }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef>Código</th>
-            <td mat-cell *matCellDef="let excursion">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              Código
+            </th>
+            <td mat-cell *matCellDef="let excursion" class="center-text">
               {{ excursion.code }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Nombre</th>
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              Nombre
+            </th>
             <td mat-cell *matCellDef="let excursion">
               {{ excursion.name }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="priceBuy">
-            <th mat-header-cell *matHeaderCellDef>P. Compra</th>
-            <td mat-cell *matCellDef="let excursion">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              P. Compra
+            </th>
+            <td mat-cell *matCellDef="let excursion" class="right-text">
               {{ excursion.priceBuy | currency : 'COP' }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="priceSale">
-            <th mat-header-cell *matHeaderCellDef>P. Venta</th>
-            <td mat-cell *matCellDef="let excursion">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              P. Venta
+            </th>
+            <td mat-cell *matCellDef="let excursion" class="right-text">
               {{ excursion.priceSale | currency : 'COP' }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              Acciones
+            </th>
             <td mat-cell *matCellDef="let excursion">
               <button
                 mat-icon-button

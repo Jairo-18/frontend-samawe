@@ -2,136 +2,175 @@
   [title]="'Crear factura'"
   [description]="'Llena los campos requeridos para iniciar la factura.'"
 >
-  <form form [formGroup]="form">
+  <form form [formGroup]="form" class="flex flex-col gap-4">
     <!-- Tipo de Factura -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Tipo de factura</mat-label>
-      <mat-select formControlName="invoiceTypeId" required>
-        <mat-option
-          *ngFor="let type of invoiceTypes"
-          [value]="type.invoiceTypeId"
-        >
-          {{ type.name }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="form.get('invoiceTypeId')?.hasError('required')">
-        Tipo de factura requerido
-      </mat-error>
-    </mat-form-field>
 
-    <!-- Código -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Código</mat-label>
-      <input matInput formControlName="code" required />
-      <mat-error *ngIf="form.get('code')?.hasError('required')">
-        Código requerido
-      </mat-error>
-    </mat-form-field>
+    <div class="flex content-between gap-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tipo de factura</mat-label>
+        <mat-select formControlName="invoiceTypeId" required>
+          <mat-option
+            *ngFor="let type of invoiceTypes"
+            [value]="type.invoiceTypeId"
+          >
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('invoiceTypeId')?.hasError('required')">
+          Tipo de factura requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Código -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="code" required />
+        <mat-error *ngIf="form.get('code')?.hasError('required')">
+          Código requerido
+        </mat-error>
+      </mat-form-field>
+    </div>
 
     <!-- Cliente con Autocomplete -->
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Cliente</mat-label>
-      <input
-        matInput
-        placeholder="Buscar cliente por nombre..."
-        [formControl]="userFilterControl"
-        [matAutocomplete]="auto"
-        autocomplete="off"
-      />
+    <div>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Cliente</mat-label>
+        <input
+          matInput
+          placeholder="Buscar cliente por nombre..."
+          [formControl]="userFilterControl"
+          [matAutocomplete]="auto"
+          autocomplete="off"
+        />
 
-      <!-- Spinner de carga -->
-      <mat-icon *ngIf="isLoadingUsers" matSuffix>
-        <mat-spinner diameter="20"></mat-spinner>
-      </mat-icon>
+        <!-- Spinner de carga -->
+        <mat-icon *ngIf="isLoadingUsers" matSuffix>
+          <mat-spinner diameter="20"></mat-spinner>
+        </mat-icon>
 
-      <!-- Botón para limpiar selección -->
-      <button
-        *ngIf="selectedUser && !isLoadingUsers"
-        matSuffix
-        mat-icon-button
-        type="button"
-        (click)="clearUserSelection()"
-        matTooltip="Limpiar selección"
-      >
-        <mat-icon>clear</mat-icon>
-      </button>
-
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        [displayWith]="displayUser"
-        (optionSelected)="onUserSelected($event)"
-        autoActiveFirstOption
-      >
-        <!-- Opciones de usuarios -->
-        <mat-option *ngFor="let user of filteredUsers" [value]="user">
-          <div class="flex flex-col">
-            <span class="font-medium">
-              {{ user.firstName || 'N/A' }} {{ user.lastName || 'N/A' }}
-            </span>
-            <span
-              class="text-sm text-gray-500"
-              *ngIf="user.identificationNumber"
-            >
-              {{ user.identificationNumber }}
-            </span>
-          </div>
-        </mat-option>
-
-        <!-- Mensaje cuando no hay resultados -->
-        <mat-option *ngIf="showNoResultsMessage" disabled>
-          <span class="text-gray-500">No se encontraron resultados</span>
-        </mat-option>
-
-        <!-- Mensaje para búsquedas muy cortas -->
-        <mat-option
-          *ngIf="
-            !isLoadingUsers &&
-            (userFilterControl.value?.length || 0) > 0 &&
-            (userFilterControl.value?.length || 0) < 2
-          "
-          disabled
+        <!-- Botón para limpiar selección -->
+        <button
+          *ngIf="selectedUser && !isLoadingUsers"
+          matSuffix
+          mat-icon-button
+          type="button"
+          (click)="clearUserSelection()"
+          matTooltip="Limpiar selección"
         >
-          <span class="text-gray-500"
-            >Escriba al menos 2 caracteres para buscar</span
+          <mat-icon>clear</mat-icon>
+        </button>
+
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [displayWith]="displayUser"
+          (optionSelected)="onUserSelected($event)"
+          autoActiveFirstOption
+        >
+          <!-- Opciones de usuarios -->
+          <mat-option *ngFor="let user of filteredUsers" [value]="user">
+            <div class="flex flex-col">
+              <span class="font-medium">
+                {{ user.firstName || 'N/A' }} {{ user.lastName || 'N/A' }}
+              </span>
+              <span
+                class="text-sm text-gray-500"
+                *ngIf="user.identificationNumber"
+              >
+                {{ user.identificationNumber }}
+              </span>
+            </div>
+          </mat-option>
+
+          <!-- Mensaje cuando no hay resultados -->
+          <mat-option *ngIf="showNoResultsMessage" disabled>
+            <span class="text-gray-500">No se encontraron resultados</span>
+          </mat-option>
+
+          <!-- Mensaje para búsquedas muy cortas -->
+          <mat-option
+            *ngIf="
+              !isLoadingUsers &&
+              (userFilterControl.value?.length || 0) > 0 &&
+              (userFilterControl.value?.length || 0) < 2
+            "
+            disabled
           >
-        </mat-option>
-      </mat-autocomplete>
+            <span class="text-gray-500"
+              >Escriba al menos 2 caracteres para buscar</span
+            >
+          </mat-option>
+        </mat-autocomplete>
 
-      <!-- Mostrar usuario seleccionado -->
-      <mat-hint *ngIf="selectedUser">
-        Usuario seleccionado: {{ displayUser(selectedUser) }}
-      </mat-hint>
+        <mat-error *ngIf="form.get('userId')?.hasError('required')">
+          Cliente requerido
+        </mat-error>
+      </mat-form-field>
+    </div>
 
-      <mat-error *ngIf="form.get('userId')?.hasError('required')">
-        Cliente requerido
-      </mat-error>
-    </mat-form-field>
+    <div class="flex flex-col md:flex-row gap-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Factura electrónica</mat-label>
+        <mat-select formControlName="invoiceElectronic" required>
+          <mat-option [value]="true">Sí</mat-option>
+          <mat-option [value]="false">No</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('invoiceElectronic')?.hasError('required')">
+          Seleccione una opción
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Tipo de pago -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tipo de pago</mat-label>
+        <mat-select formControlName="payTypeId" required>
+          <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('payTypeId')?.hasError('required')">
+          Tipo de pago requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Tipo de cobro -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tipo de cobro</mat-label>
+        <mat-select formControlName="paidTypeId" required>
+          <mat-option *ngFor="let type of paidTypes" [value]="type.paidTypeId">
+            {{ type.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('paidTypeId')?.hasError('required')">
+          Tipo de cobro requerido
+        </mat-error>
+      </mat-form-field>
+    </div>
 
     <!-- Acciones -->
-    <section
-      actions
-      class="w-full flex content-between gap-x-2 items-center justify-end"
-    >
-      <button
-        class="w-full"
-        mat-fab
-        extended="true"
-        color="warn"
-        type="button"
-        (click)="cancel()"
-      >
-        Cancelar
-      </button>
-      <button
-        class="w-full"
-        mat-fab
-        extended="true"
-        type="button"
-        (click)="save()"
-        [disabled]="form.invalid"
-      >
-        Guardar
-      </button>
-    </section>
   </form>
+  <section
+    actions
+    class="w-full flex content-between gap-x-2 items-center justify-end"
+  >
+    <button
+      class="w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      type="button"
+      (click)="cancel()"
+    >
+      Cancelar
+    </button>
+    <button
+      class="w-full"
+      mat-fab
+      extended="true"
+      type="button"
+      (click)="save()"
+      [disabled]="form.invalid"
+    >
+      Guardar
+    </button>
+  </section>
 </app-base-dialog>

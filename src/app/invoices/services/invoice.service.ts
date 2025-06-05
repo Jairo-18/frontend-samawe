@@ -37,7 +37,7 @@ export class InvoiceService {
     invoice: CreateInvoice
   ): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
-      `${environment.apiUrl}invoices/create`,
+      `${environment.apiUrl}invoices`,
       invoice
     );
   }

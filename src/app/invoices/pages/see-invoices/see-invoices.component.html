@@ -39,9 +39,9 @@
       @if (!loading) {
       <table mat-table [dataSource]="dataSource" matSort>
         <ng-container matColumnDef="invoiceType">
-          <th mat-header-cell *matHeaderCellDef>Tipo de Factura</th>
+          <th mat-header-cell *matHeaderCellDef>Tipo Factura</th>
           <td mat-cell *matCellDef="let invoice">
-            {{ invoice.invoiceType?.name || '---' }}
+            {{ invoice.invoiceType?.code || '---' }}
           </td>
         </ng-container>
 
@@ -60,12 +60,18 @@
         </ng-container>
 
         <ng-container matColumnDef="clientIdentification">
-          <th mat-header-cell *matHeaderCellDef>Identificación Cliente</th>
+          <th mat-header-cell *matHeaderCellDef>Identificación</th>
           <td mat-cell *matCellDef="let invoice">
             {{ invoice.clientIdentification || '---' }}
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="identificationType">
+          <th mat-header-cell *matHeaderCellDef>Tipo Iden</th>
+          <td mat-cell *matCellDef="let invoice">
+            {{ invoice.user?.identificationType?.code || '---' }}
+          </td>
+        </ng-container>
         <ng-container matColumnDef="employeeName">
           <th mat-header-cell *matHeaderCellDef>Empleado</th>
           <td mat-cell *matCellDef="let invoice">
@@ -75,29 +81,34 @@
 
         <ng-container matColumnDef="total">
           <th mat-header-cell *matHeaderCellDef>Total</th>
-          <td mat-cell *matCellDef="let invoice">
-            {{ invoice.total || '---' }}
+          <td mat-cell *matCellDef="let invoice" class="right-text">
+            {{ invoice.total | currency : 'COP' }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="payType">
-          <th mat-header-cell *matHeaderCellDef>Tipo de Pago</th>
+          <th mat-header-cell *matHeaderCellDef>Tipo Pago</th>
           <td mat-cell *matCellDef="let invoice">
             {{ invoice.payType?.name || '---' }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="paidType">
-          <th mat-header-cell *matHeaderCellDef>Estado de Pago</th>
+          <th mat-header-cell *matHeaderCellDef>Estado Pago</th>
           <td mat-cell *matCellDef="let invoice">
             {{ invoice.paidType?.name || '---' }}
           </td>
         </ng-container>
-
-        <ng-container matColumnDef="taxeType">
-          <th mat-header-cell *matHeaderCellDef>Tipo impuesto</th>
+        <ng-container matColumnDef="invoiceElectronic">
+          <th mat-header-cell *matHeaderCellDef>F. Elec</th>
           <td mat-cell *matCellDef="let invoice">
-            {{ invoice.taxeType?.name || '---' }}
+            {{
+              invoice.invoiceElectronic === true
+                ? 'Sí'
+                : invoice.invoiceElectronic === false
+                ? 'No'
+                : '---'
+            }}
           </td>
         </ng-container>
 
@@ -202,6 +213,13 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="identificationType">
+            <th mat-header-cell *matHeaderCellDef>Tipo Iden</th>
+            <td mat-cell *matCellDef="let invoice">
+              {{ invoice.user?.identificationType?.code || '---' }}
+            </td>
+          </ng-container>
+
           <ng-container matColumnDef="clientIdentification">
             <th mat-header-cell *matHeaderCellDef>Identificación Cliente</th>
             <td mat-cell *matCellDef="let invoice">
@@ -241,6 +259,19 @@
             <th mat-header-cell *matHeaderCellDef>Tipo impuesto</th>
             <td mat-cell *matCellDef="let invoice">
               {{ invoice.taxeType?.name || '---' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="invoiceElectronic">
+            <th mat-header-cell *matHeaderCellDef>F. Elec</th>
+            <td mat-cell *matCellDef="let invoice">
+              {{
+                invoice.invoiceElectronic === true
+                  ? 'Sí'
+                  : invoice.invoiceElectronic === false
+                  ? 'No'
+                  : '---'
+              }}
             </td>
           </ng-container>
 

@@ -151,3 +151,11 @@
 .brand-text-headline-color {
   @apply text-transparent bg-gradient-to-r from-green-400 to-[#06a606] bg-clip-text;
 }
+
+.right-text {
+  text-align: right !important;
+}
+
+.center-text {
+  text-align: center !important;
+}
