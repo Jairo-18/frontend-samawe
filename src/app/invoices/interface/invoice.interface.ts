@@ -1,4 +1,5 @@
 import {
+  CategoryType,
   IdentificationType,
   InvoiceType,
   PaidType,
@@ -27,6 +28,7 @@ export interface InvoiceDetail {
 }
 
 export interface createInvoiceRelatedData {
+  categoryType: CategoryType[];
   identificationType: IdentificationType[];
   invoiceType: InvoiceType[];
   taxeType: TaxeType[];

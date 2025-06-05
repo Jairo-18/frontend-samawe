@@ -15,15 +15,24 @@
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Producto">
             <ng-template matTabContent
-              ><app-add-product></app-add-product></ng-template
+              ><app-add-product
+                [categoryTypes]="categoryTypes"
+                [taxeTypes]="taxeTypes"
+              ></app-add-product></ng-template
           ></mat-tab>
           <mat-tab label="Hospedaje">
             <ng-template matTabContent
-              ><app-add-accommodation></app-add-accommodation></ng-template
+              ><app-add-accommodation
+                [categoryTypes]="categoryTypes"
+                [taxeTypes]="taxeTypes"
+              ></app-add-accommodation></ng-template
           ></mat-tab>
           <mat-tab label="Pasadía">
             <ng-template matTabContent
-              ><app-add-excursion></app-add-excursion></ng-template></mat-tab
+              ><app-add-excursion
+                [categoryTypes]="categoryTypes"
+                [taxeTypes]="taxeTypes"
+              ></app-add-excursion></ng-template></mat-tab
         ></mat-tab-group>
       </section>
       <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
