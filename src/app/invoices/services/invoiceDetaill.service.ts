@@ -18,4 +18,10 @@ export class InvoiceDetaillService {
       invoiceDetaill
     );
   }
+
+  deleteItemInvoice(invoiceDetailId: number): Observable<unknown> {
+    return this._httpClient.delete(
+      `${environment.apiUrl}invoices/details/${invoiceDetailId}`
+    );
+  }
 }

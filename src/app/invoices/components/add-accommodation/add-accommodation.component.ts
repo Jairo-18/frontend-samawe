@@ -23,6 +23,7 @@ import { AccommodationsService } from '../../../service-and-product/services/acc
 import { AddedAccommodationInvoiceDetaill } from '../../interface/invoiceDetaill.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-accommodation',
@@ -37,7 +38,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     CommonModule,
     MatSelectModule,
     MatNativeDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatIcon
   ],
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'

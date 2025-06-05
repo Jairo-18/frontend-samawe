@@ -1,9 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
-import { ApiResponseCreateInterface } from '../../shared/interfaces/api-response.interface';
+import {
+  ApiResponseCreateInterface,
+  ApiResponseInterface
+} from '../../shared/interfaces/api-response.interface';
 import { Observable } from 'rxjs';
-import { CreateInvoice } from '../interface/invoice.interface';
+import { CreateInvoice, Invoice } from '../interface/invoice.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
@@ -22,6 +25,12 @@ export class InvoiceService {
       pagination: PaginationInterface;
       data: CreateInvoice[];
     }>(`${environment.apiUrl}invoices/paginated-list`, { params });
+  }
+
+  getInvoiceToEdit(id: number): Observable<ApiResponseInterface<Invoice>> {
+    return this._httpClient.get<ApiResponseInterface<Invoice>>(
+      `${environment.apiUrl}invoices/${id}`
+    );
   }
 
   createInvoice(

@@ -1,3 +1,7 @@
+import { UserComplete } from '../../organizational/interfaces/create.interface';
+import { AccommodationComplete } from '../../service-and-product/interface/accommodation.interface';
+import { ExcursionComplete } from '../../service-and-product/interface/excursion.interface';
+import { ProductComplete } from '../../service-and-product/interface/product.interface';
 import {
   CategoryType,
   IdentificationType,
@@ -19,12 +23,20 @@ export interface CreateInvoice {
 }
 
 export interface InvoiceDetail {
-  productId?: number;
-  accommodationId?: number;
-  excursionId?: number;
-  amount: number;
-  priceWithoutTax: number;
-  taxeTypeId: number;
+  invoiceDetailId: number;
+  amount: string;
+  priceWithoutTax: string;
+  priceWithTax: string;
+  subtotal: string;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  product: ProductComplete;
+  accommodation: AccommodationComplete;
+  excursion: ExcursionComplete;
+  taxeType: TaxeType;
 }
 
 export interface createInvoiceRelatedData {
@@ -34,4 +46,23 @@ export interface createInvoiceRelatedData {
   taxeType: TaxeType[];
   payType: PayType[];
   paidType: PaidType[];
+}
+
+export interface Invoice {
+  invoiceId: number;
+  code: string;
+  subtotalWithoutTax: string;
+  subtotalWithTax: string;
+  total: string;
+  startDate: string;
+  endDate: string;
+  user: UserComplete;
+  employee: UserComplete;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  invoiceType: InvoiceType;
+  payType: PayType;
+  paidType: PaidType;
+  invoiceDetails: InvoiceDetail[];
 }

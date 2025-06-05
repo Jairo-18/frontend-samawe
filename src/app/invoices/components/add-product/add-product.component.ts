@@ -22,6 +22,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { ActivatedRoute } from '@angular/router';
 import { AddedProductInvoiceDetaill } from '../../interface/invoiceDetaill.interface';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-product',
@@ -34,7 +35,8 @@ import { AddedProductInvoiceDetaill } from '../../interface/invoiceDetaill.inter
     MatOptionModule,
     MatAutocompleteModule,
     CommonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIcon
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'

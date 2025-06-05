@@ -21,6 +21,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-excursion',
@@ -33,7 +34,8 @@ import { CommonModule } from '@angular/common';
     MatAutocompleteModule,
     MatOptionModule,
     MatButtonModule,
-    CommonModule
+    CommonModule,
+    MatIcon
   ],
   templateUrl: './add-excursion.component.html',
   styleUrl: './add-excursion.component.scss'

@@ -8,41 +8,76 @@
   backButtonTooltip="Volver a la lista"
 >
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
-    <div class="flex flex-col w-full md:w-[70%] gap-3">
+    <!-- Columna izquierda -->
+    <div class="flex flex-col w-full md:w-[75%] gap-3">
       <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
-        <span class="text-lg md:text-xl">Factura: 123</span>
-        <span class="text-sm">Cliente: juan</span>
+        <span class="text-lg md:text-xl font-extrabold">
+          {{ invoiceData?.invoiceType?.name }} Nr° {{ invoiceData?.code }}</span
+        >
+        <section class="flex-row md:flex w-full">
+          <div class="flex w-full md:w-[50%] justify-start">
+            <span class="text-base font-bold">Cliente:</span>
+            <span class="font-medium"
+              >{{ invoiceData?.user?.firstName }}
+              {{ invoiceData?.user?.lastName }}</span
+            >
+          </div>
+          <div class="flex w-full md:w-[50%] justify-end">
+            <span class="text-base font-bold">Empleado:</span>
+            <span class="font-medium">
+              {{ invoiceData?.employee?.firstName }}
+              {{ invoiceData?.employee?.lastName }}</span
+            >
+          </div>
+        </section>
+
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Producto">
-            <ng-template matTabContent
-              ><app-add-product
+            <ng-template matTabContent>
+              <app-add-product
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
-              ></app-add-product></ng-template
-          ></mat-tab>
+              ></app-add-product>
+            </ng-template>
+          </mat-tab>
           <mat-tab label="Hospedaje">
-            <ng-template matTabContent
-              ><app-add-accommodation
+            <ng-template matTabContent>
+              <app-add-accommodation
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
-              ></app-add-accommodation></ng-template
-          ></mat-tab>
+              ></app-add-accommodation>
+            </ng-template>
+          </mat-tab>
           <mat-tab label="Pasadía">
-            <ng-template matTabContent
-              ><app-add-excursion
+            <ng-template matTabContent>
+              <app-add-excursion
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
-              ></app-add-excursion></ng-template></mat-tab
-        ></mat-tab-group>
+              ></app-add-excursion>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
       </section>
+
+      <!-- Detalle factura -->
       <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
-        <span>Detalle factura</span>
+        <app-invoice-detaill
+          *ngIf="invoiceData"
+          [invoiceDetails]="invoiceData.invoiceDetails"
+        ></app-invoice-detaill>
       </section>
     </div>
+
+    <!-- Columna derecha -->
     <div
-      class="flex flex-col w-full md:w-[30%] p-4 rounded-2xl border border-[#06a606]"
+      class="flex flex-col w-full md:w-[25%] p-4 h-min rounded-2xl border border-[#06a606]"
     >
-      <span class="text-lg md:text-xl">Resumen de factura</span>
+      <app-invoice-summary
+        *ngIf="invoiceData"
+        [invoice]="invoiceData"
+        [paidTypes]="paidTypes"
+        [payTypes]="payTypes"
+      ></app-invoice-summary>
     </div>
   </article>
 </app-base-page>
