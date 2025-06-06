@@ -159,6 +159,7 @@ export class SeeUsersComponent implements OnInit {
    * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
    */
   private getDataForFields(): void {
+    this.loading = true;
     this._relatedDataService.createUserRelatedData().subscribe({
       next: (res) => {
         const role = res.data?.roleType || [];
@@ -200,6 +201,7 @@ export class SeeUsersComponent implements OnInit {
             label: type.name || ''
           }));
         }
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error cargando datos relacionados', err);

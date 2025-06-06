@@ -26,6 +26,7 @@ import {
   RoleType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-create-or-edit-users',
@@ -41,7 +42,8 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     MatButtonModule,
     FontAwesomeModule,
     MatIcon,
-    BasePageComponent
+    BasePageComponent,
+    LoaderComponent
   ],
   templateUrl: './create-or-edit-users.component.html',
   styleUrl: './create-or-edit-users.component.scss'
@@ -55,6 +57,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   roleType: RoleType[] = [];
   phoneCode: PhoneCode[] = [];
   isEditMode: boolean = false;
+  loading: boolean = false;
 
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _relatedDataService: RelatedDataService =
@@ -104,6 +107,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   }
 
   private getUserToEdit(userId: string): void {
+    this.loading = true;
     this._usersService.getUserEditPanel(userId).subscribe({
       next: (res) => {
         const user = res.data;
@@ -120,6 +124,7 @@ export class CreateOrEditUsersComponent implements OnInit {
           phoneCodeId: user.phoneCode?.phoneCodeId.toString(),
           phone: user.phone
         });
+        this.loading = false;
       },
       error: (err) => {
         console.error('Error al obtener usuario:', err.error?.message || err);
@@ -131,11 +136,13 @@ export class CreateOrEditUsersComponent implements OnInit {
    * @param getRelatedData - Obtiene los tipos de identificación.
    */
   getRelatedData(): void {
+    this.loading = true;
     this._relatedDataService.createUserRelatedData().subscribe({
       next: (res) => {
         this.roleType = res.data?.roleType || [];
         this.identificationType = res.data?.identificationType || [];
         this.phoneCode = res.data?.phoneCode || [];
+        this.loading = false;
       },
       error: (error) =>
         console.error('Error al cargar datos relacionados:', error)
