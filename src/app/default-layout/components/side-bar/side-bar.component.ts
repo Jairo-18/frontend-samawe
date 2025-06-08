@@ -35,6 +35,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { UsersService } from '../../../organizational/services/users.service';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-side-bar',
@@ -49,7 +50,8 @@ import { UsersService } from '../../../organizational/services/users.service';
     MatMenuModule,
     NgFor,
     MatTooltipModule,
-    CommonModule
+    CommonModule,
+    LoaderComponent
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',
@@ -79,6 +81,7 @@ export class SideBarComponent implements OnInit, OnChanges {
   currentYear: number = new Date().getFullYear();
   openSubMenu: Record<string, boolean> = {};
   userComplete?: UserComplete;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;
@@ -90,13 +93,16 @@ export class SideBarComponent implements OnInit, OnChanges {
       });
 
     if (this.userRole?.userId) {
+      this.isLoading = true;
       this._usersService.getUserEditPanel(this.userRole.userId).subscribe({
         next: (res) => {
           this.userComplete = res.data;
           this.filterMenuByRole(); // Aquí usamos ya el role completo
+          this.isLoading = false;
         },
         error: () => {
           this.menuWithItems = []; // Seguridad si falla
+          this.isLoading = false;
         }
       });
     } else {

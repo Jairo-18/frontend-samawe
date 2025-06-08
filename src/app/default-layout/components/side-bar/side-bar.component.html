@@ -6,6 +6,16 @@
     'fixed md:static z-50': !isCollapsed
   }"
 >
+  @if (isLoading) {
+  <div
+    [ngClass]="{
+      'w-full h-full flex items-center justify-center': true,
+      'p-2': !isCollapsed
+    }"
+  >
+    <app-loader class="max-w-12"></app-loader>
+  </div>
+  } @else {
   <!-- Botón toggle -->
   <div
     class="flex h-[6%] transition-all duration-300 ease-in-out"
@@ -221,4 +231,5 @@
       >© {{ currentYear }} Ecohotel Samawé.</span
     >
   </div>
+  }
 </aside>
