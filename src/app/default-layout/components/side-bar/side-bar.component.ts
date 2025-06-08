@@ -32,6 +32,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { filter } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UserInterface } from '../../../shared/interfaces/user.interface';
+import { UserComplete } from '../../../organizational/interfaces/create.interface';
+import { UsersService } from '../../../organizational/services/users.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -60,10 +63,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 })
 export class SideBarComponent implements OnInit, OnChanges {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
-  @Input() userRole!: string;
+  @Input() userRole?: UserInterface;
   @Input() closeSideBar: boolean = false;
   @Output() collapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() logout = new EventEmitter<void>();
+
+  private readonly _router: Router = inject(Router);
+  private readonly _usersService: UsersService = inject(UsersService);
 
   isCollapsed: boolean = true;
   currentRoute: string = '';
@@ -72,8 +78,7 @@ export class SideBarComponent implements OnInit, OnChanges {
   moduleSelected: string | null = null;
   currentYear: number = new Date().getFullYear();
   openSubMenu: Record<string, boolean> = {};
-
-  private readonly _router: Router = inject(Router);
+  userComplete?: UserComplete;
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;
@@ -84,7 +89,19 @@ export class SideBarComponent implements OnInit, OnChanges {
         this.currentRoute = this._router.url;
       });
 
-    this.filterMenuByRole();
+    if (this.userRole?.userId) {
+      this._usersService.getUserEditPanel(this.userRole.userId).subscribe({
+        next: (res) => {
+          this.userComplete = res.data;
+          this.filterMenuByRole(); // Aquí usamos ya el role completo
+        },
+        error: () => {
+          this.menuWithItems = []; // Seguridad si falla
+        }
+      });
+    } else {
+      this.menuWithItems = [];
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -94,7 +111,14 @@ export class SideBarComponent implements OnInit, OnChanges {
   }
 
   private filterMenuByRole(): void {
-    const allowedItems = ROLE_PERMISSIONS[this.userRole] || [];
+    const roleName = this.userComplete?.roleType?.name;
+
+    if (!roleName) {
+      this.menuWithItems = [];
+      return;
+    }
+
+    const allowedItems = ROLE_PERMISSIONS[roleName];
 
     this.menuWithItems = MENU_CONST.map((module) => ({
       ...module,

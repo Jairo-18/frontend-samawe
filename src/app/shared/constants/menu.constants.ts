@@ -7,38 +7,38 @@ export const MENU_CONST: MenuInterface[] = [
     order: 1,
     items: [
       {
-        name: 'Usuarios',
-        route: '/organizational/users/list',
-        icon: 'supervised_user_circle',
+        name: 'Inicio',
+        route: '/home',
+        icon: 'home',
         order: 1,
         subItems: []
       },
-      // {
-      //   name: 'Productos',
-      //   route: '/products/product/list',
-      //   icon: 'add_shopping_cart',
-      //   order: 2,
-      //   subItems: []
-      // },
+      {
+        name: 'Usuarios',
+        route: '/organizational/users/list',
+        icon: 'supervised_user_circle',
+        order: 2,
+        subItems: []
+      },
       {
         name: 'Productos y servicios',
         route: '/service-and-product/general',
         icon: 'add_shopping_cart',
-        order: 2,
+        order: 3,
         subItems: []
       },
       {
         name: 'Facturas',
         route: '/invoice/invoices/list',
         icon: 'notes',
-        order: 3,
+        order: 4,
         subItems: []
       },
       {
         name: 'Reportes / Ganancias',
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
-        order: 4,
+        order: 5,
         subItems: []
       }
     ]
@@ -46,7 +46,7 @@ export const MENU_CONST: MenuInterface[] = [
   {
     module: 'Panel de administrador',
     icon: 'work',
-    order: 2,
+    order: 1,
     items: [
       {
         name: 'Gestión',
@@ -64,14 +64,16 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Usuarios',
     'Productos y servicios',
     'Facturas',
-    'Reportes / Ganancias'
+    'Reportes / Ganancias',
+    'Inicio'
   ],
   Administrador: [
     'Usuarios',
     'Productos y servicios',
     'Gestión',
     'Facturas',
-    'Reportes / Ganancias'
+    'Reportes / Ganancias',
+    'Inicio'
   ]
 };
 

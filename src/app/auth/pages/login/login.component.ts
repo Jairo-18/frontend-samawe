@@ -56,7 +56,7 @@ export class LoginComponent {
     this._authService.login(this.form.value).subscribe({
       next: () => {
         // Forzar redirección a '/sales/earnings-sumary'
-        this._router.navigateByUrl('/sales/earnings-sumary');
+        this._router.navigateByUrl('/');
         // Limpiar la URL de redirección si es necesario
         this._authService.cleanRedirectUrl();
       },

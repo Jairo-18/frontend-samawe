@@ -1,7 +1,7 @@
 <article class="flex">
   @if (isLoggedUser) {
   <app-side-bar
-    [userRole]="userInfo?.roleType?.name || ''"
+    [userRole]="userInfo"
     class="brand-side-bar"
     (collapsed)="listenEvent($event)"
     [closeSideBar]="closeSideBar"
