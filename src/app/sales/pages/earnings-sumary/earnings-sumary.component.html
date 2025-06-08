@@ -1,1 +1,36 @@
-<p>earnings-sumary works!</p>
+<app-base-page [showBorder]="false"
+  ><article class="flex flex-col md:flex-row">
+    <section class="flex flex-col">
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <mat-icon>sell</mat-icon>
+
+        <span>Facturas de Venta</span>
+        <span>Diario: {{ invoiceStats?.invoiceSale?.daily }}</span>
+        <span>Total: {{ invoiceStats?.invoiceSale?.totalAllTime }}</span>
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <mat-icon>shopping_cart</mat-icon>
+
+        <span>Facturas de Compra</span>
+        <span>Diario: {{ invoiceStats?.invoiceBuy?.daily }}</span>
+        <span>Total: {{ invoiceStats?.invoiceBuy?.totalAllTime }}</span>
+      </div>
+    </section>
+    <section class="flex flex-col">
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span
+          >Productos vendidos:
+          {{ totalitems?.accommodations?.daily?.count }}</span
+        >
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span>Inventario total: {{ inventoryTotal?.totalInventoryValue }}</span>
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span
+          >Inventario total más facturas: {{ totalWithInventory?.total }}</span
+        >
+      </div>
+    </section>
+  </article>
+</app-base-page>

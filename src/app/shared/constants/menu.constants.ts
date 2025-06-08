@@ -33,6 +33,13 @@ export const MENU_CONST: MenuInterface[] = [
         icon: 'notes',
         order: 3,
         subItems: []
+      },
+      {
+        name: 'Reportes / Ganancias',
+        route: '/sales/earnings-sumary',
+        icon: 'attach_money',
+        order: 4,
+        subItems: []
       }
     ]
   },
@@ -53,8 +60,19 @@ export const MENU_CONST: MenuInterface[] = [
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Usuario: [''],
-  Empleado: ['Usuarios', 'Productos y servicios', 'Facturas'],
-  Administrador: ['Usuarios', 'Productos y servicios', 'Gestión', 'Facturas']
+  Empleado: [
+    'Usuarios',
+    'Productos y servicios',
+    'Facturas',
+    'Reportes / Ganancias'
+  ],
+  Administrador: [
+    'Usuarios',
+    'Productos y servicios',
+    'Gestión',
+    'Facturas',
+    'Reportes / Ganancias'
+  ]
 };
 
 // export const ROUTE_MAP: Record<string, string> = {
