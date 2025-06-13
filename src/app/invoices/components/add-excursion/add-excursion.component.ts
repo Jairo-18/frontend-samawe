@@ -127,6 +127,7 @@ export class AddExcursionComponent {
         accommodationId: 0,
         excursionId: f.excursionId,
         amount: f.amount,
+        priceBuy: f.priceBuy,
         priceWithoutTax: Number(f.price),
         taxeTypeId: f.taxeTypeId,
         startDate: new Date(f.startDate).toISOString(),

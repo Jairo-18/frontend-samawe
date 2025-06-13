@@ -137,6 +137,7 @@ export class AddAccommodationComponent {
         excursionId: 0,
         accommodationId: f.accommodationId,
         amount: f.amount,
+        priceBuy: f.priceBuy,
         priceWithoutTax: Number(f.price),
         taxeTypeId: f.taxeTypeId,
         startDate: new Date(f.startDate).toISOString(),

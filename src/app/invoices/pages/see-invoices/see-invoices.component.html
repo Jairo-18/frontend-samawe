@@ -115,20 +115,26 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let invoice">
-            <button
-              mat-icon-button
-              color="primary"
-              [routerLink]="['..', invoice.invoiceId, 'edit']"
-            >
-              <mat-icon>edit</mat-icon>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="openDeleteInvoiceDialog(invoice.invoiceId)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item
+                [routerLink]="['..', invoice.invoiceId, 'edit']"
+              >
+                <mat-icon>edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="openDeleteInvoiceDialog(invoice.invoiceId)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
           </td>
         </ng-container>
 
@@ -280,18 +286,28 @@
             <td mat-cell *matCellDef="let invoice">
               <button
                 mat-icon-button
-                color="primary"
-                [routerLink]="['..', invoice.invoiceId, 'edit']"
+                [matMenuTriggerFor]="menu"
+                (click)="selectedInvoice = invoice"
               >
-                <mat-icon>edit</mat-icon>
+                <mat-icon>more_vert</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="openDeleteInvoiceDialog(invoice.invoiceId)"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
+
+              <mat-menu #menu="matMenu">
+                <button
+                  mat-menu-item
+                  [routerLink]="['..', selectedInvoice?.invoiceId, 'edit']"
+                >
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+                <button
+                  mat-menu-item
+                  (click)="openDeleteInvoiceDialog(selectedInvoice?.invoiceId)"
+                >
+                  <mat-icon>delete</mat-icon>
+                  <span>Eliminar</span>
+                </button>
+              </mat-menu>
             </td>
           </ng-container>
 

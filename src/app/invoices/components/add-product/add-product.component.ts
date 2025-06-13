@@ -60,6 +60,7 @@ export class AddProductComponent {
       productName: ['', Validators.required],
       productId: [null, Validators.required],
       price: [{ value: '', disabled: true }],
+      priceBuy: [0, [Validators.required, Validators.min(0)]], // Aseguramos número válido
       priceWithoutTax: [null, Validators.required],
       taxeTypeId: [null, Validators.required],
       amount: [1, [Validators.required, Validators.min(1)]],
@@ -72,7 +73,6 @@ export class AddProductComponent {
         debounceTime(500),
         switchMap((name: string) => {
           if (!name || name.trim().length < 2) {
-            // 👇 Unificamos el tipo devuelto
             return of({ data: [] });
           }
           return this._productsService.getProductWithPagination({ name });
@@ -94,7 +94,6 @@ export class AddProductComponent {
   }
 
   onProductFocus() {
-    // Si no hay resultados ya cargados, trae los primeros productos
     if (!this.filteredProducts.length) {
       this._productsService.getProductWithPagination({}).subscribe((res) => {
         this.filteredProducts = res.data ?? [];
@@ -111,6 +110,7 @@ export class AddProductComponent {
     this.form.patchValue({
       productId: product.productId,
       price: product.priceSale,
+      priceBuy: product.priceBuy ?? 0, // Aseguramos número si viene null
       priceWithoutTax: product.priceSale,
       taxeTypeId: product.taxeTypeId,
       categoryId: product.categoryTypeId
@@ -132,7 +132,8 @@ export class AddProductComponent {
         accommodationId: 0,
         excursionId: 0,
         amount: formValue.amount,
-        priceWithoutTax: Number(formValue.priceWithoutTax), // asegúrate de que sea número
+        priceBuy: Number(formValue.priceBuy) || 0,
+        priceWithoutTax: Number(formValue.priceWithoutTax),
         taxeTypeId: formValue.taxeTypeId,
         startDate: new Date().toISOString(),
         endDate: new Date().toISOString()

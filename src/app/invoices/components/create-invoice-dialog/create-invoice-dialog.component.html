@@ -3,8 +3,7 @@
   [description]="'Llena los campos requeridos para iniciar la factura.'"
 >
   <form form [formGroup]="form" class="flex flex-col gap-4">
-    <!-- Tipo de Factura -->
-
+    <!-- Tipo de Factura y Código -->
     <div class="flex content-between gap-2">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Tipo de factura</mat-label>
@@ -21,7 +20,6 @@
         </mat-error>
       </mat-form-field>
 
-      <!-- Código -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Código</mat-label>
         <input matInput formControlName="code" required />
@@ -34,64 +32,65 @@
     <!-- Cliente con Autocomplete -->
     <div>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Cliente</mat-label>
+        <mat-label>Buscar Cliente</mat-label>
         <input
           matInput
-          placeholder="Buscar cliente por nombre..."
-          [formControl]="userFilterControl"
-          [matAutocomplete]="auto"
-          autocomplete="off"
+          [matAutocomplete]="clientAuto"
+          [formControl]="clientFilterControl"
+          placeholder="Nombre del cliente..."
+          (focus)="onClientFocus()"
         />
+        <mat-icon matPrefix>person</mat-icon>
 
         <!-- Spinner de carga -->
-        <mat-icon *ngIf="isLoadingUsers" matSuffix>
+        <mat-icon *ngIf="isLoadingClients" matSuffix>
           <mat-spinner diameter="20"></mat-spinner>
         </mat-icon>
 
         <!-- Botón para limpiar selección -->
         <button
-          *ngIf="selectedUser && !isLoadingUsers"
+          *ngIf="selectedClient && !isLoadingClients"
           matSuffix
           mat-icon-button
           type="button"
-          (click)="clearUserSelection()"
+          (click)="clearClientSelection()"
           matTooltip="Limpiar selección"
         >
           <mat-icon>clear</mat-icon>
         </button>
 
         <mat-autocomplete
-          #auto="matAutocomplete"
-          [displayWith]="displayUser"
-          (optionSelected)="onUserSelected($event)"
-          autoActiveFirstOption
+          #clientAuto="matAutocomplete"
+          (optionSelected)="onClientSelected($event.option.value)"
         >
-          <!-- Opciones de usuarios -->
-          <mat-option *ngFor="let user of filteredUsers" [value]="user">
+          <mat-option
+            *ngFor="let client of filteredClients"
+            [value]="client.firstName + ' ' + client.lastName"
+          >
             <div class="flex flex-col">
               <span class="font-medium">
-                {{ user.firstName || 'N/A' }} {{ user.lastName || 'N/A' }}
+                {{ client.firstName || 'N/A' }} {{ client.lastName || 'N/A' }}
               </span>
               <span
                 class="text-sm text-gray-500"
-                *ngIf="user.identificationNumber"
+                *ngIf="client.identificationNumber"
               >
-                {{ user.identificationNumber }}
+                {{ client.identificationNumber }}
               </span>
             </div>
           </mat-option>
 
           <!-- Mensaje cuando no hay resultados -->
           <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">No se encontraron resultados</span>
+            <span class="text-gray-500">No se encontraron clientes</span>
           </mat-option>
 
           <!-- Mensaje para búsquedas muy cortas -->
           <mat-option
             *ngIf="
-              !isLoadingUsers &&
-              (userFilterControl.value?.length || 0) > 0 &&
-              (userFilterControl.value?.length || 0) < 2
+              !isLoadingClients &&
+              (clientFilterControl.value?.length || 0) > 0 &&
+              (clientFilterControl.value?.length || 0) < 2
             "
             disabled
           >
@@ -100,13 +99,13 @@
             >
           </mat-option>
         </mat-autocomplete>
-
         <mat-error *ngIf="form.get('userId')?.hasError('required')">
           Cliente requerido
         </mat-error>
       </mat-form-field>
     </div>
 
+    <!-- Configuraciones de factura -->
     <div class="flex flex-col md:flex-row gap-2">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Factura electrónica</mat-label>
@@ -145,9 +144,9 @@
         </mat-error>
       </mat-form-field>
     </div>
-
-    <!-- Acciones -->
   </form>
+
+  <!-- Acciones -->
   <section
     actions
     class="w-full flex content-between gap-x-2 items-center justify-end"

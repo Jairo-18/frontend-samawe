@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { EarningService } from '../../services/earning.service';
 import {
@@ -16,7 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './earnings-sumary.component.html',
   styleUrl: './earnings-sumary.component.scss'
 })
-export class EarningsSumaryComponent implements OnInit {
+export class EarningsSumaryComponent {
   private readonly _earningService: EarningService = inject(EarningService);
 
   invoiceStats?: InvoiceStatsResponse;
@@ -24,9 +24,9 @@ export class EarningsSumaryComponent implements OnInit {
   inventoryTotal?: TotalInventory;
   totalWithInventory?: Total;
 
-  ngOnInit(): void {
-    this.load();
-  }
+  // ngOnInit(): void {
+  //   this.load();
+  // }
 
   load() {
     this._earningService.getGeneralEanings().subscribe({

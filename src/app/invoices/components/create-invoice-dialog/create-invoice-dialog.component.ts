@@ -25,15 +25,11 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteModule
-} from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   debounceTime,
   distinctUntilChanged,
   switchMap,
-  Observable,
   of,
   catchError,
   map,
@@ -66,10 +62,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
   invoiceTypes: InvoiceType[] = [];
   paidTypes: PaidType[] = [];
   payTypes: PayType[] = [];
-  filteredUsers: CreateUserPanel[] = [];
-  userFilterControl: FormControl<string | null> = new FormControl('');
-  selectedUser: CreateUserPanel | null = null;
-  isLoadingUsers = false;
+  filteredClients: CreateUserPanel[] = [];
+  clientFilterControl: FormControl<string | null> = new FormControl('');
+  selectedClient: CreateUserPanel | null = null;
+  isLoadingClients = false;
 
   private readonly _dialogRef: MatDialogRef<CreateInvoiceDialogComponent> =
     inject(MatDialogRef<CreateInvoiceDialogComponent>);
@@ -85,7 +81,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.setupUserAutocomplete();
+    this.setupClientAutocomplete();
     this.invoiceTypes = this.data?.relatedData?.invoiceType || [];
     this.paidTypes = this.data?.relatedData?.paidType || [];
     this.payTypes = this.data?.relatedData?.payType || [];
@@ -98,123 +94,95 @@ export class CreateInvoiceDialogComponent implements OnInit {
       userId: ['', Validators.required],
       invoiceElectronic: [false, Validators.required],
       paidTypeId: ['', Validators.required],
-      payTypeId: ['', Validators.required]
+      payTypeId: ['', Validators.required],
+      clientName: ['']
     });
   }
 
-  private setupUserAutocomplete(): void {
-    this.userFilterControl.valueChanges
+  private setupClientAutocomplete(): void {
+    this.clientFilterControl.valueChanges
       .pipe(
         startWith(''),
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((query) => {
-          // Si no hay query o es muy corto, limpiar resultados
           if (!query || typeof query !== 'string' || query.length < 2) {
-            this.isLoadingUsers = false;
+            this.isLoadingClients = false;
             return of([]);
           }
 
-          this.isLoadingUsers = true;
-          return this.searchUsers(query).pipe(
-            catchError((error) => {
-              console.error('Error searching users:', error);
-              return of([]);
+          this.isLoadingClients = true;
+          return this._userService
+            .getUserWithPagination({
+              search: query.trim(),
+              page: 1
             })
-          );
+            .pipe(
+              map((response) => response.data || []),
+              catchError((error) => {
+                console.error('Error searching clients:', error);
+                return of([]);
+              })
+            );
         })
       )
-      .subscribe((users) => {
-        this.filteredUsers = users;
-        this.isLoadingUsers = false;
+      .subscribe((clients) => {
+        this.filteredClients = clients;
+        this.isLoadingClients = false;
       });
   }
 
-  private searchUsers(query: string): Observable<CreateUserPanel[]> {
-    return this._userService
-      .getUserWithPagination({
-        search: query.trim(),
-        page: 1
-      })
-      .pipe(
-        map((response) => {
-          return response.data || [];
-        }),
-        catchError((error) => {
-          console.error('Error in searchUsers:', error);
-          return of([]);
-        })
-      );
-  }
-
-  displayUser(user?: CreateUserPanel | string): string {
-    if (!user || typeof user === 'string') {
-      return typeof user === 'string' ? user : '';
+  displayClient(client?: CreateUserPanel | string): string {
+    if (!client || typeof client === 'string') {
+      return typeof client === 'string' ? client : '';
     }
-
-    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
-    return fullName || 'Usuario sin nombre';
-  }
-
-  onUserSelected(event: MatAutocompleteSelectedEvent): void {
-    if (!event.option.value) {
-      return;
-    }
-
-    const user: CreateUserPanel = event.option.value;
-    this.selectedUser = user;
-
-    // Verificar que el usuario tenga userId
-    if (user.userId) {
-      this.form.patchValue({ userId: user.userId });
-    } else {
-      console.error('El usuario seleccionado no tiene userId:', user);
-    }
-
-    const displayValue = this.displayUser(user);
-    this.userFilterControl.setValue(displayValue, { emitEvent: false });
-  }
-
-  get showNoResultsMessage(): boolean {
-    const searchText = this.userFilterControl.value || '';
     return (
-      !this.isLoadingUsers &&
-      this.filteredUsers.length === 0 &&
-      typeof searchText === 'string' &&
-      searchText.length >= 2
+      `${client.firstName || ''} ${client.lastName || ''}`.trim() ||
+      'Cliente sin nombre'
     );
   }
 
-  private getCurrentUserId(): string | null {
-    // Usar el método del AuthService si existe
-    const userId = this._authService.getCurrentUserId?.();
-    if (userId) {
-      return userId;
+  onClientFocus(): void {
+    if (!this.filteredClients.length) {
+      this._userService.getUserWithPagination({}).subscribe({
+        next: (res) => (this.filteredClients = res.data || []),
+        error: (err) => console.error('Error loading clients:', err)
+      });
     }
+  }
 
-    // Fallback manual si el método no existe aún
-    try {
-      const rawUserData = localStorage.getItem(this._tokensStorageKey);
-      if (!rawUserData) {
-        console.error('No hay datos de usuario en localStorage');
-        return null;
-      }
+  onClientSelected(fullName: string): void {
+    const client = this.filteredClients.find(
+      (c) => `${c.firstName} ${c.lastName}` === fullName
+    );
 
-      const parsed = JSON.parse(rawUserData);
+    if (!client) return;
 
-      if (parsed.user && parsed.user.userId) {
-        return parsed.user.userId;
-      }
+    this.selectedClient = client;
+    this.form.patchValue({
+      userId: client.userId,
+      clientName: fullName
+    });
+  }
 
-      console.error(
-        'No se encontró user.userId en la estructura de datos:',
-        parsed
-      );
-      return null;
-    } catch (e) {
-      console.error('Error parsing user data from localStorage', e);
-      return null;
-    }
+  clearClientSelection(): void {
+    this.selectedClient = null;
+    this.form.patchValue({
+      userId: '',
+      clientName: ''
+    });
+    this.clientFilterControl.setValue('');
+    this.filteredClients = [];
+  }
+
+  get showNoResultsMessage(): boolean {
+    const searchText = this.clientFilterControl.value || '';
+    return (
+      !this.isLoadingClients &&
+      this.filteredClients.length === 0 &&
+      typeof searchText === 'string' &&
+      searchText.length >= 2
+    );
   }
 
   save(): void {
@@ -223,12 +191,11 @@ export class CreateInvoiceDialogComponent implements OnInit {
       return;
     }
 
-    // El servidor no acepta creatorUserId, así que no lo incluimos
     const payload: CreateInvoice = {
       userId: this.form.value.userId,
       invoiceTypeId: this.form.value.invoiceTypeId,
       code: this.form.value.code,
-      invoiceElectronic: this.form.value.invoiceElectronic, // Aquí se añade
+      invoiceElectronic: this.form.value.invoiceElectronic,
       payTypeId: this.form.value.payTypeId,
       paidTypeId: this.form.value.paidTypeId,
       startDate: new Date().toISOString().split('T')[0],
@@ -248,13 +215,5 @@ export class CreateInvoiceDialogComponent implements OnInit {
 
   cancel(): void {
     this._dialogRef.close(null);
-  }
-
-  // Método helper para limpiar la selección
-  clearUserSelection(): void {
-    this.selectedUser = null;
-    this.form.patchValue({ userId: '' });
-    this.userFilterControl.setValue('');
-    this.filteredUsers = [];
   }
 }

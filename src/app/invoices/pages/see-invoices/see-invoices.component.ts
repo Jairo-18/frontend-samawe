@@ -25,6 +25,7 @@ import { SearchFieldsComponent } from '../../../shared/components/search-fields/
 import { FormGroup } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-see-invoices',
@@ -39,7 +40,8 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
     SearchFieldsComponent,
     RouterLink,
     LoaderComponent,
-    MatTableModule
+    MatTableModule,
+    MatMenuModule
   ],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
@@ -50,6 +52,7 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _authService: AuthService = inject(AuthService);
+  selectedInvoice: any = null;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
@@ -69,11 +72,13 @@ export class SeeInvoicesComponent implements OnInit {
   ];
 
   form!: FormGroup;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataSource = new MatTableDataSource<any>([]);
   isMobile: boolean = false;
   loading: boolean = false;
   showClearButton: boolean = false;
   userLogged: UserInterface;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any = {};
   selectedTabIndex: number = 0;
   paginationParams: PaginationInterface = {
@@ -196,6 +201,7 @@ export class SeeInvoicesComponent implements OnInit {
             // Verificamos si encontramos opciones para este campo
             return {
               ...field,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               options: options.map((t: any) => ({
                 value: t[key],
                 label: t.name ?? 'Sin nombre'
@@ -238,6 +244,7 @@ export class SeeInvoicesComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSearchSubmit(values: any): void {
     // <-- CAMBIO: Se formatea el objeto de búsqueda para asegurar tipos correctos
     const formattedParams = { ...values };
@@ -262,6 +269,7 @@ export class SeeInvoicesComponent implements OnInit {
     this.selectedTabIndex = index;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
@@ -279,6 +287,7 @@ export class SeeInvoicesComponent implements OnInit {
 
     this._invoiceService.getInvoiceWithPagination(query).subscribe({
       next: (res) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const transformedData = res.data.map((invoice: any) => ({
           ...invoice,
           clientName: invoice.user

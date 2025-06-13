@@ -3,6 +3,7 @@ export interface CreateInvoiceDetaill {
   accommodationId?: number;
   excursionId?: number;
   amount: number;
+  priceBuy: number;
   priceWithoutTax: number;
   taxeTypeId?: number;
   startDate?: string;
