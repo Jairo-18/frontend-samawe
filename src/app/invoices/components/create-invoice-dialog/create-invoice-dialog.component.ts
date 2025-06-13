@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { InvoiceService } from '../../services/invoice.service';
-import { AuthService } from '../../../auth/services/auth.service';
 import {
   InvoiceType,
   PaidType,
@@ -16,7 +15,6 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { CreateUserPanel } from '../../../organizational/interfaces/create.interface';
 import { UsersService } from '../../../organizational/services/users.service';
-import { CreateInvoice } from '../../interface/invoice.interface';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,7 +23,10 @@ import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent
+} from '@angular/material/autocomplete';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -36,67 +37,108 @@ import {
   startWith
 } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import { DialogData, InvoiceComplete } from '../../interface/invoice.interface';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-create-invoice-dialog',
   standalone: true,
   imports: [
+    CommonModule,
     MatButtonModule,
     BaseDialogComponent,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatOptionModule,
     MatInputModule,
-    CommonModule,
     MatSelectModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    LoaderComponent
   ],
   templateUrl: './create-invoice-dialog.component.html',
   styleUrls: ['./create-invoice-dialog.component.scss']
 })
 export class CreateInvoiceDialogComponent implements OnInit {
-  form!: FormGroup;
+  form: FormGroup;
   invoiceTypes: InvoiceType[] = [];
   paidTypes: PaidType[] = [];
   payTypes: PayType[] = [];
   filteredClients: CreateUserPanel[] = [];
-  clientFilterControl: FormControl<string | null> = new FormControl('');
-  selectedClient: CreateUserPanel | null = null;
+  clientFilterControl = new FormControl<string | CreateUserPanel>('');
   isLoadingClients = false;
+  isLoading = false;
 
-  private readonly _dialogRef: MatDialogRef<CreateInvoiceDialogComponent> =
-    inject(MatDialogRef<CreateInvoiceDialogComponent>);
-  private readonly _fb: FormBuilder = inject(FormBuilder);
-  private readonly _invoiceService: InvoiceService = inject(InvoiceService);
-  private readonly _userService: UsersService = inject(UsersService);
-  private readonly _authService: AuthService = inject(AuthService);
-  private readonly _tokensStorageKey = '_sessionData';
-  private readonly _router: Router = inject(Router);
+  private readonly _dialogRef = inject(
+    MatDialogRef<CreateInvoiceDialogComponent>
+  );
+  private readonly _fb = inject(FormBuilder);
+  private readonly _invoiceService = inject(InvoiceService);
+  private readonly _userService = inject(UsersService);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
-
-  ngOnInit(): void {
-    this.initForm();
-    this.setupClientAutocomplete();
-    this.invoiceTypes = this.data?.relatedData?.invoiceType || [];
-    this.paidTypes = this.data?.relatedData?.paidType || [];
-    this.payTypes = this.data?.relatedData?.payType || [];
-  }
-
-  private initForm(): void {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = this._fb.group({
       invoiceTypeId: ['', Validators.required],
-      code: ['', Validators.required],
       userId: ['', Validators.required],
       invoiceElectronic: [false, Validators.required],
       paidTypeId: ['', Validators.required],
-      payTypeId: ['', Validators.required],
-      clientName: ['']
+      payTypeId: ['', Validators.required]
     });
+  }
+
+  ngOnInit(): void {
+    this.invoiceTypes = this.data.relatedData.invoiceType;
+    this.paidTypes = this.data.relatedData.paidType;
+    this.payTypes = this.data.relatedData.payType;
+
+    if (this.data.editMode && this.data.invoiceId) {
+      this.loadInvoiceData(this.data.invoiceId);
+      this.disableNonEditableFields();
+    } else {
+      this.setupClientAutocomplete();
+    }
+  }
+
+  private loadInvoiceData(invoiceId: number): void {
+    this.isLoading = true;
+    this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.patchForm(res.data);
+        }
+        this.isLoading = false;
+      },
+      error: () => {
+        this._dialogRef.close();
+      }
+    });
+  }
+
+  private patchForm(invoice: InvoiceComplete): void {
+    this.form.patchValue({
+      invoiceTypeId: invoice.invoiceType?.invoiceTypeId,
+      userId: invoice.user?.userId,
+      invoiceElectronic: invoice.invoiceElectronic,
+      payTypeId: invoice.payType?.payTypeId,
+      paidTypeId: invoice.paidType?.paidTypeId
+    });
+
+    if (invoice.user) {
+      const clientForDisplay: Partial<CreateUserPanel> = {
+        userId: invoice.user.userId,
+        firstName: invoice.user.firstName,
+        lastName: invoice.user.lastName,
+        identificationNumber: invoice.user.identificationNumber
+      };
+      this.clientFilterControl.setValue(clientForDisplay as CreateUserPanel);
+    }
+  }
+
+  private disableNonEditableFields(): void {
+    this.form.get('invoiceTypeId')?.disable();
+    this.form.get('userId')?.disable();
+    this.clientFilterControl.disable();
   }
 
   private setupClientAutocomplete(): void {
@@ -105,24 +147,19 @@ export class CreateInvoiceDialogComponent implements OnInit {
         startWith(''),
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap((query) => {
-          if (!query || typeof query !== 'string' || query.length < 2) {
+        switchMap((value) => {
+          const query =
+            typeof value === 'string' ? value : this.displayClient(value);
+          if (!query || query.length < 2) {
             this.isLoadingClients = false;
             return of([]);
           }
-
           this.isLoadingClients = true;
           return this._userService
-            .getUserWithPagination({
-              search: query.trim(),
-              page: 1
-            })
+            .getUserWithPagination({ search: query.trim(), page: 1 })
             .pipe(
               map((response) => response.data || []),
-              catchError((error) => {
-                console.error('Error searching clients:', error);
-                return of([]);
-              })
+              catchError(() => of([]))
             );
         })
       )
@@ -132,72 +169,98 @@ export class CreateInvoiceDialogComponent implements OnInit {
       });
   }
 
-  displayClient(client?: CreateUserPanel | string): string {
-    if (!client || typeof client === 'string') {
-      return typeof client === 'string' ? client : '';
-    }
-    return (
-      `${client.firstName || ''} ${client.lastName || ''}`.trim() ||
-      'Cliente sin nombre'
-    );
-  }
-
   onClientFocus(): void {
-    if (!this.filteredClients.length) {
-      this._userService.getUserWithPagination({}).subscribe({
-        next: (res) => (this.filteredClients = res.data || []),
-        error: (err) => console.error('Error loading clients:', err)
+    if (
+      !this.filteredClients.length &&
+      typeof this.clientFilterControl.value === 'string' &&
+      !this.clientFilterControl.value
+    ) {
+      this.isLoadingClients = true;
+      // CORRECCIÓN: Se elimina el parámetro 'pageSize' que causaba el error 400.
+      this._userService.getUserWithPagination({ page: 1 }).subscribe({
+        next: (res) => {
+          this.filteredClients = res.data || [];
+          this.isLoadingClients = false;
+        },
+        error: (err) => {
+          console.error('Error loading initial clients:', err);
+          this.isLoadingClients = false;
+        }
       });
     }
   }
 
-  onClientSelected(fullName: string): void {
-    const client = this.filteredClients.find(
-      (c) => `${c.firstName} ${c.lastName}` === fullName
-    );
+  displayClient(client: CreateUserPanel | null): string {
+    return client
+      ? `${client.firstName || ''} ${client.lastName || ''}`.trim()
+      : '';
+  }
 
-    if (!client) return;
-
-    this.selectedClient = client;
+  onClientSelected(event: MatAutocompleteSelectedEvent): void {
+    const client = event.option.value as CreateUserPanel;
     this.form.patchValue({
-      userId: client.userId,
-      clientName: fullName
+      userId: client.userId
     });
   }
 
   clearClientSelection(): void {
-    this.selectedClient = null;
-    this.form.patchValue({
-      userId: '',
-      clientName: ''
-    });
+    this.form.patchValue({ userId: '' });
     this.clientFilterControl.setValue('');
-    this.filteredClients = [];
   }
 
   get showNoResultsMessage(): boolean {
-    const searchText = this.clientFilterControl.value || '';
+    const value = this.clientFilterControl.value;
+    const searchText = typeof value === 'string' ? value : '';
     return (
       !this.isLoadingClients &&
       this.filteredClients.length === 0 &&
-      typeof searchText === 'string' &&
+      !!searchText &&
       searchText.length >= 2
     );
   }
 
   save(): void {
+    console.log('MODO', this.data.editMode, 'ID', this.data.invoiceId);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+
       return;
     }
 
-    const payload: CreateInvoice = {
-      userId: this.form.value.userId,
-      invoiceTypeId: this.form.value.invoiceTypeId,
-      code: this.form.value.code,
-      invoiceElectronic: this.form.value.invoiceElectronic,
-      payTypeId: this.form.value.payTypeId,
-      paidTypeId: this.form.value.paidTypeId,
+    this.isLoading = true;
+    if (this.data.editMode) {
+      this.updateInvoice();
+    } else {
+      this.createInvoice();
+    }
+  }
+
+  private updateInvoice(): void {
+    console.log('Actualizando con ID', this.data.invoiceId);
+    if (!this.data.invoiceId) return;
+
+    const formValue = this.form.getRawValue();
+
+    const updatePayload = {
+      invoiceId: this.data.invoiceId, // ✅ Este campo es obligatorio para el backend
+      payTypeId: formValue.payTypeId,
+      paidTypeId: formValue.paidTypeId,
+      invoiceElectronic: formValue.invoiceElectronic
+    };
+
+    this._invoiceService
+      .updateInvoice(this.data.invoiceId, updatePayload)
+      .subscribe({
+        next: () => {
+          this._dialogRef.close(true);
+        }
+      });
+  }
+
+  private createInvoice(): void {
+    const payload = {
+      ...this.form.value,
+      userId: this.form.get('userId')?.value,
       startDate: new Date().toISOString().split('T')[0],
       endDate: new Date().toISOString().split('T')[0]
     };
@@ -205,10 +268,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     this._invoiceService.createInvoice(payload).subscribe({
       next: (res) => {
         this._dialogRef.close(res.data.rowId);
-        this._router.navigateByUrl(`/invoice/invoices/${res.data.rowId}/edit`);
-      },
-      error: (err) => {
-        console.error('Error creating invoice', err);
       }
     });
   }

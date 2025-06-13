@@ -6,7 +6,11 @@ import {
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
 import { Observable } from 'rxjs';
-import { CreateInvoice, Invoice } from '../interface/invoice.interface';
+import {
+  CreateInvoice,
+  EditInvoice,
+  InvoiceComplete
+} from '../interface/invoice.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
@@ -27,9 +31,21 @@ export class InvoiceService {
     }>(`${environment.apiUrl}invoices/paginated-list`, { params });
   }
 
-  getInvoiceToEdit(id: number): Observable<ApiResponseInterface<Invoice>> {
-    return this._httpClient.get<ApiResponseInterface<Invoice>>(
-      `${environment.apiUrl}invoices/${id}`
+  getInvoiceToEdit(
+    invoiceId: number
+  ): Observable<ApiResponseInterface<InvoiceComplete>> {
+    return this._httpClient.get<ApiResponseInterface<InvoiceComplete>>(
+      `${environment.apiUrl}invoices/${invoiceId}`
+    );
+  }
+
+  updateInvoice(
+    invoiceId: number,
+    body: Partial<EditInvoice>
+  ): Observable<void> {
+    return this._httpClient.patch<void>(
+      `${environment.apiUrl}invoices/${invoiceId}`,
+      body
     );
   }
 

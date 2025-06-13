@@ -1,162 +1,131 @@
 <app-base-dialog
-  [title]="'Crear factura'"
-  [description]="'Llena los campos requeridos para iniciar la factura.'"
+  [title]="data.editMode ? 'Editar factura' : 'Crear factura'"
+  [description]="
+    data.editMode
+      ? 'Edite los campos permitidos'
+      : 'Complete todos los campos requeridos'
+  "
 >
   <form form [formGroup]="form" class="flex flex-col gap-4">
-    <!-- Tipo de Factura y Código -->
-    <div class="flex content-between gap-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de factura</mat-label>
-        <mat-select formControlName="invoiceTypeId" required>
-          <mat-option
-            *ngFor="let type of invoiceTypes"
-            [value]="type.invoiceTypeId"
-          >
-            {{ type.name }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('invoiceTypeId')?.hasError('required')">
-          Tipo de factura requerido
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Código</mat-label>
-        <input matInput formControlName="code" required />
-        <mat-error *ngIf="form.get('code')?.hasError('required')">
-          Código requerido
-        </mat-error>
-      </mat-form-field>
-    </div>
-
-    <!-- Cliente con Autocomplete -->
-    <div>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar Cliente</mat-label>
-        <input
-          matInput
-          [matAutocomplete]="clientAuto"
-          [formControl]="clientFilterControl"
-          placeholder="Nombre del cliente..."
-          (focus)="onClientFocus()"
-        />
-        <mat-icon matPrefix>person</mat-icon>
-
-        <!-- Spinner de carga -->
-        <mat-icon *ngIf="isLoadingClients" matSuffix>
-          <mat-spinner diameter="20"></mat-spinner>
-        </mat-icon>
-
-        <!-- Botón para limpiar selección -->
-        <button
-          *ngIf="selectedClient && !isLoadingClients"
-          matSuffix
-          mat-icon-button
-          type="button"
-          (click)="clearClientSelection()"
-          matTooltip="Limpiar selección"
+    <!-- Tipo de Factura -->
+    @if (!isLoading) {
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tipo de factura</mat-label>
+      <mat-select formControlName="invoiceTypeId" required>
+        <mat-option
+          *ngFor="let type of invoiceTypes"
+          [value]="type.invoiceTypeId"
         >
-          <mat-icon>clear</mat-icon>
-        </button>
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>description</mat-icon>
+      <mat-error *ngIf="form.get('invoiceTypeId')?.hasError('required')">
+        Tipo de factura requerido
+      </mat-error>
+    </mat-form-field>
 
-        <mat-autocomplete
-          #clientAuto="matAutocomplete"
-          (optionSelected)="onClientSelected($event.option.value)"
-        >
-          <mat-option
-            *ngFor="let client of filteredClients"
-            [value]="client.firstName + ' ' + client.lastName"
-          >
-            <div class="flex flex-col">
-              <span class="font-medium">
-                {{ client.firstName || 'N/A' }} {{ client.lastName || 'N/A' }}
-              </span>
-              <span
-                class="text-sm text-gray-500"
-                *ngIf="client.identificationNumber"
-              >
-                {{ client.identificationNumber }}
-              </span>
-            </div>
-          </mat-option>
+    <!-- Buscar Cliente -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Buscar Cliente</mat-label>
+      <input
+        type="text"
+        matInput
+        [matAutocomplete]="clientAuto"
+        [formControl]="clientFilterControl"
+        placeholder="Nombre del cliente..."
+        (focus)="onClientFocus()"
+      />
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-icon *ngIf="isLoadingClients" matSuffix>
+        <mat-spinner diameter="20"></mat-spinner>
+      </mat-icon>
+      <button
+        *ngIf="
+          clientFilterControl.enabled &&
+          clientFilterControl.value &&
+          !isLoadingClients
+        "
+        matSuffix
+        mat-icon-button
+        type="button"
+        (click)="clearClientSelection()"
+        matTooltip="Limpiar selección"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
 
-          <!-- Mensaje cuando no hay resultados -->
-          <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">No se encontraron clientes</span>
-          </mat-option>
-
-          <!-- Mensaje para búsquedas muy cortas -->
-          <mat-option
-            *ngIf="
-              !isLoadingClients &&
-              (clientFilterControl.value?.length || 0) > 0 &&
-              (clientFilterControl.value?.length || 0) < 2
-            "
-            disabled
-          >
-            <span class="text-gray-500"
-              >Escriba al menos 2 caracteres para buscar</span
+      <!-- CORRECCIÓN: Se usa [displayWith] y se pasa el objeto cliente completo en [value] -->
+      <mat-autocomplete
+        #clientAuto="matAutocomplete"
+        [displayWith]="displayClient"
+        (optionSelected)="onClientSelected($event)"
+      >
+        <mat-option *ngFor="let client of filteredClients" [value]="client">
+          <div class="flex flex-col">
+            <span class="font-medium">
+              {{ client.firstName || 'N/A' }} {{ client.lastName || 'N/A' }}
+            </span>
+            <span
+              class="text-sm text-gray-500"
+              *ngIf="client.identificationNumber"
             >
-          </mat-option>
-        </mat-autocomplete>
-        <mat-error *ngIf="form.get('userId')?.hasError('required')">
-          Cliente requerido
-        </mat-error>
-      </mat-form-field>
-    </div>
+              {{ client.identificationNumber }}
+            </span>
+          </div>
+        </mat-option>
+        <mat-option *ngIf="showNoResultsMessage" disabled>
+          <span class="text-gray-500">No se encontraron clientes</span>
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="form.get('userId')?.hasError('required')">
+        Cliente requerido
+      </mat-error>
+    </mat-form-field>
 
-    <!-- Configuraciones de factura -->
-    <div class="flex flex-col md:flex-row gap-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Factura electrónica</mat-label>
-        <mat-select formControlName="invoiceElectronic" required>
-          <mat-option [value]="true">Sí</mat-option>
-          <mat-option [value]="false">No</mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('invoiceElectronic')?.hasError('required')">
-          Seleccione una opción
-        </mat-error>
-      </mat-form-field>
+    <!-- Factura electrónica -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Factura electrónica</mat-label>
+      <mat-select formControlName="invoiceElectronic" required>
+        <mat-option [value]="true">Sí</mat-option>
+        <mat-option [value]="false">No</mat-option>
+      </mat-select>
+      <mat-icon matPrefix>bolt</mat-icon>
+    </mat-form-field>
 
-      <!-- Tipo de pago -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de pago</mat-label>
-        <mat-select formControlName="payTypeId" required>
-          <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
-            {{ type.name }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('payTypeId')?.hasError('required')">
-          Tipo de pago requerido
-        </mat-error>
-      </mat-form-field>
+    <!-- Tipo de pago -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Tipo de pago</mat-label>
+      <mat-select formControlName="payTypeId" required>
+        <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>credit_card</mat-icon>
+    </mat-form-field>
 
-      <!-- Tipo de cobro -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de cobro</mat-label>
-        <mat-select formControlName="paidTypeId" required>
-          <mat-option *ngFor="let type of paidTypes" [value]="type.paidTypeId">
-            {{ type.name }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('paidTypeId')?.hasError('required')">
-          Tipo de cobro requerido
-        </mat-error>
-      </mat-form-field>
-    </div>
+    <!-- Estado de pago -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Estado de pago</mat-label>
+      <mat-select formControlName="paidTypeId" required>
+        <mat-option *ngFor="let type of paidTypes" [value]="type.paidTypeId">
+          {{ type.name }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>monetization_on</mat-icon>
+    </mat-form-field>
+    } @else {
+    <app-loader></app-loader>
+    }
   </form>
 
   <!-- Acciones -->
-  <section
-    actions
-    class="w-full flex content-between gap-x-2 items-center justify-end"
-  >
+  <section actions class="w-full flex gap-2 justify-end pt-4">
     <button
       class="w-full"
       mat-fab
       extended="true"
       color="warn"
-      type="button"
       (click)="cancel()"
     >
       Cancelar
@@ -167,9 +136,9 @@
       extended="true"
       type="button"
       (click)="save()"
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || isLoading"
     >
-      Guardar
+      {{ data.editMode ? 'Guardar cambios' : 'Crear factura' }}
     </button>
   </section>
 </app-base-dialog>

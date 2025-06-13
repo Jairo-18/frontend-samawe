@@ -67,6 +67,8 @@ export class SeeInvoicesComponent implements OnInit {
     'payType',
     'paidType',
     'invoiceElectronic',
+    'subtotalWithoutTax',
+    'subtotalWithTax',
     'total',
     'actions'
   ];
@@ -217,31 +219,56 @@ export class SeeInvoicesComponent implements OnInit {
     });
   }
 
-  openDialog(): void {
+  openCreateDialog(): void {
     const isMobile = window.innerWidth <= 768;
 
-    this._relatedDataService.createInvoiceRelatedData().subscribe({
-      next: (relatedData) => {
-        const dialogRef = this._matDialog.open(CreateInvoiceDialogComponent, {
-          width: isMobile ? '90vw' : '60vw',
-          height: 'auto',
-          maxWidth: '100vw',
-          data: {
-            editMode: false,
-            relatedData: relatedData.data
+    this._matDialog
+      .open(CreateInvoiceDialogComponent, {
+        width: isMobile ? '90vw' : '60vw',
+        data: {
+          editMode: false,
+          relatedData: {
+            invoiceType: this.getOptions('invoiceTypeId'),
+            payType: this.getOptions('payTypeId'),
+            paidType: this.getOptions('paidTypeId')
           }
-        });
+        }
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadInvoices();
+      });
+  }
 
-        dialogRef.afterClosed().subscribe((result) => {
-          if (result) {
-            this.loadInvoices();
+  openEditDialog(invoiceId: number): void {
+    const isMobile = window.innerWidth <= 768;
+
+    this._matDialog
+      .open(CreateInvoiceDialogComponent, {
+        width: isMobile ? '90vw' : '60vw',
+        data: {
+          editMode: true,
+          invoiceId: invoiceId, // Solo pasamos el ID
+          relatedData: {
+            payType: this.getOptions('payTypeId'),
+            paidType: this.getOptions('paidTypeId')
           }
-        });
-      },
-      error: (err) => {
-        console.error('Error al cargar datos relacionados', err);
-      }
-    });
+        }
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadInvoices();
+      });
+  }
+
+  private getOptions(fieldName: string): any[] {
+    const field = this.searchFields.find((f) => f.name === fieldName);
+    return (
+      field?.options?.map((opt) => ({
+        [fieldName.replace('Id', '') + 'Id']: Number(opt.value),
+        name: opt.label
+      })) || []
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
