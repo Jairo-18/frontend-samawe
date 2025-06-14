@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router'; // 👈 Importa ActivatedRoute
-import { CommonModule } from '@angular/common'; // 👈 Importa CommonModule para directivas como *ngIf, *ngFor y pipes
+import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AddProductComponent } from '../../components/add-product/add-product.component';
@@ -13,7 +13,10 @@ import {
   PayType,
   TaxeType
 } from '../../../shared/interfaces/relatedDataGeneral';
-import { Invoice } from '../../interface/invoice.interface'; // Asegúrate que esta interfaz coincida con tu JSON
+import {
+  createInvoiceRelatedData,
+  Invoice
+} from '../../interface/invoice.interface';
 import { InvoiceService } from '../../services/invoice.service';
 import { ApiResponseInterface } from '../../../shared/interfaces/api-response.interface';
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
@@ -22,9 +25,9 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 
 @Component({
   selector: 'app-edit-invoice',
-  standalone: true, // Asumiendo que es un componente standalone por las importaciones directas
+  standalone: true,
   imports: [
-    CommonModule, // 👈 Añade CommonModule aquí
+    CommonModule,
     BasePageComponent,
     MatTabsModule,
     AddProductComponent,
@@ -41,20 +44,18 @@ export class EditInvoiceComponent implements OnInit {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
-  private readonly _route: ActivatedRoute = inject(ActivatedRoute); // 👈 Inyecta ActivatedRoute
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
 
   categoryTypes: CategoryType[] = [];
   paidTypes: PaidType[] = [];
   taxeTypes: TaxeType[] = [];
   payTypes: PayType[] = [];
-
+  reloadInvoiceDetails: boolean = false;
   invoiceData?: Invoice;
   invoiceId?: number;
-  loading: boolean = false;
+  initialLoading: boolean = true;
 
   ngOnInit(): void {
-    this.loadRelatedData();
-
     const invoiceId = Number(this._route.snapshot.paramMap.get('id'));
     if (invoiceId) {
       this.getInvoiceToEdit(invoiceId);
@@ -62,27 +63,70 @@ export class EditInvoiceComponent implements OnInit {
   }
 
   loadRelatedData(): void {
-    this._relatedDataService.createInvoiceRelatedData().subscribe({
-      next: (res) => {
-        this.categoryTypes = res.data.categoryType || [];
-        this.payTypes = res.data.payType || [];
-        this.paidTypes = res.data.paidType || [];
-        this.taxeTypes = res.data.taxeType || [];
-      },
-      error: (err) =>
-        console.error('❌ Error al cargar datos relacionados:', err)
-    });
+    if (this._relatedDataService.invoiceRelatedData()) {
+      this.processData(this._relatedDataService.invoiceRelatedData()!);
+    } else {
+      this._relatedDataService.createInvoiceRelatedData().subscribe({
+        next: (res) => this.processData(res),
+        error: (err) =>
+          console.error('❌ Error al cargar datos relacionados:', err)
+      });
+    }
   }
 
-  getInvoiceToEdit(invoiceId: number): void {
+  private processData(
+    res: ApiResponseInterface<createInvoiceRelatedData>
+  ): void {
+    this.categoryTypes = res.data.categoryType || [];
+    this.payTypes = res.data.payType || [];
+    this.paidTypes = res.data.paidType || [];
+    this.taxeTypes = res.data.taxeType || [];
+  }
+
+  onProductAdded(): void {
+    if (this.invoiceId) {
+      this.getInvoiceToEdit(this.invoiceId, false);
+      this.reloadInvoiceDetails = true;
+      setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+    }
+  }
+
+  onAccommodationAdded(): void {
+    if (this.invoiceId) {
+      this.getInvoiceToEdit(this.invoiceId, false);
+      this.reloadInvoiceDetails = true;
+      setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+    }
+  }
+
+  onExcursionAdded(): void {
+    if (this.invoiceId) {
+      this.getInvoiceToEdit(this.invoiceId, false);
+      this.reloadInvoiceDetails = true;
+      setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+    }
+  }
+
+  getInvoiceToEdit(invoiceId: number, isInitialLoad: boolean = true): void {
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
-      next: (response: ApiResponseInterface<Invoice>) => {
-        this.loading = true;
-        this.invoiceData = response.data;
+      next: (res) => {
+        const invoice = res.data;
+        this.invoiceData = {
+          ...invoice,
+          invoiceDetails: [...invoice.invoiceDetails]
+        };
+        this.invoiceId = invoice.invoiceId;
+        this.loadRelatedData();
+
+        if (isInitialLoad) {
+          this.initialLoading = false;
+        }
       },
-      error: (error) => {
-        console.error('❌ Error al cargar la factura:', error);
-        this.invoiceData = undefined; // Limpia en caso de error para evitar mostrar datos incorrectos
+      error: (err) => {
+        console.error('Error al obtener la factura', err);
+        if (isInitialLoad) {
+          this.initialLoading = false;
+        }
       }
     });
   }

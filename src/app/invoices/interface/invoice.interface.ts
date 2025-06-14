@@ -1,7 +1,4 @@
 import { UserComplete } from '../../organizational/interfaces/create.interface';
-import { AccommodationComplete } from '../../service-and-product/interface/accommodation.interface';
-import { ExcursionComplete } from '../../service-and-product/interface/excursion.interface';
-import { ProductComplete } from '../../service-and-product/interface/product.interface';
 import {
   CategoryType,
   IdentificationType,
@@ -10,23 +7,7 @@ import {
   PayType,
   TaxeType
 } from './../../shared/interfaces/relatedDataGeneral';
-
-export interface InvoiceDetail {
-  invoiceDetailId: number;
-  amount: string;
-  priceWithoutTax: string;
-  priceWithTax: string;
-  subtotal: string;
-  startDate: string;
-  endDate: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  product: ProductComplete;
-  accommodation: AccommodationComplete;
-  excursion: ExcursionComplete;
-  taxeType: TaxeType;
-}
+import { InvoiceDetail } from './invoiceDetaill.interface';
 
 export interface createInvoiceRelatedData {
   categoryType: CategoryType[];
@@ -101,29 +82,4 @@ export interface DialogData {
     paidType: PaidType[];
     payType: PayType[];
   };
-}
-
-// En invoice.interface.ts
-export interface InvoiceBasicInfo {
-  invoiceId: number;
-  payTypeId: number;
-  paidTypeId: number;
-  invoiceElectronic: boolean;
-  invoiceTypeId?: number;
-  user?: {
-    id: string;
-    firstName?: string;
-    lastName?: string;
-  };
-}
-
-export interface EditInvoice extends InvoiceBasicInfo {
-  invoiceId: number; // Hacemos obligatorio para edición
-}
-
-export interface Invoicee extends InvoiceBasicInfo {
-  // ... otras propiedades específicas de Invoice
-  code: string;
-  subtotalWithoutTax: string;
-  // ... etc.
 }

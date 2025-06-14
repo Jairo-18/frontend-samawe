@@ -4,16 +4,17 @@ import {
   PayType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { Invoice } from '../../interface/invoice.interface';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-invoice-summary',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './invoice-summary.component.html',
   styleUrl: './invoice-summary.component.scss'
 })
 export class InvoiceSummaryComponent {
-  @Input() invoice!: Invoice;
+  @Input() invoiceData!: Invoice;
   @Input() paidTypes: PaidType[] = [];
   @Input() payTypes: PayType[] = [];
 }

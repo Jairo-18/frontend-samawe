@@ -2,11 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import {
   NotificationInterface,
-  NotificationsTypes,
+  NotificationsTypes
 } from '../interfaces/notifications.interface';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NotificationsService {
   private _toastrService: ToastrService = inject(ToastrService);
@@ -19,7 +19,7 @@ export class NotificationsService {
     const notification: NotificationInterface = {
       title,
       type,
-      information,
+      information
     };
     this._showToast(notification);
   }
@@ -27,7 +27,7 @@ export class NotificationsService {
   private _showToast(notification: NotificationInterface): void {
     const iconMap = {
       success: '<i class="fas fa-check-circle"></i>',
-      error: '<i class="fas fa-exclamation-circle"></i>',
+      error: '<i class="fas fa-exclamation-circle"></i>'
     };
 
     const template = `
@@ -48,7 +48,7 @@ export class NotificationsService {
       progressAnimation: 'increasing',
       toastClass: `toast-container ngx-toastr brand-toast-${notification.type}`,
       positionClass: 'toast-top-right',
-      extendedTimeOut: 3000,
+      extendedTimeOut: 3000
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -43,6 +43,7 @@ import { MatIcon } from '@angular/material/icon';
 export class AddExcursionComponent {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Output() excursionAdded = new EventEmitter<void>();
 
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
@@ -137,8 +138,8 @@ export class AddExcursionComponent {
       this._invoiceDetaillService
         .createInvoiceDetaill(+invoiceId, payload)
         .subscribe({
-          next: (res) => {
-            console.log('Pasadía agregado correctamente:', res);
+          next: () => {
+            this.excursionAdded.emit();
           },
           error: (err) => {
             console.error('Error al agregar pasadía:', err);

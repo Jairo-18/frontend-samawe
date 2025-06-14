@@ -7,38 +7,52 @@
   backButtonText="Volver"
   backButtonTooltip="Volver a la lista"
 >
-  @if (loading) {
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
+    <!-- Mostrar loader solo en carga inicial -->
+    @if (initialLoading) {
+    <div class="h-full w-full justify-center items-center flex">
+      <app-loader></app-loader>
+    </div>
+    } @else {
     <!-- Columna izquierda -->
-
     <div class="flex flex-col w-full md:w-[75%] gap-3">
       <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
+        @if (invoiceData) {
         <span class="text-lg md:text-xl font-extrabold">
-          {{ invoiceData?.invoiceType?.name }} Nr° {{ invoiceData?.code }}</span
-        >
+          {{ invoiceData.invoiceType.name }} Nr°
+          {{ invoiceData.code }}
+        </span>
         <section class="flex-row md:flex w-full">
           <div class="flex w-full md:w-[50%] justify-start">
-            <span class="text-base font-bold">Cliente:</span>
-            <span class="font-medium"
-              >{{ invoiceData?.user?.firstName }}
-              {{ invoiceData?.user?.lastName }}</span
-            >
+            <span class="text-base font-bold">
+              Cliente:
+              <span class="font-medium">
+                {{ invoiceData.user.firstName }}
+                {{ invoiceData.user.lastName }}
+              </span>
+            </span>
           </div>
           <div class="flex w-full md:w-[50%] justify-end">
-            <span class="text-base font-bold">Empleado:</span>
-            <span class="font-medium">
-              {{ invoiceData?.employee?.firstName }}
-              {{ invoiceData?.employee?.lastName }}</span
-            >
+            <span class="text-base font-bold">
+              Empleado:
+              <span class="font-medium">
+                {{ invoiceData.employee.firstName }}
+                {{ invoiceData.employee.lastName }}
+              </span>
+            </span>
           </div>
         </section>
+        }
 
+        <!-- Tabs siempre visibles después de la carga inicial -->
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Producto">
             <ng-template matTabContent>
               <app-add-product
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
+                (productAdded)="onProductAdded()"
               ></app-add-product>
             </ng-template>
           </mat-tab>
@@ -47,6 +61,7 @@
               <app-add-accommodation
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
+                (accommodationAdded)="onAccommodationAdded()"
               ></app-add-accommodation>
             </ng-template>
           </mat-tab>
@@ -55,36 +70,36 @@
               <app-add-excursion
                 [categoryTypes]="categoryTypes"
                 [taxeTypes]="taxeTypes"
+                (excursionAdded)="onExcursionAdded()"
               ></app-add-excursion>
             </ng-template>
           </mat-tab>
         </mat-tab-group>
       </section>
 
-      <!-- Detalle factura -->
-      <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+      <!-- Detalle factura - aparece cuando invoiceData esté disponible -->
+      <section
+        class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
+      >
         <app-invoice-detaill
           *ngIf="invoiceData"
           [invoiceDetails]="invoiceData.invoiceDetails"
+          [reload]="reloadInvoiceDetails"
         ></app-invoice-detaill>
       </section>
     </div>
 
-    <!-- Columna derecha -->
+    <!-- Columna derecha - aparece cuando invoiceData esté disponible -->
     <div
-      class="flex flex-col w-full md:w-[25%] p-4 h-min rounded-2xl border border-[#06a606]"
+      class="flex flex-col w-full md:w-[25%] p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
     >
       <app-invoice-summary
         *ngIf="invoiceData"
-        [invoice]="invoiceData"
+        [invoiceData]="invoiceData"
         [paidTypes]="paidTypes"
         [payTypes]="payTypes"
       ></app-invoice-summary>
     </div>
+    }
   </article>
-  } @else {
-  <div class="h-full w-hull justify-center items-center flex">
-    <app-loader></app-loader>
-  </div>
-  }
 </app-base-page>

@@ -4,8 +4,8 @@ import {
   RegisterUserRelatedData
 } from './../../auth/interfaces/register.interface';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, of, tap } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment.development';
 import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
@@ -15,6 +15,9 @@ import { CreateAccommodationRelatedData } from '../../service-and-product/interf
 })
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private _invoiceRelatedData =
+    signal<ApiResponseInterface<createInvoiceRelatedData> | null>(null);
+  readonly invoiceRelatedData = this._invoiceRelatedData.asReadonly();
 
   registerUserRelatedData(): Observable<
     ApiResponseInterface<RegisterUserRelatedData>
@@ -40,11 +43,28 @@ export class RelatedDataService {
     >(`${environment.apiUrl}accommodation/create/related-data`);
   }
 
-  createInvoiceRelatedData(): Observable<
-    ApiResponseInterface<createInvoiceRelatedData>
-  > {
-    return this._httpClient.get<ApiResponseInterface<createInvoiceRelatedData>>(
-      `${environment.apiUrl}invoices/create/related-data`
-    );
+  createInvoiceRelatedData(
+    forceRefresh: boolean = false
+  ): Observable<ApiResponseInterface<createInvoiceRelatedData>> {
+    // Si ya tenemos datos y no se fuerza refresco, devolvemos los datos existentes
+    if (!forceRefresh && this._invoiceRelatedData()) {
+      return of(this._invoiceRelatedData()!);
+    }
+
+    return this._httpClient
+      .get<ApiResponseInterface<createInvoiceRelatedData>>(
+        `${environment.apiUrl}invoices/create/related-data`
+      )
+      .pipe(
+        tap((response) => {
+          // Almacenamos la respuesta en la signal
+          this._invoiceRelatedData.set(response);
+        })
+      );
+  }
+
+  // Método para limpiar la caché si es necesario
+  clearInvoiceRelatedDataCache(): void {
+    this._invoiceRelatedData.set(null);
   }
 }

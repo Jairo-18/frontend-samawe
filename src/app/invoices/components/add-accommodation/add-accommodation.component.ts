@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -47,6 +47,7 @@ import { MatIcon } from '@angular/material/icon';
 export class AddAccommodationComponent {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Output() accommodationAdded = new EventEmitter<void>();
 
   private readonly _accommodationsService: AccommodationsService = inject(
     AccommodationsService
@@ -147,8 +148,8 @@ export class AddAccommodationComponent {
       this._invoiceDetaillService
         .createInvoiceDetaill(+invoiceId, payload)
         .subscribe({
-          next: (res) => {
-            console.log('Detalle agregado correctamente:', res);
+          next: () => {
+            this.accommodationAdded.emit();
           },
           error: (err) => {
             console.error('Error al agregar detalle:', err);
