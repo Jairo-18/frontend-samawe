@@ -6,41 +6,33 @@ export interface InvoicePeriodTotals {
   totalAllTime: number;
 }
 
-export interface BalancePeriod {
-  totalInvoiceSale: string;
-  totalInvoiceBuy: string;
-  balanceInvoice: string;
-  periodDate: string; // formato: YYYY-MM-DD
-  type: 'daily' | 'weekly' | 'monthly' | 'yearly';
+export interface InvoiceStatsResponse {
+  invoiceSale: InvoicePeriodTotals;
+  invoiceBuy: InvoicePeriodTotals;
 }
 
-export interface InvoiceBalance {
-  daily: BalancePeriod;
-  weekly: BalancePeriod;
-  monthly: BalancePeriod;
-  yearly: BalancePeriod;
+export interface SalesSummaryByCategory {
+  products: TimePeriodStats;
+  accommodations: TimePeriodStats;
+  excursions: TimePeriodStats;
+}
+
+export interface TimePeriodStats {
+  daily: CountTotal;
+  weekly: CountTotal;
+  monthly: CountTotal;
+  yearly: CountTotal;
+}
+
+export interface CountTotal {
+  count: number;
+  total: number;
 }
 
 export interface TotalInventory {
-  totalStock: number;
+  totalInventoryValue: number;
 }
 
-export interface ProductSummary {
-  totalProductPriceSale?: number;
-  totalProductPriceBuy?: number;
-  balanceProduct?: number;
-}
-
-export interface InvoiceSummaryItem {
-  code: string;
+export interface Total {
   total: number;
-  type: string;
-  createdAt: string;
-}
-
-export interface InvoiceSummaryGroupedResponse {
-  daily: InvoiceSummaryItem[];
-  weekly: InvoiceSummaryItem[];
-  monthly: InvoiceSummaryItem[];
-  yearly: InvoiceSummaryItem[];
 }

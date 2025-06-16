@@ -1,11 +1,9 @@
 import {
   AfterViewInit,
   Component,
-  EventEmitter,
   inject,
   Input,
   OnChanges,
-  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -40,7 +38,6 @@ import { PaginationInterface } from '../../../shared/interfaces/pagination.inter
 export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
   @Input() invoiceDetails: InvoiceDetail[] = [];
   @Input() reload: boolean = false;
-  @Output() itemDelete = new EventEmitter<void>();
 
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
@@ -109,7 +106,6 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     this._invoiceDetaillService.deleteItemInvoice(invoiceDetailId).subscribe({
       next: () => {
         this.loading = false;
-        this.itemDelete.emit();
       },
       error: (error) => {
         console.error('Error en la solicitud:', error);

@@ -1,126 +1,65 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ChartConfiguration } from 'chart.js';
+import { Component, inject } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { EarningService } from '../../services/earning.service';
 import {
-  ProductSummary,
-  InvoiceBalance,
-  TotalInventory,
-  InvoiceSummaryGroupedResponse
+  InvoiceStatsResponse,
+  SalesSummaryByCategory,
+  Total,
+  TotalInventory
 } from '../../interface/earning.interface';
-import { NgChartsModule } from 'ng2-charts';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-earnings-sumary',
   standalone: true,
-  imports: [
-    BasePageComponent,
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatButtonToggleModule,
-    NgChartsModule
-  ],
+  imports: [BasePageComponent, MatIconModule],
   templateUrl: './earnings-sumary.component.html',
   styleUrl: './earnings-sumary.component.scss'
 })
-export class EarningsSumaryComponent implements OnInit {
+export class EarningsSumaryComponent {
   private readonly _earningService: EarningService = inject(EarningService);
 
-  productSummary?: ProductSummary;
+  invoiceStats?: InvoiceStatsResponse;
+  totalitems?: SalesSummaryByCategory;
   inventoryTotal?: TotalInventory;
-  invoiceBalance?: InvoiceBalance;
-  invoiceSummaryGroup?: InvoiceSummaryGroupedResponse;
+  totalWithInventory?: Total;
 
-  selectedPeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' = 'daily';
+  // ngOnInit(): void {
+  //   this.load();
+  // }
 
-  // Gráfica Chart.js
-  chartData?: ChartConfiguration<'bar'>['data'];
-  chartType: 'bar' = 'bar';
-  chartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-    scales: {
-      x: {},
-      y: {
-        beginAtZero: true
-      }
-    }
-  };
-
-  ngOnInit(): void {
-    forkJoin({
-      productSummary: this._earningService.getGeneragetProductSummary(),
-      invoiceBalance: this._earningService.getInvoiceBalance(),
-      inventoryTotal: this._earningService.getTotalInventory(),
-      invoiceSummaryGroup: this._earningService.getGroupedInvoices()
-    }).subscribe({
-      next: (res) => {
-        this.productSummary = res.productSummary;
-        this.invoiceBalance = res.invoiceBalance;
-        this.inventoryTotal = res.inventoryTotal;
-        this.invoiceSummaryGroup = res.invoiceSummaryGroup;
-        this.updateChart();
+  load() {
+    this._earningService.getGeneralEanings().subscribe({
+      next: (response) => {
+        this.invoiceStats = response;
       },
       error: (err) => {
-        console.error('Error al cargar los datos de ganancias:', err);
+        console.error('Error al cargar los datos:', err);
       }
     });
-  }
-
-  onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
-    this.selectedPeriod = period;
-    this.updateChart();
-  }
-
-  private updateChart(): void {
-    if (this.invoiceSummaryGroup) {
-      this.chartData = this.buildChartData(
-        this.invoiceSummaryGroup,
-        this.selectedPeriod
-      );
-    }
-  }
-
-  private buildChartData(
-    data: InvoiceSummaryGroupedResponse,
-    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  ): ChartConfiguration<'bar'>['data'] {
-    const grouped = data[period];
-    const labels = grouped.map((_, i) => `#${i + 1}`);
-    const saleData: number[] = [];
-    const buyData: number[] = [];
-
-    grouped.forEach((item) => {
-      if (item.type === 'FV') {
-        saleData.push(item.total);
-        buyData.push(0);
-      } else if (item.type === 'FC') {
-        saleData.push(0);
-        buyData.push(item.total);
+    this._earningService.getCountTotalItems().subscribe({
+      next: (response) => {
+        this.totalitems = response;
+      },
+      error: (err) => {
+        console.error('Error al cargar los datos:', err);
       }
     });
-
-    return {
-      labels,
-      datasets: [
-        {
-          label: 'Ventas',
-          data: saleData,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)'
-        },
-        {
-          label: 'Compras',
-          data: buyData,
-          backgroundColor: 'rgba(255, 99, 132, 0.6)'
-        }
-      ]
-    };
+    this._earningService.getTotalInventory().subscribe({
+      next: (response) => {
+        this.inventoryTotal = response;
+      },
+      error: (err) => {
+        console.error('Error al cargar los datos:', err);
+      }
+    });
+    this._earningService.getTotalWithInventory().subscribe({
+      next: (response) => {
+        this.totalWithInventory = response;
+      },
+      error: (err) => {
+        console.error('Error al cargar los datos:', err);
+      }
+    });
   }
 }

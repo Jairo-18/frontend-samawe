@@ -3,10 +3,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import {
-  ProductSummary,
-  InvoiceBalance,
-  TotalInventory,
-  InvoiceSummaryGroupedResponse
+  InvoiceStatsResponse,
+  SalesSummaryByCategory,
+  Total,
+  TotalInventory
 } from '../interface/earning.interface';
 
 @Injectable({
@@ -15,27 +15,27 @@ import {
 export class EarningService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
 
-  getGeneragetProductSummary(): Observable<ProductSummary> {
-    return this._httpClient.get<ProductSummary>(
-      `${environment.apiUrl}balance/product-summary`
+  getGeneralEanings(): Observable<InvoiceStatsResponse> {
+    return this._httpClient.get<InvoiceStatsResponse>(
+      `${environment.apiUrl}earning/general-earnigs`
     );
   }
 
-  getInvoiceBalance(): Observable<InvoiceBalance> {
-    return this._httpClient.get<InvoiceBalance>(
-      `${environment.apiUrl}balance/invoice-summary`
+  getCountTotalItems(): Observable<SalesSummaryByCategory> {
+    return this._httpClient.get<SalesSummaryByCategory>(
+      `${environment.apiUrl}earning/count-total-items`
     );
   }
 
   getTotalInventory(): Observable<TotalInventory> {
     return this._httpClient.get<TotalInventory>(
-      `${environment.apiUrl}balance/total-stock`
+      `${environment.apiUrl}earning/inventory-total`
     );
   }
 
-  getGroupedInvoices(): Observable<InvoiceSummaryGroupedResponse> {
-    return this._httpClient.get<InvoiceSummaryGroupedResponse>(
-      `${environment.apiUrl}balance/invoice-chart-list`
+  getTotalWithInventory(): Observable<Total> {
+    return this._httpClient.get<Total>(
+      `${environment.apiUrl}earning/total-sales-with-inventory`
     );
   }
 }

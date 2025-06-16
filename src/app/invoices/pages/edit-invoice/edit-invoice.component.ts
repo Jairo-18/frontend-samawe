@@ -107,14 +107,6 @@ export class EditInvoiceComponent implements OnInit {
     }
   }
 
-  onItemDelete(): void {
-    if (this.invoiceId) {
-      this.getInvoiceToEdit(this.invoiceId, false);
-      this.reloadInvoiceDetails = true;
-      setTimeout(() => (this.reloadInvoiceDetails = false), 100);
-    }
-  }
-
   getInvoiceToEdit(invoiceId: number, isInitialLoad: boolean = true): void {
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
       next: (res) => {

@@ -1,97 +1,36 @@
 <app-base-page [showBorder]="false"
-  ><div class="grid gap-6 p-4 md:grid-cols-3 sm:grid-cols-1">
-    <!-- Resumen de productos vendidos -->
-    <mat-card *ngIf="productSummary" class="rounded-xl shadow-md">
-      <mat-card-header>
-        <mat-icon color="primary">inventory_2</mat-icon>
-        <mat-card-title>Resumen de productos vendidos</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          <strong>Unidades a precio de compra:</strong>
-          {{ productSummary.totalProductPriceBuy | currency : 'COP' }}
-        </p>
-        <p>
-          <strong>Unidades a precio de venta:</strong>
-          {{ productSummary.totalProductPriceSale | currency : 'COP' }}
-        </p>
-        <p>
-          <strong>Utilidad:</strong>
-          {{ productSummary.balanceProduct | currency : 'COP' }}
-        </p>
-      </mat-card-content>
-    </mat-card>
+  ><article class="flex flex-col md:flex-row">
+    <section class="flex flex-col">
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <mat-icon>sell</mat-icon>
 
-    <!-- Balance de facturas -->
-    <mat-card *ngIf="invoiceBalance" class="rounded-xl shadow-md">
-      <mat-card-header>
-        <mat-icon color="accent">receipt_long</mat-icon>
-        <mat-card-title>Balance de facturación</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          <strong>Ventas:</strong>
-          {{ invoiceBalance.daily.totalInvoiceSale | currency : 'COP' }}
-        </p>
-        <p>
-          <strong>Compras:</strong>
-          {{ invoiceBalance.daily.totalInvoiceBuy | currency : 'COP' }}
-        </p>
-        <p>
-          <strong>Balance:</strong>
-          <span
-            [ngClass]="{
-              'text-green-600': +invoiceBalance.daily.balanceInvoice > 0,
-              'text-red-600': +invoiceBalance.daily.balanceInvoice < 0
-            }"
-          >
-            {{ invoiceBalance.daily.balanceInvoice | currency : 'COP' }}
-          </span>
-        </p>
-      </mat-card-content>
-    </mat-card>
+        <span>Facturas de Venta</span>
+        <span>Diario: {{ invoiceStats?.invoiceSale?.daily }}</span>
+        <span>Total: {{ invoiceStats?.invoiceSale?.totalAllTime }}</span>
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <mat-icon>shopping_cart</mat-icon>
 
-    <!-- Inventario total -->
-    <mat-card *ngIf="inventoryTotal" class="rounded-xl shadow-md">
-      <mat-card-header>
-        <mat-icon color="warn">warehouse</mat-icon>
-        <mat-card-title>Total en inventario</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          <strong>Valor de inventario:</strong>
-          {{ productSummary?.totalProductPriceSale | currency : 'COP' }}
-        </p>
-        <p>
-          <strong>Productos en stock:</strong> {{ inventoryTotal.totalStock }}
-        </p>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <mat-button-toggle-group
-    [value]="selectedPeriod"
-    (change)="onPeriodChange($event.value)"
-    appearance="standard"
-  >
-    <mat-button-toggle value="daily">Diario</mat-button-toggle>
-    <mat-button-toggle value="weekly">Semanal</mat-button-toggle>
-    <mat-button-toggle value="monthly">Mensual</mat-button-toggle>
-    <mat-button-toggle value="yearly">Anual</mat-button-toggle>
-  </mat-button-toggle-group>
-
-  <mat-card *ngIf="chartData" class="rounded-xl shadow-md">
-    <mat-card-header>
-      <mat-icon color="primary">bar_chart</mat-icon>
-      <mat-card-title>Comparativa de facturación</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <canvas
-        baseChart
-        [data]="chartData"
-        [type]="chartType"
-        [options]="chartOptions"
-      >
-      </canvas>
-    </mat-card-content>
-  </mat-card>
+        <span>Facturas de Compra</span>
+        <span>Diario: {{ invoiceStats?.invoiceBuy?.daily }}</span>
+        <span>Total: {{ invoiceStats?.invoiceBuy?.totalAllTime }}</span>
+      </div>
+    </section>
+    <section class="flex flex-col">
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span
+          >Productos vendidos:
+          {{ totalitems?.accommodations?.daily?.count }}</span
+        >
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span>Inventario total: {{ inventoryTotal?.totalInventoryValue }}</span>
+      </div>
+      <div class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <span
+          >Inventario total más facturas: {{ totalWithInventory?.total }}</span
+        >
+      </div>
+    </section>
+  </article>
 </app-base-page>
