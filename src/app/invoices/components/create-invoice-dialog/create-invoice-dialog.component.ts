@@ -39,6 +39,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { DialogData, InvoiceComplete } from '../../interface/invoice.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-invoice-dialog',
@@ -76,6 +77,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
   private readonly _fb = inject(FormBuilder);
   private readonly _invoiceService = inject(InvoiceService);
   private readonly _userService = inject(UsersService);
+  private readonly _router: Router = inject(Router);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = this._fb.group({
@@ -267,6 +269,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
 
     this._invoiceService.createInvoice(payload).subscribe({
       next: (res) => {
+        this._router.navigateByUrl(`/invoice/invoices/${res.data.rowId}/edit`);
         this._dialogRef.close(res.data.rowId);
       }
     });
