@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +20,7 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { ExcursionsService } from '../../../service-and-product/services/excursions.service';
 import { AddedExcursionInvoiceDetaill } from '../../interface/invoiceDetaill.interface';
 import { debounceTime, of, switchMap } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,6 +29,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-excursion',
@@ -35,7 +43,8 @@ import { MatIcon } from '@angular/material/icon';
     MatOptionModule,
     MatButtonModule,
     CommonModule,
-    MatIcon
+    MatIcon,
+    MatProgressSpinnerModule
   ],
   templateUrl: './add-excursion.component.html',
   styleUrl: './add-excursion.component.scss'
@@ -49,11 +58,13 @@ export class AddExcursionComponent {
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
   private readonly route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private readonly _router: Router = inject(Router);
 
   form: FormGroup;
+  isLoading = false;
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     const now = new Date();
     const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
       .toISOString()
@@ -114,6 +125,33 @@ export class AddExcursionComponent {
     return null;
   }
 
+  resetForm() {
+    const now = new Date();
+    const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+
+    this.form.reset();
+    Object.keys(this.form.controls).forEach((key) => {
+      const control = this.form.get(key);
+      control?.setErrors(null);
+    });
+
+    this.form.patchValue({
+      amount: 1,
+      startDate: nowLocal,
+      endDate: nowLocal
+    });
+
+    this._router.navigate([], {
+      queryParams: {},
+      queryParamsHandling: '',
+      replaceUrl: true
+    });
+
+    this.cdr.detectChanges();
+  }
+
   addExcursion() {
     if (this.form.valid) {
       const invoiceId = this.getInvoiceIdFromRoute(this.route);
@@ -121,7 +159,7 @@ export class AddExcursionComponent {
         console.error('Invoice ID not found!');
         return;
       }
-
+      this.isLoading = true;
       const f = this.form.getRawValue();
       const payload = {
         productId: 0,
@@ -139,10 +177,13 @@ export class AddExcursionComponent {
         .createInvoiceDetaill(+invoiceId, payload)
         .subscribe({
           next: () => {
+            this.isLoading = false;
             this.excursionAdded.emit();
+            this.resetForm();
           },
           error: (err) => {
-            console.error('Error al agregar pasadía:', err);
+            this.isLoading = false;
+            console.error('Error al agregar detalle:', err);
           }
         });
     } else {

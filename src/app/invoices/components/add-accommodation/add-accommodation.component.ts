@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +20,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { debounceTime, of, switchMap } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CategoryType,
   TaxeType
@@ -24,6 +31,7 @@ import { AddedAccommodationInvoiceDetaill } from '../../interface/invoiceDetaill
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-accommodation',
@@ -39,7 +47,8 @@ import { MatIcon } from '@angular/material/icon';
     MatSelectModule,
     MatNativeDateModule,
     MatDatepickerModule,
-    MatIcon
+    MatIcon,
+    MatProgressSpinnerModule
   ],
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'
@@ -57,11 +66,13 @@ export class AddAccommodationComponent {
   );
   private readonly route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private readonly _router: Router = inject(Router);
 
   form: FormGroup;
+  isLoading = false;
   filteredAccommodations: AddedAccommodationInvoiceDetaill[] = [];
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     const now = new Date();
     const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
       .toISOString()
@@ -123,6 +134,33 @@ export class AddAccommodationComponent {
     return null;
   }
 
+  resetForm() {
+    const now = new Date();
+    const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+
+    this.form.reset();
+    Object.keys(this.form.controls).forEach((key) => {
+      const control = this.form.get(key);
+      control?.setErrors(null);
+    });
+
+    this.form.patchValue({
+      amount: 1,
+      startDate: nowLocal,
+      endDate: nowLocal
+    });
+
+    this._router.navigate([], {
+      queryParams: {},
+      queryParamsHandling: '',
+      replaceUrl: true
+    });
+
+    this.cdr.detectChanges();
+  }
+
   addAccommodation() {
     if (this.form.valid) {
       const invoiceId = this.getInvoiceIdFromRoute(this.route);
@@ -130,7 +168,7 @@ export class AddAccommodationComponent {
         console.error('Invoice ID not found!');
         return;
       }
-
+      this.isLoading = true;
       const f = this.form.getRawValue(); // 👈 importante cambio aquí
 
       const payload = {
@@ -149,9 +187,12 @@ export class AddAccommodationComponent {
         .createInvoiceDetaill(+invoiceId, payload)
         .subscribe({
           next: () => {
+            this.isLoading = false;
             this.accommodationAdded.emit();
+            this.resetForm();
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error al agregar detalle:', err);
           }
         });

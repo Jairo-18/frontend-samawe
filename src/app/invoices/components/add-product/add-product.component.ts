@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  OnInit
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,9 +28,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AddedProductInvoiceDetaill } from '../../interface/invoiceDetaill.interface';
 import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-add-product',
@@ -36,23 +45,25 @@ import { MatIcon } from '@angular/material/icon';
     MatAutocompleteModule,
     CommonModule,
     MatSelectModule,
-    MatIcon
+    MatIcon,
+    MatProgressSpinnerModule
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'
 })
-export class AddProductComponent {
+export class AddProductComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
   @Output() productAdded = new EventEmitter<void>();
 
-  private readonly _productsService: ProductsService = inject(ProductsService);
-  private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
-    InvoiceDetaillService
-  );
+  private readonly _productsService = inject(ProductsService);
+  private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
   private readonly route = inject(ActivatedRoute);
+  private readonly _router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   form: FormGroup;
+  isLoading = false;
   filteredProducts: AddedProductInvoiceDetaill[] = [];
   selectedProduct?: CreateProductPanel;
 
@@ -61,7 +72,7 @@ export class AddProductComponent {
       productName: ['', Validators.required],
       productId: [null, Validators.required],
       price: [{ value: '', disabled: true }],
-      priceBuy: [0, [Validators.required, Validators.min(0)]], // Aseguramos número válido
+      priceBuy: [0, [Validators.required, Validators.min(0)]],
       priceWithoutTax: [null, Validators.required],
       taxeTypeId: [null, Validators.required],
       amount: [1, [Validators.required, Validators.min(1)]],
@@ -84,6 +95,13 @@ export class AddProductComponent {
       });
   }
 
+  ngOnInit(): void {
+    const ivaTaxe = this.taxeTypes.find((t) => t.name === 'IVA');
+    if (ivaTaxe) {
+      this.form.patchValue({ taxeTypeId: ivaTaxe.taxeTypeId });
+    }
+  }
+
   getInvoiceIdFromRoute(route: ActivatedRoute): string | null {
     let currentRoute: ActivatedRoute | null = route;
     while (currentRoute) {
@@ -94,7 +112,7 @@ export class AddProductComponent {
     return null;
   }
 
-  onProductFocus() {
+  onProductFocus(): void {
     if (!this.filteredProducts.length) {
       this._productsService.getProductWithPagination({}).subscribe((res) => {
         this.filteredProducts = res.data ?? [];
@@ -102,7 +120,7 @@ export class AddProductComponent {
     }
   }
 
-  onProductSelected(name: string) {
+  onProductSelected(name: string): void {
     const product = this.filteredProducts.find((p) => p.name === name);
     if (!product) return;
 
@@ -111,21 +129,49 @@ export class AddProductComponent {
     this.form.patchValue({
       productId: product.productId,
       price: product.priceSale,
-      priceBuy: product.priceBuy ?? 0, // Aseguramos número si viene null
+      priceBuy: product.priceBuy ?? 0,
       priceWithoutTax: product.priceSale,
-      taxeTypeId: product.taxeTypeId,
+      // No toques taxeTypeId
       categoryId: product.categoryTypeId
     });
   }
 
-  addProduct() {
+  resetForm(): void {
+    const ivaTaxe = this.taxeTypes.find((t) => t.name === 'IVA');
+
+    this.form.reset({
+      productName: '',
+      productId: null,
+      price: { value: '', disabled: true },
+      priceBuy: 0,
+      priceWithoutTax: null,
+      taxeTypeId: ivaTaxe?.taxeTypeId ?? null,
+      amount: 1,
+      categoryId: null
+    });
+
+    Object.keys(this.form.controls).forEach((key) => {
+      const control = this.form.get(key);
+      control?.setErrors(null);
+    });
+
+    this._router.navigate([], {
+      queryParams: {},
+      queryParamsHandling: '',
+      replaceUrl: true
+    });
+
+    this.cdr.detectChanges();
+  }
+
+  addProduct(): void {
     if (this.form.valid) {
       const invoiceId = this.getInvoiceIdFromRoute(this.route);
       if (!invoiceId) {
         console.error('Invoice ID not found in route!');
         return;
       }
-
+      this.isLoading = true;
       const formValue = this.form.value;
 
       const invoiceDetailPayload = {
@@ -144,9 +190,12 @@ export class AddProductComponent {
         .createInvoiceDetaill(+invoiceId, invoiceDetailPayload)
         .subscribe({
           next: () => {
+            this.isLoading = false;
             this.productAdded.emit();
+            this.resetForm();
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error al agregar detalle:', err);
           }
         });

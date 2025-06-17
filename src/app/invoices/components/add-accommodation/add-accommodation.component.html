@@ -70,8 +70,14 @@
     class="!w-full !rounded-lg"
     mat-fab
     extended="true"
+    [disabled]="isLoading"
     (click)="addAccommodation()"
   >
-    Añadir hospedaje
+    <ng-container *ngIf="!isLoading; else loading">
+      Añadir hospedaje
+    </ng-container>
+    <ng-template #loading>
+      <mat-spinner diameter="24" color="accent"></mat-spinner>
+    </ng-template>
   </button>
 </form>

@@ -2,8 +2,8 @@
   <table mat-table [dataSource]="dataSource">
     <!-- Code Column -->
     <ng-container matColumnDef="code">
-      <th mat-header-cell *matHeaderCellDef>Código</th>
-      <td mat-cell *matCellDef="let detail">
+      <th mat-header-cell *matHeaderCellDef class="center-text">Código</th>
+      <td mat-cell *matCellDef="let detail" class="center-text">
         {{
           detail.product?.code ||
             detail.accommodation?.code ||
@@ -15,7 +15,7 @@
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Item</th>
+      <th mat-header-cell *matHeaderCellDef class="center-text">Item</th>
       <td mat-cell *matCellDef="let detail">
         {{
           detail.product?.name ||
@@ -25,31 +25,43 @@
         }}
       </td>
     </ng-container>
+    <!-- Start Date -->
     <ng-container matColumnDef="startDate">
-      <th mat-header-cell *matHeaderCellDef>Fecha Entrada</th>
-      <td mat-cell *matCellDef="let detail">
-        {{ detail.startDate | date : 'dd/MM/yyyy HH:mm' }}
+      <th mat-header-cell *matHeaderCellDef class="center-text">
+        Fecha Entrada
+      </th>
+      <td mat-cell *matCellDef="let detail" class="center-text">
+        {{
+          detail.startDate
+            ? (detail.startDate | date : 'dd/MM/yyyy HH:mm')
+            : 'N/A'
+        }}
       </td>
     </ng-container>
 
     <!-- End Date -->
-    <ng-container matColumnDef="endDate">
+    <ng-container matColumnDef="endDate" class="center-text">
       <th mat-header-cell *matHeaderCellDef>Fecha Salida</th>
-      <td mat-cell *matCellDef="let detail">
-        {{ detail.endDate | date : 'dd/MM/yyyy HH:mm' }}
+      <td mat-cell *matCellDef="let detail" class="center-text">
+        {{
+          detail.endDate ? (detail.endDate | date : 'dd/MM/yyyy HH:mm') : 'N/A'
+        }}
       </td>
     </ng-container>
+
     <!-- Amount -->
     <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef>Und</th>
-      <td mat-cell *matCellDef="let detail" class="right-text">
+      <th mat-header-cell *matHeaderCellDef class="center-text">Und</th>
+      <td mat-cell *matCellDef="let detail" class="center-text">
         {{ detail.amount }}
       </td>
     </ng-container>
 
     <!-- Price Without Tax -->
     <ng-container matColumnDef="priceWithoutTax">
-      <th mat-header-cell *matHeaderCellDef>P. sin impuesto</th>
+      <th mat-header-cell *matHeaderCellDef class="center-text">
+        P. sin impuesto
+      </th>
       <td mat-cell *matCellDef="let detail" class="right-text">
         {{ detail.priceWithoutTax | currency : 'COP' }}
       </td>
@@ -57,7 +69,9 @@
 
     <!-- Price With Tax -->
     <ng-container matColumnDef="priceWithTax">
-      <th mat-header-cell *matHeaderCellDef>P. con impuesto</th>
+      <th mat-header-cell *matHeaderCellDef class="center-text">
+        P. con impuesto
+      </th>
       <td mat-cell *matCellDef="let detail" class="right-text">
         {{ detail.priceWithTax | currency : 'COP' }}
       </td>
@@ -65,15 +79,15 @@
 
     <!-- Subtotal -->
     <ng-container matColumnDef="subtotal">
-      <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+      <th mat-header-cell *matHeaderCellDef class="center-text">Subtotal</th>
       <td mat-cell *matCellDef="let detail" class="right-text">
         {{ detail.subtotal | currency : 'COP' }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
-      <td mat-cell *matCellDef="let detail">
+      <th mat-header-cell *matHeaderCellDef class="center-text">Acciones</th>
+      <td mat-cell *matCellDef="let detail" class="center-text">
         <button
           mat-icon-button
           color="warn"

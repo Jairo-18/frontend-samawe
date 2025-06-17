@@ -20,16 +20,19 @@
         <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
         @if (invoiceData) {
         <span class="text-lg md:text-xl font-extrabold">
-          {{ invoiceData.invoiceType.name }} Nr°
-          {{ invoiceData.code }}
+          {{ invoiceData.invoiceType.name }} Nr° {{ invoiceData.code }}
         </span>
+
         <section class="flex-row md:flex w-full">
           <div class="flex w-full md:w-[50%] justify-start">
             <span class="text-base font-bold">
-              Cliente:
+              {{
+                invoiceData.invoiceType.code === 'FC'
+                  ? 'Proveedor:'
+                  : 'Cliente:'
+              }}
               <span class="font-medium">
-                {{ invoiceData.user.firstName }}
-                {{ invoiceData.user.lastName }}
+                {{ invoiceData.user.firstName }} {{ invoiceData.user.lastName }}
               </span>
             </span>
           </div>
@@ -47,6 +50,7 @@
 
         <!-- Tabs siempre visibles después de la carga inicial -->
         <mat-tab-group animationDuration="0ms">
+          <!-- Producto: siempre disponible -->
           <mat-tab label="Producto">
             <ng-template matTabContent>
               <app-add-product
@@ -56,6 +60,10 @@
               ></app-add-product>
             </ng-template>
           </mat-tab>
+
+          <!-- Hospedaje: solo si no es FC -->
+
+          @if (invoiceData?.invoiceType?.code !== 'FC') {
           <mat-tab label="Hospedaje">
             <ng-template matTabContent>
               <app-add-accommodation
@@ -65,6 +73,7 @@
               ></app-add-accommodation>
             </ng-template>
           </mat-tab>
+
           <mat-tab label="Pasadía">
             <ng-template matTabContent>
               <app-add-excursion
@@ -74,6 +83,7 @@
               ></app-add-excursion>
             </ng-template>
           </mat-tab>
+          }
         </mat-tab-group>
       </section>
 

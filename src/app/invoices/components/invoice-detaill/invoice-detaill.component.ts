@@ -80,6 +80,18 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
 
       if (this.paginatorInitialized) {
         this.dataSource.paginator = this.paginator;
+
+        // Saltar a la última página automáticamente
+        setTimeout(() => {
+          const totalItems = this.dataSource.data.length;
+          const pageSize = this.paginator.pageSize;
+          const lastPageIndex = Math.ceil(totalItems / pageSize) - 1;
+
+          if (lastPageIndex >= 0) {
+            this.paginator.pageIndex = lastPageIndex;
+            this.paginator._changePageSize(this.paginator.pageSize); // Forzar recarga de vista
+          }
+        });
       }
     }
 
