@@ -85,9 +85,12 @@ export class EditInvoiceComponent implements OnInit {
 
   onProductAdded(): void {
     if (this.invoiceId) {
-      this.getInvoiceToEdit(this.invoiceId, false);
       this.reloadInvoiceDetails = true;
-      setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+
+      setTimeout(() => {
+        this.getInvoiceToEdit(this.invoiceId!, false);
+        this.reloadInvoiceDetails = false;
+      }, 500);
     }
   }
 
