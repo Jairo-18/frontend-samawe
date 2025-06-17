@@ -32,15 +32,15 @@ export interface ProductSummary {
 }
 
 export interface InvoiceSummaryItem {
-  code: string;
-  total: number;
-  type: string;
-  createdAt: string;
+  code?: string;
+  total?: number;
+  type?: string;
+  createdAt?: string;
 }
 
 export interface InvoiceSummaryGroupedResponse {
-  daily: InvoiceSummaryItem[];
-  weekly: InvoiceSummaryItem[];
-  monthly: InvoiceSummaryItem[];
-  yearly: InvoiceSummaryItem[];
+  daily?: InvoiceSummaryItem[];
+  weekly?: InvoiceSummaryItem[];
+  monthly?: InvoiceSummaryItem[];
+  yearly?: InvoiceSummaryItem[];
 }

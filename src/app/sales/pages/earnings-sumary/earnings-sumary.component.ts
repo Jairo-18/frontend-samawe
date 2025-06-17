@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ChartConfiguration } from 'chart.js';
-import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+
 import { EarningService } from '../../services/earning.service';
 import {
   ProductSummary,
@@ -20,7 +20,6 @@ import { NgChartsModule } from 'ng2-charts';
   selector: 'app-earnings-sumary',
   standalone: true,
   imports: [
-    BasePageComponent,
     CommonModule,
     MatCardModule,
     MatButtonModule,
@@ -38,10 +37,15 @@ export class EarningsSumaryComponent implements OnInit {
   inventoryTotal?: TotalInventory;
   invoiceBalance?: InvoiceBalance;
   invoiceSummaryGroup?: InvoiceSummaryGroupedResponse;
-
   selectedPeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' = 'daily';
 
-  // Gráfica Chart.js
+  readonly periods = [
+    { label: 'Diario', value: 'daily' },
+    { label: 'Semanal', value: 'weekly' },
+    { label: 'Mensual', value: 'monthly' },
+    { label: 'Anual', value: 'yearly' }
+  ] as const;
+
   chartData?: ChartConfiguration<'bar'>['data'];
   chartType: 'bar' = 'bar';
   chartOptions: ChartConfiguration<'bar'>['options'] = {
@@ -55,6 +59,17 @@ export class EarningsSumaryComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.loadEarningsData(this.selectedPeriod);
+  }
+
+  onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
+    this.selectedPeriod = period;
+    this.loadEarningsData(period);
+  }
+
+  private loadEarningsData(
+    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
+  ): void {
     forkJoin({
       productSummary: this._earningService.getGeneragetProductSummary(),
       invoiceBalance: this._earningService.getInvoiceBalance(),
@@ -74,11 +89,6 @@ export class EarningsSumaryComponent implements OnInit {
     });
   }
 
-  onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
-    this.selectedPeriod = period;
-    this.updateChart();
-  }
-
   private updateChart(): void {
     if (this.invoiceSummaryGroup) {
       this.chartData = this.buildChartData(
@@ -93,17 +103,26 @@ export class EarningsSumaryComponent implements OnInit {
     period: 'daily' | 'weekly' | 'monthly' | 'yearly'
   ): ChartConfiguration<'bar'>['data'] {
     const grouped = data[period];
+
+    if (!grouped) {
+      return {
+        labels: [],
+        datasets: []
+      };
+    }
+
     const labels = grouped.map((_, i) => `#${i + 1}`);
     const saleData: number[] = [];
     const buyData: number[] = [];
 
     grouped.forEach((item) => {
+      const total = item.total ?? 0;
       if (item.type === 'FV') {
-        saleData.push(item.total);
+        saleData.push(total);
         buyData.push(0);
       } else if (item.type === 'FC') {
         saleData.push(0);
-        buyData.push(item.total);
+        buyData.push(total);
       }
     });
 
