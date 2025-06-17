@@ -13,6 +13,7 @@ import { ApiResponseInterface } from '../../shared/interfaces/api-response.inter
 import { Router } from '@angular/router';
 import { UserInterface } from '../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../interfaces/logout.interface';
+import { ChangePassword } from '../../organizational/interfaces/create.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -32,20 +33,20 @@ export class AuthService {
   public currentUser$: Observable<UserInterface | null> =
     this._currentUserSubject.asObservable();
 
-  // /**
-  //  * Enviar solicitud de recuperación de contraseña
-  //  * @param email - Correo electrónico del usuario
-  //  * @returns Observable con la respuesta del servidor
-  //  */
-  // sendPasswordResetEmail(email: string): Observable<ChangePassword> {
-  //   const endpoint = `${environment.apiUrl}auth/recovery-password`;
+  /**
+   * Enviar solicitud de recuperación de contraseña
+   * @param email - Correo electrónico del usuario
+   * @returns Observable con la respuesta del servidor
+   */
+  sendPasswordResetEmail(email: string): Observable<ChangePassword> {
+    const endpoint = `${environment.apiUrl}auth/recovery-password`;
 
-  //   if (!email || !this.isValidEmail(email)) {
-  //     throw new Error('El correo electrónico proporcionado no es válido.');
-  //   }
+    if (!email || !this.isValidEmail(email)) {
+      throw new Error('El correo electrónico proporcionado no es válido.');
+    }
 
-  //   return this._httpClient.post<ChangePassword>(endpoint, { email });
-  // }
+    return this._httpClient.post<ChangePassword>(endpoint, { email });
+  }
 
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

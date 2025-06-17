@@ -90,7 +90,7 @@ export class EarningsSumaryComponent implements OnInit {
   }
 
   private updateChart(): void {
-    if (this.invoiceSummaryGroup) {
+    if (this.invoiceSummaryGroup?.[this.selectedPeriod]) {
       this.chartData = this.buildChartData(
         this.invoiceSummaryGroup,
         this.selectedPeriod

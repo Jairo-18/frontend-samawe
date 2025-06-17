@@ -6,7 +6,11 @@ import {
   ApiResponseCreateInterface,
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
-import { CreateUserPanel, UserComplete } from '../interfaces/create.interface';
+import {
+  ChangePassword,
+  CreateUserPanel,
+  UserComplete
+} from '../interfaces/create.interface';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 
@@ -27,6 +31,15 @@ export class UsersService {
       pagination: PaginationInterface;
       data: CreateUserPanel[];
     }>(`${environment.apiUrl}user/paginated-list`, { params });
+  }
+
+  recoveryPasswordByUserId(
+    changePasswordPayload: ChangePassword
+  ): Observable<ApiResponseInterface<ChangePassword>> {
+    return this._httpClient.patch<ApiResponseInterface<ChangePassword>>(
+      `${environment.apiUrl}user/recovery-password`,
+      changePasswordPayload
+    );
   }
 
   getUserEditPanel(

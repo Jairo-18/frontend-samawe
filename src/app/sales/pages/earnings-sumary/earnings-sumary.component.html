@@ -87,7 +87,7 @@
           <div class="flex justify-between text-emerald-600">
             <span>Ventas</span>
             <span class="font-semibold">{{
-              invoiceBalance?.daily?.totalInvoiceSale
+            invoiceBalance?.[selectedPeriod]?.totalInvoiceSale
                 | currency : 'COP' : 'symbol' : '1.0-0'
             }}</span>
           </div>

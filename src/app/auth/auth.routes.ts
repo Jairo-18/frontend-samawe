@@ -15,6 +15,13 @@ export const authRoutes: Routes = [
           import('./pages/register/register.component').then(
             (m) => m.RegisterComponent
           )
+      },
+      {
+        path: 'recovery-password',
+        loadComponent: () =>
+          import('./pages/recovery-password/recovery-password.component').then(
+            (m) => m.RecoveryPasswordComponent
+          )
       }
     ]
   }
