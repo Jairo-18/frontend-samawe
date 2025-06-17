@@ -48,6 +48,13 @@ export const routes: Routes = [
         path: 'sales',
         loadChildren: () =>
           import('./sales/sales.routes').then((m) => m.salesRoutes)
+      },
+      {
+        path: 'auth/:userId/change-password',
+        loadComponent: () =>
+          import('./auth/pages/change-password/change-password.component').then(
+            (m) => m.ChangePasswordComponent
+          )
       }
     ]
   },
