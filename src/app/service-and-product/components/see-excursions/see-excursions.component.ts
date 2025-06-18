@@ -40,6 +40,7 @@ import {
 } from '../../interface/excursion.interface';
 import { ExcursionsService } from '../../services/excursions.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-see-excursions',
@@ -58,7 +59,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
     LoaderComponent,
     MatTab,
     MatTabGroup,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    FormatCopPipe
   ],
   templateUrl: './see-excursions.component.html',
   styleUrl: './see-excursions.component.scss'

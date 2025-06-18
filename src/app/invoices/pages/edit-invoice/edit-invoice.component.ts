@@ -160,7 +160,7 @@ export class EditInvoiceComponent implements OnInit {
 
     const options = {
       margin: 0.5,
-      filename: `factura-${this.invoiceData.code}.pdf`,
+      filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -171,9 +171,26 @@ export class EditInvoiceComponent implements OnInit {
       .from(element)
       .toPdf()
       .get('pdf')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .then((pdf: any) => {
         const pdfUrl = pdf.output('bloburl');
         window.open(pdfUrl, '_blank'); // Abre una pestaña nueva con el PDF
       });
+  }
+
+  downloadInvoice(): void {
+    const element = this.invoicePdfComp?.nativeElement;
+
+    if (!element || !this.invoiceData) return;
+
+    const options = {
+      margin: 0.5,
+      filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(options).from(element).save();
   }
 }

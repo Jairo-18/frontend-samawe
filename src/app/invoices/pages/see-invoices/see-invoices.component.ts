@@ -1,12 +1,17 @@
 import { InvoiceService } from './../../services/invoice.service';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CreateInvoiceDialogComponent } from '../../components/create-invoice-dialog/create-invoice-dialog.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import {
   MatPaginator,
@@ -26,6 +31,10 @@ import { FormGroup } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
+import { Invoice } from '../../interface/invoice.interface';
+import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-see-invoices',
@@ -41,21 +50,27 @@ import { MatMenuModule } from '@angular/material/menu';
     RouterLink,
     LoaderComponent,
     MatTableModule,
-    MatMenuModule
+    MatMenuModule,
+    InvoicePdfComponent,
+    FormatCopPipe
   ],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
 })
 export class SeeInvoicesComponent implements OnInit {
+  @ViewChild('invoiceToPrintRef') invoiceToPrintRef!: ElementRef;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
+
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _authService: AuthService = inject(AuthService);
-  selectedInvoice: any = null;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  selectedInvoice: any = null;
+  invoiceToPrintData?: Invoice;
 
   displayedColumns: string[] = [
     'invoiceType',
@@ -173,7 +188,7 @@ export class SeeInvoicesComponent implements OnInit {
   ];
   // <-- FIN DE CAMBIOS EN searchFields
 
-  constructor() {
+  constructor(private _invoicePrintService: InvoicePrintService) {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
@@ -261,6 +276,7 @@ export class SeeInvoicesComponent implements OnInit {
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getOptions(fieldName: string): any[] {
     const field = this.searchFields.find((f) => f.name === fieldName);
     return (
@@ -379,5 +395,39 @@ export class SeeInvoicesComponent implements OnInit {
       this.userLogged?.roleType?.name === 'Administrador' &&
       user.roleType?.name === 'Usuario'
     );
+  }
+
+  async onPrintInvoice(invoiceId: number): Promise<void> {
+    const res = await this._invoicePrintService['_invoiceService']
+      .getInvoiceToEdit(invoiceId)
+      .toPromise();
+
+    this.invoiceToPrintData = res?.data;
+
+    setTimeout(() => {
+      if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
+        this._invoicePrintService.printInvoice(
+          this.invoiceToPrintData,
+          this.invoiceToPrintRef.nativeElement
+        );
+      }
+    }, 300);
+  }
+
+  async onDownloadInvoice(invoiceId: number): Promise<void> {
+    const res = await this._invoicePrintService['_invoiceService']
+      .getInvoiceToEdit(invoiceId)
+      .toPromise();
+
+    this.invoiceToPrintData = res?.data;
+
+    setTimeout(() => {
+      if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
+        this._invoicePrintService.downloadInvoice(
+          this.invoiceToPrintData,
+          this.invoiceToPrintRef.nativeElement
+        );
+      }
+    }, 300);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,11 @@ import {
   InvoiceSummaryGroupedResponse
 } from '../../interface/earning.interface';
 import { NgChartsModule } from 'ng2-charts';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-earnings-sumary',
@@ -24,8 +29,13 @@ import { NgChartsModule } from 'ng2-charts';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatButtonToggleModule,
-    NgChartsModule
+    NgChartsModule,
+    FormatCopPipe,
+    BasePageComponent,
+    FormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatButtonToggleModule
   ],
   templateUrl: './earnings-sumary.component.html',
   styleUrl: './earnings-sumary.component.scss'
@@ -59,32 +69,52 @@ export class EarningsSumaryComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.loadEarningsData(this.selectedPeriod);
+    this.loadStaticData(); // solo una vez
+    this.loadGroupedInvoices(this.selectedPeriod); // periodo inicial
+  }
+
+  getSelectedPeriodLabel(): string {
+    const labels: Record<string, string> = {
+      daily: 'Diario',
+      weekly: 'Semanal',
+      monthly: 'Mensual',
+      yearly: 'Anual'
+    };
+    return labels[this.selectedPeriod] || this.selectedPeriod;
   }
 
   onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
+    if (this.selectedPeriod === period) return; // evita peticiones innecesarias
     this.selectedPeriod = period;
+    this.loadGroupedInvoices(period);
   }
 
-  private loadEarningsData(
-    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  ): void {
+  private loadStaticData(): void {
     forkJoin({
       productSummary: this._earningService.getGeneragetProductSummary(),
       invoiceBalance: this._earningService.getInvoiceBalance(),
-      inventoryTotal: this._earningService.getTotalInventory(),
-      invoiceSummaryGroup: this._earningService.getGroupedInvoices()
+      inventoryTotal: this._earningService.getTotalInventory()
     }).subscribe({
-      next: (res) => {
-        this.productSummary = res.productSummary;
-        this.invoiceBalance = res.invoiceBalance;
-        this.inventoryTotal = res.inventoryTotal;
-        this.invoiceSummaryGroup = res.invoiceSummaryGroup;
+      next: ({ productSummary, invoiceBalance, inventoryTotal }) => {
+        this.productSummary = productSummary;
+        this.invoiceBalance = invoiceBalance;
+        this.inventoryTotal = inventoryTotal;
+      },
+      error: (err) =>
+        console.error('Error al cargar datos estáticos de resumen:', err)
+    });
+  }
+
+  private loadGroupedInvoices(
+    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
+  ): void {
+    this._earningService.getGroupedInvoices().subscribe({
+      next: (grouped) => {
+        this.invoiceSummaryGroup = grouped;
         this.updateChart();
       },
-      error: (err) => {
-        console.error('Error al cargar los datos de ganancias:', err);
-      }
+      error: (err) =>
+        console.error('Error al cargar resumen de facturas agrupadas:', err)
     });
   }
 
@@ -95,6 +125,11 @@ export class EarningsSumaryComponent implements OnInit {
         this.selectedPeriod
       );
     }
+  }
+
+  private formatFullDate(date: string | undefined): string {
+    if (!date) return '';
+    return formatDate(date, 'dd/MM/yyyy HH:mm', 'es-CO'); // Ej: 16/06/2025 10:58
   }
 
   private buildChartData(
@@ -110,18 +145,27 @@ export class EarningsSumaryComponent implements OnInit {
       };
     }
 
-    const labels = grouped.map((_, i) => `#${i + 1}`);
+    const labels: string[] = [];
     const saleData: number[] = [];
     const buyData: number[] = [];
 
     grouped.forEach((item) => {
+      const label = `${item.type ?? '??'} - ${
+        item.code ?? 'N/A'
+      } - ${this.formatFullDate(item.createdAt)}`;
+
       const total = item.total ?? 0;
+      labels.push(label);
+
       if (item.type === 'FV') {
         saleData.push(total);
         buyData.push(0);
       } else if (item.type === 'FC') {
         saleData.push(0);
         buyData.push(total);
+      } else {
+        saleData.push(0);
+        buyData.push(0);
       }
     });
 
@@ -131,14 +175,35 @@ export class EarningsSumaryComponent implements OnInit {
         {
           label: 'Ventas',
           data: saleData,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)'
+          backgroundColor: '#06a606'
         },
         {
           label: 'Compras',
           data: buyData,
-          backgroundColor: 'rgba(255, 99, 132, 0.6)'
+          backgroundColor: '#fe0000'
         }
       ]
     };
+  }
+
+  private formatLabel(
+    date: string | undefined,
+    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
+  ): string {
+    const locale = 'es-CO';
+    if (!date) return '';
+
+    switch (period) {
+      case 'daily':
+        return formatDate(date, 'dd/MM/yyyy', locale);
+      case 'weekly':
+        return 'Semana ' + formatDate(date, 'ww', locale); // Semana #
+      case 'monthly':
+        return formatDate(date, 'MMMM yyyy', locale); // Ej: junio 2025
+      case 'yearly':
+        return formatDate(date, 'yyyy', locale);
+      default:
+        return date;
+    }
   }
 }

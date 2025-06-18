@@ -37,6 +37,7 @@ import { UserComplete } from '../../../organizational/interfaces/create.interfac
 import { ProductsService } from '../../services/products.service';
 import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-see-products',
@@ -55,7 +56,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
     LoaderComponent,
     MatTab,
     MatTabGroup,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    FormatCopPipe
   ],
   templateUrl: './see-products.component.html',
   styleUrl: './see-products.component.scss'

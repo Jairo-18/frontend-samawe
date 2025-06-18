@@ -1,163 +1,167 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-  <div class="max-w-7xl mx-auto space-y-8">
-    <!-- Header -->
-    <div class="text-center space-y-2">
-      <h1 class="text-4xl font-bold text-slate-800">Dashboard Empresarial</h1>
-      <p class="text-slate-600">Resumen completo de tu negocio</p>
-    </div>
+<app-base-page
+  [headerTitle]="'Reporte de ganancias'"
+  contentInfo="Resumen completo de tu negocio"
+  [showContentTitle]="true"
+  [showBorder]="false"
+  [showContentTitle]="true"
+  [showContentInfo]="true"
+  class="text-xs md:text-base"
+>
+  <div class="hidden md:flex justify-center my-4 w-full">
+    <mat-button-toggle-group
+      [value]="selectedPeriod"
+      (change)="onPeriodChange($event.value)"
+      class="rounded-xl bg-white p-1"
+      color="primary"
+      buttonToggleAppearance="legacy"
+    >
+      <mat-button-toggle
+        *ngFor="let period of periods"
+        [value]="period.value"
+        class="px-4 py-2 text-sm font-medium"
+      >
+        {{ period.label }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 
-    <!-- Period Selector -->
-    <div class="flex justify-center">
-      <div class="bg-white rounded-xl p-2 shadow-lg border">
-        <div class="flex space-x-1">
-          <button
-            *ngFor="let period of periods"
-            (click)="onPeriodChange(period.value)"
-            class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-            [ngClass]="{
-              'bg-blue-600 text-white shadow-md':
-                selectedPeriod === period.value,
-              'hover:bg-slate-100': selectedPeriod !== period.value
-            }"
-          >
-            {{ period.label }}
-          </button>
+  <div class="md:hidden flex justify-center my-2 w-full px-2">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Período</mat-label>
+      <mat-select
+        [value]="selectedPeriod"
+        (selectionChange)="onPeriodChange($event.value)"
+      >
+        <mat-option *ngFor="let period of periods" [value]="period.value">
+          {{ period.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Main Cards Grid -->
+  <div class="grid gap-6 md:grid-cols-3 sm:grid-cols-1">
+    <!-- Productos Vendidos -->
+    <div
+      class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 bg-[#06a606] rounded-full">
+            <i class="fas fa-box text-white"></i>
+          </div>
+          <h2 class="text-slate-800 font-semibold">Valor Bruto de Productos</h2>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span class="text-slate-600">Precio de compra</span>
+          <span class="font-semibold">{{
+            productSummary?.totalProductPriceBuy ?? 0 | formatCop
+          }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-600">Precio de venta</span>
+          <span class="font-semibold">{{
+            productSummary?.totalProductPriceSale ?? 0 | formatCop
+          }}</span>
+        </div>
+        <div class="flex justify-between text-emerald-700 font-semibold">
+          <span>Utilidad</span>
+          <span>{{ productSummary?.balanceProduct ?? 0 | formatCop }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Cards Grid -->
-    <div class="grid gap-6 md:grid-cols-3 sm:grid-cols-1">
-      <!-- Productos Vendidos -->
-      <div
-        class="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-md hover:shadow-xl transition-transform hover:scale-105"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center space-x-2">
-            <div class="p-2 bg-blue-600 rounded-full">
-              <i class="fas fa-box text-white"></i>
-            </div>
-            <h2 class="text-slate-800 font-semibold">Productos Vendidos</h2>
+    <!-- Balance de Facturas -->
+    <div
+      class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 bg-[#06a606] rounded-full">
+            <i class="fas fa-file-invoice text-white"></i>
           </div>
-          <span class="text-sm bg-blue-200 text-blue-800 px-2 py-1 rounded"
-            >Activo</span
-          >
+          <h2 class="text-slate-800 font-semibold">Balance de Facturación</h2>
         </div>
-        <div class="space-y-2">
-          <div class="flex justify-between">
-            <span class="text-slate-600">Precio de compra</span>
-            <span class="font-semibold">{{
-              productSummary?.totalProductPriceBuy
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-600">Precio de venta</span>
-            <span class="font-semibold">{{
-              productSummary?.totalProductPriceSale
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-          <div class="flex justify-between text-emerald-700 font-semibold">
-            <span>Utilidad</span>
-            <span>{{
-              productSummary?.balanceProduct
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-        </div>
+        <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded">
+          {{ getSelectedPeriodLabel() }}
+        </span>
       </div>
-
-      <!-- Balance de Facturas -->
-      <div
-        class="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-md hover:shadow-xl transition-transform hover:scale-105"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center space-x-2">
-            <div class="p-2 bg-purple-600 rounded-full">
-              <i class="fas fa-file-invoice text-white"></i>
-            </div>
-            <h2 class="text-slate-800 font-semibold">Balance Facturación</h2>
-          </div>
-          <span class="text-sm bg-purple-200 text-purple-800 px-2 py-1 rounded">
-            {{ selectedPeriod | titlecase }}
-          </span>
-        </div>
-        <div class="space-y-2">
-          <div class="flex justify-between text-emerald-600">
-            <span>Ventas</span>
-            <span class="font-semibold">{{
+      <div class="space-y-2">
+        <div class="flex justify-between text-emerald-600">
+          <span>Ventas</span>
+          <span class="font-semibold">{{
             invoiceBalance?.[selectedPeriod]?.totalInvoiceSale
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-          <div class="flex justify-between text-orange-600">
-            <span>Compras</span>
-            <span class="font-semibold">{{
-              invoiceBalance?.daily?.totalInvoiceBuy
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-          <div
-            class="flex justify-between font-semibold"
-            [ngClass]="{
+           ?? 0 | formatCop
+          }}</span>
+        </div>
+        <div class="flex justify-between text-orange-600">
+          <span>Compras</span>
+          <span class="font-semibold">{{
+            invoiceBalance?.daily?.totalInvoiceBuy ?? 0 | formatCop
+          }}</span>
+        </div>
+        <div
+          class="flex justify-between font-semibold"
+          [ngClass]="{
                 'text-emerald-700': +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) >= 0,
                 'text-red-600': +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) < 0
               }"
-          >
-            <span>Balance</span>
-            <span>{{
-              invoiceBalance?.daily?.balanceInvoice
-                | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Inventario -->
-      <div
-        class="p-6 bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl shadow-md hover:shadow-xl transition-transform hover:scale-105"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center space-x-2">
-            <div class="p-2 bg-amber-600 rounded-full">
-              <i class="fas fa-warehouse text-white"></i>
-            </div>
-            <h2 class="text-slate-800 font-semibold">Inventario Total</h2>
-          </div>
-          <span class="text-sm bg-amber-200 text-amber-800 px-2 py-1 rounded"
-            >Stock</span
-          >
-        </div>
-        <div class="space-y-2">
-          <div class="flex justify-between">
-            <span class="text-slate-600">Valor inventario</span>
-            <span class="font-semibold">{{
-              inventoryTotal?.totalStock | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-slate-600">Valor compra</span>
-            <span class="font-semibold">{{
-              inventoryTotal?.totalStock | currency : 'COP' : 'symbol' : '1.0-0'
-            }}</span>
-          </div>
+        >
+          <span>Balance</span>
+          <span>{{
+            invoiceBalance?.daily?.balanceInvoice ?? 0 | formatCop
+          }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Chart -->
-    <div class="bg-white p-6 mt-6 rounded-xl shadow-lg">
-      <h3 class="text-lg font-semibold mb-4 text-slate-700">
-        Comparativa de Facturación
-      </h3>
-      <canvas
-        baseChart
-        [data]="chartData"
-        [options]="chartOptions"
-        [type]="chartType"
-        class="w-full h-80"
-      ></canvas>
+    <!-- Inventario -->
+    <div
+      class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+          <div class="p-2 bg-[#06a606] rounded-full">
+            <i class="fas fa-warehouse text-white"></i>
+          </div>
+          <h2 class="text-slate-800 font-semibold">Inventario Total</h2>
+        </div>
+        <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded"
+          >Stock</span
+        >
+      </div>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span class="text-slate-600">Valor de inventario</span>
+          <span class="font-semibold">{{
+            productSummary?.totalProductPriceSale ?? 0 | formatCop
+          }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-600">Unidades totales</span>
+          <span class="font-semibold">{{
+            inventoryTotal?.totalStock ?? 0
+          }}</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Chart -->
+  <div
+    class="bg-white p-4 md:p-6 rounded-2xl border border-[#06a606] mt-6 shadow-lg"
+  >
+    <h3 class="text-xs md:text-lg font-semibold mb-4 text-slate-700">
+      Comparativa de Facturación
+    </h3>
+    <canvas
+      baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType"
+      class="w-full h-80"
+    ></canvas>
+  </div>
+</app-base-page>

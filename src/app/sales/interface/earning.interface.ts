@@ -7,18 +7,18 @@ export interface InvoicePeriodTotals {
 }
 
 export interface BalancePeriod {
-  totalInvoiceSale: string;
-  totalInvoiceBuy: string;
-  balanceInvoice: string;
-  periodDate: string; // formato: YYYY-MM-DD
+  totalInvoiceSale?: string;
+  totalInvoiceBuy?: string;
+  balanceInvoice?: string;
+  periodDate?: string; // formato: YYYY-MM-DD
   type: 'daily' | 'weekly' | 'monthly' | 'yearly';
 }
 
 export interface InvoiceBalance {
-  daily: BalancePeriod;
-  weekly: BalancePeriod;
-  monthly: BalancePeriod;
-  yearly: BalancePeriod;
+  daily?: BalancePeriod;
+  weekly?: BalancePeriod;
+  monthly?: BalancePeriod;
+  yearly?: BalancePeriod;
 }
 
 export interface TotalInventory {

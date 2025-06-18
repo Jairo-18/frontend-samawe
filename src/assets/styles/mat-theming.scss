@@ -315,3 +315,30 @@ mat-form-field {
     background-color: rgb(248, 248, 248) !important;
   }
 }
+
+/* Estilos personalizados para mat-button-toggle-group */
+.mat-button-toggle-group,
+.period-toggle-group,
+.mat-button-toggle-group-appearance-standard {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+
+  .mat-button-toggle {
+    font-weight: 600;
+    font-size: $brand-web-font-size;
+    margin: 0 4px;
+    border-radius: $brand-border-radius;
+
+    &.mat-button-toggle-checked {
+      background-color: $primary-color !important;
+      color: $white-color-base !important;
+      box-shadow: $box-shadow;
+    }
+
+    &:not(.mat-button-toggle-checked):hover {
+      background-color: $primary-hover-color !important;
+    }
+  }
+}

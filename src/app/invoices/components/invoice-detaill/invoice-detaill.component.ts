@@ -23,6 +23,7 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { MatButtonModule } from '@angular/material/button';
 import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-invoice-detaill',
@@ -32,7 +33,8 @@ import { PaginationInterface } from '../../../shared/interfaces/pagination.inter
     MatTableModule,
     MatPaginatorModule,
     MatIcon,
-    MatButtonModule
+    MatButtonModule,
+    FormatCopPipe
   ],
   templateUrl: './invoice-detaill.component.html',
   styleUrl: './invoice-detaill.component.scss'

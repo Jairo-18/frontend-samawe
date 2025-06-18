@@ -41,6 +41,7 @@ import {
 } from '../../interface/accommodation.interface';
 import { AccommodationsService } from '../../services/accommodations.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-see-accommodations',
@@ -59,7 +60,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
     LoaderComponent,
     MatTab,
     MatTabGroup,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    FormatCopPipe
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'
