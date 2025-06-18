@@ -1,0 +1,96 @@
+<!-- CONTENEDOR A IMPRIMIR -->
+<div #pdfWrapper class="bg-white text-black p-6 w-full max-w-[800px] text-sm">
+  <section class="flex content-between">
+    <div class="flex">
+      <img
+        src="../../../../assets/images/Logo Samawe.png"
+        alt="Logo"
+        class="w-[125px] h-[125px] rounded-full border border-solid border-black"
+      />
+    </div>
+    <div class="flex">
+      <div>
+        <p>
+          <strong>Cliente:</strong> {{ invoiceData.user.firstName }}
+          {{ invoiceData.user.lastName || 'hola' }}
+        </p>
+      </div>
+      <div>
+        <p>
+          <strong>Empleado:</strong> {{ invoiceData.employee.firstName }}
+          {{ invoiceData.employee.lastName }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <table
+    class="w-full border border-collapse my-4"
+    *ngIf="invoiceData?.invoiceDetails?.length"
+  >
+    <thead>
+      <tr>
+        <th class="border text-sm pb-4 bg-[#06a606]">Item</th>
+        <th class="border text-sm pb-4 bg-[#06a606]">Und</th>
+        <th class="border text-sm pb-4 bg-[#06a606]">Precio</th>
+        <th class="border text-sm pb-4 bg-[#06a606]">Precio + IVA</th>
+        <th class="border text-sm pb-4 bg-[#06a606]">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detail of invoiceData.invoiceDetails">
+        <td class="border px-4 pb-4 text-left text-xs">
+          {{
+            detail.product?.name ||
+              detail.accommodation?.name ||
+              detail.excursion?.name ||
+              'N/A'
+          }}
+        </td>
+        <td class="border px-4 pb-4 text-center text-xs">
+          {{ detail.amount }}
+        </td>
+        <td class="border px-4 pb-4 text-right text-xs">
+          {{ formatCop(detail.priceWithoutTax) }}
+        </td>
+        <td class="border px-4 pb-4 text-right text-xs">
+          {{ formatCop(detail.priceWithTax) }}
+        </td>
+        <td class="border px-4 pb-4 text-right text-xs">
+          {{ formatCop(detail.subtotal) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="flex flex-col h-full justify-center m-4 md:m-0">
+    <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold">Subtotal sin IVA:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span>{{ formatCop(invoiceData.subtotalWithoutTax) }}</span>
+      </div>
+    </div>
+
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold">Subtotal + IVA:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span>{{ formatCop(invoiceData.subtotalWithTax) }}</span>
+      </div>
+    </div>
+
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold">Total:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span>{{ formatCop(invoiceData.total) }}</span>
+      </div>
+    </div>
+  </section>
+</div>

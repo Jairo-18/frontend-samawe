@@ -109,8 +109,15 @@
         [invoiceData]="invoiceData"
         [paidTypes]="paidTypes"
         [payTypes]="payTypes"
+        (printRequested)="printInvoice()"
       ></app-invoice-summary>
     </div>
     }
   </article>
+  <app-invoice-pdf
+    class="hidden"
+    *ngIf="invoiceData"
+    [invoiceData]="invoiceData"
+    #invoiceToPrint
+  ></app-invoice-pdf>
 </app-base-page>

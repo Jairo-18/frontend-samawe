@@ -1,4 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
@@ -22,6 +28,8 @@ import { ApiResponseInterface } from '../../../shared/interfaces/api-response.in
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
+import html2pdf from 'html2pdf.js';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -35,7 +43,8 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
     AddExcursionComponent,
     InvoiceDetaillComponent,
     InvoiceSummaryComponent,
-    LoaderComponent
+    LoaderComponent,
+    InvoicePdfComponent
   ],
   templateUrl: './edit-invoice.component.html',
   styleUrl: './edit-invoice.component.scss'
@@ -45,6 +54,8 @@ export class EditInvoiceComponent implements OnInit {
     inject(RelatedDataService);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+
+  @ViewChild('invoiceToPrint') invoicePdfComp!: ElementRef;
 
   categoryTypes: CategoryType[] = [];
   paidTypes: PaidType[] = [];
@@ -90,7 +101,7 @@ export class EditInvoiceComponent implements OnInit {
       setTimeout(() => {
         this.getInvoiceToEdit(this.invoiceId!, false);
         this.reloadInvoiceDetails = false;
-      }, 500);
+      }, 600);
     }
   }
 
@@ -140,5 +151,29 @@ export class EditInvoiceComponent implements OnInit {
         }
       }
     });
+  }
+
+  printInvoice(): void {
+    const element = this.invoicePdfComp?.nativeElement;
+
+    if (!element || !this.invoiceData) return;
+
+    const options = {
+      margin: 0.5,
+      filename: `factura-${this.invoiceData.code}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .toPdf()
+      .get('pdf')
+      .then((pdf: any) => {
+        const pdfUrl = pdf.output('bloburl');
+        window.open(pdfUrl, '_blank'); // Abre una pestaña nueva con el PDF
+      });
   }
 }

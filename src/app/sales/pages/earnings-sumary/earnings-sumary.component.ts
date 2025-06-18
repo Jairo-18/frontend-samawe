@@ -64,7 +64,6 @@ export class EarningsSumaryComponent implements OnInit {
 
   onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
     this.selectedPeriod = period;
-    this.loadEarningsData(period);
   }
 
   private loadEarningsData(
