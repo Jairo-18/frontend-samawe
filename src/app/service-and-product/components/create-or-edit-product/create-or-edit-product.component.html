@@ -111,6 +111,15 @@
           Precio de venta requerido
         </mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="isActive">
+          <mat-option [value]="true">Activo</mat-option>
+          <mat-option [value]="false">Inactivo</mat-option>
+          <!-- opcional para reset -->
+        </mat-select>
+      </mat-form-field>
     </section>
   </div>
 

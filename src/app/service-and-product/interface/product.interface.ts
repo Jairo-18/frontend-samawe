@@ -8,6 +8,7 @@ export interface CreateProductPanel {
   amount: number;
   priceBuy: number;
   priceSale: number;
+  isActive: boolean;
   categoryTypeId: number;
 }
 
@@ -19,6 +20,7 @@ export interface ProductComplete {
   amount: number;
   priceBuy: number;
   priceSale: number;
+  isActive: boolean;
   categoryType: CategoryType;
   updatedAt: Date;
   createdAt: Date;

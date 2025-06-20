@@ -6,7 +6,8 @@ import {
   ProductSummary,
   InvoiceBalance,
   TotalInventory,
-  InvoiceSummaryGroupedResponse
+  InvoiceSummaryGroupedResponse,
+  DashboardStateSummary
 } from '../interface/earning.interface';
 
 @Injectable({
@@ -36,6 +37,12 @@ export class EarningService {
   getGroupedInvoices(): Observable<InvoiceSummaryGroupedResponse> {
     return this._httpClient.get<InvoiceSummaryGroupedResponse>(
       `${environment.apiUrl}balance/invoice-chart-list`
+    );
+  }
+
+  getDashboardGeneralSummary(): Observable<DashboardStateSummary> {
+    return this._httpClient.get<DashboardStateSummary>(
+      `${environment.apiUrl}balance/general`
     );
   }
 }

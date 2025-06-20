@@ -12,7 +12,8 @@ import {
   ProductSummary,
   InvoiceBalance,
   TotalInventory,
-  InvoiceSummaryGroupedResponse
+  InvoiceSummaryGroupedResponse,
+  DashboardStateSummary
 } from '../../interface/earning.interface';
 import { NgChartsModule } from 'ng2-charts';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -20,6 +21,7 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-earnings-sumary',
@@ -35,7 +37,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     FormsModule,
     MatSelectModule,
     MatFormFieldModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    LoaderComponent
   ],
   templateUrl: './earnings-sumary.component.html',
   styleUrl: './earnings-sumary.component.scss'
@@ -47,6 +50,9 @@ export class EarningsSumaryComponent implements OnInit {
   inventoryTotal?: TotalInventory;
   invoiceBalance?: InvoiceBalance;
   invoiceSummaryGroup?: InvoiceSummaryGroupedResponse;
+  dashboardSummary?: DashboardStateSummary;
+  isLoading: boolean = true;
+
   selectedPeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' = 'daily';
 
   readonly periods = [
@@ -73,6 +79,53 @@ export class EarningsSumaryComponent implements OnInit {
     this.loadGroupedInvoices(this.selectedPeriod); // periodo inicial
   }
 
+  get activeProductsCount(): number {
+    return Number(
+      this.dashboardSummary?.products?.find((p) => p.isActive)?.count ?? 0
+    );
+  }
+
+  get inactiveProductsCount(): number {
+    return Number(
+      this.dashboardSummary?.products?.find((p) => !p.isActive)?.count ?? 0
+    );
+  }
+
+  get availableAccommodationsCount(): number {
+    return Number(
+      this.dashboardSummary?.accommodations?.find(
+        (a) => a.state === 'Disponible'
+      )?.count ?? 0
+    );
+  }
+
+  get maintenanceAccommodationsCount(): number {
+    return Number(
+      this.dashboardSummary?.accommodations?.find(
+        (a) => a.state === 'Mantenimiento'
+      )?.count ?? 0
+    );
+  }
+
+  get occupiedAccommodationsCount(): number {
+    return Number(
+      this.dashboardSummary?.accommodations?.find((a) => a.state === 'Ocupado')
+        ?.count ?? 0
+    );
+  }
+
+  get noServiceAccommodationsCount(): number {
+    return Number(
+      this.dashboardSummary?.accommodations?.find(
+        (a) => a.state === 'Fuera de Servicio'
+      )?.count ?? 0
+    );
+  }
+
+  get reservedAccommodationsCount(): number {
+    return this.dashboardSummary?.reservedAccommodations?.length ?? 0;
+  }
+
   getSelectedPeriodLabel(): string {
     const labels: Record<string, string> = {
       daily: 'Diario',
@@ -86,19 +139,29 @@ export class EarningsSumaryComponent implements OnInit {
   onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
     if (this.selectedPeriod === period) return; // evita peticiones innecesarias
     this.selectedPeriod = period;
+
     this.loadGroupedInvoices(period);
   }
 
   private loadStaticData(): void {
+    this.isLoading = true;
     forkJoin({
       productSummary: this._earningService.getGeneragetProductSummary(),
       invoiceBalance: this._earningService.getInvoiceBalance(),
-      inventoryTotal: this._earningService.getTotalInventory()
+      inventoryTotal: this._earningService.getTotalInventory(),
+      dashboardSummary: this._earningService.getDashboardGeneralSummary()
     }).subscribe({
-      next: ({ productSummary, invoiceBalance, inventoryTotal }) => {
+      next: ({
+        productSummary,
+        invoiceBalance,
+        inventoryTotal,
+        dashboardSummary
+      }) => {
         this.productSummary = productSummary;
         this.invoiceBalance = invoiceBalance;
         this.inventoryTotal = inventoryTotal;
+        this.dashboardSummary = dashboardSummary;
+        this.isLoading = false;
       },
       error: (err) =>
         console.error('Error al cargar datos estáticos de resumen:', err)
@@ -184,26 +247,5 @@ export class EarningsSumaryComponent implements OnInit {
         }
       ]
     };
-  }
-
-  private formatLabel(
-    date: string | undefined,
-    period: 'daily' | 'weekly' | 'monthly' | 'yearly'
-  ): string {
-    const locale = 'es-CO';
-    if (!date) return '';
-
-    switch (period) {
-      case 'daily':
-        return formatDate(date, 'dd/MM/yyyy', locale);
-      case 'weekly':
-        return 'Semana ' + formatDate(date, 'ww', locale); // Semana #
-      case 'monthly':
-        return formatDate(date, 'MMMM yyyy', locale); // Ej: junio 2025
-      case 'yearly':
-        return formatDate(date, 'yyyy', locale);
-      default:
-        return date;
-    }
   }
 }

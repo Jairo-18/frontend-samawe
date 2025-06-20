@@ -100,7 +100,8 @@ export class CreateOrEditProductComponent implements OnChanges {
           Validators.pattern(/^\d+(\.\d{1,2})?$/),
           Validators.min(0.01)
         ]
-      ]
+      ],
+      isActive: [this.currentProduct?.isActive ?? false, Validators.required]
     });
   }
 
@@ -153,7 +154,8 @@ export class CreateOrEditProductComponent implements OnChanges {
           description: product.description,
           amount: product.amount,
           priceBuy: product.priceBuy,
-          priceSale: product.priceSale
+          priceSale: product.priceSale,
+          isActive: product.isActive
         });
       },
       error: (err) => {
@@ -175,7 +177,8 @@ export class CreateOrEditProductComponent implements OnChanges {
         description: formValue.description,
         amount: Math.abs(Number(formValue.amount)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
-        priceSale: Math.abs(Number(formValue.priceSale))
+        priceSale: Math.abs(Number(formValue.priceSale)),
+        isActive: formValue.isActive
       };
 
       if (this.isEditMode) {

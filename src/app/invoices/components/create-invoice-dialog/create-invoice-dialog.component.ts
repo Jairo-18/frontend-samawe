@@ -14,7 +14,6 @@ import {
   PayType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { CreateUserPanel } from '../../../organizational/interfaces/create.interface';
-import { UsersService } from '../../../organizational/services/users.service';
 import { MatButtonModule } from '@angular/material/button';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -40,6 +39,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { DialogData, InvoiceComplete } from '../../interface/invoice.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { Router } from '@angular/router';
+import { PaginationPartialService } from '../../../shared/services/paginationPartial.service';
+import { PaginatedUserPartial } from '../../../shared/interfaces/paginatedPartial.interface';
 
 @Component({
   selector: 'app-create-invoice-dialog',
@@ -66,7 +67,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
   invoiceTypes: InvoiceType[] = [];
   paidTypes: PaidType[] = [];
   payTypes: PayType[] = [];
-  filteredClients: CreateUserPanel[] = [];
+  filteredClients: PaginatedUserPartial[] = [];
   clientFilterControl = new FormControl<string | CreateUserPanel>('');
   isLoadingClients = false;
   isLoading = false;
@@ -74,9 +75,11 @@ export class CreateInvoiceDialogComponent implements OnInit {
   private readonly _dialogRef = inject(
     MatDialogRef<CreateInvoiceDialogComponent>
   );
-  private readonly _fb = inject(FormBuilder);
-  private readonly _invoiceService = inject(InvoiceService);
-  private readonly _userService = inject(UsersService);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _invoiceService: InvoiceService = inject(InvoiceService);
+  private readonly _paginationPartialService: PaginationPartialService = inject(
+    PaginationPartialService
+  );
   private readonly _router: Router = inject(Router);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
@@ -157,8 +160,8 @@ export class CreateInvoiceDialogComponent implements OnInit {
             return of([]);
           }
           this.isLoadingClients = true;
-          return this._userService
-            .getUserWithPagination({ search: query.trim(), page: 1 })
+          return this._paginationPartialService
+            .getUserPartial({ search: query.trim(), page: 1 })
             .pipe(
               map((response) => response.data || []),
               catchError(() => of([]))
@@ -178,24 +181,19 @@ export class CreateInvoiceDialogComponent implements OnInit {
       !this.clientFilterControl.value
     ) {
       this.isLoadingClients = true;
-      // CORRECCIÓN: Se elimina el parámetro 'pageSize' que causaba el error 400.
-      this._userService.getUserWithPagination({ page: 1 }).subscribe({
-        next: (res) => {
-          this.filteredClients = res.data || [];
-          this.isLoadingClients = false;
-        },
-        error: (err) => {
-          console.error('Error loading initial clients:', err);
-          this.isLoadingClients = false;
-        }
-      });
+      this._paginationPartialService
+        .getUserPartial({ page: 1, perPage: 5 })
+        .subscribe({
+          next: (res) => {
+            this.filteredClients = res.data || [];
+            this.isLoadingClients = false;
+          },
+          error: (err) => {
+            console.error('Error loading initial clients:', err);
+            this.isLoadingClients = false;
+          }
+        });
     }
-  }
-
-  displayClient(client: CreateUserPanel | null): string {
-    return client
-      ? `${client.firstName || ''} ${client.lastName || ''}`.trim()
-      : '';
   }
 
   onClientSelected(event: MatAutocompleteSelectedEvent): void {
@@ -221,8 +219,13 @@ export class CreateInvoiceDialogComponent implements OnInit {
     );
   }
 
+  displayClient(client: CreateUserPanel | null): string {
+    return client
+      ? `${client.firstName || ''} ${client.lastName || ''}`.trim()
+      : '';
+  }
+
   save(): void {
-    console.log('MODO', this.data.editMode, 'ID', this.data.invoiceId);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 

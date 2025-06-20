@@ -81,6 +81,7 @@ export class SeeProductsComponent implements OnInit {
     'code',
     'name',
     'amount',
+    'isActive',
     'priceBuy',
     'priceSale',
     'actions'

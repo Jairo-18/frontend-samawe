@@ -44,3 +44,35 @@ export interface InvoiceSummaryGroupedResponse {
   monthly?: InvoiceSummaryItem[];
   yearly?: InvoiceSummaryItem[];
 }
+
+export interface DashboardStateSummary {
+  products: {
+    isActive: boolean;
+    count: string;
+  }[];
+
+  accommodations: {
+    state:
+      | 'Disponible'
+      | 'Ocupado'
+      | 'Mantenimiento'
+      | 'Fuera de Servicio'
+      | string;
+    count: string;
+  }[];
+
+  excursions: {
+    state:
+      | 'Disponible'
+      | 'Ocupado'
+      | 'Mantenimiento'
+      | 'Fuera de Servicio'
+      | string;
+    count: string;
+  }[];
+
+  reservedAccommodations: {
+    accommodationId: number;
+    invoiceId: number;
+  }[];
+}

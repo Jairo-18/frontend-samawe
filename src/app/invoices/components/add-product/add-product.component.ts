@@ -20,7 +20,6 @@ import {
   CategoryType,
   TaxeType
 } from '../../../shared/interfaces/relatedDataGeneral';
-import { CreateProductPanel } from '../../../service-and-product/interface/product.interface';
 import { ProductsService } from '../../../service-and-product/services/products.service';
 import { debounceTime, of, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
@@ -56,19 +55,21 @@ export class AddProductComponent implements OnInit {
   @Input() taxeTypes: TaxeType[] = [];
   @Output() productAdded = new EventEmitter<void>();
 
-  private readonly _productsService = inject(ProductsService);
-  private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly _router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly _producsService: ProductsService = inject(ProductsService);
+  private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
+    InvoiceDetaillService
+  );
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _router: Router = inject(Router);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
 
   form: FormGroup;
-  isLoading = false;
+  isLoading: boolean = false;
   filteredProducts: AddedProductInvoiceDetaill[] = [];
-  selectedProduct?: CreateProductPanel;
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
+  constructor() {
+    this.form = this._fb.group({
       productName: ['', Validators.required],
       productId: [null, Validators.required],
       price: [{ value: '', disabled: true }],
@@ -87,7 +88,7 @@ export class AddProductComponent implements OnInit {
           if (!name || name.trim().length < 2) {
             return of({ data: [] });
           }
-          return this._productsService.getProductWithPagination({ name });
+          return this._producsService.getProductWithPagination({ name });
         })
       )
       .subscribe((res) => {
@@ -114,7 +115,7 @@ export class AddProductComponent implements OnInit {
 
   onProductFocus(): void {
     if (!this.filteredProducts.length) {
-      this._productsService.getProductWithPagination({}).subscribe((res) => {
+      this._producsService.getProductWithPagination({}).subscribe((res) => {
         this.filteredProducts = res.data ?? [];
       });
     }
@@ -123,8 +124,6 @@ export class AddProductComponent implements OnInit {
   onProductSelected(name: string): void {
     const product = this.filteredProducts.find((p) => p.name === name);
     if (!product) return;
-
-    this.selectedProduct = product;
 
     this.form.patchValue({
       productId: product.productId,
@@ -161,12 +160,12 @@ export class AddProductComponent implements OnInit {
       replaceUrl: true
     });
 
-    this.cdr.detectChanges();
+    this._cdr.detectChanges();
   }
 
   addProduct(): void {
     if (this.form.valid) {
-      const invoiceId = this.getInvoiceIdFromRoute(this.route);
+      const invoiceId = this.getInvoiceIdFromRoute(this._route);
       if (!invoiceId) {
         console.error('Invoice ID not found in route!');
         return;

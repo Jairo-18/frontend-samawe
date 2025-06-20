@@ -54,23 +54,27 @@ export class AddExcursionComponent {
   @Input() taxeTypes: TaxeType[] = [];
   @Output() excursionAdded = new EventEmitter<void>();
 
-  private readonly _excursionsService = inject(ExcursionsService);
-  private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
-  private readonly route = inject(ActivatedRoute);
-  private fb = inject(FormBuilder);
+  private readonly _excursionsService: ExcursionsService =
+    inject(ExcursionsService);
+  private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
+    InvoiceDetaillService
+  );
+  private readonly _activateRouter: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
   private readonly _router: Router = inject(Router);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   form: FormGroup;
-  isLoading = false;
+  isLoading: boolean = false;
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor() {
     const now = new Date();
     const nowLocal = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
       .toISOString()
       .slice(0, 16);
 
-    this.form = this.fb.group({
+    this.form = this._fb.group({
       excursionName: ['', Validators.required],
       excursionId: [null, Validators.required],
       price: [{ value: '', disabled: true }],
@@ -149,12 +153,12 @@ export class AddExcursionComponent {
       replaceUrl: true
     });
 
-    this.cdr.detectChanges();
+    this._cdr.detectChanges();
   }
 
   addExcursion() {
     if (this.form.valid) {
-      const invoiceId = this.getInvoiceIdFromRoute(this.route);
+      const invoiceId = this.getInvoiceIdFromRoute(this._activateRouter);
       if (!invoiceId) {
         console.error('Invoice ID not found!');
         return;
