@@ -20,10 +20,7 @@ import {
   MatPaginatorModule,
   PageEvent
 } from '@angular/material/paginator';
-import {
-  CreateUserPanel,
-  UserComplete
-} from '../../interfaces/create.interface';
+import { UserComplete } from '../../interfaces/create.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
@@ -77,7 +74,7 @@ export class SeeUsersComponent implements OnInit {
     'actions'
   ];
 
-  dataSource = new MatTableDataSource<CreateUserPanel>([]);
+  dataSource = new MatTableDataSource<UserComplete>([]);
   roleType: RoleType[] = [];
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
@@ -324,9 +321,59 @@ export class SeeUsersComponent implements OnInit {
   }
 
   validateIfCanEditUserOrDelete(user: UserComplete): boolean {
-    return (
-      this.userLogged?.roleType?.name === 'Administrador' &&
-      user.roleType?.name === 'Usuario'
-    );
+    const loggedInRoleName = this.userLogged?.roleType?.name;
+    const userToActOnRoleName = user.roleType?.name;
+    const isCurrentUser = this.userLogged?.userId === user.userId;
+
+    // Un administrador puede editar/eliminar a cualquiera, excepto a sí mismo (para eliminar)
+    if (loggedInRoleName === 'Administrador') {
+      // Un administrador puede editar a sí mismo, pero no eliminar
+      return isCurrentUser; // Si es el mismo usuario, NO permitir eliminación (o edición si fuera el caso)
+    }
+
+    // Un empleado solo puede editar/eliminar usuarios con rol 'Usuario' y no a sí mismo.
+    if (loggedInRoleName === 'Empleado') {
+      return (
+        userToActOnRoleName !== 'Usuario' || // No permitir si no es un usuario "regular"
+        isCurrentUser // No permitir si es el mismo usuario
+      );
+    }
+
+    // Por defecto, no se permite ninguna acción si no cumple las condiciones anteriores
+    return true;
+  }
+
+  canEditUser(user: UserComplete): boolean {
+    const loggedInRoleName = this.userLogged?.roleType?.name;
+    const userToActOnRoleName = user.roleType?.name;
+
+    if (loggedInRoleName === 'Administrador') {
+      return true;
+    }
+    if (loggedInRoleName === 'Empleado') {
+      const canEdit = userToActOnRoleName === 'Usuario';
+      return canEdit;
+    }
+
+    return false;
+  }
+
+  canDeleteUser(user: UserComplete): boolean {
+    const loggedInRoleName = this.userLogged?.roleType?.name;
+    const userToActOnRoleName = user.roleType?.name;
+    const isCurrentUser = this.userLogged?.userId === user.userId;
+
+    if (isCurrentUser) {
+      return false;
+    }
+    if (loggedInRoleName === 'Administrador') {
+      return true;
+    }
+    if (loggedInRoleName === 'Empleado') {
+      const canDelete = userToActOnRoleName === 'Usuario';
+      return canDelete;
+    }
+
+    return false;
   }
 }

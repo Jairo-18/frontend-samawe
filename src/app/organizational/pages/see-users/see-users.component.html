@@ -95,8 +95,8 @@
           <th mat-header-cell *matHeaderCellDef class="center-text">
             Acciones
           </th>
-          <td mat-cell *matCellDef="let user">
-            @if (!validateIfCanEditUserOrDelete(user)) {
+          <td mat-cell *matCellDef="let user" class="center-text">
+            @if (canEditUser(user)) {
             <button
               mat-icon-button
               color="primary"
@@ -104,6 +104,7 @@
             >
               <mat-icon>edit</mat-icon>
             </button>
+            } @if (canDeleteUser(user)) {
             <button
               mat-icon-button
               color="warn"
@@ -180,21 +181,23 @@
         >
           <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="roleType">
-              <th mat-header-cell *matHeaderCellDef>Rol</th>
+              <th mat-header-cell *matHeaderCellDef class="center-text">Rol</th>
               <td mat-cell *matCellDef="let userLogged">
                 {{ getRoleName(userLogged.roleTypeId) }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="identificationType">
-              <th mat-header-cell *matHeaderCellDef>Tipo de identificación</th>
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                Tipo de identificación
+              </th>
               <td mat-cell *matCellDef="let userLogged">
                 {{ getIdentificationTypeName(userLogged.identificationTypeId) }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="identificationNumber">
-              <th mat-header-cell *matHeaderCellDef>
+              <th mat-header-cell *matHeaderCellDef class="center-text">
                 Número de identificación
               </th>
               <td mat-cell *matCellDef="let userLogged">
@@ -203,29 +206,38 @@
             </ng-container>
 
             <ng-container matColumnDef="firstName">
-              <th mat-header-cell *matHeaderCellDef>Nombres</th>
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                Nombres
+              </th>
               <td mat-cell *matCellDef="let userLogged">
                 {{ userLogged.firstName }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="lastName">
-              <th mat-header-cell *matHeaderCellDef>Apellidos</th>
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                Apellidos
+              </th>
               <td mat-cell *matCellDef="let userLogged">
                 {{ userLogged.lastName }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="phoneCode">
-              <th mat-header-cell *matHeaderCellDef>País</th>
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                País
+              </th>
               <td mat-cell *matCellDef="let userLogged">
                 {{ getPhoneCodeName(userLogged.phoneCodeId) }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
-              <td mat-cell *matCellDef="let user">
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                Acciones
+              </th>
+              <td mat-cell *matCellDef="let user" class="center-text">
+                @if (validateIfCanEditUserOrDelete(user)) {
                 <button
                   mat-icon-button
                   color="primary"
@@ -240,6 +252,7 @@
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
+                }
               </td>
             </ng-container>
 

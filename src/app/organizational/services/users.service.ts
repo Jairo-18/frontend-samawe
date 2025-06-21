@@ -24,12 +24,12 @@ export class UsersService {
 
   getUserWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
-    data: CreateUserPanel[];
+    data: UserComplete[];
   }> {
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
-      data: CreateUserPanel[];
+      data: UserComplete[];
     }>(`${environment.apiUrl}user/paginated-list`, { params });
   }
 
