@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build -- --configuration production
 
 # Stage 2: Serve the application with Nginx
-FROM nginx:alpine
+FROM nginx:alpine AS production
 
 # Copy the build output from the builder stage
 # Note: verify the path matches angular.json "outputPath"
