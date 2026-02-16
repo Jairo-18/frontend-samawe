@@ -201,9 +201,9 @@ export class EditInvoiceComponent implements OnInit {
     const options = {
       margin: 0.5,
       filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg' as const, quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
     };
 
     await html2pdf().set(options).from(element).save();
