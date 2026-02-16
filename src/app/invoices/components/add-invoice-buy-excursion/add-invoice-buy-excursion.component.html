@@ -1,0 +1,152 @@
+<form [formGroup]="form" class="w-full mt-3">
+  <!-- Buscar excursión -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Buscar pasadía o servicio</mat-label>
+    <input
+      matInput
+      formControlName="name"
+      [matAutocomplete]="auto"
+      placeholder="Ejemplo: Pasadía niños o masajes"
+      (focus)="onExcursionFocus()"
+    />
+    <mat-icon matPrefix>tour</mat-icon>
+
+    <!-- Botón limpiar -->
+    <button
+      *ngIf="
+        form.get('name')?.enabled &&
+        form.get('name')?.value &&
+        !isLoadingExcursions
+      "
+      matSuffix
+      mat-icon-button
+      type="button"
+      (click)="clearExcursionSelection()"
+      matTooltip="Limpiar selección"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onExcursionSelected($event.option.value)"
+    >
+      <mat-option
+        *ngFor="let excursion of filteredExcursions"
+        [value]="excursion.name"
+      >
+        {{ excursion.name }}
+        <span
+          [ngClass]="{
+            'text-green-600':
+              excursion.stateType?.name === 'Disponible' ||
+              excursion.stateType?.name === 'DISPONIBLE',
+            'text-yellow-600':
+              excursion.stateType?.name === 'Mantenimiento' ||
+              excursion.stateType?.name === 'MANTENIMIENTO',
+            'text-red-600':
+              excursion.stateType?.name === 'Fuera de Servicio' ||
+              excursion.stateType?.name === 'FUERA DE SERVICIO',
+            'text-blue-600':
+              excursion.stateType?.name === 'Ocupado' ||
+              excursion.stateType?.name === 'OCUPADO'
+          }"
+        >
+          - {{ excursion.stateType?.name }}
+        </span>
+      </mat-option>
+    </mat-autocomplete>
+
+    <!-- Mostrar errores de validación del campo nombre -->
+    <mat-error *ngIf="form.get('name')?.hasError('required')">
+      Debe seleccionar una excursión
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Precios -->
+  <div class="flex flex-col md:flex-row gap-0 md:gap-2">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Precio Unitario</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="priceSale"
+        [readonly]="false"
+        appCurrencyFormat
+        class="text-right"
+        placeholder="0.00"
+        step="0.01"
+        min="0"
+      />
+      <mat-icon matSuffix>attach_money</mat-icon>
+
+      <!-- Mostrar errores de validación -->
+      <mat-error *ngIf="form.get('priceSale')?.hasError('required')">
+        El precio unitario es requerido
+      </mat-error>
+      <mat-error *ngIf="form.get('priceSale')?.hasError('min')">
+        El precio debe ser mayor o igual a 0
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Precio Final</mat-label>
+      <input
+        matInput
+        formControlName="finalPrice"
+        [readonly]="true"
+        class="text-right"
+        appCurrencyFormat
+      />
+      <mat-icon matSuffix>monetization_on</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Cantidad</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="amount"
+        appCurrencyFormat
+        class="text-right"
+        min="1"
+        step="1"
+        placeholder="1"
+      />
+      <mat-icon matSuffix>numbers</mat-icon>
+
+      <!-- Mostrar errores de validación -->
+      <mat-error *ngIf="form.get('amount')?.hasError('required')">
+        La cantidad es requerida
+      </mat-error>
+      <mat-error *ngIf="form.get('amount')?.hasError('min')">
+        La cantidad debe ser mayor a 0
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Impuestos -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Tipo de impuesto</mat-label>
+    <mat-select formControlName="taxeTypeId">
+      <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
+        {{ taxe.name }}
+      </mat-option>
+    </mat-select>
+    <mat-icon matPrefix>calculate</mat-icon>
+  </mat-form-field>
+
+  <!-- Botón añadir -->
+  <button
+    class="!w-full !rounded-lg"
+    mat-fab
+    extended="true"
+    [disabled]="isLoading"
+    (click)="addExcursion()"
+  >
+    <ng-container *ngIf="!isLoading; else loading"> Añadir </ng-container>
+    <ng-template #loading>
+      <mat-spinner diameter="24" color="accent"></mat-spinner>
+    </ng-template>
+  </button>
+</form>

@@ -1,0 +1,186 @@
+<form [formGroup]="form" class="w-full mt-3">
+  <!-- Buscar excursión -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Buscar pasadía o servicio</mat-label>
+    <input
+      matInput
+      formControlName="name"
+      [matAutocomplete]="auto"
+      placeholder="Ejemplo: Pasadía niños o masajes"
+      (focus)="onExcursionFocus()"
+    />
+    <mat-icon matPrefix>tour</mat-icon>
+
+    <!-- Botón limpiar -->
+    <button
+      *ngIf="form.get('name')?.value && !isLoading"
+      matSuffix
+      mat-icon-button
+      type="button"
+      (click)="clearExcursionSelection()"
+      matTooltip="Limpiar selección"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onExcursionSelected($event.option.value)"
+    >
+      <mat-option
+        *ngFor="let excursion of filteredExcursions"
+        [value]="excursion.name"
+      >
+        {{ excursion.name }}
+        <span
+          [ngClass]="{
+            'text-green-600':
+              excursion.stateType?.name === 'Disponible' ||
+              excursion.stateType?.name === 'DISPONIBLE',
+            'text-yellow-600':
+              excursion.stateType?.name === 'Mantenimiento' ||
+              excursion.stateType?.name === 'MANTENIMIENTO',
+            'text-red-600':
+              excursion.stateType?.name === 'Fuera de Servicio' ||
+              excursion.stateType?.name === 'FUERA DE SERVICIO',
+            'text-blue-600':
+              excursion.stateType?.name === 'Ocupado' ||
+              excursion.stateType?.name === 'OCUPADO'
+          }"
+        >
+          - {{ excursion.stateType?.name }}
+        </span>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Campos de precio y cantidad -->
+  <div class="flex flex-col md:flex-row gap-0 md:gap-2">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Precio Unitario</mat-label>
+      <input
+        matInput
+        formControlName="priceSale"
+        [readonly]="true"
+        appCurrencyFormat
+        class="text-right"
+      />
+      <mat-icon matSuffix>attach_money</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Precio Final</mat-label>
+      <input
+        matInput
+        formControlName="finalPrice"
+        [readonly]="true"
+        appCurrencyFormat
+        class="text-right"
+      />
+      <mat-icon matSuffix>monetization_on</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Cantidad</mat-label>
+      <input
+        matInput
+        formControlName="amount"
+        appCurrencyFormat
+        class="text-right"
+      />
+      <mat-icon matSuffix>numbers</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Fechas y horas -->
+  <div class="flex flex-col md:flex-row gap-0 md:gap-2">
+    <!-- Fecha de inicio -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha de inicio</mat-label>
+      <input
+        matInput
+        [matDatepicker]="startDatePicker"
+        formControlName="startDate"
+      />
+      <mat-datepicker-toggle
+        [for]="startDatePicker"
+        matSuffix
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-icon matPrefix>event</mat-icon>
+    </mat-form-field>
+
+    <!-- Hora de inicio -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Hora de inicio</mat-label>
+      <input
+        matInput
+        [matTimepicker]="startTimePicker"
+        formControlName="startTime"
+      />
+      <mat-timepicker-toggle
+        [for]="startTimePicker"
+        matSuffix
+      ></mat-timepicker-toggle>
+      <mat-timepicker #startTimePicker format="12h"></mat-timepicker>
+      <mat-icon matPrefix>access_time</mat-icon>
+    </mat-form-field>
+
+    <!-- Fecha de fin -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fecha de fin</mat-label>
+      <input
+        matInput
+        [matDatepicker]="endDatePicker"
+        formControlName="endDate"
+      />
+      <mat-datepicker-toggle
+        [for]="endDatePicker"
+        matSuffix
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+      <mat-icon matPrefix>event</mat-icon>
+    </mat-form-field>
+
+    <!-- Hora de fin -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Hora de fin</mat-label>
+      <input
+        matInput
+        [matTimepicker]="endTimePicker"
+        formControlName="endTime"
+      />
+      <mat-timepicker-toggle
+        [for]="endTimePicker"
+        matSuffix
+      ></mat-timepicker-toggle>
+      <mat-timepicker #endTimePicker format="12h"></mat-timepicker>
+      <mat-icon matPrefix>access_time</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Tipo de impuesto -->
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Tipo de impuesto</mat-label>
+    <mat-select formControlName="taxeTypeId">
+      <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
+        {{ taxe.name }}
+      </mat-option>
+    </mat-select>
+    <mat-icon matPrefix>calculate</mat-icon>
+  </mat-form-field>
+
+  <!-- Botón añadir -->
+  <button
+    class="!w-full !rounded-lg"
+    mat-fab
+    extended="true"
+    [disabled]="isLoading"
+    (click)="addExcursion()"
+  >
+    <ng-container *ngIf="!isLoading; else loading"> Añadir </ng-container>
+    <ng-template #loading>
+      <mat-spinner diameter="24" color="accent"></mat-spinner>
+    </ng-template>
+  </button>
+</form>
