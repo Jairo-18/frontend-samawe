@@ -10,141 +10,139 @@
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
     <!-- Mostrar loader solo en carga inicial -->
     @if (initialLoading) {
-    <div class="h-full w-full justify-center items-center flex">
-      <app-loader></app-loader>
-    </div>
+      <div class="h-full w-full justify-center items-center flex">
+        <app-loader></app-loader>
+      </div>
     } @else {
-    <!-- Columna izquierda -->
-    <div class="flex flex-col w-full md:w-[75%] gap-3">
-      <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
-        <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
-        @if (invoiceData) {
-        <span class="text-base md:text-xl font-extrabold">
-          {{ invoiceData.invoiceType.name || '' }} Nr°
-          {{ invoiceData.code || '' }}
-        </span>
-
-        <section class="flex-row md:flex w-full">
-          <div
-            class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
-          >
-            <span class="font-bold">
-              {{
-                invoiceData.invoiceType.code === 'FC'
-                  ? 'Proveedor:'
-                  : 'Cliente:'
-              }}
-              <span class="font-normal">
-                {{ invoiceData.user.firstName || '' }}
-                {{ invoiceData.user.lastName || '' }}
-              </span>
+      <!-- Columna izquierda -->
+      <div class="flex flex-col w-full md:w-[75%] gap-3">
+        <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+          <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
+          @if (invoiceData) {
+            <span class="text-base md:text-xl font-extrabold">
+              {{ invoiceData.invoiceType.name || '' }} Nr°
+              {{ invoiceData.code || '' }}
             </span>
-          </div>
-          <div
-            class="flex w-full md:w-[50%] justify-start md:justify-end text-sm md:text-base"
-          >
-            <span class="font-bold">
-              Empleado:
-              <span class="font-normal">
-                {{ invoiceData.employee.firstName || '' }}
-                {{ invoiceData.employee.lastName || '' }}
-              </span>
-            </span>
-          </div>
-        </section>
-        }
 
-        <!-- Tabs siempre visibles después de la carga inicial -->
-        <mat-tab-group animationDuration="0ms">
-          @if (invoiceData?.invoiceType?.code === 'FV') {
-          <!-- Producto: siempre disponible -->
-          <mat-tab label="Producto">
-            <ng-template matTabContent>
-              <app-add-product
-                [categoryTypes]="categoryTypes"
-                [taxeTypes]="taxeTypes"
-                (itemSaved)="onItemSaved()"
-              ></app-add-product>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab label="Hospedaje">
-            <ng-template matTabContent>
-              <app-add-accommodation
-                [categoryTypes]="categoryTypes"
-                [taxeTypes]="taxeTypes"
-                [additionalTypes]="additionalTypes"
-                [discountTypes]="discountTypes"
-                (itemSaved)="onItemSaved()"
-              ></app-add-accommodation>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab label="Pasadías y Servicios">
-            <ng-template matTabContent>
-              <app-add-excursion
-                [categoryTypes]="categoryTypes"
-                [taxeTypes]="taxeTypes"
-                (itemSaved)="onItemSaved()"
-              ></app-add-excursion>
-            </ng-template>
-          </mat-tab>
-          } @else {
-
-          <mat-tab label="Productos">
-            <ng-template matTabContent>
-              <app-add-invoice-buy
-                [categoryTypes]="categoryTypes"
-                [taxeTypes]="taxeTypes"
-                (itemSaved)="onItemSaved()"
-              ></app-add-invoice-buy>
-            </ng-template>
-          </mat-tab>
-
-          <mat-tab label="Pasadías y Servicios">
-            <ng-template matTabContent>
-              <app-add-invoice-buy-excursion
-                [categoryTypes]="categoryTypes"
-                [taxeTypes]="taxeTypes"
-                (itemSaved)="onItemSaved()"
-              ></app-add-invoice-buy-excursion>
-            </ng-template>
-          </mat-tab>
-
+            <section class="flex-row md:flex w-full">
+              <div
+                class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
+              >
+                <span class="font-bold">
+                  {{
+                    invoiceData.invoiceType.code === 'FC'
+                      ? 'Proveedor:'
+                      : 'Cliente:'
+                  }}
+                  <span class="font-normal">
+                    {{ invoiceData.user.firstName || '' }}
+                    {{ invoiceData.user.lastName || '' }}
+                  </span>
+                </span>
+              </div>
+              <div
+                class="flex w-full md:w-[50%] justify-start md:justify-end text-sm md:text-base"
+              >
+                <span class="font-bold">
+                  Empleado:
+                  <span class="font-normal">
+                    {{ invoiceData.employee.firstName || '' }}
+                    {{ invoiceData.employee.lastName || '' }}
+                  </span>
+                </span>
+              </div>
+            </section>
           }
-        </mat-tab-group>
-      </section>
 
-      <!-- Detalle factura - aparece cuando invoiceData esté disponible -->
-      <section
-        class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
+          <!-- Tabs siempre visibles después de la carga inicial -->
+          <mat-tab-group animationDuration="0ms">
+            @if (invoiceData?.invoiceType?.code === 'FV') {
+              <!-- Producto: siempre disponible -->
+              <mat-tab label="Producto">
+                <ng-template matTabContent>
+                  <app-add-product
+                    [categoryTypes]="categoryTypes"
+                    [taxeTypes]="taxeTypes"
+                    (itemSaved)="onItemSaved()"
+                  ></app-add-product>
+                </ng-template>
+              </mat-tab>
+
+              <mat-tab label="Hospedaje">
+                <ng-template matTabContent>
+                  <app-add-accommodation
+                    [categoryTypes]="categoryTypes"
+                    [taxeTypes]="taxeTypes"
+                    [additionalTypes]="additionalTypes"
+                    [discountTypes]="discountTypes"
+                    (itemSaved)="onItemSaved()"
+                  ></app-add-accommodation>
+                </ng-template>
+              </mat-tab>
+
+              <mat-tab label="Pasadías y Servicios">
+                <ng-template matTabContent>
+                  <app-add-excursion
+                    [categoryTypes]="categoryTypes"
+                    [taxeTypes]="taxeTypes"
+                    (itemSaved)="onItemSaved()"
+                  ></app-add-excursion>
+                </ng-template>
+              </mat-tab>
+            } @else {
+              <mat-tab label="Productos">
+                <ng-template matTabContent>
+                  <app-add-invoice-buy
+                    [categoryTypes]="categoryTypes"
+                    [taxeTypes]="taxeTypes"
+                    (itemSaved)="onItemSaved()"
+                  ></app-add-invoice-buy>
+                </ng-template>
+              </mat-tab>
+
+              <mat-tab label="Pasadías y Servicios">
+                <ng-template matTabContent>
+                  <app-add-invoice-buy-excursion
+                    [categoryTypes]="categoryTypes"
+                    [taxeTypes]="taxeTypes"
+                    (itemSaved)="onItemSaved()"
+                  ></app-add-invoice-buy-excursion>
+                </ng-template>
+              </mat-tab>
+            }
+          </mat-tab-group>
+        </section>
+
+        <!-- Detalle factura - aparece cuando invoiceData esté disponible -->
+        <section
+          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
+        >
+          <div class="w-full text-center">
+            <span class="font-bold">Servicios y Productos Ingresados</span>
+          </div>
+          <app-invoice-detaill
+            *ngIf="invoiceData"
+            [invoiceDetails]="invoiceData.invoiceDetails"
+            [invoiceId]="invoiceId"
+            [reload]="reloadInvoiceDetails"
+            (itemDelete)="onItemDeleted()"
+          ></app-invoice-detaill>
+        </section>
+      </div>
+
+      <!-- Columna derecha - aparece cuando invoiceData esté disponible -->
+      <div
+        class="flex flex-col w-full md:w-[25%] p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
       >
-        <div class="w-full text-center">
-          <span class="font-bold">Servicios y Productos Ingresados</span>
-        </div>
-        <app-invoice-detaill
+        <app-invoice-summary
           *ngIf="invoiceData"
-          [invoiceDetails]="invoiceData.invoiceDetails"
-          [invoiceId]="invoiceId"
-          [reload]="reloadInvoiceDetails"
-          (itemDelete)="onItemDeleted()"
-        ></app-invoice-detaill>
-      </section>
-    </div>
-
-    <!-- Columna derecha - aparece cuando invoiceData esté disponible -->
-    <div
-      class="flex flex-col w-full md:w-[25%] p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
-    >
-      <app-invoice-summary
-        *ngIf="invoiceData"
-        [invoiceData]="invoiceData"
-        [paidTypes]="paidTypes"
-        [payTypes]="payTypes"
-        (downloadRequested)="downloadInvoice()"
-        (editRequested)="openEditInvoiceDialog()"
-      ></app-invoice-summary>
-    </div>
+          [invoiceData]="invoiceData"
+          [paidTypes]="paidTypes"
+          [payTypes]="payTypes"
+          (downloadRequested)="downloadInvoice()"
+          (editRequested)="openEditInvoiceDialog()"
+        ></app-invoice-summary>
+      </div>
     }
   </article>
   <app-invoice-pdf

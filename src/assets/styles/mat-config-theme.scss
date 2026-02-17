@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import 'variables';
+@use 'variables' as *;
 $error-red: #eb2f28;
 
 $dark-primary-text: rgba(black, 0.87);

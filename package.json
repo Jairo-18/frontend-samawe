@@ -25,6 +25,7 @@
     "@fontsource-variable/noto-serif": "^5.2.6",
     "@fortawesome/angular-fontawesome": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "chart.js": "^4.4.1",
     "html2pdf.js": "^0.14.0",

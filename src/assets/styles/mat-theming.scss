@@ -1,6 +1,6 @@
 @use 'sass:color';
-@import 'variables';
-@import 'breakpoints';
+@use 'variables.scss' as *;
+@use 'breakpoints.scss' as *;
 
 button {
   letter-spacing: normal !important;

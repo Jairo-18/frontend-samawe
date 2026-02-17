@@ -1,4 +1,3 @@
-import { AccommodationsService } from './../../../service-and-product/services/accommodations.service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +11,9 @@ import { CardHomeComponent } from '../../components/card-home/card-home.componen
 import { GetAccommodationPaginatedList } from '../../../service-and-product/interface/accommodation.interface';
 // import { CardAccommodationComponent } from '../../components/card-accommodation/card-accommodation.component';
 import { FormsModule } from '@angular/forms';
+import { NgOptimizedImage } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,9 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     BasePageComponent,
     CardHomeComponent,
-    RouterLink
+    RouterLink,
+    NgOptimizedImage,
+    FontAwesomeModule
     // CardAccommodationComponent
   ],
   templateUrl: './home.component.html',
@@ -34,9 +38,6 @@ export class HomeComponent implements OnInit {
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
-  private readonly _accommodationsService: AccommodationsService = inject(
-    AccommodationsService
-  );
 
   isLoggedUser = false;
   userInfo?: UserInterface;
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
   tipo: string = 'hospedaje';
   huespedes: string = '2';
   dateRange: { from?: Date; to?: Date } = {};
+  faWhatsapp = faWhatsapp;
 
   ngOnInit(): void {
     this._subscription.add(
