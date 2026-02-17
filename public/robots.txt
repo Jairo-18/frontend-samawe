@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /organizational/
+Disallow: /service-and-product/
+Disallow: /invoice/
+Disallow: /sales/
+Disallow: /server-config
+
+Sitemap: https://ecohotelsamawe.com/sitemap.xml
