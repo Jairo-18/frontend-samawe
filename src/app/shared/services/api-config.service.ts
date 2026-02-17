@@ -26,12 +26,22 @@ export class ApiConfigService {
     const savedConfig = localStorage.getItem('api-config');
     if (savedConfig) {
       try {
-        this.config = JSON.parse(savedConfig);
-        console.log(
-          '✅ Configuración cargada desde localStorage:',
-          this.config
-        );
-        return;
+        const parsed: ApiConfig = JSON.parse(savedConfig);
+
+        // Si el sitio se sirve por HTTPS, rechazar URLs guardadas con HTTP
+        if (this.isSiteSecure() && parsed.apiUrl?.startsWith('http://')) {
+          console.warn(
+            '⚠️ Se ignoró configuración guardada con http:// porque el sitio usa HTTPS. Limpiando...'
+          );
+          localStorage.removeItem('api-config');
+        } else {
+          this.config = parsed;
+          console.log(
+            '✅ Configuración cargada desde localStorage:',
+            this.config
+          );
+          return;
+        }
       } catch (e) {
         console.error('Error al parsear configuración guardada:', e);
       }
@@ -55,7 +65,15 @@ export class ApiConfigService {
    * @param apiUrl URL completa del API (ej: http://192.168.1.100:3001/)
    */
   setApiUrl(apiUrl: string): void {
-    this.config.apiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`;
+    let url = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`;
+
+    // Si el sitio es HTTPS, forzar que la URL también sea HTTPS
+    if (this.isSiteSecure() && url.startsWith('http://')) {
+      url = url.replace('http://', 'https://');
+      console.warn('⚠️ URL convertida a HTTPS automáticamente:', url);
+    }
+
+    this.config.apiUrl = url;
     localStorage.setItem('api-config', JSON.stringify(this.config));
     console.log('✅ Configuración actualizada:', this.config);
   }
@@ -84,5 +102,12 @@ export class ApiConfigService {
    */
   getConfig(): ApiConfig {
     return { ...this.config };
+  }
+
+  /**
+   * Verifica si el sitio se está sirviendo por HTTPS
+   */
+  private isSiteSecure(): boolean {
+    return window.location.protocol === 'https:';
   }
 }

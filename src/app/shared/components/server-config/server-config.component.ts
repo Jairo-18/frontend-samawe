@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,7 +32,9 @@ import { Router } from '@angular/router';
       <mat-card class="config-card">
         <mat-card-header>
           <mat-card-title>Configuración del Servidor</mat-card-title>
-          <mat-card-subtitle>Conecta esta tablet al servidor de recepción</mat-card-subtitle>
+          <mat-card-subtitle
+            >Conecta esta tablet al servidor de recepción</mat-card-subtitle
+          >
         </mat-card-header>
 
         <mat-card-content>
@@ -42,10 +49,16 @@ import { Router } from '@angular/router';
               />
               <mat-icon matPrefix>dns</mat-icon>
               <mat-hint>Ingresa la IP del computador de recepción</mat-hint>
-              @if (configForm.get('serverIp')?.hasError('required') && configForm.get('serverIp')?.touched) {
+              @if (
+                configForm.get('serverIp')?.hasError('required') &&
+                configForm.get('serverIp')?.touched
+              ) {
                 <mat-error>La dirección IP es requerida</mat-error>
               }
-              @if (configForm.get('serverIp')?.hasError('pattern') && configForm.get('serverIp')?.touched) {
+              @if (
+                configForm.get('serverIp')?.hasError('pattern') &&
+                configForm.get('serverIp')?.touched
+              ) {
                 <mat-error>Formato de IP inválido</mat-error>
               }
             </mat-form-field>
@@ -68,7 +81,10 @@ import { Router } from '@angular/router';
             </div>
 
             <div class="connection-status" *ngIf="connectionStatus">
-              <mat-icon [class.success]="connectionSuccess" [class.error]="!connectionSuccess">
+              <mat-icon
+                [class.success]="connectionSuccess"
+                [class.error]="!connectionSuccess"
+              >
                 {{ connectionSuccess ? 'check_circle' : 'error' }}
               </mat-icon>
               <span>{{ connectionStatus }}</span>
@@ -97,11 +113,7 @@ import { Router } from '@angular/router';
             Guardar y Continuar
           </button>
 
-          <button
-            mat-button
-            (click)="resetConfig()"
-            type="button"
-          >
+          <button mat-button (click)="resetConfig()" type="button">
             <mat-icon>refresh</mat-icon>
             Restablecer
           </button>
@@ -126,83 +138,85 @@ import { Router } from '@angular/router';
       </div>
     </div>
   `,
-  styles: [`
-    .config-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
+  styles: [
+    `
+      .config-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
 
-    .config-card {
-      width: 100%;
-      max-width: 500px;
-      margin-bottom: 20px;
-    }
+      .config-card {
+        width: 100%;
+        max-width: 500px;
+        margin-bottom: 20px;
+      }
 
-    .full-width {
-      width: 100%;
-      margin-bottom: 15px;
-    }
+      .full-width {
+        width: 100%;
+        margin-bottom: 15px;
+      }
 
-    mat-card-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      padding: 16px;
-    }
+      mat-card-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 16px;
+      }
 
-    mat-card-actions button {
-      flex: 1;
-      min-width: 140px;
-    }
+      mat-card-actions button {
+        flex: 1;
+        min-width: 140px;
+      }
 
-    .current-config {
-      background: #f5f5f5;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      font-family: monospace;
-    }
+      .current-config {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        font-family: monospace;
+      }
 
-    .connection-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      background: #f5f5f5;
-    }
+      .connection-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        background: #f5f5f5;
+      }
 
-    .connection-status mat-icon.success {
-      color: #4caf50;
-    }
+      .connection-status mat-icon.success {
+        color: #4caf50;
+      }
 
-    .connection-status mat-icon.error {
-      color: #f44336;
-    }
+      .connection-status mat-icon.error {
+        color: #f44336;
+      }
 
-    .help-section {
-      width: 100%;
-      max-width: 500px;
-    }
+      .help-section {
+        width: 100%;
+        max-width: 500px;
+      }
 
-    .help-section mat-card {
-      background: rgba(255, 255, 255, 0.95);
-    }
+      .help-section mat-card {
+        background: rgba(255, 255, 255, 0.95);
+      }
 
-    .help-section ol {
-      padding-left: 20px;
-    }
+      .help-section ol {
+        padding-left: 20px;
+      }
 
-    .help-section li {
-      margin-bottom: 8px;
-    }
-  `]
+      .help-section li {
+        margin-bottom: 8px;
+      }
+    `
+  ]
 })
 export class ServerConfigComponent implements OnInit {
   configForm: FormGroup;
@@ -220,12 +234,12 @@ export class ServerConfigComponent implements OnInit {
     this.configForm = this.fb.group({
       serverIp: [
         '',
-        [
-          Validators.required,
-          Validators.pattern(/^(\d{1,3}\.){3}\d{1,3}$/)
-        ]
+        [Validators.required, Validators.pattern(/^(\d{1,3}\.){3}\d{1,3}$/)]
       ],
-      port: [3001, [Validators.required, Validators.min(1), Validators.max(65535)]]
+      port: [
+        3001,
+        [Validators.required, Validators.min(1), Validators.max(65535)]
+      ]
     });
   }
 
@@ -247,6 +261,10 @@ export class ServerConfigComponent implements OnInit {
     }
   }
 
+  private getProtocol(): string {
+    return window.location.protocol === 'https:' ? 'https' : 'http';
+  }
+
   async testConnection(): Promise<void> {
     if (this.configForm.invalid) return;
 
@@ -255,10 +273,13 @@ export class ServerConfigComponent implements OnInit {
     this.connectionSuccess = false;
 
     const { serverIp, port } = this.configForm.value;
-    const testUrl = `http://${serverIp}:${port}/health`;
+    const protocol = this.getProtocol();
+    const testUrl = `${protocol}://${serverIp}:${port}/health`;
 
     try {
-      const response = await this.http.get<any>(testUrl, { observe: 'response' }).toPromise();
+      const response = await this.http
+        .get<any>(testUrl, { observe: 'response' })
+        .toPromise();
 
       if (response?.status === 200) {
         this.connectionSuccess = true;
@@ -266,7 +287,9 @@ export class ServerConfigComponent implements OnInit {
 
         // Obtener información del servidor
         try {
-          const serverInfo = await this.http.get<any>(`http://${serverIp}:${port}/server-info`).toPromise();
+          const serverInfo = await this.http
+            .get<any>(`${protocol}://${serverIp}:${port}/server-info`)
+            .toPromise();
           this.connectionStatus = `✓ Conectado a servidor: ${serverInfo.primaryAddress}:${serverInfo.port}`;
         } catch (e) {
           // No es crítico si falla
@@ -278,7 +301,8 @@ export class ServerConfigComponent implements OnInit {
     } catch (error: any) {
       this.connectionSuccess = false;
       if (error.status === 0) {
-        this.connectionStatus = '✗ Error de red: Verifica la IP y que ambos dispositivos estén en la misma red';
+        this.connectionStatus =
+          '✗ Error de red: Verifica la IP y que ambos dispositivos estén en la misma red';
       } else {
         this.connectionStatus = `✗ Error: ${error.message || 'No se pudo conectar'}`;
       }
@@ -291,7 +315,8 @@ export class ServerConfigComponent implements OnInit {
     if (this.configForm.invalid) return;
 
     const { serverIp, port } = this.configForm.value;
-    const apiUrl = `http://${serverIp}:${port}/`;
+    const protocol = this.getProtocol();
+    const apiUrl = `${protocol}://${serverIp}:${port}/`;
 
     this.apiConfigService.setApiUrl(apiUrl);
     this.currentConfig = apiUrl;
