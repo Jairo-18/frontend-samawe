@@ -34,6 +34,7 @@ import {
   AddedAccommodationInvoiceDetaill,
   CreateInvoiceDetaill
 } from '../../interface/invoiceDetaill.interface';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
@@ -70,7 +71,9 @@ export class AddAccommodationComponent implements OnInit {
   @Input() taxeTypes: TaxeType[] = [];
   @Input() additionalTypes: AdditionalType[] = [];
   @Input() discountTypes: DiscountType[] = [];
+  @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
+  @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
 
   private readonly _accommodationsService: AccommodationsService = inject(
     AccommodationsService
@@ -167,7 +170,8 @@ export class AddAccommodationComponent implements OnInit {
       .get('name')
       ?.valueChanges.pipe(
         debounceTime(500),
-        switchMap((name: string) => {
+        switchMap((name: string | AddedAccommodationInvoiceDetaill) => {
+          if (typeof name !== 'string') return of({ data: [] });
           if (!name || name.trim().length < 2) return of({ data: [] });
           return this._accommodationsService.getAccommodationWithPagination({
             name
@@ -191,6 +195,7 @@ export class AddAccommodationComponent implements OnInit {
   //     },
   //     error: (err) => console.error('Error cargando discountTypes', err)
   //   });
+  // }
   // }
 
   // loadAdditionalTypes() { <-- Eliminado
@@ -437,6 +442,18 @@ export class AddAccommodationComponent implements OnInit {
         endDate: new Date(formValue.endDateTime).toISOString()
       };
 
+      if (!this.saveToBackend) {
+        const pendingItem: PendingInvoiceDetail = {
+          id: crypto.randomUUID(),
+          type: 'Hospedaje',
+          name: formValue.name?.name || 'Hospedaje', // acc name is object
+          payload: invoiceDetailPayload
+        };
+        this.pendingItem.emit(pendingItem);
+        this.resetForm();
+        return;
+      }
+
       if (!this.invoiceId) {
         console.error('❌ No hay invoiceId definido');
         return;
@@ -444,7 +461,7 @@ export class AddAccommodationComponent implements OnInit {
 
       this.isLoading = true;
       this._invoiceDetaillService
-        .createInvoiceDetaill(this.invoiceId, invoiceDetailPayload)
+        .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
         .subscribe({
           next: () => {
             this.resetForm();

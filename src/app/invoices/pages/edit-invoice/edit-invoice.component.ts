@@ -39,6 +39,11 @@ import { CreateInvoiceDialogComponent } from '../../components/create-invoice-di
 import { MatDialog } from '@angular/material/dialog';
 import { AddInvoiceBuyComponent } from '../../components/add-invoice-buy/add-invoice-buy.component';
 import { AddInvoiceBuyExcursionComponent } from '../../components/add-invoice-buy-excursion/add-invoice-buy-excursion.component';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
+import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { PendingItemsTableComponent } from '../../components/pending-items-table/pending-items-table';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -58,7 +63,10 @@ import { AddInvoiceBuyExcursionComponent } from '../../components/add-invoice-bu
     MatTableModule,
     MatIconModule,
     AddInvoiceBuyComponent,
-    AddInvoiceBuyExcursionComponent
+    AddInvoiceBuyExcursionComponent,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    PendingItemsTableComponent
   ],
   templateUrl: './edit-invoice.component.html',
   styleUrls: ['./edit-invoice.component.scss']
@@ -214,5 +222,76 @@ export class EditInvoiceComponent implements OnInit {
     if (this.invoiceId) {
       this.getInvoiceToEdit(this.invoiceId, false);
     }
+  }
+
+  // --- Lógica para Items Pendientes (Carga Masiva) ---
+
+  private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
+    InvoiceDetaillService
+  );
+
+  pendingItems: PendingInvoiceDetail[] = [];
+  isSavingItems: boolean = false;
+
+  onPendingItem(item: PendingInvoiceDetail): void {
+    this.pendingItems = [...this.pendingItems, item];
+  }
+
+  removePendingItem(index: number): void {
+    this.pendingItems.splice(index, 1);
+    this.pendingItems = [...this.pendingItems];
+  }
+
+  saveAllPendingItems(): void {
+    if (!this.pendingItems.length || !this.invoiceId) return;
+
+    this.isSavingItems = true;
+    const payloads = this.pendingItems.map((i) => i.payload);
+
+    this._invoiceDetaillService
+      .createInvoiceDetaill(this.invoiceId, payloads)
+      .subscribe({
+        next: () => {
+          this.pendingItems = [];
+          this.isSavingItems = false;
+          // Recargar factura para mostrar los nuevos detalles
+          this.getInvoiceToEdit(this.invoiceId!, false);
+          this.reloadInvoiceDetails = true;
+          setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+        },
+        error: (err) => {
+          console.error('❌ Error al guardar items masivos:', err);
+          this.isSavingItems = false;
+        }
+      });
+  }
+
+  // --- Helpers para la tabla de items pendientes ---
+
+  toggleAllPayments(isPaid: boolean): void {
+    if (!this.invoiceId || !this.invoiceData?.invoiceDetails.length) return;
+
+    this.initialLoading = true;
+    const detailsToUpdate = this.invoiceData.invoiceDetails
+      .filter((d) => d.isPaid !== isPaid)
+      .map((d) => d.invoiceDetailId);
+
+    if (detailsToUpdate.length === 0) {
+      this.initialLoading = false;
+      return;
+    }
+
+    this._invoiceDetaillService
+      .toggleDetailPaymentBulk(this.invoiceId, detailsToUpdate, isPaid)
+      .subscribe({
+        next: () => {
+          this.getInvoiceToEdit(this.invoiceId!, false);
+          this.initialLoading = false;
+        },
+        error: (err: any) => {
+          console.error('Error al actualizar estado masivo', err);
+          this.initialLoading = false;
+        }
+      });
   }
 }

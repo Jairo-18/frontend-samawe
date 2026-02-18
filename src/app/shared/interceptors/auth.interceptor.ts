@@ -17,12 +17,13 @@ import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { LoginSuccessInterface } from '../../auth/interfaces/login.interface';
 import { NotificationsService } from '../services/notifications.service';
 
+const tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const injector = inject(Injector);
   const notificationsService: NotificationsService =
     inject(NotificationsService);
-  const tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   const authRequest: HttpRequest<unknown> = addTokenToRequest(req);
 
@@ -37,6 +38,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return authService.refreshToken(refreshToken).pipe(
               switchMap(
                 (newToken: ApiResponseInterface<LoginSuccessInterface>) => {
+                  authService.setRefreshingToken = false;
                   const updatedRequest = runInInjectionContext(injector, () =>
                     addTokenToRequest(
                       authRequest,
@@ -48,6 +50,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 }
               ),
               catchError((refreshError) => {
+                authService.setRefreshingToken = false;
+                authService.cleanStorageAndRedirectToLogin();
                 return throwError(refreshError);
               })
             );

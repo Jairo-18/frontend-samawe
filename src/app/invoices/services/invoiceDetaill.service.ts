@@ -3,8 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ApiResponseCreateInterface } from '../../shared/interfaces/api-response.interface';
-import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
+import {
+  ApiResponseCreateInterface,
+  ApiResponseInterface
+} from '../../shared/interfaces/api-response.interface';
+import {
+  CreateInvoiceDetaill,
+  TogglePaymentBulkResponse,
+  TogglePaymentResponse
+} from '../interface/invoiceDetaill.interface';
 
 // Servicio injectable en el root del proyecto (singleton)
 @Injectable({ providedIn: 'root' })
@@ -20,7 +27,7 @@ export class InvoiceDetaillService {
    */
   createInvoiceDetaill(
     invoiceId: number,
-    invoiceDetaill: CreateInvoiceDetaill
+    invoiceDetaill: CreateInvoiceDetaill[]
   ): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}invoices/invoice/${invoiceId}/details`,
@@ -53,7 +60,36 @@ export class InvoiceDetaillService {
    */
   deleteItemInvoice(invoiceDetailId: number): Observable<unknown> {
     return this._httpClient.delete(
-      `${environment.apiUrl}invoices/details/${invoiceDetailId}` // URL de DELETE
+      `${environment.apiUrl}invoices/details/${invoiceDetailId}`
+    );
+  }
+
+  /**
+   * Cambia el estado de pago de un detalle de factura.
+   *
+   * @param invoiceId - ID de la factura.
+   * @param detailId - ID del detalle.
+   * @returns Observable con la respuesta del servidor.
+   */
+  toggleDetailPayment(
+    invoiceId: number,
+    detailId: number
+  ): Observable<ApiResponseInterface<TogglePaymentResponse>> {
+    return this._httpClient.patch<ApiResponseInterface<TogglePaymentResponse>>(
+      `${environment.apiUrl}invoices/invoice/${invoiceId}/detail/${detailId}/toggle-payment`,
+      {}
+    );
+  }
+  toggleDetailPaymentBulk(
+    invoiceId: number,
+    detailIds: number[],
+    isPaid: boolean
+  ): Observable<ApiResponseInterface<TogglePaymentBulkResponse>> {
+    return this._httpClient.patch<
+      ApiResponseInterface<TogglePaymentBulkResponse>
+    >(
+      `${environment.apiUrl}invoices/invoice/${invoiceId}/details/toggle-payment-bulk`,
+      { detailIds, isPaid }
     );
   }
 }

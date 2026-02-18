@@ -75,7 +75,6 @@ export class SeeInvoicesComponent implements OnInit {
   displayedColumns: string[] = [
     'invoiceType',
     'code',
-    'clientIdentification',
     'clientName',
     'employeeName',
     'startDate',
@@ -99,7 +98,7 @@ export class SeeInvoicesComponent implements OnInit {
 
   paginationParams: PaginationInterface = {
     page: 1,
-    perPage: 100,
+    perPage: 25,
     total: 0,
     pageCount: 0,
     hasPreviousPage: false,

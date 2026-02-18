@@ -32,6 +32,7 @@ import {
   AddedProductInvoiceDetaill,
   CreateInvoiceDetaill
 } from '../../interface/invoiceDetaill.interface';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
@@ -58,7 +59,10 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 export class AddInvoiceBuyComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
+  @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
+
   private readonly _producsService: ProductsService = inject(ProductsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
@@ -342,6 +346,18 @@ export class AddInvoiceBuyComponent implements OnInit {
       endDate: endDate.toISOString()
     };
 
+    if (!this.saveToBackend) {
+      const pendingItem: PendingInvoiceDetail = {
+        id: crypto.randomUUID(),
+        type: 'Compra',
+        name: formValue.name,
+        payload: invoiceDetailPayload
+      };
+      this.pendingItem.emit(pendingItem);
+      this.resetForm();
+      return;
+    }
+
     if (!this.invoiceId) {
       console.error('❌ No hay invoiceId definido');
       return;
@@ -349,7 +365,7 @@ export class AddInvoiceBuyComponent implements OnInit {
 
     this.isLoading = true;
     this._invoiceDetaillService
-      .createInvoiceDetaill(this.invoiceId, invoiceDetailPayload)
+      .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
       .subscribe({
         next: () => {
           this.resetForm();

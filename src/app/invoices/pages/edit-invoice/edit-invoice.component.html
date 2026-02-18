@@ -15,7 +15,7 @@
       </div>
     } @else {
       <!-- Columna izquierda -->
-      <div class="flex flex-col w-full md:w-[75%] gap-3">
+      <div class="flex flex-col w-full gap-3">
         <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
           <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
           @if (invoiceData) {
@@ -28,23 +28,35 @@
               <div
                 class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
               >
-                <span class="font-bold">
-                  {{
-                    invoiceData.invoiceType.code === 'FC'
-                      ? 'Proveedor:'
-                      : 'Cliente:'
-                  }}
-                  <span class="font-normal">
-                    {{ invoiceData.user.firstName || '' }}
-                    {{ invoiceData.user.lastName || '' }}
-                  </span>
-                </span>
+                <div class="flex flex-col">
+                  <div class="flex flex-row gap-2">
+                    <span class="font-bold">
+                      {{
+                        invoiceData.invoiceType.code === 'FC'
+                          ? 'PROVEEDOR:'
+                          : 'CLIENTE:'
+                      }}
+                    </span>
+                    <span class="font-normal">
+                      {{ ' ' + invoiceData.user.firstName || '' }}
+                      {{ invoiceData.user.lastName || '' }}
+                    </span>
+                  </div>
+                  <div class="flex flex-row gap-2">
+                    <span class="font-bold">
+                      {{ invoiceData.user.identificationType.name }}:
+                    </span>
+                    <span class="font-normal">
+                      {{ ' ' + invoiceData.user.identificationNumber || '' }}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div
                 class="flex w-full md:w-[50%] justify-start md:justify-end text-sm md:text-base"
               >
                 <span class="font-bold">
-                  Empleado:
+                  EMPLEADO:
                   <span class="font-normal">
                     {{ invoiceData.employee.firstName || '' }}
                     {{ invoiceData.employee.lastName || '' }}
@@ -63,7 +75,9 @@
                   <app-add-product
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
+                    [saveToBackend]="false"
                     (itemSaved)="onItemSaved()"
+                    (pendingItem)="onPendingItem($event)"
                   ></app-add-product>
                 </ng-template>
               </mat-tab>
@@ -75,7 +89,9 @@
                     [taxeTypes]="taxeTypes"
                     [additionalTypes]="additionalTypes"
                     [discountTypes]="discountTypes"
+                    [saveToBackend]="false"
                     (itemSaved)="onItemSaved()"
+                    (pendingItem)="onPendingItem($event)"
                   ></app-add-accommodation>
                 </ng-template>
               </mat-tab>
@@ -85,7 +101,9 @@
                   <app-add-excursion
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
+                    [saveToBackend]="false"
                     (itemSaved)="onItemSaved()"
+                    (pendingItem)="onPendingItem($event)"
                   ></app-add-excursion>
                 </ng-template>
               </mat-tab>
@@ -95,7 +113,9 @@
                   <app-add-invoice-buy
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
+                    [saveToBackend]="false"
                     (itemSaved)="onItemSaved()"
+                    (pendingItem)="onPendingItem($event)"
                   ></app-add-invoice-buy>
                 </ng-template>
               </mat-tab>
@@ -105,13 +125,26 @@
                   <app-add-invoice-buy-excursion
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
+                    [saveToBackend]="false"
                     (itemSaved)="onItemSaved()"
+                    (pendingItem)="onPendingItem($event)"
                   ></app-add-invoice-buy-excursion>
                 </ng-template>
               </mat-tab>
             }
           </mat-tab-group>
         </section>
+
+        <!-- Sección de Items Pendientes -->
+        @if (pendingItems.length > 0) {
+          <app-pending-items-table
+            [pendingItems]="pendingItems"
+            [taxeTypes]="taxeTypes"
+            [isSaving]="isSavingItems"
+            (itemDeleted)="removePendingItem($event)"
+            (saveAll)="saveAllPendingItems()"
+          ></app-pending-items-table>
+        }
 
         <!-- Detalle factura - aparece cuando invoiceData esté disponible -->
         <section
@@ -128,20 +161,18 @@
             (itemDelete)="onItemDeleted()"
           ></app-invoice-detaill>
         </section>
-      </div>
-
-      <!-- Columna derecha - aparece cuando invoiceData esté disponible -->
-      <div
-        class="flex flex-col w-full md:w-[25%] p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
-      >
-        <app-invoice-summary
-          *ngIf="invoiceData"
-          [invoiceData]="invoiceData"
-          [paidTypes]="paidTypes"
-          [payTypes]="payTypes"
-          (downloadRequested)="downloadInvoice()"
-          (editRequested)="openEditInvoiceDialog()"
-        ></app-invoice-summary>
+        <div
+          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
+        >
+          <app-invoice-summary
+            *ngIf="invoiceData"
+            [invoiceData]="invoiceData"
+            [payTypes]="payTypes"
+            (downloadRequested)="downloadInvoice()"
+            (editRequested)="openEditInvoiceDialog()"
+            (toggleAllPaymentStatus)="toggleAllPayments($event)"
+          ></app-invoice-summary>
+        </div>
       </div>
     }
   </article>

@@ -24,6 +24,7 @@ import {
   AddedExcursionInvoiceDetaill,
   CreateInvoiceDetaill
 } from '../../interface/invoiceDetaill.interface';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { debounceTime, of, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -59,7 +60,9 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 export class AddInvoiceBuyExcursionComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
+  @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
 
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
@@ -292,6 +295,18 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       endDate: endDate.toISOString()
     };
 
+    if (!this.saveToBackend) {
+      const pendingItem: PendingInvoiceDetail = {
+        id: crypto.randomUUID(),
+        type: 'Compra Servicio',
+        name: formValue.name,
+        payload: payload
+      };
+      this.pendingItem.emit(pendingItem);
+      this.resetForm();
+      return;
+    }
+
     if (!this.invoiceId) {
       console.error('❌ No hay invoiceId definido');
       return;
@@ -299,7 +314,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
 
     this.isLoading = true;
     this._invoiceDetaillService
-      .createInvoiceDetaill(this.invoiceId, payload)
+      .createInvoiceDetaill(this.invoiceId, [payload])
       .subscribe({
         next: () => {
           this.resetForm();

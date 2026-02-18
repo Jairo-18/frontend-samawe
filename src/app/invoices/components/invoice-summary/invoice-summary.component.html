@@ -4,9 +4,9 @@
   </div>
   <div class="flex flex-col">
     @if (invoiceData.invoiceType.code === 'FC') {
-    <span class="font-bold">Nombre del Proveedor</span>
+      <span class="font-bold">Nombre del Proveedor</span>
     } @else {
-    <span class="font-bold">Nombre del Cliente</span>
+      <span class="font-bold">Nombre del Cliente</span>
     }
 
     <div class="w-full rounded-lg border border-[#06a606] px-2 py-3">
@@ -88,36 +88,72 @@
         invoiceData.total ?? 0 | formatCop
       }}</span>
     </div>
+    <div class="flex justify-end w-[50%]">
+      <span class="font-medium text-[#06a606]">{{
+        invoiceData.total ?? 0 | formatCop
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex content-between">
+    <div class="flex justify-start w-[50%]">
+      <span class="font-bold">Total Pagado:</span>
+    </div>
+    <div class="flex justify-end w-[50%]">
+      <span class="font-medium text-blue-600">{{ paidTotal | formatCop }}</span>
+    </div>
+  </div>
+
+  <div class="flex content-between">
+    <div class="flex justify-start w-[50%]">
+      <span class="font-bold">Pendiente por Pagar:</span>
+    </div>
+    <div class="flex justify-end w-[50%]">
+      <span class="font-medium text-red-600">{{
+        pendingAmount | formatCop
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex w-full mt-2">
+    <button
+      mat-stroked-button
+      class="!w-full !rounded-lg"
+      [color]="allPaid ? 'warn' : 'primary'"
+      (click)="toggleAll()"
+    >
+      {{ allPaid ? 'Marcar todo como pendiente' : 'Marcar todo como pagado' }}
+    </button>
   </div>
 
   <!-- Efectivo -->
   @if (invoiceData.cash && invoiceData.cash > 0) {
-  <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+    <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
 
-  <div class="flex content-between">
-    <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Efectivo:</span>
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold">Efectivo:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-[#06a606] font-medium">
+          {{ invoiceData.cash || '' | formatCop }}
+        </span>
+      </div>
     </div>
-    <div class="flex justify-end w-[50%]">
-      <span class="text-[#06a606] font-medium">
-        {{ invoiceData.cash || '' | formatCop }}
-      </span>
-    </div>
-  </div>
   }
 
   <!-- Transferencia -->
   @if (invoiceData.transfer && invoiceData.transfer > 0) {
-  <div class="flex content-between">
-    <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Transferencia:</span>
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold">Transferencia:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-[#06a606] font-medium">
+          {{ invoiceData.transfer || '' | formatCop }}
+        </span>
+      </div>
     </div>
-    <div class="flex justify-end w-[50%]">
-      <span class="text-[#06a606] font-medium">
-        {{ invoiceData.transfer || '' | formatCop }}
-      </span>
-    </div>
-  </div>
   }
 
   <div class="border border-[#06a606] w-full h-[1px] my-6"></div>

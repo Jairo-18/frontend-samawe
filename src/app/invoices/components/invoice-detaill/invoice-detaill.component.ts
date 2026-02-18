@@ -21,6 +21,7 @@ import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/y
 import { MatIcon } from '@angular/material/icon';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -34,7 +35,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatPaginatorModule,
     MatIcon,
     MatButtonModule,
-    FormatCopPipe
+    FormatCopPipe,
+    MatTooltipModule
   ],
   templateUrl: './invoice-detaill.component.html',
   styleUrl: './invoice-detaill.component.scss'
@@ -70,6 +72,7 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     'priceWithoutTax',
     'priceWithTax',
     'subtotal',
+    'isPaid',
     'actions'
   ];
 
@@ -150,6 +153,27 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     });
   }
 
+  togglePayment(detail: InvoiceDetail): void {
+    if (!this.invoiceId) return;
+
+    this.loading = true;
+    this._invoiceDetaillService
+      .toggleDetailPayment(this.invoiceId, detail.invoiceDetailId)
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          // Actualizar estado localmente
+          detail.isPaid = res.data.isPaid;
+          // Opcional: emitir evento si se necesita recargar otros componentes
+          this.allItemsSaved.emit();
+        },
+        error: (err) => {
+          console.error('Error al cambiar estado de pago', err);
+          this.loading = false;
+        }
+      });
+  }
+
   /**
    * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
    */
@@ -161,7 +185,7 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe((confirm) => {
+    dialogRef.afterClosed().subscribe((confirm: boolean) => {
       if (confirm) {
         this.deleteItem(id);
       }

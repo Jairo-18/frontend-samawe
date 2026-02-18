@@ -32,6 +32,7 @@ import {
   AddedProductInvoiceDetaill,
   CreateInvoiceDetaill
 } from '../../interface/invoiceDetaill.interface';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
@@ -63,7 +64,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 export class AddProductComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
+  @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
 
   private readonly _producsService: ProductsService = inject(ProductsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
@@ -310,14 +313,27 @@ export class AddProductComponent implements OnInit {
       endDate: new Date(formValue.endDateTime).toISOString()
     };
 
+    if (!this.saveToBackend) {
+      const pendingItem: PendingInvoiceDetail = {
+        id: crypto.randomUUID(),
+        type: 'Producto',
+        name: formValue.name,
+        payload: invoiceDetailPayload
+      };
+      this.pendingItem.emit(pendingItem);
+      this.resetForm();
+      return;
+    }
+
     if (!this.invoiceId) {
       console.error('❌ No hay invoiceId definido');
       return;
     }
 
     this.isLoading = true;
+    // NOTE: Sending as array based on service update
     this._invoiceDetaillService
-      .createInvoiceDetaill(this.invoiceId, invoiceDetailPayload)
+      .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
       .subscribe({
         next: () => {
           this.resetForm();

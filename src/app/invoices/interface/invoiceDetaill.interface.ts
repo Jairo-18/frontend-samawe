@@ -23,6 +23,7 @@ export interface InvoiceDetail {
   accommodation?: AccommodationComplete;
   excursion?: ExcursionComplete;
   taxeType: TaxeType;
+  isPaid: boolean;
 }
 
 export interface CreateInvoiceDetaill {
@@ -78,4 +79,17 @@ export interface AddedExcursionInvoiceDetaill {
   stateType?: StateType;
   categoryTypeId: number;
   taxeTypeId?: number;
+}
+
+export interface TogglePaymentResponse {
+  invoiceDetailId: number;
+  isPaid: boolean;
+  invoicePaidTotal: number;
+}
+
+export interface TogglePaymentBulkResponse {
+  invoiceId: number;
+  updatedCount: number;
+  invoicePaidTotal: number;
+  updatedDetails: { invoiceDetailId: number; isPaid: boolean }[];
 }

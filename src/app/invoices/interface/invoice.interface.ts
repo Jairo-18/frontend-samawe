@@ -27,8 +27,10 @@ export interface Invoice {
   code: string;
   observations?: string;
   subtotalWithoutTax?: string;
+
   subtotalWithTax?: string;
   total?: string;
+  paidTotal?: number;
   totalTaxes?: number;
   startDate: string;
   endDate: string;
@@ -73,6 +75,7 @@ export interface InvoiceComplete {
   subtotalWithoutTax: string;
   subtotalWithTax: string;
   total: string;
+  paidTotal?: number;
   startDate: string;
   totalTaxes?: number;
   endDate: string;

@@ -23,6 +23,7 @@ import {
   AddedExcursionInvoiceDetaill,
   CreateInvoiceDetaill
 } from '../../interface/invoiceDetaill.interface';
+import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { debounceTime, of, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -64,7 +65,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 export class AddExcursionComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Input() taxeTypes: TaxeType[] = [];
+  @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
+  @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
 
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
@@ -255,9 +258,22 @@ export class AddExcursionComponent implements OnInit {
         startDate: new Date(val.startDateTime).toISOString(),
         endDate: new Date(val.endDateTime).toISOString()
       };
+
+      if (!this.saveToBackend) {
+        const pendingItem: PendingInvoiceDetail = {
+          id: crypto.randomUUID(),
+          type: 'Servicio',
+          name: val.name, // name is a string here
+          payload: payload
+        };
+        this.pendingItem.emit(pendingItem);
+        this.resetForm();
+        return;
+      }
+
       this.isLoading = true;
       this._invoiceDetaillService
-        .createInvoiceDetaill(this.invoiceId, payload)
+        .createInvoiceDetaill(this.invoiceId, [payload])
         .subscribe({
           next: () => {
             this.resetForm();
