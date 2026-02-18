@@ -5,10 +5,12 @@ import {
   OnDestroy,
   PLATFORM_ID
 } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -19,9 +21,17 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnDestroy {
   private _iconRegistry: MatIconRegistry = inject(MatIconRegistry);
   private readonly _router: Router = inject(Router);
+  private readonly _meta: Meta = inject(Meta);
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
+    if (environment.production) {
+      this._meta.addTag({
+        httpEquiv: 'Content-Security-Policy',
+        content: 'upgrade-insecure-requests'
+      });
+    }
+
     this._setMaterialOutlinedIconsDefault();
     this._listenRouterChanges();
   }
