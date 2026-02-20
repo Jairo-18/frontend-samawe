@@ -249,14 +249,11 @@ export class SeeAccommodationsComponent implements OnInit {
     if (queryParams['editAccommodation']) {
       const accommodationId = Number(queryParams['editAccommodation']);
       if (accommodationId === id) {
-        this._router.navigate(
-          [], // La misma ruta actual (segmentos de ruta)
-          {
-            queryParams: {}, // Pasa un objeto vacío para eliminar los query parameters
-            queryParamsHandling: '', // 'merge' es el comportamiento predeterminado, pero explícito por claridad
-            replaceUrl: true // Importante: Reemplaza la URL actual en el historial sin recargar
-          }
-        );
+        this._router.navigate([], {
+          queryParams: {},
+          queryParamsHandling: '',
+          replaceUrl: true
+        });
         this.accommodationClean.emit(id);
       }
     }

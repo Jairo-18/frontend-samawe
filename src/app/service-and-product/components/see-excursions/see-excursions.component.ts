@@ -127,7 +127,6 @@ export class SeeExcursionsComponent implements OnInit {
   }
 
   getCategoryTypeName(excursion: ExcursionComplete): string {
-    // Obtener el ID del categoryType
     const categoryTypeId = excursion?.categoryType?.categoryTypeId;
 
     const category = this.categoryTypes.find(
@@ -258,14 +257,11 @@ export class SeeExcursionsComponent implements OnInit {
     if (queryParams['editExcursion']) {
       const excursionId = Number(queryParams['editExcursion']);
       if (excursionId === id) {
-        this._router.navigate(
-          [], // La misma ruta actual (segmentos de ruta)
-          {
-            queryParams: {}, // Pasa un objeto vacío para eliminar los query parameters
-            queryParamsHandling: '', // 'merge' es el comportamiento predeterminado, pero explícito por claridad
-            replaceUrl: true // Importante: Reemplaza la URL actual en el historial sin recargar
-          }
-        );
+        this._router.navigate([], {
+          queryParams: {},
+          queryParamsHandling: '',
+          replaceUrl: true
+        });
         this.excursionClean.emit(id);
       }
     }

@@ -71,14 +71,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name)
     );
 
-    // CLAVE: Si ya tenemos una excursión cargada y ahora llegan las categorías,
-    // actualizamos el formulario
     if (this.currentExcursion && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithExcursion(this.currentExcursion);
     }
 
-    // Si estamos en modo edición por URL y ahora tenemos categorías,
-    // reintentamos cargar la excursión
     if (this.pendingExcursionId && this.visibleCategoryTypes.length > 0) {
       this.getExcursionToEdit(this.pendingExcursionId);
       this.pendingExcursionId = null;
@@ -96,14 +92,17 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   excursionForm!: FormGroup;
   excursionId: number = 0;
   isEditMode: boolean = false;
-  private pendingExcursionId: number | null = null; // Para manejar carga tardía
+  private pendingExcursionId: number | null = null;
 
   private readonly _excursionService: ExcursionsService =
     inject(ExcursionsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
 
-  constructor(private _fb: FormBuilder, private cdr: ChangeDetectorRef) {
+  constructor(
+    private _fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {
     this.initializeForm();
   }
 
@@ -129,31 +128,24 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     if (changes['currentExcursion']) {
       const queryParams = this._activatedRoute.snapshot.queryParams;
 
-      // Si viene la excursión desde el padre
       if (this.currentExcursion) {
         this.excursionId = this.currentExcursion.excursionId;
         this.isEditMode = true;
 
-        // Solo actualizamos si ya tenemos las categorías cargadas
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithExcursion(this.currentExcursion);
         }
-        // Si no hay categorías aún, se actualizará cuando lleguen en el setter
       } else if (queryParams['editExcursion'] === 'true') {
-        // Crear nueva excursión
         this.isEditMode = false;
         this.excursionId = 0;
         this.resetFormToDefaults();
       } else if (!isNaN(+queryParams['editExcursion'])) {
-        // Editar por ID desde URL
         this.excursionId = Number(queryParams['editExcursion']);
         this.isEditMode = true;
 
-        // Si ya tenemos categorías, cargamos la excursión inmediatamente
         if (this.visibleCategoryTypes.length > 0) {
           this.getExcursionToEdit(this.excursionId);
         } else {
-          // Si no hay categorías aún, guardamos el ID para cargar después
           this.pendingExcursionId = this.excursionId;
         }
       }
@@ -207,7 +199,6 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         const excursion = res.data;
         this.excursionId = excursion.excursionId;
 
-        // Actualizamos el formulario con los datos de la excursión
         this.updateFormWithExcursion(excursion);
       },
       error: (err) => {

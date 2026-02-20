@@ -9,7 +9,6 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CardHomeComponent } from '../../components/card-home/card-home.component';
 import { GetAccommodationPaginatedList } from '../../../service-and-product/interface/accommodation.interface';
-// import { CardAccommodationComponent } from '../../components/card-accommodation/card-accommodation.component';
 import { FormsModule } from '@angular/forms';
 import { NgOptimizedImage } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -27,7 +26,6 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
     RouterLink,
     NgOptimizedImage,
     FontAwesomeModule
-    // CardAccommodationComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

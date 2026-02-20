@@ -84,7 +84,7 @@ export class AddExcursionComponent implements OnInit {
 
   constructor() {
     const now = new Date();
-    const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000); // +1 hora
+    const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000);
 
     this.form = this._fb.group({
       name: ['', Validators.required],
@@ -102,7 +102,6 @@ export class AddExcursionComponent implements OnInit {
       endDateTime: [null, Validators.required]
     });
 
-    // Combinar fechas y horas automáticamente
     this.form.valueChanges.subscribe((val) => {
       if (val.startDate && val.startTime) {
         this.form.patchValue(
@@ -120,7 +119,6 @@ export class AddExcursionComponent implements OnInit {
       }
     });
 
-    // Búsqueda con debounce
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -139,7 +137,6 @@ export class AddExcursionComponent implements OnInit {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) this.invoiceId = Number(id);
 
-    // Recalcular total
     ['amount', 'priceSale', 'priceWithoutTax', 'taxeTypeId'].forEach((field) =>
       this.form
         .get(field)
@@ -189,10 +186,7 @@ export class AddExcursionComponent implements OnInit {
     const amount = Number(this.form.get('amount')?.value ?? 0);
     const taxRate = this.getTaxRate();
     const total = base * (1 + taxRate) * amount;
-    this.form.patchValue(
-      { finalPrice: this.round(total, 2) },
-      { emitEvent: false }
-    );
+    this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
 
   private round(n: number, d = 2): number {
@@ -263,7 +257,7 @@ export class AddExcursionComponent implements OnInit {
         const pendingItem: PendingInvoiceDetail = {
           id: crypto.randomUUID(),
           type: 'Servicio',
-          name: val.name, // name is a string here
+          name: val.name,
           payload: payload
         };
         this.pendingItem.emit(pendingItem);

@@ -1,4 +1,3 @@
-// src/app/invoices/services/invoice-print.service.ts
 import { Injectable, inject } from '@angular/core';
 
 import html2pdf from 'html2pdf.js';

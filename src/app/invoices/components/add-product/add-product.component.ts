@@ -87,9 +87,7 @@ export class AddProductComponent implements OnInit {
       this.invoiceId = Number(id);
     }
 
-    // Listener para combinar fechas y horas
     this.form.valueChanges.subscribe((val) => {
-      // Combinar fechas y horas
       if (val.startDate && val.startTime) {
         this.form.patchValue(
           {
@@ -107,7 +105,6 @@ export class AddProductComponent implements OnInit {
       }
     });
 
-    // Recalcular total cuando cambien entradas relevantes (LÓGICA ORIGINAL)
     this.form
       .get('amountSale')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
@@ -138,7 +135,6 @@ export class AddProductComponent implements OnInit {
       finalPrice: [0],
       amount: [0],
 
-      // Campos de fecha y hora
       startDate: [now, Validators.required],
       startTime: [now, Validators.required],
       endDate: [now, Validators.required],
@@ -242,12 +238,11 @@ export class AddProductComponent implements OnInit {
         : tax.percentage;
 
     if (!isFinite(rate) || rate < 0) return 0;
-    // Si viene como 12 en lugar de 0.12, normalizar
+
     if (rate > 1) rate = rate / 100;
     return rate;
   }
 
-  /** Calcula finalPrice = (precio_sin_IVA * (1+IVA)) * cantidad - LÓGICA ORIGINAL */
   private updateFinalPrice() {
     const base = Number(
       this.form.get('priceWithoutTax')?.value ??
@@ -260,10 +255,7 @@ export class AddProductComponent implements OnInit {
     const unitWithTax = base * (1 + taxRate);
     const total = unitWithTax * amountSale;
 
-    this.form.patchValue(
-      { finalPrice: this.round(total, 2) },
-      { emitEvent: false }
-    );
+    this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
 
   private round(n: number, d = 2): number {
@@ -331,7 +323,7 @@ export class AddProductComponent implements OnInit {
     }
 
     this.isLoading = true;
-    // NOTE: Sending as array based on service update
+
     this._invoiceDetaillService
       .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
       .subscribe({

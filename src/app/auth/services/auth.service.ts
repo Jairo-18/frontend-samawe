@@ -62,10 +62,9 @@ export class AuthService {
     const params = this._httpUtilities.httpParamsFromObject(credentials);
 
     return this._httpClient
-      .post<ApiResponseInterface<RawLoginResponse>>(
-        `${environment.apiUrl}auth/sign-in`,
-        params
-      )
+      .post<
+        ApiResponseInterface<RawLoginResponse>
+      >(`${environment.apiUrl}auth/sign-in`, params)
       .pipe(
         map(
           (
@@ -155,10 +154,9 @@ export class AuthService {
     this.setRefreshingToken = true;
 
     return this._httpClient
-      .post<ApiResponseInterface<LoginSuccessInterface>>(
-        `${environment.apiUrl}auth/refresh-token`,
-        { refreshToken: refreshToken }
-      )
+      .post<
+        ApiResponseInterface<LoginSuccessInterface>
+      >(`${environment.apiUrl}auth/refresh-token`, { refreshToken: refreshToken })
       .pipe(
         tap((response: ApiResponseInterface<LoginSuccessInterface>): void => {
           this._updateAccessToken(response?.data?.tokens?.accessToken);
@@ -214,7 +212,6 @@ export class AuthService {
     }
   }
 
-  // También puedes agregar este método si lo necesitas
   getCurrentUser(): UserInterface | null {
     try {
       return this.getUserLoggedIn();

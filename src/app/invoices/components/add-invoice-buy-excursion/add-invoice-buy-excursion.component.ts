@@ -88,7 +88,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       finalPrice: [0]
     });
 
-    // Listener para sincronizar priceSale → priceWithoutTax
     this.form.get('priceSale')?.valueChanges.subscribe((value) => {
       const numericValue = this.parseNumber(value);
       this.form.patchValue(
@@ -98,7 +97,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       this.updateFinalPrice();
     });
 
-    // Búsqueda con debounce
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -210,10 +208,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     const unitWithTax = base * (1 + taxRate);
     const total = unitWithTax * amount;
 
-    this.form.patchValue(
-      { finalPrice: this.round(total, 2) },
-      { emitEvent: false }
-    );
+    this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
 
   private round(n: number, d = 2): number {

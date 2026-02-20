@@ -111,7 +111,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   getRelatedData(): void {
     this.loading = true;
 
-    this._relatedDataService.createUserRelatedData().subscribe({
+    this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         const allRoles = res.data?.roleType || [];
 
@@ -144,7 +144,6 @@ export class CreateOrEditUsersComponent implements OnInit {
   }
 
   setupPhoneCodeSearch(): void {
-    // Cargar países iniciales (vacío para mostrar todos)
     this.loadPhoneCodes('');
 
     this.userForm
@@ -153,7 +152,6 @@ export class CreateOrEditUsersComponent implements OnInit {
         debounceTime(400),
         distinctUntilChanged(),
         switchMap((searchTerm: string) => {
-          // Si es un objeto (PhoneCode seleccionado), no hacer búsqueda
           if (typeof searchTerm !== 'string') {
             return of({ data: this.filteredPhoneCodes, meta: {} });
           }

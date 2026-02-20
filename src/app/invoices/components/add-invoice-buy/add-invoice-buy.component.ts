@@ -82,7 +82,6 @@ export class AddInvoiceBuyComponent implements OnInit {
       this.invoiceId = Number(id);
     }
 
-    // Recalcular total cuando cambien entradas relevantes
     this.form
       .get('amountSale')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
@@ -117,7 +116,6 @@ export class AddInvoiceBuyComponent implements OnInit {
       amount: [0]
     });
 
-    // Listener para sincronizar priceSale con priceWithoutTax (normalizando)
     this.form.get('priceSale')?.valueChanges.subscribe((value) => {
       const numericValue = this.parseNumber(value);
       this.form.patchValue(
@@ -156,28 +154,21 @@ export class AddInvoiceBuyComponent implements OnInit {
 
     let s = String(value).trim();
 
-    // eliminar cualquier cosa que no sea dígito, punto, coma o signo negativo
     s = s.replace(/[^\d\-,.]/g, '');
 
     const hasDot = s.indexOf('.') !== -1;
     const hasComma = s.indexOf(',') !== -1;
 
     if (hasDot && hasComma) {
-      // ambos presentes: el que esté más a la derecha es el decimal
       if (s.lastIndexOf('.') > s.lastIndexOf(',')) {
-        // punto es decimal -> quitar comas (separador de miles)
         s = s.replace(/,/g, '');
       } else {
-        // coma es decimal -> quitar puntos y reemplazar coma por punto
         s = s.replace(/\./g, '').replace(/,/g, '.');
       }
     } else if (hasComma && !hasDot) {
-      // solo coma: asumimos coma decimal (1.234 -> improbable aquí)
       s = s.replace(/\./g, '').replace(/,/g, '.');
     } else {
-      // solo punto o ninguno: asumimos punto decimal (estilo "4000.00")
-      // pero puede haber espacios o símbolos ya eliminados
-      s = s.replace(/,/g, ''); // quitar comas residuales
+      s = s.replace(/,/g, '');
     }
 
     const n = parseFloat(s);
@@ -283,10 +274,7 @@ export class AddInvoiceBuyComponent implements OnInit {
     const unitWithTax = base * (1 + taxRate);
     const total = unitWithTax * amountSale;
 
-    this.form.patchValue(
-      { finalPrice: this.round(total, 2) },
-      { emitEvent: false }
-    );
+    this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
 
   private round(n: number, d = 2): number {

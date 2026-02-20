@@ -4,6 +4,7 @@
       <ng-template matTabContent>
         <app-create-or-edit-product
           [categoryTypes]="categoryTypes"
+          [unitOfMeasureTypes]="unitOfMeasureTypes"
           (productSaved)="reloadProducts(); tabGroup.selectedIndex = 0"
           [currentProduct]="currentProduct"
         ></app-create-or-edit-product>
@@ -11,6 +12,7 @@
         <app-see-products
           [searchFieldsProducts]="searchFieldsProducts"
           [categoryTypes]="categoryTypes"
+          [unitOfMeasureTypes]="unitOfMeasureTypes"
           (productSelected)="currentProduct = $event; goToTop()"
           (productClean)="cleanProduct()"
         ></app-see-products

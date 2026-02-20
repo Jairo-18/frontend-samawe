@@ -20,6 +20,7 @@ import {
   MatPaginatorModule,
   PageEvent
 } from '@angular/material/paginator';
+import { finalize } from 'rxjs';
 import { UserComplete } from '../../interfaces/create.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
@@ -84,6 +85,7 @@ export class SeeUsersComponent implements OnInit {
   form!: FormGroup;
   showClearButton: boolean = false;
   loading: boolean = false;
+  loadingFields: boolean = false;
   isMobile: boolean = false;
   params: any = {};
   selectedTabIndex: number = 0;
@@ -156,54 +158,67 @@ export class SeeUsersComponent implements OnInit {
    * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
    */
   private getDataForFields(): void {
-    this.loading = true;
-    this._relatedDataService.createUserRelatedData().subscribe({
-      next: (res) => {
-        const role = res.data?.roleType || [];
-        const identificationType = res.data?.identificationType || [];
-        const phoneCode = res.data?.phoneCode || [];
-
-        // Guardar para uso en los métodos getXXXName
-        this.roleType = role;
-        this.identificationType = identificationType;
-        this.phoneCode = phoneCode;
-
-        const roleOption = this.searchFields.find(
-          (field) => field.name === 'roleType'
-        );
-        const identificationTypeOption = this.searchFields.find(
-          (field) => field.name === 'identificationType'
-        );
-        const phoneCodeOption = this.searchFields.find(
-          (field) => field.name === 'phoneCode'
-        );
-
-        if (roleOption) {
-          roleOption.options = role.map((role) => ({
-            value: role.roleTypeId,
-            label: role.name || ''
-          }));
+    if (this._relatedDataService.relatedData()) {
+      this._applyRelatedData(this._relatedDataService.relatedData()!.data);
+      return;
+    }
+    this.loadingFields = true;
+    this._relatedDataService
+      .getRelatedData()
+      .pipe(
+        finalize(() => {
+          this.loadingFields = false;
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this._applyRelatedData(res.data);
+        },
+        error: (err) => {
+          console.error('Error cargando datos relacionados', err);
         }
+      });
+  }
 
-        if (identificationTypeOption) {
-          identificationTypeOption.options = identificationType.map((type) => ({
-            value: type.identificationTypeId,
-            label: type.name || ''
-          }));
-        }
+  private _applyRelatedData(data: any): void {
+    const role = data?.roleType || [];
+    const identificationType = data?.identificationType || [];
+    const phoneCode = data?.phoneCode || [];
 
-        if (phoneCodeOption) {
-          phoneCodeOption.options = phoneCode.map((type) => ({
-            value: type.phoneCodeId,
-            label: type.name || ''
-          }));
-        }
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error cargando datos relacionados', err);
-      }
-    });
+    this.roleType = role;
+    this.identificationType = identificationType;
+    this.phoneCode = phoneCode;
+
+    const roleOption = this.searchFields.find(
+      (field) => field.name === 'roleType'
+    );
+    const identificationTypeOption = this.searchFields.find(
+      (field) => field.name === 'identificationType'
+    );
+    const phoneCodeOption = this.searchFields.find(
+      (field) => field.name === 'phoneCode'
+    );
+
+    if (roleOption) {
+      roleOption.options = role.map((r: any) => ({
+        value: r.roleTypeId,
+        label: r.name || ''
+      }));
+    }
+    if (identificationTypeOption) {
+      identificationTypeOption.options = identificationType.map(
+        (type: any) => ({
+          value: type.identificationTypeId,
+          label: type.name || ''
+        })
+      );
+    }
+    if (phoneCodeOption) {
+      phoneCodeOption.options = phoneCode.map((type: any) => ({
+        value: type.phoneCodeId,
+        label: type.name || ''
+      }));
+    }
   }
 
   getRoleName(id: string): string {
@@ -322,8 +337,6 @@ export class SeeUsersComponent implements OnInit {
       }
     });
   }
-
-  // Versión mejorada de los métodos de permisos
 
   /**
    * Verifica si el usuario actual puede editar a otro usuario

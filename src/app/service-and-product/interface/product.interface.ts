@@ -1,4 +1,7 @@
-import { CategoryType } from '../../shared/interfaces/relatedDataGeneral';
+import {
+  CategoryType,
+  UnitOfMeasure
+} from '../../shared/interfaces/relatedDataGeneral';
 
 export interface CreateProductPanel {
   productId?: number;
@@ -11,6 +14,7 @@ export interface CreateProductPanel {
   isActive: boolean;
   taxe?: number;
   categoryTypeId: number;
+  unitOfMeasureId?: number;
 }
 
 export interface ProductComplete {
@@ -24,6 +28,7 @@ export interface ProductComplete {
   priceSale: number;
   isActive: boolean;
   categoryType: CategoryType;
+  unitOfMeasure?: UnitOfMeasure;
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;

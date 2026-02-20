@@ -19,7 +19,8 @@ import { CreateOrEditExcursionComponent } from '../../components/create-or-edit-
 import {
   BedType,
   CategoryType,
-  StateType
+  StateType,
+  UnitOfMeasure
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { AccommodationComplete } from '../../interface/accommodation.interface';
 import {
@@ -77,6 +78,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   categoryTypes: CategoryType[] = [];
   stateTypes: StateType[] = [];
   bedTypes: BedType[] = [];
+  unitOfMeasureTypes: UnitOfMeasure[] = [];
   searchFieldsProducts: SearchField[] = searchFieldsProducts;
   searchFieldsAccommodations: SearchField[] = searchFieldsAccommodations;
   searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
@@ -117,11 +119,12 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   }
 
   loadRelatedData(): void {
-    this._relatedDataService.createAccommodationRelatedData().subscribe({
+    this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         this.categoryTypes = res.data?.categoryType || [];
         this.stateTypes = res.data?.stateType || [];
         this.bedTypes = res.data?.bedType || [];
+        this.unitOfMeasureTypes = res.data?.unitOfMeasure || [];
 
         this.updateCategoryTypeOptions();
       },
@@ -141,7 +144,6 @@ export class GeneralComponent implements AfterViewInit, OnInit {
       }
     };
 
-    // Category Type
     const categoryOptions = this.categoryTypes.map((type) => ({
       value: type.categoryTypeId,
       label: type.name || ''
@@ -154,7 +156,6 @@ export class GeneralComponent implements AfterViewInit, OnInit {
       categoryOptions
     );
 
-    // State Type
     const stateOptions = this.stateTypes.map((type) => ({
       value: type.stateTypeId,
       label: type.name || ''
@@ -162,7 +163,6 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     updateOptions(this.searchFieldsExcursions, 'stateType', stateOptions);
     updateOptions(this.searchFieldsAccommodations, 'stateType', stateOptions);
 
-    // Bed Type
     const bedOptions = this.bedTypes.map((type) => ({
       value: type.bedTypeId,
       label: type.name || ''

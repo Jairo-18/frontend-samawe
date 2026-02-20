@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-edit-types.component';
 import { TypesService } from '../../services/types.service';
-import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component'; // Agregado
+import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { SearchField } from '../../../shared/interfaces/search.interface';
 
 @Component({
@@ -37,7 +37,7 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
     CardTypesComponent,
     LoaderComponent,
     CommonModule,
-    SearchFieldsComponent // Agregado
+    SearchFieldsComponent
   ],
   templateUrl: './see-types.component.html',
   styleUrls: ['./see-types.component.scss']
@@ -45,7 +45,7 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
 export class SeeTypesComponent implements OnInit {
   private readonly _typesService = inject(TypesService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
-  private readonly _fb: FormBuilder = inject(FormBuilder); // Agregado
+  private readonly _fb: FormBuilder = inject(FormBuilder);
 
   results?: TypeItem[];
   loading: boolean = false;
@@ -68,14 +68,14 @@ export class SeeTypesComponent implements OnInit {
 
   searchFields: SearchField[] = [
     {
-      name: 'code', // ← obligatorio
+      name: 'code',
       label: 'Código',
 
       type: 'text',
       placeholder: 'Buscar por código'
     },
     {
-      name: 'name', // ← obligatorio
+      name: 'name',
       label: 'Nombre',
 
       type: 'text',

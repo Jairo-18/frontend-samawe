@@ -10,7 +10,7 @@ export interface BalancePeriod {
   totalInvoiceSale?: string;
   totalInvoiceBuy?: string;
   balanceInvoice?: string;
-  periodDate?: string; // formato: YYYY-MM-DD
+  periodDate?: string;
   type: 'daily' | 'weekly' | 'monthly' | 'yearly';
 }
 

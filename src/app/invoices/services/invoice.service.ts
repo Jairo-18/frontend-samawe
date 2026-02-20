@@ -1,4 +1,3 @@
-// Importaciones necesarias desde Angular y recursos compartidos
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -19,7 +18,6 @@ import { PaginationInterface } from '../../shared/interfaces/pagination.interfac
 export class InvoiceService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
 
-  // Servicio utilitario para transformar objetos a parámetros HTTP
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
 

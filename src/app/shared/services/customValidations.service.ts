@@ -133,7 +133,7 @@ export class CustomValidationsService {
   lowercaseValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (value && value !== value.toLowerCase()) {
-      return { lowercase: true }; // error si no está en minúsculas
+      return { lowercase: true };
     }
     return null;
   }

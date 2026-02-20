@@ -1,4 +1,3 @@
-// src/app/shared/pipes/format-cop.pipe.ts
 import { Pipe, PipeTransform } from '@angular/core';
 import { formatCop } from '../utilities/currency.utilities.service';
 

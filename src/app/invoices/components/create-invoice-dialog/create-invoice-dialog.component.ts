@@ -255,7 +255,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     console.log('Actualizando con ID', this.data.invoiceId);
     if (!this.data.invoiceId) return;
 
-    // ✅ USAR getRawValue() para obtener valores de campos deshabilitados también
     const formValue = this.form.getRawValue();
 
     const updatePayload = {
@@ -272,7 +271,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
       .updateInvoice(this.data.invoiceId, updatePayload)
       .subscribe({
         next: (response) => {
-          console.log('Respuesta del servidor:', response); // Para debug
+          console.log('Respuesta del servidor:', response);
           this.isLoading = false;
           this._dialogRef.close(true);
         },
@@ -283,19 +282,18 @@ export class CreateInvoiceDialogComponent implements OnInit {
       });
   }
 
-  // ✅ AGREGAR ESTE GETTER PARA EL CONTADOR DE CARACTERES
   get observationsLength(): number {
     return this.form.get('observations')?.value?.length || 0;
   }
 
   private createInvoice(): void {
     const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-CA'); // yyyy-MM-dd
+    const formattedDate = today.toLocaleDateString('en-CA');
 
     const payload = {
       ...this.form.value,
       userId: this.form.get('userId')?.value,
-      startDate: formattedDate, // <-- string plano
+      startDate: formattedDate,
       endDate: formattedDate
     };
 

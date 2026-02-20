@@ -22,13 +22,11 @@ export class ApiConfigService {
    * Esto permite configurar dinámicamente la URL del backend para tablets
    */
   private loadConfig(): void {
-    // 1. Intentar cargar desde localStorage (configuración manual de tablets)
     const savedConfig = localStorage.getItem('api-config');
     if (savedConfig) {
       try {
         const parsed: ApiConfig = JSON.parse(savedConfig);
 
-        // Si el sitio se sirve por HTTPS, rechazar URLs guardadas con HTTP
         if (this.isSiteSecure() && parsed.apiUrl?.startsWith('http://')) {
           console.warn(
             '⚠️ Se ignoró configuración guardada con http:// porque el sitio usa HTTPS. Limpiando...'
@@ -67,7 +65,6 @@ export class ApiConfigService {
   setApiUrl(apiUrl: string): void {
     let url = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`;
 
-    // Si el sitio es HTTPS, forzar que la URL también sea HTTPS
     if (this.isSiteSecure() && url.startsWith('http://')) {
       url = url.replace('http://', 'https://');
       console.warn('⚠️ URL convertida a HTTPS automáticamente:', url);

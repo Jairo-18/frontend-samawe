@@ -85,7 +85,6 @@ export class AddAccommodationComponent implements OnInit {
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
-  // private readonly _typesService: TypesService = inject(TypesService); <-- Eliminado
 
   form: FormGroup;
   isLoading: boolean = false;
@@ -94,14 +93,12 @@ export class AddAccommodationComponent implements OnInit {
   value!: Date;
   invoiceId?: number;
 
-  // Propiedades de precio
-  originalPrice: number = 0; // Precio base del hospedaje
-  subtotal: number = 0; // Precio con descuentos y adicionales
-  taxAmount: number = 0; // Monto del IVA
-  unitPrice: number = 0; // Precio unitario con IVA
-  finalPrice: number = 0; // Precio total (unitario * cantidad)
+  originalPrice: number = 0;
+  subtotal: number = 0;
+  taxAmount: number = 0;
+  unitPrice: number = 0;
+  finalPrice: number = 0;
 
-  // Helper para usar parseFloat en el template
   parseFloat = parseFloat;
 
   ngOnInit() {
@@ -110,9 +107,7 @@ export class AddAccommodationComponent implements OnInit {
       this.invoiceId = Number(id);
     }
 
-    // Suscribirse a cambios del formulario para recalcular precios
     this.form.valueChanges.subscribe((val) => {
-      // Combinar fechas y horas
       if (val.startDate && val.startTime) {
         this.form.patchValue(
           {
@@ -129,12 +124,8 @@ export class AddAccommodationComponent implements OnInit {
         );
       }
 
-      // Recalcular precio cuando cambien discount, additional, taxe o cantidad
       this.calculateFinalPrice();
     });
-
-    // this.loadDiscountTypes(); <-- Eliminado
-    // this.loadAdditionalTypes(); <-- Eliminado
   }
 
   constructor() {
@@ -159,11 +150,10 @@ export class AddAccommodationComponent implements OnInit {
       startDateTime: [null, Validators.required],
       endDateTime: [null, Validators.required],
 
-      // Nuevos campos
       discountTypeId: [null],
       additionalTypeId: [null],
-      unitPrice: [0], // Precio unitario con IVA
-      finalPrice: [0] // Precio total final
+      unitPrice: [0],
+      finalPrice: [0]
     });
 
     this.form
@@ -186,27 +176,6 @@ export class AddAccommodationComponent implements OnInit {
   displayAccommodation(acc?: AddedAccommodationInvoiceDetaill): string {
     return acc ? acc.name : '';
   }
-
-  // loadDiscountTypes() { <-- Eliminado
-  //   this._typesService.getAllDiscountTypes().subscribe({
-  //     next: (res) => {
-  //       this.discountTypes = res.data || [];
-  //       this._cdr.detectChanges();
-  //     },
-  //     error: (err) => console.error('Error cargando discountTypes', err)
-  //   });
-  // }
-  // }
-
-  // loadAdditionalTypes() { <-- Eliminado
-  //   this._typesService.getAllAdditionalTypes().subscribe({
-  //     next: (res) => {
-  //       this.additionalTypes = res.data || [];
-  //       this._cdr.detectChanges();
-  //     },
-  //     error: (err) => console.error('Error cargando additionalTypes', err)
-  //   });
-  // }
 
   resetForm() {
     const now = new Date();
@@ -246,25 +215,21 @@ export class AddAccommodationComponent implements OnInit {
   calculateFinalPrice() {
     const formValue = this.form.value;
 
-    // 1. Empezar con el precio original
     let basePrice =
       typeof this.originalPrice === 'string'
         ? parseFloat(this.originalPrice)
         : this.originalPrice;
 
-    // 2. Aplicar descuento si existe
     if (formValue.discountTypeId) {
       const discount = this.discountTypes.find(
         (d) => d.discountTypeId === formValue.discountTypeId
       );
       if (discount && discount.code) {
-        // El code es un valor fijo en pesos que se descuenta directamente
         const discountAmount = parseFloat(discount.code);
         basePrice = basePrice - discountAmount;
       }
     }
 
-    // 3. Aplicar adicional si existe
     if (formValue.additionalTypeId) {
       const additional = this.additionalTypes.find(
         (a) => a.additionalTypeId === formValue.additionalTypeId
@@ -278,10 +243,8 @@ export class AddAccommodationComponent implements OnInit {
       }
     }
 
-    // 4. Este es el subtotal (sin IVA)
     this.subtotal = basePrice;
 
-    // 5. Calcular el IVA
     const selectedTax = this.taxeTypes.find(
       (t) => t.taxeTypeId === formValue.taxeTypeId
     );
@@ -296,27 +259,20 @@ export class AddAccommodationComponent implements OnInit {
 
     this.taxAmount = this.subtotal * taxPercent;
 
-    // 6. Precio unitario con IVA
     this.unitPrice = this.subtotal + this.taxAmount;
 
-    // 7. Precio total (unitario * cantidad)
     const amount = formValue.amount || 1;
     this.finalPrice = this.unitPrice * amount;
 
-    // Actualizar los campos del formulario
-    this.form.patchValue(
-      {
-        priceWithoutTax: this.subtotal,
-        unitPrice: this.unitPrice,
-        finalPrice: this.finalPrice
-      },
-      { emitEvent: false }
-    );
+    this.form.patchValue({
+      priceWithoutTax: this.subtotal,
+      unitPrice: this.unitPrice,
+      finalPrice: this.finalPrice
+    });
 
     this._cdr.detectChanges();
   }
 
-  // Métodos helper para el template
   getSelectedDiscountType(): DiscountType | undefined {
     const discountId = this.form.get('discountTypeId')?.value;
     if (!discountId) return undefined;
@@ -340,7 +296,7 @@ export class AddAccommodationComponent implements OnInit {
   getDiscountAmount(): number {
     const discount = this.getSelectedDiscountType();
     if (!discount || !discount.code) return 0;
-    // El code es un valor fijo en pesos que se descuenta directamente
+
     return parseFloat(discount.code);
   }
 
@@ -380,7 +336,6 @@ export class AddAccommodationComponent implements OnInit {
   onAccommodationSelected(acc: AddedAccommodationInvoiceDetaill) {
     if (!acc) return;
 
-    // Validar y convertir precio a número
     const price =
       acc.priceSale && !isNaN(Number(acc.priceSale))
         ? Number(acc.priceSale)
@@ -388,7 +343,7 @@ export class AddAccommodationComponent implements OnInit {
     this.originalPrice = price;
 
     this.form.patchValue({
-      name: acc, // aquí se guarda el objeto en el form, pero displayWith muestra solo el nombre
+      name: acc,
       accommodationId: acc.accommodationId,
       amountPerson: acc.amountPerson ?? 0,
       amountBathroom: acc.amountBathroom ?? 0,
@@ -424,7 +379,6 @@ export class AddAccommodationComponent implements OnInit {
     if (this.form.valid) {
       const formValue = this.form.value;
 
-      // El precio a enviar es el subtotal (sin IVA)
       const priceToSend =
         this.subtotal && !isNaN(this.subtotal) && this.subtotal > 0
           ? this.subtotal
@@ -436,7 +390,7 @@ export class AddAccommodationComponent implements OnInit {
         accommodationId: formValue.accommodationId,
         amount: formValue.amount,
         priceBuy: Number(formValue.priceBuy) || 0,
-        priceWithoutTax: Number(priceToSend), // Precio sin IVA
+        priceWithoutTax: Number(priceToSend),
         taxeTypeId: formValue.taxeTypeId,
         startDate: new Date(formValue.startDateTime).toISOString(),
         endDate: new Date(formValue.endDateTime).toISOString()
@@ -446,7 +400,7 @@ export class AddAccommodationComponent implements OnInit {
         const pendingItem: PendingInvoiceDetail = {
           id: crypto.randomUUID(),
           type: 'Hospedaje',
-          name: formValue.name?.name || 'Hospedaje', // acc name is object
+          name: formValue.name?.name || 'Hospedaje',
           payload: invoiceDetailPayload
         };
         this.pendingItem.emit(pendingItem);

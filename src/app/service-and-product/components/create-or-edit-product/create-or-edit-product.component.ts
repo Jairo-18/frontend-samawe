@@ -29,7 +29,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService } from '../../services/products.service';
 import { CreateProductPanel } from '../../interface/product.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
-import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
+import {
+  CategoryType,
+  UnitOfMeasure
+} from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 
@@ -75,14 +78,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       ].includes(c.name)
     );
 
-    // CLAVE: Si ya tenemos un producto cargado y ahora llegan las categorías,
-    // actualizamos el formulario
     if (this.currentProduct && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithProduct(this.currentProduct);
     }
 
-    // Si estamos en modo edición por URL y ahora tenemos categorías,
-    // reintentamos cargar el producto
     if (this.pendingProductId && this.visibleCategoryTypes.length > 0) {
       this.getProductToEdit(this.pendingProductId);
       this.pendingProductId = null;
@@ -96,17 +95,21 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   }
 
   private _categoryTypes: CategoryType[] = [];
+  @Input() unitOfMeasureTypes: UnitOfMeasure[] = [];
   productForm!: FormGroup;
   productId: number = 0;
   isEditMode: boolean = false;
   visibleCategoryTypes: CategoryType[] = [];
-  private pendingProductId: number | null = null; // Para manejar carga tardía
+  private pendingProductId: number | null = null;
 
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
 
-  constructor(private _fb: FormBuilder, private cdr: ChangeDetectorRef) {
+  constructor(
+    private _fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {
     this.initializeForm();
   }
 
@@ -116,10 +119,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       code: ['', [Validators.required]],
       name: ['', [Validators.required]],
       description: ['', [Validators.maxLength(500)]],
-      amount: [
-        0,
-        [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
-      ],
+      amount: [0, [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0)]],
       priceBuy: [
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
@@ -128,7 +128,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
-      isActive: [true, Validators.required]
+      isActive: [true, Validators.required],
+      unitOfMeasureId: [1, [Validators.required]]
     });
   }
 
@@ -136,31 +137,24 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     if (changes['currentProduct']) {
       const queryParams = this._activatedRoute.snapshot.queryParams;
 
-      // Si viene un producto desde el padre: editar
       if (this.currentProduct) {
         this.productId = this.currentProduct.productId;
         this.isEditMode = true;
 
-        // Solo actualizamos si ya tenemos las categorías cargadas
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithProduct(this.currentProduct);
         }
-        // Si no hay categorías aún, se actualizará cuando lleguen en el setter
       } else if (queryParams['editProduct'] === 'true') {
-        // Crear nuevo producto
         this.isEditMode = false;
         this.productId = 0;
         this.resetFormToDefaults();
       } else if (!isNaN(+queryParams['editProduct'])) {
-        // Editar por ID desde URL
         this.productId = Number(queryParams['editProduct']);
         this.isEditMode = true;
 
-        // Si ya tenemos categorías, cargamos el producto inmediatamente
         if (this.visibleCategoryTypes.length > 0) {
           this.getProductToEdit(this.productId);
         } else {
-          // Si no hay categorías aún, guardamos el ID para cargar después
           this.pendingProductId = this.productId;
         }
       }
@@ -176,7 +170,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       amount: product.amount ?? 0,
       priceBuy: product.priceBuy,
       priceSale: product.priceSale,
-      isActive: product.isActive ?? false
+      isActive: product.isActive ?? false,
+      unitOfMeasureId: product.unitOfMeasure?.unitOfMeasureId ?? null
     });
     this.cdr.detectChanges();
   }
@@ -190,7 +185,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       amount: 0,
       priceBuy: 0,
       priceSale: 0,
-      isActive: true
+      isActive: true,
+      unitOfMeasureId: null
     });
     this.cdr.detectChanges();
   }
@@ -216,7 +212,6 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         const product = res.data;
         this.productId = product.productId;
 
-        // Actualizamos el formulario con los datos del producto
         this.updateFormWithProduct(product);
       },
       error: (err) => {
@@ -238,7 +233,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         amount: Math.abs(Number(formValue.amount)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
-        isActive: formValue.isActive
+        isActive: formValue.isActive,
+        unitOfMeasureId: formValue.unitOfMeasureId ?? undefined
       };
 
       if (this.isEditMode) {

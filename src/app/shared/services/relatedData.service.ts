@@ -1,15 +1,9 @@
-import { createInvoiceRelatedData } from './../../invoices/interface/invoice.interface';
-import {
-  CreateUserRelatedData,
-  RegisterUserRelatedData
-} from './../../auth/interfaces/register.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment';
-import { CreateAccommodationRelatedData } from '../../service-and-product/interface/accommodation.interface';
-import { PhoneCode } from '../interfaces/relatedDataGeneral';
+import { AppRelatedData, PhoneCode } from '../interfaces/relatedDataGeneral';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -28,64 +22,41 @@ export interface PaginatedResponse<T> {
 })
 export class RelatedDataService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
-  private _invoiceRelatedData =
-    signal<ApiResponseInterface<createInvoiceRelatedData> | null>(null);
-  readonly invoiceRelatedData = this._invoiceRelatedData.asReadonly();
 
-  registerUserRelatedData(): Observable<
-    ApiResponseInterface<RegisterUserRelatedData>
-  > {
-    return this._httpClient.get<ApiResponseInterface<RegisterUserRelatedData>>(
-      `${environment.apiUrl}user/register/related-data`
-    );
-  }
+  private _relatedData = signal<ApiResponseInterface<AppRelatedData> | null>(
+    null
+  );
+  readonly relatedData = this._relatedData.asReadonly();
 
-  createUserRelatedData(): Observable<
-    ApiResponseInterface<CreateUserRelatedData>
-  > {
-    return this._httpClient.get<ApiResponseInterface<CreateUserRelatedData>>(
-      `${environment.apiUrl}user/create/related-data`
-    );
-  }
-
-  createAccommodationRelatedData(): Observable<
-    ApiResponseInterface<CreateAccommodationRelatedData>
-  > {
-    return this._httpClient.get<
-      ApiResponseInterface<CreateAccommodationRelatedData>
-    >(`${environment.apiUrl}accommodation/create/related-data`);
-  }
-
-  createInvoiceRelatedData(
+  /**
+   * Obtiene todos los catálogos/tipos en una sola llamada.
+   * Usa caché via signal; pasar forceRefresh=true para forzar recarga.
+   */
+  getRelatedData(
     forceRefresh: boolean = false
-  ): Observable<ApiResponseInterface<createInvoiceRelatedData>> {
-    // Si ya tenemos datos y no se fuerza refresco, devolvemos los datos existentes
-    if (!forceRefresh && this._invoiceRelatedData()) {
-      return of(this._invoiceRelatedData()!);
+  ): Observable<ApiResponseInterface<AppRelatedData>> {
+    if (!forceRefresh && this._relatedData()) {
+      return of(this._relatedData()!);
     }
 
     return this._httpClient
-      .get<ApiResponseInterface<createInvoiceRelatedData>>(
-        `${environment.apiUrl}invoices/create/related-data`
-      )
+      .get<
+        ApiResponseInterface<AppRelatedData>
+      >(`${environment.apiUrl}app/related-data`)
       .pipe(
         tap((response) => {
-          // Almacenamos la respuesta en la signal
-          this._invoiceRelatedData.set(response);
+          this._relatedData.set(response);
         })
       );
   }
 
-  // Método para limpiar la caché si es necesario
-  clearInvoiceRelatedDataCache(): void {
-    this._invoiceRelatedData.set(null);
+  /** Limpia la caché de catálogos */
+  clearRelatedDataCache(): void {
+    this._relatedData.set(null);
   }
 
   /**
    * Búsqueda paginada de códigos de país
-   * @param search - Término de búsqueda (busca en code y name)
-   * @param page - Número de página (default: 1)
-   * @param perPage - Elementos por página (default: 10)
    */
   searchPhoneCodes(
     search: string = '',

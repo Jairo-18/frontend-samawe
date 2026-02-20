@@ -73,14 +73,10 @@ export class CreateOrEditAccommodationComponent
       ['Hospedaje', 'HOSPEDAJE'].includes(c.name)
     );
 
-    // CLAVE: Si ya tenemos un alojamiento cargado y ahora llegan las categorías,
-    // actualizamos el formulario
     if (this.currentAccommodation && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithAccommodation(this.currentAccommodation);
     }
 
-    // Si estamos en modo edición por URL y ahora tenemos categorías,
-    // reintentamos cargar el alojamiento
     if (this.pendingAccommodationId && this.visibleCategoryTypes.length > 0) {
       this.getAccommodationToEdit(this.pendingAccommodationId);
       this.pendingAccommodationId = null;
@@ -98,7 +94,7 @@ export class CreateOrEditAccommodationComponent
   accommodationForm!: FormGroup;
   accommodationId: number = 0;
   isEditMode: boolean = false;
-  private pendingAccommodationId: number | null = null; // Para manejar carga tardía
+  private pendingAccommodationId: number | null = null;
 
   private readonly _accommodationService: AccommodationsService = inject(
     AccommodationsService
@@ -106,7 +102,10 @@ export class CreateOrEditAccommodationComponent
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
 
-  constructor(private _fb: FormBuilder, private cdr: ChangeDetectorRef) {
+  constructor(
+    private _fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {
     this.initializeForm();
   }
 
@@ -150,26 +149,20 @@ export class CreateOrEditAccommodationComponent
         this.accommodationId = this.currentAccommodation.accommodationId;
         this.isEditMode = true;
 
-        // Solo actualizamos si ya tenemos las categorías cargadas
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithAccommodation(this.currentAccommodation);
         }
-        // Si no hay categorías aún, se actualizará cuando lleguen en el setter
       } else if (queryParams['editAccommodation'] === 'true') {
-        // Crear nuevo alojamiento
         this.isEditMode = false;
         this.accommodationId = 0;
         this.resetFormToDefaults();
       } else if (!isNaN(+queryParams['editAccommodation'])) {
-        // Editar por ID desde URL
         this.accommodationId = Number(queryParams['editAccommodation']);
         this.isEditMode = true;
 
-        // Si ya tenemos categorías, cargamos el alojamiento inmediatamente
         if (this.visibleCategoryTypes.length > 0) {
           this.getAccommodationToEdit(this.accommodationId);
         } else {
-          // Si no hay categorías aún, guardamos el ID para cargar después
           this.pendingAccommodationId = this.accommodationId;
         }
       }
@@ -237,7 +230,6 @@ export class CreateOrEditAccommodationComponent
           const accommodation = res.data;
           this.accommodationId = accommodation.accommodationId;
 
-          // Actualizamos el formulario con los datos del alojamiento
           this.updateFormWithAccommodation(accommodation);
         },
         error: (err) => {

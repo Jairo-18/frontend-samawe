@@ -72,9 +72,11 @@
       <mat-label>Precio Final</mat-label>
       <input
         matInput
+        type="text"
         formControlName="finalPrice"
         [readonly]="true"
         class="text-right"
+        placeholder="0.00"
         appCurrencyFormat
       />
       <mat-icon matSuffix>monetization_on</mat-icon>

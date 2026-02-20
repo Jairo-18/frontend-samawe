@@ -33,7 +33,6 @@ export class PendingItemsTableComponent {
   @Output() saveAll = new EventEmitter<void>();
 
   displayedColumns: string[] = [
-    // 'code', // No code available yet for pending items
     'type',
     'name',
     'startDate',
@@ -44,8 +43,6 @@ export class PendingItemsTableComponent {
     'subtotal',
     'actions'
   ];
-
-  // --- Helpers ---
 
   getTaxPercentage(taxeTypeId?: number): number {
     if (!taxeTypeId) return 0;

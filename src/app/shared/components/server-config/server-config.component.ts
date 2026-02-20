@@ -247,7 +247,6 @@ export class ServerConfigComponent implements OnInit {
     const config = this.apiConfigService.getConfig();
     this.currentConfig = config.apiUrl;
 
-    // Si hay una configuración guardada, extraer IP y puerto
     if (!this.apiConfigService.isUsingLocalhost()) {
       try {
         const url = new URL(config.apiUrl);
@@ -285,7 +284,6 @@ export class ServerConfigComponent implements OnInit {
         this.connectionSuccess = true;
         this.connectionStatus = '✓ Conexión exitosa al servidor';
 
-        // Obtener información del servidor
         try {
           const serverInfo = await this.http
             .get<any>(`${protocol}://${serverIp}:${port}/server-info`)
@@ -321,7 +319,6 @@ export class ServerConfigComponent implements OnInit {
     this.apiConfigService.setApiUrl(apiUrl);
     this.currentConfig = apiUrl;
 
-    // Recargar la página para aplicar la nueva configuración
     window.location.href = '/';
   }
 

@@ -147,3 +147,24 @@ export interface TaxeType {
   updatedAt: Date;
   deletedAt: Date;
 }
+export interface UnitOfMeasure {
+  unitOfMeasureId: number;
+  code: string;
+  name: string;
+}
+
+export interface AppRelatedData {
+  identificationType: IdentificationType[];
+  phoneCode: PhoneCode[];
+  roleType: RoleType[];
+  categoryType: CategoryType[];
+  stateType: StateType[];
+  bedType: BedType[];
+  unitOfMeasure: UnitOfMeasure[];
+  invoiceType: InvoiceType[];
+  taxeType: TaxeType[];
+  payType: PayType[];
+  paidType: PaidType[];
+  discountType: DiscountType[];
+  additionalType: AdditionalType[];
+}

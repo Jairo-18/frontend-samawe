@@ -1,7 +1,4 @@
 import { Routes } from '@angular/router';
-
-// Importaciones estáticas de los componentes
-
 import { SeeUsersComponent } from './pages/see-users/see-users.component';
 import { SeeTypesComponent } from './pages/see-types/see-types.component';
 import { CreateOrEditUsersComponent } from './pages/create-or-edit-users/create-or-edit-users.component';
@@ -20,15 +17,15 @@ export const organizationalRoutes: Routes = [
         children: [
           {
             path: 'create',
-            component: CreateOrEditUsersComponent // Carga estática
+            component: CreateOrEditUsersComponent
           },
           {
             path: 'list',
-            component: SeeUsersComponent // Carga estática
+            component: SeeUsersComponent
           },
           {
             path: ':id/edit',
-            component: CreateOrEditUsersComponent // Carga estática
+            component: CreateOrEditUsersComponent
           }
         ]
       },

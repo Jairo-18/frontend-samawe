@@ -49,7 +49,7 @@ export class ProductsPrintComponent {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((pdf: any) => {
           const pdfUrl = pdf.output('bloburl');
-          window.open(pdfUrl, '_blank'); // abre nueva pestaña
+          window.open(pdfUrl, '_blank');
         });
     }, 0);
   }

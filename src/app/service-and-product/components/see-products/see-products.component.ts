@@ -33,7 +33,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { CreateProductPanel } from '../../interface/product.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { ProductsService } from '../../services/products.service';
-import { CategoryType } from '../../../shared/interfaces/relatedDataGeneral';
+import {
+  CategoryType,
+  UnitOfMeasure
+} from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
@@ -65,6 +68,7 @@ import { ProductsPrintComponent } from '../../../shared/components/products-prin
 export class SeeProductsComponent implements OnInit {
   @Input() searchFieldsProducts: any[] = [];
   @Input() categoryTypes: CategoryType[] = [];
+  @Input() unitOfMeasureTypes: UnitOfMeasure[] = [];
   @Output() productSelected = new EventEmitter<ProductComplete>();
   @Output() productClean = new EventEmitter<number>();
   @Output() printRequested = new EventEmitter<void>();
@@ -83,6 +87,7 @@ export class SeeProductsComponent implements OnInit {
     'code',
     'name',
     'amount',
+    'unitOfMeasure',
     'isActive',
     'priceBuy',
     'priceSale',
@@ -121,7 +126,6 @@ export class SeeProductsComponent implements OnInit {
   }
 
   getCategoryTypeName(product: ProductComplete): string {
-    // Obtener el ID del categoryType
     const categoryTypeId = product?.categoryType?.categoryTypeId;
 
     const category = this.categoryTypes.find(
@@ -232,14 +236,11 @@ export class SeeProductsComponent implements OnInit {
     if (queryParams['editProduct']) {
       const productId = Number(queryParams['editProduct']);
       if (productId === id) {
-        this._router.navigate(
-          [], // La misma ruta actual (segmentos de ruta)
-          {
-            queryParams: {}, // Pasa un objeto vacío para eliminar los query parameters
-            queryParamsHandling: '', // 'merge' es el comportamiento predeterminado, pero explícito por claridad
-            replaceUrl: true // Importante: Reemplaza la URL actual en el historial sin recargar
-          }
-        );
+        this._router.navigate([], {
+          queryParams: {},
+          queryParamsHandling: '',
+          replaceUrl: true
+        });
         this.productClean.emit(id);
       }
     }
@@ -272,7 +273,6 @@ export class SeeProductsComponent implements OnInit {
           return;
         }
 
-        // Esperar un ciclo de detección de cambios antes de imprimir
         setTimeout(() => {
           this.productsPrintComponent.print();
         }, 0);

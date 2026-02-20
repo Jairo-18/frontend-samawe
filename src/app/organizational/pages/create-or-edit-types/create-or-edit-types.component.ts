@@ -60,7 +60,6 @@ export class CreateOrEditTypesComponent {
       name: [data?.name || '', Validators.required]
     });
 
-    // Si está en edición, deshabilitar la selección del tipo para evitar cambios
     if (this.isEditMode) {
       this.formType.get('selectedType')?.disable();
     }
@@ -72,7 +71,6 @@ export class CreateOrEditTypesComponent {
       return;
     }
 
-    // Para editar, el selectedType está deshabilitado, por eso accedemos al valor con getRawValue
     const values = this.formType.getRawValue();
     const type = values.selectedType?.trim();
 

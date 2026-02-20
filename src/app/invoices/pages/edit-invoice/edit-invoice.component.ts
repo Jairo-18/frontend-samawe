@@ -15,18 +15,15 @@ import { AddExcursionComponent } from '../../components/add-excursion/add-excurs
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import {
   AdditionalType,
+  AppRelatedData,
   CategoryType,
   DiscountType,
   PaidType,
   PayType,
   TaxeType
 } from '../../../shared/interfaces/relatedDataGeneral';
-import {
-  createInvoiceRelatedData,
-  Invoice
-} from '../../interface/invoice.interface';
+import { Invoice } from '../../interface/invoice.interface';
 import { InvoiceService } from '../../services/invoice.service';
-import { ApiResponseInterface } from '../../../shared/interfaces/api-response.interface';
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -101,26 +98,24 @@ export class EditInvoiceComponent implements OnInit {
   }
 
   loadRelatedData(): void {
-    if (this._relatedDataService.invoiceRelatedData()) {
-      this.processData(this._relatedDataService.invoiceRelatedData()!);
+    if (this._relatedDataService.relatedData()) {
+      this.processData(this._relatedDataService.relatedData()!.data);
     } else {
-      this._relatedDataService.createInvoiceRelatedData().subscribe({
-        next: (res) => this.processData(res),
+      this._relatedDataService.getRelatedData().subscribe({
+        next: (res) => this.processData(res.data),
         error: (err) =>
           console.error('❌ Error al cargar datos relacionados:', err)
       });
     }
   }
 
-  private processData(
-    res: ApiResponseInterface<createInvoiceRelatedData>
-  ): void {
-    this.categoryTypes = res.data.categoryType || [];
-    this.payTypes = res.data.payType || [];
-    this.paidTypes = res.data.paidType || [];
-    this.taxeTypes = res.data.taxeType || [];
-    this.additionalTypes = res.data.additionalType || [];
-    this.discountTypes = res.data.discountType || [];
+  private processData(data: AppRelatedData): void {
+    this.categoryTypes = data.categoryType || [];
+    this.payTypes = data.payType || [];
+    this.paidTypes = data.paidType || [];
+    this.taxeTypes = data.taxeType || [];
+    this.additionalTypes = data.additionalType || [];
+    this.discountTypes = data.discountType || [];
   }
 
   onItemSaved(): void {
@@ -185,22 +180,6 @@ export class EditInvoiceComponent implements OnInit {
     });
   }
 
-  // printInvoice(): void {
-  //   const element = this.invoicePdfComp?.nativeElement;
-
-  //   if (!element || !this.invoiceData) return;
-
-  //   const options = {
-  //     margin: 0.5,
-  //     filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
-  //     image: { type: 'jpeg', quality: 0.98 },
-  //     html2canvas: { scale: 2 },
-  //     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  //   };
-
-  //   html2pdf().set(options).from(element).save();
-  // }
-
   async downloadInvoice(): Promise<void> {
     const element = this.invoicePdfComp?.nativeElement;
 
@@ -217,14 +196,11 @@ export class EditInvoiceComponent implements OnInit {
     await html2pdf().set(options).from(element).save();
   }
 
-  // Método para manejar cuando se guardan todos los items desde el componente hijo
   onAllItemsSaved(): void {
     if (this.invoiceId) {
       this.getInvoiceToEdit(this.invoiceId, false);
     }
   }
-
-  // --- Lógica para Items Pendientes (Carga Masiva) ---
 
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
@@ -254,7 +230,7 @@ export class EditInvoiceComponent implements OnInit {
         next: () => {
           this.pendingItems = [];
           this.isSavingItems = false;
-          // Recargar factura para mostrar los nuevos detalles
+
           this.getInvoiceToEdit(this.invoiceId!, false);
           this.reloadInvoiceDetails = true;
           setTimeout(() => (this.reloadInvoiceDetails = false), 100);
@@ -265,8 +241,6 @@ export class EditInvoiceComponent implements OnInit {
         }
       });
   }
-
-  // --- Helpers para la tabla de items pendientes ---
 
   toggleAllPayments(isPaid: boolean): void {
     if (!this.invoiceId || !this.invoiceData?.invoiceDetails.length) return;
