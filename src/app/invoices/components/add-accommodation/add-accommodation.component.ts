@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -62,7 +61,6 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
     MatTimepickerModule,
     CurrencyFormatDirective
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'
 })
@@ -98,6 +96,7 @@ export class AddAccommodationComponent implements OnInit {
   taxAmount: number = 0;
   unitPrice: number = 0;
   finalPrice: number = 0;
+  private isCalculating = false;
 
   parseFloat = parseFloat;
 
@@ -123,9 +122,15 @@ export class AddAccommodationComponent implements OnInit {
           { emitEvent: false }
         );
       }
-
-      this.calculateFinalPrice();
     });
+
+    ['amount', 'taxeTypeId', 'discountTypeId', 'additionalTypeId'].forEach(
+      (field) => {
+        this.form.get(field)?.valueChanges.subscribe(() => {
+          if (!this.isCalculating) this.calculateFinalPrice();
+        });
+      }
+    );
   }
 
   constructor() {
@@ -212,21 +217,64 @@ export class AddAccommodationComponent implements OnInit {
     this._cdr.detectChanges();
   }
 
-  calculateFinalPrice() {
-    const formValue = this.form.value;
+  private parseNumber(val: string | number | null | undefined): number {
+    if (val === null || val === undefined || val === '') return 0;
+    if (typeof val === 'number') return isNaN(val) ? 0 : val;
+    if (typeof val === 'string') {
+      const str = val.trim();
+      if (str === '') return 0;
 
-    let basePrice =
-      typeof this.originalPrice === 'string'
-        ? parseFloat(this.originalPrice)
-        : this.originalPrice;
+      // Si tiene coma Y punto → formato español: "80.000,00" → quitar puntos, cambiar coma por punto
+      if (str.includes(',') && str.includes('.')) {
+        const clean = str.replace(/\./g, '').replace(',', '.');
+        const num = parseFloat(clean);
+        return isNaN(num) ? 0 : num;
+      }
+
+      // Si solo tiene coma → podría ser "80000,00" (decimal con coma) o "80.000" (miles con coma inglesa - raro)
+      if (str.includes(',') && !str.includes('.')) {
+        const clean = str.replace(',', '.');
+        const num = parseFloat(clean);
+        return isNaN(num) ? 0 : num;
+      }
+
+      // Si solo tiene punto → puede ser decimal inglés "80000.00" o miles español "80.000"
+      // Heurística: si el punto separa exactamente 2 decimales al final → es decimal inglés
+      // Si el punto separa grupos de 3 dígitos → es miles español
+      if (str.includes('.')) {
+        const parts = str.split('.');
+        const lastPart = parts[parts.length - 1];
+        // Si la parte después del último punto tiene 1 o 2 dígitos → es decimal inglés
+        if (lastPart.length <= 2) {
+          const num = parseFloat(str);
+          return isNaN(num) ? 0 : num;
+        }
+        // Si tiene exactamente 3 dígitos → es separador de miles español → quitar los puntos
+        if (lastPart.length === 3) {
+          const clean = str.replace(/\./g, '');
+          const num = parseFloat(clean);
+          return isNaN(num) ? 0 : num;
+        }
+      }
+
+      // Caso simple: solo dígitos o formato estándar
+      const num = parseFloat(str);
+      return isNaN(num) ? 0 : num;
+    }
+    return 0;
+  }
+
+  calculateFinalPrice() {
+    const formValue = this.form.getRawValue();
+
+    let basePrice = this.parseNumber(this.originalPrice);
 
     if (formValue.discountTypeId) {
       const discount = this.discountTypes.find(
         (d) => d.discountTypeId === formValue.discountTypeId
       );
       if (discount && discount.code) {
-        const discountAmount = parseFloat(discount.code);
-        basePrice = basePrice - discountAmount;
+        basePrice = basePrice - this.parseNumber(discount.code);
       }
     }
 
@@ -235,11 +283,7 @@ export class AddAccommodationComponent implements OnInit {
         (a) => a.additionalTypeId === formValue.additionalTypeId
       );
       if (additional) {
-        const additionalValue =
-          typeof additional.value === 'string'
-            ? parseFloat(additional.value)
-            : additional.value;
-        basePrice = basePrice + additionalValue;
+        basePrice = basePrice + this.parseNumber(additional.value);
       }
     }
 
@@ -251,24 +295,30 @@ export class AddAccommodationComponent implements OnInit {
 
     let taxPercent = 0;
     if (selectedTax && selectedTax.percentage) {
-      taxPercent =
-        typeof selectedTax.percentage === 'string'
-          ? parseFloat(selectedTax.percentage)
-          : selectedTax.percentage;
+      let rate = this.parseNumber(selectedTax.percentage);
+      if (rate > 1) rate = rate / 100;
+      taxPercent = rate;
     }
 
     this.taxAmount = this.subtotal * taxPercent;
-
     this.unitPrice = this.subtotal + this.taxAmount;
 
-    const amount = formValue.amount || 1;
-    this.finalPrice = this.unitPrice * amount;
+    let amount = this.parseNumber(formValue.amount);
+    if (amount <= 0) amount = 1;
 
+    // Redondear para evitar decimales flotantes
+    const round2 = (num: number) =>
+      Math.round((num + Number.EPSILON) * 100) / 100;
+
+    this.finalPrice = round2(this.unitPrice * amount);
+
+    this.isCalculating = true;
     this.form.patchValue({
-      priceWithoutTax: this.subtotal,
-      unitPrice: this.unitPrice,
+      priceWithoutTax: round2(this.subtotal),
+      unitPrice: round2(this.unitPrice),
       finalPrice: this.finalPrice
     });
+    this.isCalculating = false;
 
     this._cdr.detectChanges();
   }

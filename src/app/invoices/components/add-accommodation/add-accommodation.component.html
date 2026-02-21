@@ -95,6 +95,7 @@
         formControlName="amount"
         appCurrencyFormat
         class="text-right"
+        (input)="calculateFinalPrice()"
       />
       <mat-icon matSuffix>numbers</mat-icon>
     </mat-form-field>
@@ -108,6 +109,7 @@
         formControlName="amountPerson"
         appCurrencyFormat
         class="text-right"
+        [readonly]="true"
       />
       <mat-icon matSuffix>person</mat-icon>
     </mat-form-field>
@@ -119,6 +121,7 @@
         formControlName="amountBathroom"
         appCurrencyFormat
         class="text-right"
+        [readonly]="true"
       />
       <mat-icon matSuffix>group</mat-icon>
     </mat-form-field>
