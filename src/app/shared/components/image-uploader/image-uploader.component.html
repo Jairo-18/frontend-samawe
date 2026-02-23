@@ -60,35 +60,31 @@
       <!-- Imágenes ya guardadas en backend -->
       <div
         *ngFor="let image of images"
-        class="relative flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg overflow-hidden shadow-md cursor-pointer group"
+        class="relative flex-shrink-0 w-[180px] h-[220px] md:w-[280px] md:h-[350px] rounded-xl overflow-hidden shadow-sm cursor-pointer group bg-[#f8f9fa] border border-gray-100"
       >
         <img
           [src]="image.imageUrl"
-          class="w-full h-full object-cover"
+          class="w-full h-full"
+          style="object-fit: contain !important"
           alt="Galería de imagen"
         />
 
         <!-- Overlay con botones de ver y eliminar (Estilo original) -->
         <div
           class="absolute inset-0 bg-black/45 flex justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          (click)="openPreview(image.imageUrl)"
         >
-          <button
-            mat-mini-fab
-            color="primary"
-            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
-            (click)="openPreview(image.imageUrl)"
-            matTooltip="Ver imagen"
-            type="button"
+          <div
+            class="p-2 rounded-full bg-primary text-white scale-[0.85] group-hover:scale-100 transition-transform duration-150"
           >
             <mat-icon>visibility</mat-icon>
-          </button>
+          </div>
           <button
             mat-mini-fab
             color="warn"
             class="scale-[0.85] hover:scale-100 transition-transform duration-150"
-            (click)="confirmDeleteImage(image)"
+            (click)="$event.stopPropagation(); confirmDeleteImage(image)"
             [disabled]="deletingIds.has(image.imageId)"
-            matTooltip="Eliminar imagen"
             type="button"
           >
             <mat-icon *ngIf="!deletingIds.has(image.imageId)">delete</mat-icon>
@@ -103,32 +99,30 @@
       <!-- Previsualizaciones de archivos pendientes -->
       <div
         *ngFor="let preview of pendingPreviews; let i = index"
-        class="relative flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg overflow-hidden shadow-md group border-2 border-dashed border-[#06a606]/50"
+        class="relative flex-shrink-0 w-[180px] h-[220px] md:w-[280px] md:h-[350px] rounded-xl overflow-hidden shadow-sm group border-2 border-dashed border-[#06a606]/30 bg-[#f8f9fa]"
       >
         <img
           [src]="preview"
-          class="w-full h-full object-cover brightness-75"
+          class="w-full h-full"
+          style="object-fit: contain !important"
           alt="Previsualización pendiente"
         />
 
         <div
           class="absolute inset-0 bg-black/45 flex justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          (click)="openPreview(preview)"
         >
-          <button
-            mat-mini-fab
-            color="primary"
-            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
-            (click)="openPreview(preview)"
+          <div
+            class="p-2 rounded-full bg-primary text-white scale-[0.85] group-hover:scale-100 transition-transform duration-150"
             matTooltip="Ver imagen"
-            type="button"
           >
             <mat-icon>visibility</mat-icon>
-          </button>
+          </div>
           <button
             mat-mini-fab
             color="warn"
             class="scale-[0.85] hover:scale-100 transition-transform duration-150"
-            (click)="removePendingFile(i)"
+            (click)="$event.stopPropagation(); removePendingFile(i)"
             matTooltip="Remover"
             type="button"
           >
