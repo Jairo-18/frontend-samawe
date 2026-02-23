@@ -98,6 +98,16 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     });
   }
 
+  onTabChange(): void {
+    this.currentProduct = undefined;
+    this.currentAccommodation = undefined;
+    this.currentExcursion = undefined;
+
+    this.createOrEditProductComponent?.imageUploader?.resetPending();
+    this.createOrEditAccommodationComponent?.imageUploader?.resetPending();
+    this.createOrEditExcursionComponent?.imageUploader?.resetPending();
+  }
+
   goToTop(): void {
     const main = document.querySelector('main');
     if (main) {

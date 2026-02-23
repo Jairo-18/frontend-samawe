@@ -2,6 +2,7 @@ import {
   CategoryType,
   UnitOfMeasure
 } from '../../shared/interfaces/relatedDataGeneral';
+import { ImageItem } from '../../shared/interfaces/image.interface';
 
 export interface CreateProductPanel {
   productId?: number;
@@ -32,6 +33,7 @@ export interface ProductComplete {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;
+  images?: ImageItem[];
 }
 
 export interface ProductListResponse {

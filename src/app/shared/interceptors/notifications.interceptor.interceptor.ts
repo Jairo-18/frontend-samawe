@@ -19,7 +19,8 @@ export const notificationsInterceptorInterceptor: HttpInterceptorFn = (
     tap((event) => {
       if (event instanceof HttpResponse) {
         const { message } = event.body as ApiResponseCreateInterface;
-        if (message) {
+
+        if (message && !req.url.includes('/images')) {
           notificationsService.showNotification('success', message);
         }
       }

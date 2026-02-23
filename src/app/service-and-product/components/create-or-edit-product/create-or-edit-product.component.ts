@@ -9,7 +9,8 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
@@ -35,6 +36,8 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
+import { ImageItem } from '../../../shared/interfaces/image.interface';
 
 @Component({
   selector: 'app-create-or-edit-product',
@@ -52,7 +55,8 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
     MatIcon,
     CurrencyFormatDirective,
     SectionHeaderComponent,
-    UppercaseDirective
+    UppercaseDirective,
+    ImageUploaderComponent
   ],
   templateUrl: './create-or-edit-product.component.html',
   styleUrl: './create-or-edit-product.component.scss',
@@ -61,6 +65,9 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   @Input() currentProduct?: ProductComplete;
   @Output() productSaved = new EventEmitter<void>();
+  @Output() productCanceled = new EventEmitter<void>();
+
+  @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
 
   @Input()
   set categoryTypes(value: CategoryType[]) {
@@ -100,6 +107,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   productId: number = 0;
   isEditMode: boolean = false;
   visibleCategoryTypes: CategoryType[] = [];
+  productImages: ImageItem[] = [];
+  isLoadingImages: boolean = false;
   private pendingProductId: number | null = null;
 
   private readonly _productsService: ProductsService = inject(ProductsService);
@@ -154,6 +163,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
 
         if (this.visibleCategoryTypes.length > 0) {
           this.getProductToEdit(this.productId);
+          this.imageUploader?.resetPending();
         } else {
           this.pendingProductId = this.productId;
         }
@@ -173,6 +183,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       isActive: product.isActive ?? false,
       unitOfMeasureId: product.unitOfMeasure?.unitOfMeasureId ?? null
     });
+
+    this.productImages = product.images || [];
     this.cdr.detectChanges();
   }
 
@@ -188,6 +200,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       isActive: true,
       unitOfMeasureId: null
     });
+    this.productImages = [];
+    if (this.imageUploader) {
+      this.imageUploader.resetPending();
+    }
     this.cdr.detectChanges();
   }
 
@@ -198,6 +214,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       control?.setErrors(null);
     });
     this.isEditMode = false;
+    this.productCanceled.emit();
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
@@ -207,15 +224,19 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   }
 
   private getProductToEdit(productId: number): void {
+    this.isLoadingImages = true;
     this._productsService.getProductEditPanel(productId).subscribe({
       next: (res) => {
         const product = res.data;
         this.productId = product.productId;
-
         this.updateFormWithProduct(product);
+        this.isLoadingImages = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al obtener producto:', err.error?.message || err);
+        this.isLoadingImages = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -254,7 +275,11 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
           });
       } else {
         this._productsService.createProductPanel(productSave).subscribe({
-          next: () => {
+          next: async (res) => {
+            const newId = Number(res.data?.rowId);
+            if (newId && this.imageUploader) {
+              await this.imageUploader.uploadPendingFiles(newId);
+            }
             this.productSaved.emit();
             this.resetForm();
           },

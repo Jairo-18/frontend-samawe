@@ -29,7 +29,6 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import {
   BedType,
   StateType
@@ -259,12 +258,8 @@ export class SeeAccommodationsComponent implements OnInit {
     }
   }
 
-  validateIfCanEditUserOrDelete(user: UserComplete): boolean {
-    return (
-      this.userLogged?.roleType?.name === 'Administrador' ||
-      (this.userLogged?.roleType?.name === 'ADMINISTRADOR' &&
-        user.roleType?.name === 'Cliente') ||
-      user.roleType?.name === 'CLIENTE'
-    );
+  validateIfCanEditUserOrDelete(): boolean {
+    const roleName = this.userLogged?.roleType?.name?.toUpperCase();
+    return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
 }

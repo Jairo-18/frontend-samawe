@@ -114,9 +114,20 @@
     </section>
   </div>
 
+  <section class="w-full mt-4 mb-4">
+    <app-image-uploader
+      #imageUploader
+      [entityId]="productId"
+      entityType="product"
+      [initialImages]="productImages"
+      [isLoading]="isLoadingImages"
+      (imagesChanged)="productImages = $event"
+    ></app-image-uploader>
+  </section>
+
   <section
     actions
-    class="w-full h-full items-end justify-end flex text-sm md:text-base gap-2"
+    class="w-full h-full items-end justify-end flex flex-col md:flex-row text-sm md:text-base gap-2"
   >
     @if (isEditMode) {
       <div class="w-full flex content-between md:w-[24%]">

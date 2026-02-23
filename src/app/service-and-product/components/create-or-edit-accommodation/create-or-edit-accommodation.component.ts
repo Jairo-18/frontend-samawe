@@ -8,7 +8,8 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
@@ -35,6 +36,8 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
+import { ImageItem } from '../../../shared/interfaces/image.interface';
 
 @Component({
   selector: 'app-create-or-edit-accommodation',
@@ -53,7 +56,8 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
     MatIconModule,
     CurrencyFormatDirective,
     SectionHeaderComponent,
-    UppercaseDirective
+    UppercaseDirective,
+    ImageUploaderComponent
   ],
   templateUrl: './create-or-edit-accommodation.component.html',
   styleUrl: './create-or-edit-accommodation.component.scss'
@@ -65,6 +69,9 @@ export class CreateOrEditAccommodationComponent
   @Input() bedTypes: BedType[] = [];
   @Input() currentAccommodation?: AccommodationComplete;
   @Output() accommodationSaved = new EventEmitter<void>();
+  @Output() accommodationCanceled = new EventEmitter<void>();
+
+  @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
 
   @Input()
   set categoryTypes(value: CategoryType[]) {
@@ -94,6 +101,8 @@ export class CreateOrEditAccommodationComponent
   accommodationForm!: FormGroup;
   accommodationId: number = 0;
   isEditMode: boolean = false;
+  accommodationImages: ImageItem[] = [];
+  isLoadingImages: boolean = false;
   private pendingAccommodationId: number | null = null;
 
   private readonly _accommodationService: AccommodationsService = inject(
@@ -162,6 +171,7 @@ export class CreateOrEditAccommodationComponent
 
         if (this.visibleCategoryTypes.length > 0) {
           this.getAccommodationToEdit(this.accommodationId);
+          this.imageUploader?.resetPending();
         } else {
           this.pendingAccommodationId = this.accommodationId;
         }
@@ -186,6 +196,8 @@ export class CreateOrEditAccommodationComponent
       priceSale: accommodation.priceSale,
       stateTypeId: accommodation.stateType?.stateTypeId
     });
+
+    this.accommodationImages = accommodation.images || [];
     this.cdr.detectChanges();
   }
 
@@ -204,6 +216,10 @@ export class CreateOrEditAccommodationComponent
       priceSale: 0,
       stateTypeId: null
     });
+    this.accommodationImages = [];
+    if (this.imageUploader) {
+      this.imageUploader.resetPending();
+    }
     this.cdr.detectChanges();
   }
 
@@ -214,6 +230,7 @@ export class CreateOrEditAccommodationComponent
       control?.setErrors(null);
     });
     this.isEditMode = false;
+    this.accommodationCanceled.emit();
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
@@ -223,6 +240,7 @@ export class CreateOrEditAccommodationComponent
   }
 
   private getAccommodationToEdit(accommodationId: number): void {
+    this.isLoadingImages = true;
     this._accommodationService
       .getAccommodationEditPanel(accommodationId)
       .subscribe({
@@ -231,12 +249,16 @@ export class CreateOrEditAccommodationComponent
           this.accommodationId = accommodation.accommodationId;
 
           this.updateFormWithAccommodation(accommodation);
+          this.isLoadingImages = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           console.error(
             'Error al obtener hospedaje:',
             err.error?.message || err
           );
+          this.isLoadingImages = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -280,7 +302,11 @@ export class CreateOrEditAccommodationComponent
         this._accommodationService
           .createAccommodationPanel(accommodationSave)
           .subscribe({
-            next: () => {
+            next: async (res) => {
+              const newId = Number(res.data?.rowId);
+              if (newId && this.imageUploader) {
+                await this.imageUploader.uploadPendingFiles(newId);
+              }
               this.accommodationSaved.emit();
               this.resetForm();
             },

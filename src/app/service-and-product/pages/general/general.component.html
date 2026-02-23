@@ -1,11 +1,12 @@
 <app-base-page>
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="onTabChange()">
     <mat-tab label="Productos">
       <ng-template matTabContent>
         <app-create-or-edit-product
           [categoryTypes]="categoryTypes"
           [unitOfMeasureTypes]="unitOfMeasureTypes"
           (productSaved)="reloadProducts(); tabGroup.selectedIndex = 0"
+          (productCanceled)="currentProduct = undefined"
           [currentProduct]="currentProduct"
         ></app-create-or-edit-product>
 
@@ -24,6 +25,7 @@
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypes"
           (excursionSaved)="reloadExcursion(); tabGroup.selectedIndex = 1"
+          (excursionCanceled)="currentExcursion = undefined"
           [currentExcursion]="currentExcursion"
         ></app-create-or-edit-excursion>
 
@@ -45,6 +47,7 @@
           (accommodationSaved)="
             reloadAccommodations(); tabGroup.selectedIndex = 2
           "
+          (accommodationCanceled)="currentAccommodation = undefined"
           [currentAccommodation]="currentAccommodation"
         ></app-create-or-edit-accommodation>
 

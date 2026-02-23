@@ -1,0 +1,203 @@
+<div
+  class="relative p-6 border-2 border-dashed rounded-xl transition-all duration-300 min-h-[200px] flex flex-col"
+  [ngClass]="{
+    'border-[#06a606] bg-[#06a606]/5': isDragging,
+    'border-[#06a606]/30 hover:border-[#06a606]': !isDragging
+  }"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <!-- Loader Overlay -->
+  <div
+    *ngIf="isLoading"
+    class="absolute inset-0 z-10 bg-white/60 backdrop-blur-[1px] flex flex-col items-center justify-center rounded-xl"
+  >
+    <mat-spinner diameter="40"></mat-spinner>
+    <p class="text-sm text-gray-500 mt-2 font-medium">Cargando imágenes...</p>
+  </div>
+
+  <div
+    class="w-full flex flex-col md:flex-row justify-between items-center mb-4"
+  >
+    <span class="mat-h3 m-0 font-semibold text-gray-700"
+      >Galería de Imágenes</span
+    >
+    <button
+      mat-fab
+      extended
+      color="primary"
+      type="button"
+      class="mt-2 md:mt-0"
+      (click)="fileInput.click()"
+      [disabled]="isUploading || isLoading"
+    >
+      <mat-icon>add_a_photo</mat-icon>
+      Añadir Imagen
+    </button>
+    <input
+      #fileInput
+      type="file"
+      multiple
+      accept="image/*"
+      class="hidden"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+
+  <!-- Contenedor de Galería (Horizontal Scroll) -->
+  <div
+    class="flex-1 flex items-center min-h-[170px] md:min-h-[270px]"
+    [ngClass]="{
+      'justify-center text-center':
+        images.length === 0 && pendingPreviews.length === 0 && !isUploading
+    }"
+  >
+    <div
+      class="flex overflow-x-auto items-center gap-4 py-4 w-full scroll-smooth scrollbar-thin overflow-y-hidden"
+      *ngIf="images.length > 0 || pendingPreviews.length > 0 || isUploading"
+    >
+      <!-- Imágenes ya guardadas en backend -->
+      <div
+        *ngFor="let image of images"
+        class="relative flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg overflow-hidden shadow-md cursor-pointer group"
+      >
+        <img
+          [src]="image.imageUrl"
+          class="w-full h-full object-cover"
+          alt="Galería de imagen"
+        />
+
+        <!-- Overlay con botones de ver y eliminar (Estilo original) -->
+        <div
+          class="absolute inset-0 bg-black/45 flex justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <button
+            mat-mini-fab
+            color="primary"
+            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
+            (click)="openPreview(image.imageUrl)"
+            matTooltip="Ver imagen"
+            type="button"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
+            (click)="confirmDeleteImage(image)"
+            [disabled]="deletingIds.has(image.imageId)"
+            matTooltip="Eliminar imagen"
+            type="button"
+          >
+            <mat-icon *ngIf="!deletingIds.has(image.imageId)">delete</mat-icon>
+            <mat-spinner
+              diameter="20"
+              *ngIf="deletingIds.has(image.imageId)"
+            ></mat-spinner>
+          </button>
+        </div>
+      </div>
+
+      <!-- Previsualizaciones de archivos pendientes -->
+      <div
+        *ngFor="let preview of pendingPreviews; let i = index"
+        class="relative flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg overflow-hidden shadow-md group border-2 border-dashed border-[#06a606]/50"
+      >
+        <img
+          [src]="preview"
+          class="w-full h-full object-cover brightness-75"
+          alt="Previsualización pendiente"
+        />
+
+        <div
+          class="absolute inset-0 bg-black/45 flex justify-center items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <button
+            mat-mini-fab
+            color="primary"
+            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
+            (click)="openPreview(preview)"
+            matTooltip="Ver imagen"
+            type="button"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-mini-fab
+            color="warn"
+            class="scale-[0.85] hover:scale-100 transition-transform duration-150"
+            (click)="removePendingFile(i)"
+            matTooltip="Remover"
+            type="button"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div
+          class="absolute bottom-0 bg-black/60 w-full text-white text-center text-[10px] py-1 font-bold uppercase tracking-wider"
+        >
+          Pendiente
+        </div>
+      </div>
+
+      <!-- Loader de subida -->
+      <div
+        *ngIf="isUploading"
+        class="flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg border-2 border-dashed border-[#06a606] flex flex-col items-center justify-center bg-[#06a606]/5"
+      >
+        <mat-spinner diameter="30"></mat-spinner>
+        <span
+          class="text-[10px] text-primary mt-2 font-bold uppercase tracking-widest"
+          >Subiendo...</span
+        >
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div
+      *ngIf="
+        images.length === 0 &&
+        pendingPreviews.length === 0 &&
+        !isUploading &&
+        !isLoading
+      "
+      class="w-full flex flex-col items-center justify-center py-6"
+    >
+      <div
+        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-inner"
+      >
+        <mat-icon class="!text-3xl">collections</mat-icon>
+      </div>
+      <p class="text-gray-500 font-medium m-0">
+        No hay imágenes en la galería.
+      </p>
+      <span class="text-gray-400 text-sm mt-1 font-normal"
+        >Arrastra archivos o usa el botón superior para añadir</span
+      >
+    </div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div
+  *ngIf="previewImageUrl"
+  class="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300"
+  (click)="closePreview()"
+>
+  <button
+    mat-icon-button
+    class="!absolute top-4 right-4 text-white hover:bg-white/10"
+    (click)="closePreview()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <img
+    [src]="previewImageUrl"
+    class="max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20"
+    alt="Vista previa de imagen"
+    (click)="$event.stopPropagation()"
+  />
+</div>

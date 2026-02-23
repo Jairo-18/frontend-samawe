@@ -2,6 +2,7 @@ import {
   CategoryType,
   StateType
 } from '../../shared/interfaces/relatedDataGeneral';
+import { ImageItem } from '../../shared/interfaces/image.interface';
 
 export interface CreateExcursionPanel {
   excursionId?: number;
@@ -28,6 +29,7 @@ export interface ExcursionComplete {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;
+  images?: ImageItem[];
 }
 
 export interface ExcursionListResponse {

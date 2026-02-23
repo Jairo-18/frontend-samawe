@@ -125,22 +125,33 @@
     </section>
   </div>
 
+  <section class="w-full mt-4 mb-4">
+    <app-image-uploader
+      #imageUploader
+      [entityId]="excursionId"
+      entityType="excursion"
+      [initialImages]="excursionImages"
+      [isLoading]="isLoadingImages"
+      (imagesChanged)="excursionImages = $event"
+    ></app-image-uploader>
+  </section>
+
   <section
     actions
-    class="w-full h-full items-end justify-end flex text-sm md:text-base gap-2"
+    class="w-full h-full items-end justify-end flex flex-col md:flex-row text-sm md:text-base gap-2"
   >
-    @if ( isEditMode) {
-    <div class="w-full flex content-between md:w-[24%]">
-      <button
-        mat-fab
-        extended="true"
-        color="warn"
-        class="!w-full"
-        (click)="resetForm()"
-      >
-        Cancelar
-      </button>
-    </div>
+    @if (isEditMode) {
+      <div class="w-full flex content-between md:w-[24%]">
+        <button
+          mat-fab
+          extended="true"
+          color="warn"
+          class="!w-full"
+          (click)="resetForm()"
+        >
+          Cancelar
+        </button>
+      </div>
     }
     <div class="w-full flex content-between md:w-[24%]">
       <button mat-fab extended="true" class="!w-full" (click)="save()">

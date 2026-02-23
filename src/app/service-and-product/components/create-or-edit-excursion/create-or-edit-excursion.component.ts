@@ -7,7 +7,8 @@ import {
   OnChanges,
   OnDestroy,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
@@ -36,6 +37,8 @@ import {
 import { ExcursionsService } from '../../services/excursions.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
+import { ImageItem } from '../../../shared/interfaces/image.interface';
 
 @Component({
   selector: 'app-create-or-edit-excursion',
@@ -54,7 +57,8 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
     MatIconModule,
     CurrencyFormatDirective,
     SectionHeaderComponent,
-    UppercaseDirective
+    UppercaseDirective,
+    ImageUploaderComponent
   ],
   templateUrl: './create-or-edit-excursion.component.html',
   styleUrl: './create-or-edit-excursion.component.scss'
@@ -63,6 +67,9 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   @Input() stateTypes: StateType[] = [];
   @Input() currentExcursion?: ExcursionComplete;
   @Output() excursionSaved = new EventEmitter<void>();
+  @Output() excursionCanceled = new EventEmitter<void>();
+
+  @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
 
   @Input()
   set categoryTypes(value: CategoryType[]) {
@@ -92,6 +99,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   excursionForm!: FormGroup;
   excursionId: number = 0;
   isEditMode: boolean = false;
+  excursionImages: ImageItem[] = [];
+  isLoadingImages: boolean = false;
   private pendingExcursionId: number | null = null;
 
   private readonly _excursionService: ExcursionsService =
@@ -145,6 +154,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
 
         if (this.visibleCategoryTypes.length > 0) {
           this.getExcursionToEdit(this.excursionId);
+          this.imageUploader?.resetPending();
         } else {
           this.pendingExcursionId = this.excursionId;
         }
@@ -162,6 +172,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       priceSale: excursion.priceSale,
       stateTypeId: excursion.stateType?.stateTypeId
     });
+
+    this.excursionImages = excursion.images || [];
     this.cdr.detectChanges();
   }
 
@@ -175,6 +187,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       priceSale: 0,
       stateTypeId: null
     });
+    this.excursionImages = [];
+    if (this.imageUploader) {
+      this.imageUploader.resetPending();
+    }
     this.cdr.detectChanges();
   }
 
@@ -185,6 +201,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       control?.setErrors(null);
     });
     this.isEditMode = false;
+    this.excursionCanceled.emit();
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
@@ -194,18 +211,23 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   }
 
   private getExcursionToEdit(excursionId: number): void {
+    this.isLoadingImages = true;
     this._excursionService.getExcursionEditPanel(excursionId).subscribe({
       next: (res) => {
         const excursion = res.data;
         this.excursionId = excursion.excursionId;
 
         this.updateFormWithExcursion(excursion);
+        this.isLoadingImages = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(
           'Error al obtener la pasadía:',
           err.error?.message || err
         );
+        this.isLoadingImages = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -242,7 +264,11 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
           });
       } else {
         this._excursionService.createExcursionPanel(excursionSave).subscribe({
-          next: () => {
+          next: async (res) => {
+            const newId = Number(res.data?.rowId);
+            if (newId && this.imageUploader) {
+              await this.imageUploader.uploadPendingFiles(newId);
+            }
             this.excursionSaved.emit();
             this.resetForm();
           },
