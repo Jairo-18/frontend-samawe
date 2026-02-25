@@ -43,13 +43,17 @@ export const appConfig: ApplicationConfig = {
     { provide: MatPaginatorIntl, useValue: getMaterialPaginatorTranslations() },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue: { maxWidth: '700px', width: '95vw', padding: '40px' }
+      useValue: { maxWidth: '700px', width: '95vw' }
     },
     { provide: LOCALE_ID, useValue: 'es' },
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
     { provide: ErrorStateMatcher, useValue: new MyErrorStateMatcher() },
     provideHttpClient(
-      withInterceptors([apiUrlInterceptor, authInterceptor, notificationsInterceptorInterceptor])
+      withInterceptors([
+        apiUrlInterceptor,
+        authInterceptor,
+        notificationsInterceptorInterceptor
+      ])
     ),
     TransformDateService
   ]

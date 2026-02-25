@@ -28,17 +28,24 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
+        name: 'Recetas',
+        route: '/recipes/general',
+        icon: 'menu_book',
+        order: 4,
+        subItems: []
+      },
+      {
         name: 'Facturas',
         route: '/invoice/invoices/list',
         icon: 'notes',
-        order: 4,
+        order: 5,
         subItems: []
       },
       {
         name: 'Reportes / Ganancias',
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
-        order: 5,
+        order: 6,
         subItems: []
       }
     ]
@@ -63,6 +70,7 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Recepcionista: [
     'Clientes',
     'Productos y servicios',
+    'Recetas',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio'
@@ -70,16 +78,19 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Administrador: [
     'Clientes',
     'Productos y servicios',
+    'Recetas',
     'Gestión',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio'
   ],
-
-  CLLIENTE: [''],
+  Chef: ['Recetas', 'Inicio'],
+  Mesero: ['Recetas', 'Facturas', 'Inicio'],
+  CLIENTE: [''],
   RECEPCIONISTA: [
     'Clientes',
     'Productos y servicios',
+    'Recetas',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio'
@@ -87,11 +98,14 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
   ADMINISTRADOR: [
     'Clientes',
     'Productos y servicios',
+    'Recetas',
     'Gestión',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio'
-  ]
+  ],
+  CHEF: ['Recetas', 'Inicio'],
+  MESERO: ['Recetas', 'Facturas', 'Inicio']
 };
 
 // export const ROUTE_MAP: Record<string, string> = {

@@ -84,14 +84,9 @@
             color="warn"
             class="scale-[0.85] hover:scale-100 transition-transform duration-150"
             (click)="$event.stopPropagation(); confirmDeleteImage(image)"
-            [disabled]="deletingIds.has(image.imageId)"
             type="button"
           >
-            <mat-icon *ngIf="!deletingIds.has(image.imageId)">delete</mat-icon>
-            <mat-spinner
-              diameter="20"
-              *ngIf="deletingIds.has(image.imageId)"
-            ></mat-spinner>
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
       </div>

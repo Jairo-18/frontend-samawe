@@ -35,4 +35,5 @@ export class BasePageComponent {
   @Input() showContentTitle: boolean = false;
   @Input() showContentInfo: boolean = false;
   @Input() showBorder: boolean = true;
+  @Input() pxMobile: boolean = true;
 }

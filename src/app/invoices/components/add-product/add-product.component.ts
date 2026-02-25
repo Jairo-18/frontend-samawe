@@ -28,12 +28,10 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  AddedProductInvoiceDetaill,
-  CreateInvoiceDetaill
-} from '../../interface/invoiceDetaill.interface';
+import { CreateInvoiceDetaill } from '../../interface/invoiceDetaill.interface';
+import { ProductComplete } from '../../../service-and-product/interface/product.interface';
 import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { MatTimepickerModule } from '@angular/material/timepicker';
@@ -51,7 +49,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatAutocompleteModule,
     CommonModule,
     MatSelectModule,
-    MatIcon,
+    MatIconModule,
     MatProgressSpinnerModule,
     CurrencyFormatDirective,
     MatTimepickerModule,
@@ -79,7 +77,7 @@ export class AddProductComponent implements OnInit {
   isLoading: boolean = false;
   invoiceId?: number;
   form: FormGroup;
-  filteredProducts: AddedProductInvoiceDetaill[] = [];
+  filteredProducts: ProductComplete[] = [];
 
   ngOnInit(): void {
     const id = this._activateRouter.snapshot.paramMap.get('id');
@@ -184,7 +182,7 @@ export class AddProductComponent implements OnInit {
       priceBuy: product.priceBuy ?? 0,
       priceWithoutTax: product.priceSale,
       amount: product.amount,
-      categoryId: product.categoryTypeId
+      categoryId: product.categoryType?.categoryTypeId
     });
     this.updateFinalPrice();
   }

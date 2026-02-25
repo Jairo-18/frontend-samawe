@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import {
@@ -106,6 +107,7 @@ export class SeeTypesComponent implements OnInit {
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
+    this.paginationParams.page = 1;
     this.loadGroupData(this.selectedType);
   }
 

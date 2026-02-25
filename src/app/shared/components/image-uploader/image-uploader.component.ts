@@ -22,6 +22,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
+import { ImageCropperDialogComponent } from '../image-cropper-dialog/image-cropper-dialog.component';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-image-uploader',
@@ -44,9 +46,6 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   @Input()
   set initialImages(value: ImageItem[]) {
     this._initialImages = value;
-    // The original code had `initialImages: ImageItem[] = [];`
-    // If the intent was to keep the default empty array, it should be handled in the getter or constructor.
-    // For now, we'll just assign the value.
   }
   get initialImages(): ImageItem[] {
     return this._initialImages;
@@ -57,8 +56,8 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   images: ImageItem[] = [];
   pendingFiles: File[] = [];
   pendingPreviews: string[] = [];
+  toDeleteImages: ImageItem[] = [];
   isUploading: boolean = false;
-  deletingIds: Set<number> = new Set();
   previewImageUrl: string | null = null;
   isDragging: boolean = false;
   private loadedEntityId: number | null = null;
@@ -98,6 +97,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   }
 
   private processInitialImages() {
+    this.toDeleteImages = []; // Limpiar cola de eliminación al recargar
     if (this.initialImages && this.initialImages.length > 0) {
       this.images = this.initialImages.map((img: unknown) =>
         this.imageService.mapResponseToStandardItem(
@@ -105,7 +105,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
           img as RawImageItem
         )
       );
-      this.loadedEntityId = this.entityId; // Assume we loaded since we have initial
+      this.loadedEntityId = this.entityId;
       this.cdr.detectChanges();
     } else if (this.entityId && (!this.images || this.images.length === 0)) {
       if (this.loadedEntityId !== this.entityId) {
@@ -161,7 +161,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     }
   }
 
-  private handleFiles(files: FileList | null) {
+  private async handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
 
     const filteredFiles = Array.from(files).filter((file) =>
@@ -170,17 +170,32 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
 
     if (filteredFiles.length === 0) return;
 
-    if (!this.entityId) {
-      // Modo creación: guardamos los archivos localmente
-      this.pendingFiles.push(...filteredFiles);
-      filteredFiles.forEach((file) => {
-        this.pendingPreviews.push(URL.createObjectURL(file));
-      });
-      this.cdr.detectChanges();
-    } else {
-      // Modo edición: subida directa
-      this.uploadFiles(filteredFiles);
+    for (const file of filteredFiles) {
+      // Abrir el cropper para cada imagen
+      const croppedBlob = await this.openCropper(file);
+
+      if (croppedBlob) {
+        // Convertir Blob a File
+        const croppedFile = new File([croppedBlob], file.name, {
+          type: 'image/webp'
+        });
+
+        // Siempre guardamos localmente primero, incluso en modo edición
+        this.pendingFiles.push(croppedFile);
+        this.pendingPreviews.push(URL.createObjectURL(croppedFile));
+        this.cdr.detectChanges();
+      }
     }
+  }
+
+  private openCropper(file: File): Promise<Blob | null> {
+    const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
+      data: { file },
+      width: '600px',
+      disableClose: true
+    });
+
+    return lastValueFrom(dialogRef.afterClosed());
   }
 
   removePendingFile(index: number) {
@@ -189,45 +204,55 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.cdr.detectChanges();
   }
 
-  uploadPendingFiles(newEntityId: number): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.pendingFiles.length === 0) {
-        resolve();
-        return;
+  /**
+   * Ejecuta tanto las subidas como las eliminaciones pendientes en el servidor.
+   * Se debe llamar al guardar el formulario padre.
+   */
+  async applyChanges(targetEntityId: number): Promise<void> {
+    const finalId = targetEntityId || this.entityId;
+    if (!finalId) return;
+
+    this.isUploading = true;
+    this.cdr.detectChanges();
+
+    try {
+      // 1. Ejecutar eliminaciones
+      for (const image of this.toDeleteImages) {
+        await lastValueFrom(
+          this.imageService.deleteImage(
+            this.entityType,
+            finalId,
+            image.publicId
+          )
+        );
       }
+      this.toDeleteImages = [];
 
-      this.entityId = newEntityId;
-      this.isUploading = true;
-      let completed = 0;
-      const total = this.pendingFiles.length;
+      // 2. Ejecutar subidas
+      if (this.pendingFiles.length > 0) {
+        for (const file of this.pendingFiles) {
+          try {
+            const res = await lastValueFrom(
+              this.imageService.uploadImage(this.entityType, finalId, file)
+            );
+            this.images = [...this.images, res.item];
+          } catch (err) {
+            console.error('Error subiendo imagen en applyChanges', err);
+          }
+        }
+        this.pendingFiles = [];
+        this.pendingPreviews = [];
+      }
+    } finally {
+      this.isUploading = false;
+      this.imagesChanged.emit(this.images);
+      this.cdr.detectChanges();
+    }
+  }
 
-      this.pendingFiles.forEach((file) => {
-        this.imageService
-          .uploadImage(this.entityType, this.entityId, file)
-          .subscribe({
-            next: (res: UploadResponse) => {
-              this.images = [...this.images, res.item];
-              completed++;
-              if (completed === total) {
-                this.pendingFiles = [];
-                this.pendingPreviews = [];
-                this.checkUploadComplete(completed, total);
-                resolve();
-              }
-            },
-            error: (err: HttpErrorResponse) => {
-              console.error(`Error subiendo la foto pendiente`, err);
-              completed++;
-              if (completed === total) {
-                this.pendingFiles = [];
-                this.pendingPreviews = [];
-                this.checkUploadComplete(completed, total);
-                resolve();
-              }
-            }
-          });
-      });
-    });
+  // Mantenemos este por compatibilidad si algún componente lo busca, pero ahora redirige
+  uploadPendingFiles(newEntityId: number): Promise<void> {
+    return this.applyChanges(newEntityId);
   }
 
   resetPending() {
@@ -265,49 +290,24 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   confirmDeleteImage(image: ImageItem) {
     const dialogRef = this.dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar imagen',
+        title: 'Quitar imagen',
         message:
-          '¿Estás seguro de que deseas eliminar esta imagen? Esta acción no se puede deshacer.'
+          '¿Deseas quitar esta imagen de la galería? El cambio se aplicará permanentemente al guardar.'
       }
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
-        this.deleteImage(image);
+        this.markForDeletion(image);
       }
     });
   }
 
-  private deleteImage(image: ImageItem) {
-    if (!image || !image.imageId) {
-      console.error(
-        'No se puede eliminar la imagen, imageId no válido:',
-        image
-      );
-      return;
-    }
-
-    this.deletingIds.add(image.imageId);
+  private markForDeletion(image: ImageItem) {
+    // Simplemente movemos de la lista activa a la lista de "por borrar"
+    this.images = this.images.filter((img) => img.imageId !== image.imageId);
+    this.toDeleteImages.push(image);
     this.cdr.detectChanges();
-
-    this.imageService
-      .deleteImage(this.entityType, this.entityId, image.publicId)
-      .subscribe({
-        next: () => {
-          this.images = this.images.filter(
-            (img) => img.imageId !== image.imageId
-          );
-          this.deletingIds.delete(image.imageId);
-          this.imagesChanged.emit(this.images);
-
-          this.cdr.detectChanges();
-        },
-        error: (err: HttpErrorResponse) => {
-          console.error('Error eliminando la foto', err);
-          this.deletingIds.delete(image.imageId);
-          this.cdr.detectChanges();
-        }
-      });
   }
 
   openPreview(imageUrl: string) {

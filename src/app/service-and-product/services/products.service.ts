@@ -9,8 +9,7 @@ import {
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import {
   CreateProductPanel,
-  ProductComplete,
-  ProductListResponse
+  ProductComplete
 } from '../interface/product.interface';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
@@ -24,19 +23,27 @@ export class ProductsService {
 
   getProductWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
-    data: CreateProductPanel[];
+    data: ProductComplete[];
   }> {
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
-      data: CreateProductPanel[];
+      data: ProductComplete[];
     }>(`${environment.apiUrl}product/paginated-list`, { params });
   }
 
-  getAllProducts(): Observable<{ data: ProductListResponse }> {
-    return this._httpClient.get<{ data: ProductListResponse }>(
-      `${environment.apiUrl}product`
-    );
+  getAllProducts(): Observable<{
+    data: ProductComplete[];
+    pagination: PaginationInterface;
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject({
+      page: 1,
+      perPage: 500
+    });
+    return this._httpClient.get<{
+      data: ProductComplete[];
+      pagination: PaginationInterface;
+    }>(`${environment.apiUrl}product/paginated-list`, { params });
   }
 
   getProductEditPanel(

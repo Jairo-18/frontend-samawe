@@ -1,0 +1,11 @@
+.recipes-list-container {
+  min-height: 400px;
+  transition: all 0.3s ease-in-out;
+}
+
+.loader-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0;
+}

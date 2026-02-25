@@ -30,7 +30,6 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { CreateProductPanel } from '../../interface/product.interface';
 import { ProductsService } from '../../services/products.service';
 import {
   CategoryType,
@@ -93,7 +92,7 @@ export class SeeProductsComponent implements OnInit {
     'actions'
   ];
 
-  dataSource = new MatTableDataSource<CreateProductPanel>([]);
+  dataSource = new MatTableDataSource<ProductComplete>([]);
   allProducts: ProductComplete[] = [];
   userLogged: UserInterface;
   form!: FormGroup;
@@ -162,6 +161,7 @@ export class SeeProductsComponent implements OnInit {
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
+    this.paginationParams.page = 1;
     this.loadProducts();
   }
 
@@ -253,7 +253,7 @@ export class SeeProductsComponent implements OnInit {
   printProducts(): void {
     this._productsService.getAllProducts().subscribe({
       next: (res) => {
-        this.allProducts = (res.data?.products || []).sort(
+        this.allProducts = (res.data || []).sort(
           (a: ProductComplete, b: ProductComplete) => {
             const catCompare = a.categoryType.name.localeCompare(
               b.categoryType.name

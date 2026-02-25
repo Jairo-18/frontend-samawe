@@ -76,9 +76,9 @@ export class CreateOrEditAccommodationComponent
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
-    this.visibleCategoryTypes = value.filter((c) =>
-      ['Hospedaje', 'HOSPEDAJE'].includes(c.name)
-    );
+    this.visibleCategoryTypes = value
+      .filter((c) => ['Hospedaje', 'HOSPEDAJE'].includes(c.name))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     if (this.currentAccommodation && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithAccommodation(this.currentAccommodation);
@@ -290,7 +290,10 @@ export class CreateOrEditAccommodationComponent
         this._accommodationService
           .updateAccommodationPanel(this.accommodationId, updateData)
           .subscribe({
-            next: () => {
+            next: async () => {
+              if (this.imageUploader) {
+                await this.imageUploader.applyChanges(this.accommodationId);
+              }
               this.accommodationSaved.emit();
               this.resetForm();
             },
@@ -305,7 +308,7 @@ export class CreateOrEditAccommodationComponent
             next: async (res) => {
               const newId = Number(res.data?.rowId);
               if (newId && this.imageUploader) {
-                await this.imageUploader.uploadPendingFiles(newId);
+                await this.imageUploader.applyChanges(newId);
               }
               this.accommodationSaved.emit();
               this.resetForm();

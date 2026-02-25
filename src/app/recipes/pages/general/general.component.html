@@ -1,0 +1,22 @@
+<app-base-page>
+  <mat-tab-group
+    animationDuration="600ms"
+    (selectedIndexChange)="onTabChange($event)"
+  >
+    <mat-tab label="Ver recetas">
+      <div class="p-4 tab-content-container">
+        <app-see-recipes (editRecipe)="onEditRecipe($event)"></app-see-recipes>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="{{ currentRecipe ? 'Editar Receta' : 'Crear Receta' }}">
+      <div class="p-4 tab-content-container">
+        <app-create-or-edit-recipe
+          [currentRecipe]="currentRecipe"
+          (recipeSaved)="onRecipeSaved()"
+          (recipeCanceled)="onRecipeCanceled()"
+        ></app-create-or-edit-recipe>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</app-base-page>

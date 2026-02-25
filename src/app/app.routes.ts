@@ -47,6 +47,12 @@ export const routes: Routes = [
       },
       {
         canActivate: [authGuard, adminGuard],
+        path: 'recipes',
+        loadChildren: () =>
+          import('./recipes/recipes.routes').then((m) => m.recipesRoutes)
+      },
+      {
+        canActivate: [authGuard, adminGuard],
         path: 'invoice',
         children: invoicesRoutes
       },

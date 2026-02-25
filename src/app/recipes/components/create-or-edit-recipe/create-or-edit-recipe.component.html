@@ -1,0 +1,285 @@
+<app-section-header
+  [title]="isEditMode ? 'Editar Receta' : 'Nueva Receta'"
+  [subtitle]="
+    isEditMode
+      ? 'Modifica los ingredientes del plato'
+      : 'Define los ingredientes para el plato'
+  "
+></app-section-header>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Buscar Plato / Producto</mat-label>
+    <input
+      matInput
+      [matAutocomplete]="autoDish"
+      formControlName="dishSearch"
+      placeholder="Ej: Bandeja paisa..."
+      (focus)="onDishFocus()"
+      [readonly]="isEditMode"
+    />
+    <mat-icon matSuffix>restaurant</mat-icon>
+
+    <button
+      *ngIf="!isEditMode && dishSearchControl.value"
+      matSuffix
+      mat-icon-button
+      type="button"
+      (click)="resetForm()"
+      matTooltip="Limpiar selección"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+
+    <mat-autocomplete
+      #autoDish="matAutocomplete"
+      (optionSelected)="onDishSelected($event.option.value)"
+      [displayWith]="displayFn"
+    >
+      @for (dish of filteredDishes; track dish.productId) {
+        <mat-option [value]="dish">
+          {{ dish.name }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+
+    <mat-error
+      *ngIf="
+        form.get('productId')?.hasError('required') &&
+        form.get('productId')?.touched
+      "
+    >
+      Selecciona un plato
+    </mat-error>
+  </mat-form-field>
+
+  @if (selectedProductId || isEditMode) {
+    <div class="mt-2">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-base md:text-xl font-semibold">Ingredientes</span>
+
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          (click)="addIngredient()"
+        >
+          <mat-icon>add</mat-icon> Agregar
+        </button>
+      </div>
+
+      <div formArrayName="ingredients" class="mt-4">
+        @if (ingredientsArray.length > 0) {
+          <div class="overflow-x-auto">
+            <table
+              mat-table
+              [dataSource]="ingredientsArray.controls"
+              class="w-full"
+            >
+              <!-- Ingrediente -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  Ingrediente
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let ctrl; let i = index"
+                  [formGroup]="ctrl"
+                  class="!py-2"
+                >
+                  <mat-form-field
+                    appearance="outline"
+                    class="w-full mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
+                  >
+                    <input
+                      matInput
+                      [matAutocomplete]="autoIng"
+                      formControlName="ingSearch"
+                      placeholder="Ej: Pollo..."
+                      (focus)="onIngFocus(i)"
+                    />
+                    <mat-autocomplete
+                      #autoIng="matAutocomplete"
+                      (optionSelected)="onIngSelected($event.option.value, i)"
+                      [displayWith]="displayFn"
+                    >
+                      @for (
+                        ing of filteredIngredients[i] || [];
+                        track ing.productId
+                      ) {
+                        <mat-option [value]="ing">
+                          {{ ing.name }}
+                          <span>({{ ing.unitOfMeasure?.code || 'u' }})</span>
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Cantidad -->
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  Cantidad
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let ctrl; let i = index"
+                  [formGroup]="ctrl"
+                  class="px-3 !py-2"
+                >
+                  <mat-form-field
+                    appearance="outline"
+                    class="w-full mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
+                  >
+                    <input
+                      matInput
+                      formControlName="quantity"
+                      min="0.001"
+                      step="0.001"
+                      type="text"
+                      appCurrencyFormat
+                      class="text-right"
+                      placeholder="0.00"
+                    />
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Costo Parcial -->
+              <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  Precio Final
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let ctrl; let i = index"
+                  class="px-3 !py-2"
+                >
+                  <mat-form-field
+                    appearance="outline"
+                    class="w-full mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
+                  >
+                    <input
+                      matInput
+                      [value]="getIngredientCost(i) | formatCop"
+                      [readonly]="true"
+                      class="text-right font-semibold"
+                      appCurrencyFormat
+                      type="text"
+                      class="text-right"
+                      placeholder="0.00"
+                    />
+                    <mat-icon matSuffix>monetization_on</mat-icon>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Acciones -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  Acciones
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let ctrl; let i = index"
+                  class="center-text"
+                >
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeIngredient(i)"
+                    [disabled]="ingredientsArray.length === 1"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                class="hover:bg-emerald-50/30 transition-colors"
+              ></tr>
+            </table>
+          </div>
+        } @else {
+          <div
+            class="flex flex-col items-center gap-3 p-12 text-gray-400 border-2 border-dashed border-emerald-100 rounded-2xl bg-gray-50/30"
+          >
+            <mat-icon class="text-6xl w-12 h-12 opacity-20"
+              >inventory_2</mat-icon
+            >
+            <p class="m-0 font-medium text-emerald-900/40 text-center">
+              No has agregado ingredientes para esta receta
+            </p>
+          </div>
+        }
+
+        <!-- Total de la receta -->
+        @if (ingredientsArray.length > 0) {
+          <div
+            class="flex justify-between items-center mt-6 px-6 py-4 bg-emerald-600 rounded-xl shadow-md text-white"
+          >
+            <div class="flex flex-col">
+              <span
+                class="text-xs uppercase tracking-widest font-bold opacity-80"
+                >Total Receta</span
+              >
+              <span class="text-[10px] opacity-70"
+                >Costo calculado por ingredientes</span
+              >
+            </div>
+            <span class="text-3xl font-black tracking-tighter">
+              ${{ totalCost | number: '1.0-0' }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (selectedProductId) {
+    <section class="w-full mt-8 mb-4">
+      <app-image-uploader
+        #imageUploader
+        [entityId]="selectedProductId"
+        entityType="product"
+        [isLoading]="false"
+      ></app-image-uploader>
+    </section>
+  }
+
+  <!-- Botones -->
+  <div
+    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt-8 pt-6 border-t border-emerald-50"
+  >
+    <button
+      type="button"
+      mat-stroked-button
+      (click)="resetForm()"
+      [disabled]="saving"
+      class="w-full md:w-auto"
+    >
+      <mat-icon>close</mat-icon> Cancelar
+    </button>
+    <button
+      type="submit"
+      mat-flat-button
+      class="w-full md:w-auto !bg-emerald-600 !text-white hover:!bg-emerald-700 disabled:!bg-emerald-300"
+      [disabled]="saving || form.invalid || ingredientsArray.length === 0"
+    >
+      @if (saving) {
+        <mat-spinner
+          diameter="20"
+          class="inline-block mr-2"
+          color="accent"
+        ></mat-spinner>
+      } @else {
+        <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
+      }
+      {{ isEditMode ? 'Guardar cambios' : 'Crear receta' }}
+    </button>
+  </div>
+</form>

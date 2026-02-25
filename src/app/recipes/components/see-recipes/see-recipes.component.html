@@ -1,0 +1,74 @@
+<app-section-header
+  [title]="'Ver Recetas'"
+  [subtitle]="'Consulta los ingredientes y costos de cada plato'"
+></app-section-header>
+
+<app-search-fields
+  [searchFields]="searchFieldsRecipes"
+  [form]="form"
+  [debounceTime]="300"
+  (searchSubmit)="onSearchSubmit($event)"
+  (searchChange)="onSearchChange($event)"
+></app-search-fields>
+
+<section class="flex w-full justify-end items-center gap-2">
+  <div class="hidden md:flex w-[24%]">
+    <button
+      class="!w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="searchComponent.reset()"
+      [disabled]="!showClearButton"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+
+  <div class="flex md:hidden w-full">
+    <button
+      class="!w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="searchComponent.reset()"
+      [disabled]="!showClearButton"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+</section>
+
+<div class="mt-4 recipes-list-container">
+  <div class="overflow-auto mb-3">
+    @if (loading) {
+      <div class="loader-overlay">
+        <app-loader></app-loader>
+      </div>
+    } @else if (recipes.length > 0) {
+      <div
+        class="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-5"
+      >
+        @for (recipe of recipes; track recipe.productId) {
+          <app-recipe-card
+            [recipe]="recipe"
+            [canEdit]="canEdit()"
+            (edit)="editRecipe.emit($event)"
+            (delete)="openDeleteDialog($event)"
+          ></app-recipe-card>
+        }
+      </div>
+      <mat-paginator
+        [length]="paginationParams.total"
+        [pageSize]="paginationParams.perPage"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageIndex]="(paginationParams.page || 1) - 1"
+        (page)="onChangePagination($event)"
+      ></mat-paginator>
+    } @else {
+      <div class="w-full justify-center items-center flex">
+        <p>No se encontraron recetas</p>
+      </div>
+    }
+  </div>
+</div>

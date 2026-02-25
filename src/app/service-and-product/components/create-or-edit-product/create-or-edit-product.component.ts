@@ -72,18 +72,22 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
-    this.visibleCategoryTypes = value.filter((c) =>
-      [
-        'Bar',
-        'Restaurante',
-        'Otros',
-        'Mecato',
-        'MECATO',
-        'BAR',
-        'RESTAURANTE',
-        'OTROS'
-      ].includes(c.name)
-    );
+    this.visibleCategoryTypes = value
+      .filter((c) =>
+        [
+          'Bar',
+          'Restaurante',
+          'Otros',
+          'Mecato',
+          'MECATO',
+          'BAR',
+          'RESTAURANTE',
+          'OTROS',
+          'ingrediente',
+          'INGREDIENTE'
+        ].includes(c.name)
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     if (this.currentProduct && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithProduct(this.currentProduct);
@@ -265,7 +269,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         this._productsService
           .updateProductPanel(this.productId, updateData)
           .subscribe({
-            next: () => {
+            next: async () => {
+              if (this.imageUploader) {
+                await this.imageUploader.applyChanges(this.productId);
+              }
               this.productSaved.emit();
               this.resetForm();
             },
@@ -278,7 +285,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
           next: async (res) => {
             const newId = Number(res.data?.rowId);
             if (newId && this.imageUploader) {
-              await this.imageUploader.uploadPendingFiles(newId);
+              await this.imageUploader.applyChanges(newId);
             }
             this.productSaved.emit();
             this.resetForm();

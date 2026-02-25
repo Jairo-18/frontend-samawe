@@ -74,9 +74,11 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
-    this.visibleCategoryTypes = value.filter((c) =>
-      ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name)
-    );
+    this.visibleCategoryTypes = value
+      .filter((c) =>
+        ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name)
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     if (this.currentExcursion && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithExcursion(this.currentExcursion);
@@ -254,7 +256,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         this._excursionService
           .updateExcursionPanel(this.excursionId, updateData)
           .subscribe({
-            next: () => {
+            next: async () => {
+              if (this.imageUploader) {
+                await this.imageUploader.applyChanges(this.excursionId);
+              }
               this.excursionSaved.emit();
               this.resetForm();
             },
@@ -267,7 +272,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
           next: async (res) => {
             const newId = Number(res.data?.rowId);
             if (newId && this.imageUploader) {
-              await this.imageUploader.uploadPendingFiles(newId);
+              await this.imageUploader.applyChanges(newId);
             }
             this.excursionSaved.emit();
             this.resetForm();

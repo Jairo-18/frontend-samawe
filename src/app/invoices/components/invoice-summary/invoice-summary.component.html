@@ -1,15 +1,17 @@
 <article class="flex flex-col h-full justify-center m-4 md:m-0">
   <div>
-    <span class="text-lg md:text-xl font-extrabold">Resumen de Factura</span>
+    <span class="text-base md:text-xl font-extrabold">Resumen de Factura</span>
   </div>
   <div class="flex flex-col">
     @if (invoiceData.invoiceType.code === 'FC') {
-      <span class="font-bold">Nombre del Proveedor</span>
+      <span class="font-bold text-xs md:text-base">Nombre del Proveedor</span>
     } @else {
-      <span class="font-bold">Nombre del Cliente</span>
+      <span class="font-bold text-xs md:text-base">Nombre del Cliente</span>
     }
 
-    <div class="w-full rounded-lg border border-[#06a606] px-2 py-3">
+    <div
+      class="w-full rounded-lg border border-[#06a606] px-2 py-2 text-xs md:text-base mt-1"
+    >
       {{ invoiceData.user.firstName || '' }}
       {{ invoiceData.user.lastName || '' }}
     </div>
@@ -18,19 +20,21 @@
   <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Tipo de pago:</span>
+      <span class="font-bold text-xs md:text-base">Tipo de pago:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span>{{ invoiceData.payType?.name || '' }} </span>
+      <span class="text-xs md:text-base"
+        >{{ invoiceData.payType?.name || '' }}
+      </span>
     </div>
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Estado de pago:</span>
+      <span class="font-bold text-xs md:text-base">Estado de pago:</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span
-        class="font-medium"
+        class="font-medium text-xs md:text-base"
         [ngClass]="{
           'text-green-600':
             invoiceData.paidType?.name === 'Pagado' ||
@@ -49,20 +53,24 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Factura #:</span>
+      <span class="font-bold text-xs md:text-base">Factura #:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span>{{ invoiceData.invoiceType.code || '' }}</span>
+      <span class="text-xs md:text-base">{{
+        invoiceData.invoiceType.code || ''
+      }}</span>
       <span> - </span>
-      <span>{{ invoiceData.code || '' }}</span>
+      <span class="text-xs md:text-base">{{ invoiceData.code || '' }}</span>
     </div>
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Subtotal:</span>
+      <span class="font-bold text-xs md:text-base">Subtotal:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span>{{ invoiceData.subtotalWithoutTax ?? 0 | formatCop }}</span>
+      <span class="text-xs md:text-base">{{
+        invoiceData.subtotalWithoutTax ?? 0 | formatCop
+      }}</span>
     </div>
   </div>
 
@@ -70,10 +78,10 @@
 
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Impuesto:</span>
+      <span class="font-bold text-xs md:text-base">Impuesto:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span>
+      <span class="text-xs md:text-base">
         {{ invoiceData.totalTaxes ?? 0 | formatCop }}
       </span>
     </div>
@@ -81,11 +89,11 @@
 
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Total:</span>
+      <span class="font-bold text-xs md:text-base">Total:</span>
     </div>
 
     <div class="flex justify-end w-[50%]">
-      <span class="font-medium text-[#06a606]">{{
+      <span class="font-medium text-[#06a606] text-xs md:text-base">{{
         invoiceData.total ?? 0 | formatCop
       }}</span>
     </div>
@@ -93,19 +101,21 @@
 
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Total Pagado:</span>
+      <span class="font-bold text-xs md:text-base">Total Pagado:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span class="font-medium text-blue-600">{{ paidTotal | formatCop }}</span>
+      <span class="font-medium text-blue-600 text-xs md:text-base">{{
+        paidTotal | formatCop
+      }}</span>
     </div>
   </div>
 
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold">Pendiente por Pagar:</span>
+      <span class="font-bold text-xs md:text-base">Pendiente por Pagar:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span class="font-medium text-red-600">{{
+      <span class="font-medium text-red-600 text-xs md:text-base">{{
         pendingAmount | formatCop
       }}</span>
     </div>
@@ -128,10 +138,10 @@
 
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold">Efectivo:</span>
+        <span class="font-bold text-xs md:text-base">Efectivo:</span>
       </div>
       <div class="flex justify-end w-[50%]">
-        <span class="text-[#06a606] font-medium">
+        <span class="text-[#06a606] font-medium text-xs md:text-base">
           {{ invoiceData.cash || '' | formatCop }}
         </span>
       </div>
@@ -142,10 +152,10 @@
   @if (invoiceData.transfer && invoiceData.transfer > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold">Transferencia:</span>
+        <span class="font-bold text-xs md:text-base">Transferencia:</span>
       </div>
       <div class="flex justify-end w-[50%]">
-        <span class="text-[#06a606] font-medium">
+        <span class="text-[#06a606] font-medium text-xs md:text-base">
           {{ invoiceData.transfer || '' | formatCop }}
         </span>
       </div>
@@ -156,18 +166,20 @@
 
   <div class="flex flex-col">
     <div class="flex justify-start w-full">
-      <span class="font-bold">Observaciones</span>
+      <span class="font-bold text-xs md:text-base">Observaciones</span>
     </div>
     <div
-      class="flex justify-start w-full p-1 border border-[#06a606] rounded-lg"
+      class="flex justify-start w-full p-1 border border-[#06a606] rounded-lg px-2 py-2 mt-1"
     >
-      <span class="font-medium text-[#06a606]">{{
+      <span class="font-medium text-[#06a606] text-xs md:text-base">{{
         invoiceData.observations || 'NO HAY OBSERVACIONES'
       }}</span>
     </div>
   </div>
 
-  <div><span>Los precios incluyen impuestos</span></div>
+  <div class="my-2">
+    <span class="text-xs md:text-base">Los precios incluyen impuestos</span>
+  </div>
 
   <section class="flex flex-col gap-y-2">
     <div class="flex">

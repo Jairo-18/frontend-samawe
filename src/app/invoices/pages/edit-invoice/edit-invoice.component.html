@@ -3,6 +3,7 @@
   [showContentTitle]="true"
   [showBackButton]="true"
   [showBorder]="false"
+  [pxMobile]="false"
   backButtonRoute="/invoice/invoices/list"
   backButtonText="Volver"
   backButtonTooltip="Volver a la lista"
@@ -19,7 +20,7 @@
         <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
           <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
           @if (invoiceData) {
-            <span class="text-base md:text-xl font-extrabold">
+            <span class="text-xs md:text-xl font-extrabold">
               {{ invoiceData.invoiceType.name || '' }} Nr°
               {{ invoiceData.code || '' }}
             </span>
@@ -30,34 +31,32 @@
               >
                 <div class="flex flex-col">
                   <div class="flex flex-row gap-2">
-                    <span class="font-bold">
+                    <span class="font-bold text-xs md:text-base">
                       {{
                         invoiceData.invoiceType.code === 'FC'
                           ? 'PROVEEDOR:'
                           : 'CLIENTE:'
                       }}
                     </span>
-                    <span class="font-normal">
+                    <span class="font-normal text-xs md:text-base">
                       {{ ' ' + invoiceData.user.firstName || '' }}
                       {{ invoiceData.user.lastName || '' }}
                     </span>
                   </div>
                   <div class="flex flex-row gap-2">
-                    <span class="font-bold">
+                    <span class="font-bold text-xs md:text-base">
                       {{ invoiceData.user.identificationType.name }}:
                     </span>
-                    <span class="font-normal">
+                    <span class="font-normal text-xs md:text-base">
                       {{ ' ' + invoiceData.user.identificationNumber || '' }}
                     </span>
                   </div>
                 </div>
               </div>
-              <div
-                class="flex w-full md:w-[50%] justify-start md:justify-end text-sm md:text-base"
-              >
-                <span class="font-bold">
+              <div class="flex w-full md:w-[50%] justify-start md:justify-end">
+                <span class="font-bold text-xs md:text-base">
                   EMPLEADO:
-                  <span class="font-normal">
+                  <span class="font-normal text-xs md:text-base">
                     {{ invoiceData.employee.firstName || '' }}
                     {{ invoiceData.employee.lastName || '' }}
                   </span>
@@ -151,7 +150,9 @@
           class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
         >
           <div class="w-full text-center">
-            <span class="font-bold">Servicios y Productos Ingresados</span>
+            <span class="font-bold text-sm md:text-base"
+              >Servicios y Productos Ingresados</span
+            >
           </div>
           <app-invoice-detaill
             *ngIf="invoiceData"

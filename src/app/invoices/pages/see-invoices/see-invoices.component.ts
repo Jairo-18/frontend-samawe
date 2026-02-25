@@ -260,6 +260,7 @@ export class SeeInvoicesComponent implements OnInit {
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = this.formatParams(form?.value);
+    this.paginationParams.page = 1;
     this.loadInvoices();
   }
 

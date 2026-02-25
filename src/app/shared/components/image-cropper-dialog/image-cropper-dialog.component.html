@@ -1,0 +1,80 @@
+<h2 mat-dialog-title class="text-xl font-bold">Recortar Imagen</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="flex flex-col items-center gap-4 py-4">
+    <div
+      class="cropper-wrapper w-full max-h-[60vh] overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
+    >
+      <image-cropper
+        [imageFile]="imageFile"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="1 / 1"
+        [canvasRotation]="rotation"
+        [transform]="{ scale: zoomFactor }"
+        [containWithinAspectRatio]="true"
+        [resizeToWidth]="1200"
+        [imageQuality]="98"
+        format="webp"
+        (imageCropped)="imageCropped($event)"
+        (imageLoaded)="imageLoaded()"
+        (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"
+        class="w-full"
+      ></image-cropper>
+    </div>
+
+    <div class="flex justify-center gap-6 w-full mt-2">
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="zoomOut()"
+        matTooltip="Alejar"
+      >
+        <mat-icon>zoom_out</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="zoomIn()"
+        matTooltip="Acercar"
+      >
+        <mat-icon>zoom_in</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="rotateLeft()"
+        matTooltip="Girar izquierda"
+      >
+        <mat-icon>rotate_left</mat-icon>
+      </button>
+      <button
+        mat-mini-fab
+        color="primary"
+        (click)="rotateRight()"
+        matTooltip="Girar derecha"
+      >
+        <mat-icon>rotate_right</mat-icon>
+      </button>
+      <button
+        mat-stroked-button
+        color="accent"
+        (click)="resetImage()"
+        class="rounded-full"
+      >
+        <mat-icon>settings_backup_restore</mat-icon>
+        Reiniciar
+      </button>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end" class="gap-2 p-4">
+  <button mat-button (click)="onCancel()" color="warn">Cancelar</button>
+  <button
+    mat-raised-button
+    (click)="onSave()"
+    color="primary"
+    [disabled]="!croppedImage"
+  >
+    Finalizar Recorte
+  </button>
+</mat-dialog-actions>

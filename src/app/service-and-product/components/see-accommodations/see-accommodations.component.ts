@@ -172,6 +172,7 @@ export class SeeAccommodationsComponent implements OnInit {
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
+    this.paginationParams.page = 1;
     this.loadAccommodations();
   }
 
