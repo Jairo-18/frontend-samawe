@@ -4,7 +4,6 @@ import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { NAVBAR_CONST } from '../../../shared/constants/navbar.constans';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
@@ -15,3 +14,4 @@ import { MatMenuModule } from '@angular/material/menu';
 export class NavBarComponent {
   navBarItems: NavItem[] = NAVBAR_CONST;
 }
+

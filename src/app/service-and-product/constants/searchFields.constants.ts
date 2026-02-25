@@ -1,5 +1,4 @@
 import { SearchField } from '../../shared/interfaces/search.interface';
-
 export const searchFieldsProducts: SearchField[] = [
   {
     name: 'search',
@@ -25,7 +24,6 @@ export const searchFieldsProducts: SearchField[] = [
     placeholder: 'Buscar por estado'
   }
 ];
-
 export const searchFieldsAccommodations: SearchField[] = [
   {
     name: 'search',
@@ -65,7 +63,6 @@ export const searchFieldsAccommodations: SearchField[] = [
     placeholder: 'Buscar por jacuzzi'
   }
 ];
-
 export const searchFieldsExcursions: SearchField[] = [
   {
     name: 'search',
@@ -73,7 +70,6 @@ export const searchFieldsExcursions: SearchField[] = [
     type: 'text',
     placeholder: ' '
   },
-
   {
     name: 'categoryType',
     label: 'Categoría',
@@ -81,7 +77,6 @@ export const searchFieldsExcursions: SearchField[] = [
     options: [],
     placeholder: 'Buscar por categoría'
   },
-
   {
     name: 'stateType',
     label: 'Estado',
@@ -90,3 +85,4 @@ export const searchFieldsExcursions: SearchField[] = [
     placeholder: 'Buscar por estado'
   }
 ];
+

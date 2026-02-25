@@ -6,7 +6,6 @@ export interface PaginationInterface {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
-
 export interface ParamsPaginationInterface {
   order?: 'ASC' | 'DESC';
   page?: number;
@@ -14,3 +13,4 @@ export interface ParamsPaginationInterface {
   search?: string;
   userId?: string;
 }
+

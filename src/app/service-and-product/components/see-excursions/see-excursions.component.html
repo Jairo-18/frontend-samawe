@@ -10,7 +10,6 @@
     (searchSubmit)="onSearchSubmit($event)"
     (searchChange)="onSearchChange($event)"
   ></app-search-fields>
-
   <section class="flex w-full justify-end items-center gap-2">
     <div class="w-[24%]">
       <button
@@ -36,7 +35,6 @@
       </button>
     </div>
   </section>
-
   <div class="mt-4">
     <div class="overflow-auto mb-3">
       @if (loading) {
@@ -51,7 +49,6 @@
               {{ excursion?.categoryType?.name || 'Sin categoría' }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="stateType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               Estado
@@ -81,7 +78,6 @@
               {{ excursion?.stateType?.name || 'Sin estado' }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="code">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               Código
@@ -90,7 +86,6 @@
               {{ excursion.code }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               Nombre
@@ -99,7 +94,6 @@
               {{ excursion.name }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="priceBuy">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               P. Compra
@@ -112,7 +106,6 @@
               {{ excursion.priceBuy | formatCop }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="priceSale">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               P. Venta
@@ -125,7 +118,6 @@
               {{ excursion.priceSale | formatCop }}
             </td>
           </ng-container>
-
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               Acciones
@@ -151,11 +143,9 @@
               }
             </td>
           </ng-container>
-
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-
         <mat-paginator
           [length]="paginationParams.total"
           [pageSize]="paginationParams.perPage"
@@ -198,7 +188,6 @@
             Limpiar filtros
           </button>
         </div>
-
         <div class="w-full">
           <button
             class="!w-full"
@@ -227,7 +216,6 @@
                 {{ excursion?.categoryType?.name || 'Sin categoría' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="stateType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Estado
@@ -257,7 +245,6 @@
                 {{ excursion?.stateType?.name || 'Sin estado' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Código
@@ -266,7 +253,6 @@
                 {{ excursion.code }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Nombre
@@ -275,7 +261,6 @@
                 {{ excursion.name }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="priceBuy">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 P. Compra
@@ -288,7 +273,6 @@
                 {{ excursion.priceBuy | formatCop }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="priceSale">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 P. Venta
@@ -301,7 +285,6 @@
                 {{ excursion.priceSale | formatCop }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Acciones
@@ -327,7 +310,6 @@
                 </button>
               </td>
             </ng-container>
-
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
@@ -354,3 +336,4 @@
   [excursions]="allExcursions"
   #excursionsPrint
 ></app-excursios-print>
+

@@ -8,10 +8,7 @@
       Lista de Pasadías y Servicios
     </p>
   </section>
-
-  <!-- ✅ TABLA CON DIVS Y FLEXBOX -->
   <div class="w-full" *ngIf="excursions" style="width: 100%">
-    <!-- HEADER -->
     <div class="flex w-full" style="display: flex; width: 100%">
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
@@ -74,8 +71,6 @@
         P. Venta
       </div>
     </div>
-
-    <!-- MENSAJE SI NO HAY EXCURSIONES -->
     <div
       *ngIf="excursions.length === 0"
       class="flex w-full"
@@ -94,14 +89,11 @@
         No hay pasadías o servicios registrados
       </div>
     </div>
-
-    <!-- FILAS DE EXCURSIONES -->
     <div
       *ngFor="let excursion of excursions; let i = index"
       class="flex w-full"
       style="display: flex; width: 100%"
     >
-      <!-- Categoría -->
       <div
         class="flex-[2] border px-4 p-1 text-center text-xs"
         style="
@@ -114,8 +106,6 @@
       >
         {{ excursion.categoryType.name || 'N/A' }}
       </div>
-
-      <!-- Nombre -->
       <div
         class="flex-[4] border px-4 p-1 text-left text-xs"
         style="
@@ -128,8 +118,6 @@
       >
         {{ excursion.name || 'N/A' }}
       </div>
-
-      <!-- Precio Compra -->
       <div
         class="flex-[2] border px-4 p-1 text-right text-xs font-bold text-red-700"
         style="
@@ -142,8 +130,6 @@
       >
         {{ excursion?.priceBuy ?? 0 | formatCop }}
       </div>
-
-      <!-- Precio Venta -->
       <div
         class="flex-[2] border px-4 p-1 text-right text-xs font-bold text-green-700"
         style="
@@ -159,3 +145,4 @@
     </div>
   </div>
 </article>
+

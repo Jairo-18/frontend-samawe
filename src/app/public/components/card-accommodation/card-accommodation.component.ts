@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
 @Component({
   selector: 'app-card-accommodation',
   imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule],
@@ -13,7 +12,6 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class CardAccommodationComponent {
   @Input() accommodation?: GetAccommodationPaginatedList;
-
   get mainImage(): string {
     return (
       this.accommodation?.images?.[0]?.imageUrl ||
@@ -21,3 +19,4 @@ export class CardAccommodationComponent {
     );
   }
 }
+

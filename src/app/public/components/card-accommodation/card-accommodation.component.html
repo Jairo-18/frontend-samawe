@@ -5,14 +5,12 @@
     [alt]="accommodation.name"
     class="w-[300px] h-[150px] md:w-max[270px] md:h-max[160px] rounded-[8px]"
   />
-
   <mat-card-header>
     <mat-card-title>{{ accommodation.name }}</mat-card-title>
     <mat-card-subtitle
       >Precio: ${{ accommodation.priceSale | number }}</mat-card-subtitle
     >
   </mat-card-header>
-
   <mat-card-content>
     <p>{{ accommodation.description || 'Sin descripción' }}</p>
     <ul class="accommodation-details">
@@ -24,8 +22,8 @@
       <li>Jacuzzi: {{ accommodation.jacuzzi ? 'Sí' : 'No' }}</li>
     </ul>
   </mat-card-content>
-
   <mat-card-actions>
     <button mat-button color="primary">Reservar</button>
   </mat-card-actions>
 </mat-card>
+

@@ -18,7 +18,6 @@ import {
   ApiResponseCreateInterface,
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +25,6 @@ export class TypesService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-
   getEntitiesWithPagination(
     type: string,
     query: ParamsPaginationInterface
@@ -37,7 +35,6 @@ export class TypesService {
       data: TypeItem[];
     }>(`${environment.apiUrl}type/paginated/${type}`, { params });
   }
-
   createType(
     type: string,
     data: CreateType
@@ -47,7 +44,6 @@ export class TypesService {
       data
     );
   }
-
   getTypeForEdit<T extends CreateType>(
     type: string,
     id: string
@@ -57,33 +53,24 @@ export class TypesService {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateType(type: string, id: string, body: any): Observable<any> {
     return this._httpClient.patch(
       `${environment.apiUrl}type/${type}/${id}`,
       body
     );
   }
-
   deleteType(type: string, id: string): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}type/${type}/${id}`);
   }
-
-  /**
-   * Obtiene todos los DiscountType (sin paginación)
-   */
   getAllDiscountTypes(): Observable<ApiResponseInterface<DiscountType[]>> {
     return this._httpClient.get<ApiResponseInterface<DiscountType[]>>(
       `${environment.apiUrl}type/discountType/all`
     );
   }
-
-  /**
-   * Obtiene todos los AdditionalType (sin paginación)
-   */
   getAllAdditionalTypes(): Observable<ApiResponseInterface<AdditionalType[]>> {
     return this._httpClient.get<ApiResponseInterface<AdditionalType[]>>(
       `${environment.apiUrl}type/additionalType/all`
     );
   }
 }
+

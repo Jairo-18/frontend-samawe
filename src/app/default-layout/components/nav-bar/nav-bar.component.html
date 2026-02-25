@@ -1,6 +1,5 @@
 <nav>
   <article class="flex content-between px-6 py-2 items-center">
-    <!-- Logo -->
     <section
       class="flex content-between w-[70%] md:w-[40%] items-center text-white gap-x-3"
     >
@@ -14,8 +13,6 @@
         Ecohotel Samawé
       </h1>
     </section>
-
-    <!-- Desktop Menu -->
     <section class="hidden md:flex justify-between w-[60%] text-white">
       @for (item of navBarItems; track $index) {
       <button
@@ -27,8 +24,6 @@
       </button>
       }
     </section>
-
-    <!-- Mobile Menu -->
     <section class="flex md:hidden justify-end w-[30%] md:w-[60%]">
       <button
         mat-icon-button
@@ -48,3 +43,4 @@
     </section>
   </article>
 </nav>
+

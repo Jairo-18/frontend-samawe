@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
-
 @Component({
   selector: 'app-default-layout',
   standalone: true,
@@ -23,22 +22,15 @@ export class DefaultLayoutComponent implements OnInit {
   private _localStorageService: LocalStorageService =
     inject(LocalStorageService);
   private _subscription: Subscription = new Subscription();
-
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
   isCollapsedSideBar: boolean = true;
   isPhone: boolean = false;
   user?: UserInterface;
   closeSideBar: boolean = false;
-
   constructor() {
     this.isPhone = window.innerWidth <= 768;
   }
-
-  /**
-   * Método que se ejecuta al inicializar el componente.
-   * Se suscribe a cambios de estado de autenticación y eventos de navegación.
-   */
   ngOnInit(): void {
     this._subscription.add(
       this._authService._isLoggedSubject.subscribe((isLogged) => {
@@ -46,41 +38,24 @@ export class DefaultLayoutComponent implements OnInit {
         this.userInfo = this._localStorage.getUserData();
       })
     );
-
     this.isLoggedUser = this._authService.isAuthenticated();
-
     this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoggedUser = this._authService.isAuthenticated();
         this.userInfo = this._localStorage.getUserData();
       });
-
     this.userInfo = this._localStorage.getUserData();
   }
-
-  /**
-   * Método que escucha el evento emitido desde el `SideBarComponent`
-   * para alternar el estado del sidebar (expandido o colapsado).
-   *
-   * @param event Estado emitido desde el sidebar
-   */
   listenEvent(event: boolean): void {
     this.isCollapsedSideBar = event;
     this.closeSideBar = false;
   }
-
-  /**
-   * Cierra sesión del usuario actual.
-   * Valida que existan los datos mínimos requeridos para realizar la petición de logout,
-   * y luego limpia el almacenamiento local y redirige al login.
-   */
   logout(): void {
     if (!this.isLoggedUser) {
       this._router.navigateByUrl('/auth/login');
     } else {
       const allSessionData = this._localStorageService.getAllSessionData();
-
       if (
         !allSessionData?.user?.userId ||
         !allSessionData?.tokens?.accessToken ||
@@ -90,13 +65,11 @@ export class DefaultLayoutComponent implements OnInit {
         this._authService.cleanStorageAndRedirectToLogin();
         return;
       }
-
       const sessionDataToLogout: LogOutInterface = {
         userId: allSessionData.user.userId,
         accessToken: allSessionData.tokens.accessToken,
         accessSessionId: allSessionData.session.accessSessionId
       };
-
       this._authService.logout(sessionDataToLogout).subscribe({
         next: () => {
           this._authService.cleanStorageAndRedirectToLogin();
@@ -109,3 +82,4 @@ export class DefaultLayoutComponent implements OnInit {
     }
   }
 }
+

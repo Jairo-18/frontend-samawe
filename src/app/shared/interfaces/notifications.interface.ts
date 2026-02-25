@@ -3,5 +3,5 @@ export interface NotificationInterface {
   information: string;
   type: NotificationsTypes;
 }
-
 export type NotificationsTypes = 'success' | 'error';
+

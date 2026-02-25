@@ -67,3 +67,4 @@ export class RecipesGeneralComponent implements AfterViewInit {
     if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
+

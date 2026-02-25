@@ -4,7 +4,6 @@ import {
   StateType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
-
 export interface CreateAccommodationPanel {
   accommodationId?: number;
   code: string;
@@ -21,7 +20,6 @@ export interface CreateAccommodationPanel {
   bedTypeId: number;
   stateTypeId?: number;
 }
-
 export interface AccommodationComplete {
   accommodationId: number;
   code: string;
@@ -42,7 +40,6 @@ export interface AccommodationComplete {
   deletedAt: Date;
   images?: ImageItem[];
 }
-
 export interface GetAccommodationPaginatedList {
   accommodationId?: number;
   code: string;
@@ -59,9 +56,9 @@ export interface GetAccommodationPaginatedList {
   stateTypeId?: number;
   images?: ImageItem[];
 }
-
 export interface CreateAccommodationRelatedData {
   categoryType: CategoryType[];
   bedType: BedType[];
   stateType: StateType[];
 }
+

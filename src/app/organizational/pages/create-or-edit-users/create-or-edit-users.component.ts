@@ -31,7 +31,6 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
-
 @Component({
   selector: 'app-create-or-edit-users',
   standalone: true,
@@ -64,7 +63,6 @@ export class CreateOrEditUsersComponent implements OnInit {
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
-
   userForm: FormGroup;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
@@ -77,7 +75,6 @@ export class CreateOrEditUsersComponent implements OnInit {
   loading: boolean = false;
   loadingPhoneCodes: boolean = false;
   userLogged?: UserInterface;
-
   constructor(private _fb: FormBuilder) {
     this.userForm = this._fb.group({
       roleTypeId: ['', Validators.required],
@@ -94,29 +91,22 @@ export class CreateOrEditUsersComponent implements OnInit {
       isActive: [true, Validators.required]
     });
   }
-
   ngOnInit(): void {
     this.userLogged = this._authService.getUserLoggedIn();
     this.getRelatedData();
     this.setupPhoneCodeSearch();
-
     this.userId = this._activatedRoute.snapshot.params['id'];
     this.isEditMode = !!this.userId;
-
     if (this.isEditMode) {
       this.getUserToEdit(this.userId);
     }
   }
-
   getRelatedData(): void {
     this.loading = true;
-
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         const allRoles = res.data?.roleType || [];
-
         const roleName = this.userLogged?.roleType?.name;
-
         if (roleName === 'Recepcionista' || roleName === 'RECEPCIONISTA') {
           this.roleType = allRoles.filter(
             (r) => r.name === 'Cliente' || r.name === 'CLIENTE'
@@ -132,7 +122,6 @@ export class CreateOrEditUsersComponent implements OnInit {
         } else {
           this.roleType = allRoles;
         }
-
         this.identificationType = res.data?.identificationType || [];
         this.loading = false;
       },
@@ -142,10 +131,8 @@ export class CreateOrEditUsersComponent implements OnInit {
       }
     });
   }
-
   setupPhoneCodeSearch(): void {
     this.loadPhoneCodes('');
-
     this.userForm
       .get('phoneCodeSearch')
       ?.valueChanges.pipe(
@@ -171,7 +158,6 @@ export class CreateOrEditUsersComponent implements OnInit {
         }
       });
   }
-
   loadPhoneCodes(search: string = ''): void {
     this.loadingPhoneCodes = true;
     this._relatedDataService.searchPhoneCodes(search, 1, 20).subscribe({
@@ -186,11 +172,9 @@ export class CreateOrEditUsersComponent implements OnInit {
       }
     });
   }
-
   displayPhoneCode(phoneCode: PhoneCode): string {
     return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
   }
-
   onPhoneCodeSelected(phoneCode: PhoneCode): void {
     if (phoneCode && phoneCode.phoneCodeId) {
       this.userForm.patchValue({
@@ -198,7 +182,6 @@ export class CreateOrEditUsersComponent implements OnInit {
       });
     }
   }
-
   setPassword() {
     const identificationValue = this.userForm.get(
       'identificationNumber'
@@ -210,13 +193,11 @@ export class CreateOrEditUsersComponent implements OnInit {
       });
     }
   }
-
   private getUserToEdit(userId: string): void {
     this.loading = true;
     this._usersService.getUserEditPanel(userId).subscribe({
       next: (res) => {
         const user = res.data;
-
         this.userForm.patchValue({
           userId: user.userId,
           roleTypeId: user.roleType?.roleTypeId,
@@ -238,7 +219,6 @@ export class CreateOrEditUsersComponent implements OnInit {
       }
     });
   }
-
   save() {
     if (this.userForm.get('identificationNumber')?.value) {
       this.setPassword();
@@ -291,7 +271,6 @@ export class CreateOrEditUsersComponent implements OnInit {
       this.userForm.markAllAsTouched();
     }
   }
-
   onEmailInput(event: Event) {
     const input = event.target as HTMLInputElement;
     this.userForm
@@ -299,3 +278,4 @@ export class CreateOrEditUsersComponent implements OnInit {
       ?.setValue(input.value.toLowerCase(), { emitEvent: false });
   }
 }
+

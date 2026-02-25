@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -85,17 +86,12 @@ export class CreateOrEditRecipeComponent implements OnChanges {
   saving = false;
   selectedProductId: number | null = null;
 
-  /** Columnas de la tabla de ingredientes */
   displayedColumns: string[] = ['name', 'quantity', 'cost', 'actions'];
 
-  /** Resultados del autocomplete de plato */
   filteredDishes: ProductComplete[] = [];
-  /** Resultados del autocomplete de ingredientes por fila */
   filteredIngredients: ProductComplete[][] = [];
-  /** Cache priceBuy por productId para calcular costo sin hacer GET extra */
   ingredientPriceMap: Record<number, number> = {};
 
-  /** Control del texto del buscador de plato (conectado al form global) */
   get dishSearchControl(): FormControl {
     return this.form.get('dishSearch') as FormControl;
   }
@@ -104,8 +100,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     this.initForm();
     this._setupDishAutocomplete();
   }
-
-  // ── Getters ──────────────────────────────────────────────────────────────
 
   get ingredientsArray(): FormArray {
     return this.form.get('ingredients') as FormArray;
@@ -121,8 +115,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     return total;
   }
 
-  // ── Init ─────────────────────────────────────────────────────────────────
-
   private initForm(): void {
     this.form = this._fb.group({
       dishSearch: [''],
@@ -136,7 +128,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       .pipe(
         debounceTime(400),
         distinctUntilChanged(),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         switchMap((val: any) => {
           const name = typeof val === 'string' ? val : val?.name || '';
           return this._productsService.getProductWithPagination({
@@ -152,8 +144,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
         this._cdr.markForCheck();
       });
   }
-
-  // ── Lifecyle ──────────────────────────────────────────────────────────────
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentRecipe'] && this.currentRecipe) {
@@ -178,8 +168,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       this._cdr.detectChanges();
     }
   }
-
-  // ── Plato ─────────────────────────────────────────────────────────────────
 
   onDishFocus(): void {
     const control = this.dishSearchControl;
@@ -210,7 +198,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     this._recipeService.getByProduct(dish.productId).subscribe({
       next: (res) => {
         if (res.data?.ingredients && res.data.ingredients.length > 0) {
-          // Si tiene receta
           this.isEditMode = true;
           this.ingredientsArray.clear();
           this.filteredIngredients = [];
@@ -223,7 +210,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
             });
           }
         } else {
-          // No tiene receta (en vez de 404, ahora el backend retorna data.ingredients vacío)
           this.isEditMode = false;
           this.ingredientsArray.clear();
           this.filteredIngredients = [];
@@ -232,7 +218,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
         this._cdr.detectChanges();
       },
       error: () => {
-        // Por si acaso todavía da algún error
         this.isEditMode = false;
         this.ingredientsArray.clear();
         this.filteredIngredients = [];
@@ -246,8 +231,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     if (!product) return '';
     return typeof product === 'string' ? product : product.name;
   }
-
-  // ── Ingredientes ──────────────────────────────────────────────────────────
 
   getIngSearchControl(index: number): FormControl {
     return this.ingredientsArray.at(index).get('ingSearch') as FormControl;
@@ -288,7 +271,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     ctrl.valueChanges
       .pipe(
         debounceTime(400),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         switchMap((val: any) => {
           const name = typeof val === 'string' ? val : val?.name || '';
           return this._productsService.getProductWithPagination({
@@ -361,8 +344,6 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     const ingId = Number(ctrl.get('ingredientProductId')?.value);
     return qty * (this.ingredientPriceMap[ingId] ?? 0);
   }
-
-  // ── Guardar ───────────────────────────────────────────────────────────────
 
   save(): void {
     if (this.form.invalid || this.ingredientsArray.length === 0) {

@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type FieldType =
   | 'text'
   | 'select'
   | 'autocomplete'
   | 'date'
   | 'dateRange';
-
 export interface SelectOption {
   value: any;
   label: string;
 }
-
 export interface SearchField {
   name: string;
   label: string;
@@ -23,7 +20,6 @@ export interface SearchField {
   displayWith?: (value: any) => string;
   onAutocompleteChange?: (value: any) => void;
 }
-
 export interface SearchResult {
   title?: string;
   description?: string;
@@ -34,7 +30,6 @@ export interface SearchResult {
   projectId?: number;
   updatedAt?: Date;
 }
-
 export interface ActionInterface {
   label: string;
   icon: string;
@@ -42,3 +37,4 @@ export interface ActionInterface {
   routerLink?: string[];
   queryParams?: any;
 }
+

@@ -41,7 +41,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
-
 @Component({
   selector: 'app-add-accommodation',
   standalone: true,
@@ -72,7 +71,6 @@ export class AddAccommodationComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
-
   private readonly _accommodationsService: AccommodationsService = inject(
     AccommodationsService
   );
@@ -83,29 +81,24 @@ export class AddAccommodationComponent implements OnInit {
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
-
   form: FormGroup;
   isLoading: boolean = false;
   filteredAccommodations: AddedAccommodationInvoiceDetaill[] = [];
   isLoadingAccommodations: boolean = false;
   value!: Date;
   invoiceId?: number;
-
   originalPrice: number = 0;
   subtotal: number = 0;
   taxAmount: number = 0;
   unitPrice: number = 0;
   finalPrice: number = 0;
   private isCalculating = false;
-
   parseFloat = parseFloat;
-
   ngOnInit() {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) {
       this.invoiceId = Number(id);
     }
-
     this.form.valueChanges.subscribe((val) => {
       if (val.startDate && val.startTime) {
         this.form.patchValue(
@@ -115,7 +108,6 @@ export class AddAccommodationComponent implements OnInit {
           { emitEvent: false }
         );
       }
-
       if (val.endDate && val.endTime) {
         this.form.patchValue(
           { endDateTime: this.combineDateAndTime(val.endDate, val.endTime) },
@@ -123,7 +115,6 @@ export class AddAccommodationComponent implements OnInit {
         );
       }
     });
-
     ['amount', 'taxeTypeId', 'discountTypeId', 'additionalTypeId'].forEach(
       (field) => {
         this.form.get(field)?.valueChanges.subscribe(() => {
@@ -132,12 +123,10 @@ export class AddAccommodationComponent implements OnInit {
       }
     );
   }
-
   constructor() {
     const now = new Date();
     const endTime = new Date(now);
     endTime.setMinutes(endTime.getMinutes() + 5);
-
     this.form = this._fb.group({
       name: ['', Validators.required],
       accommodationId: [null, Validators.required],
@@ -147,20 +136,17 @@ export class AddAccommodationComponent implements OnInit {
       amount: [1, [Validators.required, Validators.min(1)]],
       amountPerson: [0],
       amountBathroom: [0],
-
       startDate: [now, Validators.required],
       startTime: [now, Validators.required],
       endDate: [now, Validators.required],
       endTime: [endTime, Validators.required],
       startDateTime: [null, Validators.required],
       endDateTime: [null, Validators.required],
-
       discountTypeId: [null],
       additionalTypeId: [null],
       unitPrice: [0],
       finalPrice: [0]
     });
-
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -177,11 +163,9 @@ export class AddAccommodationComponent implements OnInit {
         this.filteredAccommodations = res.data ?? [];
       });
   }
-
   displayAccommodation(acc?: AddedAccommodationInvoiceDetaill): string {
     return acc ? acc.name : '';
   }
-
   resetForm() {
     const now = new Date();
     this.form.reset(
@@ -201,22 +185,18 @@ export class AddAccommodationComponent implements OnInit {
       },
       { emitEvent: false }
     );
-
     this.originalPrice = 0;
     this.subtotal = 0;
     this.taxAmount = 0;
     this.unitPrice = 0;
     this.finalPrice = 0;
-
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
       replaceUrl: true
     });
-
     this._cdr.detectChanges();
   }
-
   private parseNumber(val: string | number | null | undefined): number {
     if (val === null || val === undefined || val === '') return 0;
     if (typeof val === 'number') return isNaN(val) ? 0 : val;
@@ -224,32 +204,26 @@ export class AddAccommodationComponent implements OnInit {
       const str = val.trim();
       if (str === '') return 0;
 
-      // Si tiene coma Y punto → formato español: "80.000,00" → quitar puntos, cambiar coma por punto
       if (str.includes(',') && str.includes('.')) {
         const clean = str.replace(/\./g, '').replace(',', '.');
         const num = parseFloat(clean);
         return isNaN(num) ? 0 : num;
       }
 
-      // Si solo tiene coma → podría ser "80000,00" (decimal con coma) o "80.000" (miles con coma inglesa - raro)
       if (str.includes(',') && !str.includes('.')) {
         const clean = str.replace(',', '.');
         const num = parseFloat(clean);
         return isNaN(num) ? 0 : num;
       }
-
-      // Si solo tiene punto → puede ser decimal inglés "80000.00" o miles español "80.000"
-      // Heurística: si el punto separa exactamente 2 decimales al final → es decimal inglés
-      // Si el punto separa grupos de 3 dígitos → es miles español
       if (str.includes('.')) {
         const parts = str.split('.');
         const lastPart = parts[parts.length - 1];
-        // Si la parte después del último punto tiene 1 o 2 dígitos → es decimal inglés
+
         if (lastPart.length <= 2) {
           const num = parseFloat(str);
           return isNaN(num) ? 0 : num;
         }
-        // Si tiene exactamente 3 dígitos → es separador de miles español → quitar los puntos
+
         if (lastPart.length === 3) {
           const clean = str.replace(/\./g, '');
           const num = parseFloat(clean);
@@ -257,18 +231,14 @@ export class AddAccommodationComponent implements OnInit {
         }
       }
 
-      // Caso simple: solo dígitos o formato estándar
       const num = parseFloat(str);
       return isNaN(num) ? 0 : num;
     }
     return 0;
   }
-
   calculateFinalPrice() {
     const formValue = this.form.getRawValue();
-
     let basePrice = this.parseNumber(this.originalPrice);
-
     if (formValue.discountTypeId) {
       const discount = this.discountTypes.find(
         (d) => d.discountTypeId === formValue.discountTypeId
@@ -277,7 +247,6 @@ export class AddAccommodationComponent implements OnInit {
         basePrice = basePrice - this.parseNumber(discount.code);
       }
     }
-
     if (formValue.additionalTypeId) {
       const additional = this.additionalTypes.find(
         (a) => a.additionalTypeId === formValue.additionalTypeId
@@ -286,32 +255,24 @@ export class AddAccommodationComponent implements OnInit {
         basePrice = basePrice + this.parseNumber(additional.value);
       }
     }
-
     this.subtotal = basePrice;
-
     const selectedTax = this.taxeTypes.find(
       (t) => t.taxeTypeId === formValue.taxeTypeId
     );
-
     let taxPercent = 0;
     if (selectedTax && selectedTax.percentage) {
       let rate = this.parseNumber(selectedTax.percentage);
       if (rate > 1) rate = rate / 100;
       taxPercent = rate;
     }
-
     this.taxAmount = this.subtotal * taxPercent;
     this.unitPrice = this.subtotal + this.taxAmount;
-
     let amount = this.parseNumber(formValue.amount);
     if (amount <= 0) amount = 1;
 
-    // Redondear para evitar decimales flotantes
     const round2 = (num: number) =>
       Math.round((num + Number.EPSILON) * 100) / 100;
-
     this.finalPrice = round2(this.unitPrice * amount);
-
     this.isCalculating = true;
     this.form.patchValue({
       priceWithoutTax: round2(this.subtotal),
@@ -319,16 +280,13 @@ export class AddAccommodationComponent implements OnInit {
       finalPrice: this.finalPrice
     });
     this.isCalculating = false;
-
     this._cdr.detectChanges();
   }
-
   getSelectedDiscountType(): DiscountType | undefined {
     const discountId = this.form.get('discountTypeId')?.value;
     if (!discountId) return undefined;
     return this.discountTypes.find((d) => d.discountTypeId === discountId);
   }
-
   getSelectedAdditionalType(): AdditionalType | undefined {
     const additionalId = this.form.get('additionalTypeId')?.value;
     if (!additionalId) return undefined;
@@ -336,20 +294,16 @@ export class AddAccommodationComponent implements OnInit {
       (a) => a.additionalTypeId === additionalId
     );
   }
-
   getSelectedTaxType(): TaxeType | undefined {
     const taxId = this.form.get('taxeTypeId')?.value;
     if (!taxId) return undefined;
     return this.taxeTypes.find((t) => t.taxeTypeId === taxId);
   }
-
   getDiscountAmount(): number {
     const discount = this.getSelectedDiscountType();
     if (!discount || !discount.code) return 0;
-
     return parseFloat(discount.code);
   }
-
   getAdditionalAmount(): number {
     const additional = this.getSelectedAdditionalType();
     if (!additional) return 0;
@@ -357,7 +311,6 @@ export class AddAccommodationComponent implements OnInit {
       ? parseFloat(additional.value)
       : additional.value;
   }
-
   getTaxPercentage(): number {
     const tax = this.getSelectedTaxType();
     if (!tax || !tax.percentage) return 0;
@@ -365,14 +318,12 @@ export class AddAccommodationComponent implements OnInit {
       ? parseFloat(tax.percentage) * 100
       : tax.percentage * 100;
   }
-
   combineDateAndTime(date: Date, time: Date): Date {
     const d = new Date(date);
     const t = new Date(time);
     d.setHours(t.getHours(), t.getMinutes(), 0, 0);
     return d;
   }
-
   onAccommodationFocus() {
     if (!this.filteredAccommodations.length) {
       this._accommodationsService
@@ -382,16 +333,13 @@ export class AddAccommodationComponent implements OnInit {
         });
     }
   }
-
   onAccommodationSelected(acc: AddedAccommodationInvoiceDetaill) {
     if (!acc) return;
-
     const price =
       acc.priceSale && !isNaN(Number(acc.priceSale))
         ? Number(acc.priceSale)
         : 0;
     this.originalPrice = price;
-
     this.form.patchValue({
       name: acc,
       accommodationId: acc.accommodationId,
@@ -399,10 +347,8 @@ export class AddAccommodationComponent implements OnInit {
       amountBathroom: acc.amountBathroom ?? 0,
       priceSale: price
     });
-
     this.calculateFinalPrice();
   }
-
   private getInvoiceIdFromRoute(route: ActivatedRoute): string | null {
     let current = route;
     while (current) {
@@ -412,28 +358,23 @@ export class AddAccommodationComponent implements OnInit {
     }
     return null;
   }
-
   clearAccommodationSelection(): void {
     this.resetForm();
     this.filteredAccommodations = [];
     this._cdr.detectChanges();
   }
-
   addAccommodation(): void {
     if (!this.form.value.accommodationId) {
       this.form.get('name')?.setErrors({ required: true });
       this.form.markAllAsTouched();
       return;
     }
-
     if (this.form.valid) {
       const formValue = this.form.value;
-
       const priceToSend =
         this.subtotal && !isNaN(this.subtotal) && this.subtotal > 0
           ? this.subtotal
           : 0;
-
       const invoiceDetailPayload: CreateInvoiceDetaill = {
         productId: 0,
         excursionId: 0,
@@ -445,7 +386,6 @@ export class AddAccommodationComponent implements OnInit {
         startDate: new Date(formValue.startDateTime).toISOString(),
         endDate: new Date(formValue.endDateTime).toISOString()
       };
-
       if (!this.saveToBackend) {
         const pendingItem: PendingInvoiceDetail = {
           id: crypto.randomUUID(),
@@ -457,12 +397,10 @@ export class AddAccommodationComponent implements OnInit {
         this.resetForm();
         return;
       }
-
       if (!this.invoiceId) {
         console.error('❌ No hay invoiceId definido');
         return;
       }
-
       this.isLoading = true;
       this._invoiceDetaillService
         .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
@@ -480,3 +418,4 @@ export class AddAccommodationComponent implements OnInit {
     }
   }
 }
+

@@ -41,7 +41,6 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PendingItemsTableComponent } from '../../components/pending-items-table/pending-items-table';
-
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -74,11 +73,9 @@ export class EditInvoiceComponent implements OnInit {
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _dialog: MatDialog = inject(MatDialog);
-
   @ViewChild('invoiceToPrint') invoicePdfComp!: ElementRef;
   @ViewChild(InvoiceDetaillComponent)
   invoiceDetaillComponent!: InvoiceDetaillComponent;
-
   categoryTypes: CategoryType[] = [];
   paidTypes: PaidType[] = [];
   taxeTypes: TaxeType[] = [];
@@ -89,14 +86,12 @@ export class EditInvoiceComponent implements OnInit {
   invoiceData?: Invoice;
   invoiceId?: number;
   initialLoading: boolean = true;
-
   ngOnInit(): void {
     const invoiceId = Number(this._route.snapshot.paramMap.get('id'));
     if (invoiceId) {
       this.getInvoiceToEdit(invoiceId);
     }
   }
-
   loadRelatedData(): void {
     if (this._relatedDataService.relatedData()) {
       this.processData(this._relatedDataService.relatedData()!.data);
@@ -108,7 +103,6 @@ export class EditInvoiceComponent implements OnInit {
       });
     }
   }
-
   private processData(data: AppRelatedData): void {
     this.categoryTypes = data.categoryType || [];
     this.payTypes = data.payType || [];
@@ -117,18 +111,14 @@ export class EditInvoiceComponent implements OnInit {
     this.additionalTypes = data.additionalType || [];
     this.discountTypes = data.discountType || [];
   }
-
   onItemSaved(): void {
     if (this.invoiceId) {
       this.getInvoiceToEdit(this.invoiceId, false);
     }
   }
-
   openEditInvoiceDialog(): void {
     if (!this.invoiceId) return;
-
     const isMobile = window.innerWidth <= 768;
-
     this._dialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -146,7 +136,6 @@ export class EditInvoiceComponent implements OnInit {
         if (result) this.getInvoiceToEdit(this.invoiceId!, false);
       });
   }
-
   onItemDeleted(): void {
     if (this.invoiceId) {
       this.getInvoiceToEdit(this.invoiceId, false);
@@ -154,19 +143,16 @@ export class EditInvoiceComponent implements OnInit {
       setTimeout(() => (this.reloadInvoiceDetails = false), 100);
     }
   }
-
   getInvoiceToEdit(invoiceId: number, isInitialLoad: boolean = true): void {
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
       next: (res) => {
         const invoice = res.data;
-
         this.invoiceData = {
           ...invoice,
           invoiceDetails: [...invoice.invoiceDetails]
         };
         this.invoiceId = invoice.invoiceId;
         this.loadRelatedData();
-
         if (isInitialLoad) {
           this.initialLoading = false;
         }
@@ -179,12 +165,9 @@ export class EditInvoiceComponent implements OnInit {
       }
     });
   }
-
   async downloadInvoice(): Promise<void> {
     const element = this.invoicePdfComp?.nativeElement;
-
     if (!element || !this.invoiceData) return;
-
     const options = {
       margin: 0.5,
       filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
@@ -192,45 +175,35 @@ export class EditInvoiceComponent implements OnInit {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
     };
-
     await html2pdf().set(options).from(element).save();
   }
-
   onAllItemsSaved(): void {
     if (this.invoiceId) {
       this.getInvoiceToEdit(this.invoiceId, false);
     }
   }
-
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
-
   pendingItems: PendingInvoiceDetail[] = [];
   isSavingItems: boolean = false;
-
   onPendingItem(item: PendingInvoiceDetail): void {
     this.pendingItems = [...this.pendingItems, item];
   }
-
   removePendingItem(index: number): void {
     this.pendingItems.splice(index, 1);
     this.pendingItems = [...this.pendingItems];
   }
-
   saveAllPendingItems(): void {
     if (!this.pendingItems.length || !this.invoiceId) return;
-
     this.isSavingItems = true;
     const payloads = this.pendingItems.map((i) => i.payload);
-
     this._invoiceDetaillService
       .createInvoiceDetaill(this.invoiceId, payloads)
       .subscribe({
         next: () => {
           this.pendingItems = [];
           this.isSavingItems = false;
-
           this.getInvoiceToEdit(this.invoiceId!, false);
           this.reloadInvoiceDetails = true;
           setTimeout(() => (this.reloadInvoiceDetails = false), 100);
@@ -241,20 +214,16 @@ export class EditInvoiceComponent implements OnInit {
         }
       });
   }
-
   toggleAllPayments(isPaid: boolean): void {
     if (!this.invoiceId || !this.invoiceData?.invoiceDetails.length) return;
-
     this.initialLoading = true;
     const detailsToUpdate = this.invoiceData.invoiceDetails
       .filter((d) => d.isPaid !== isPaid)
       .map((d) => d.invoiceDetailId);
-
     if (detailsToUpdate.length === 0) {
       this.initialLoading = false;
       return;
     }
-
     this._invoiceDetaillService
       .toggleDetailPaymentBulk(this.invoiceId, detailsToUpdate, isPaid)
       .subscribe({
@@ -269,3 +238,4 @@ export class EditInvoiceComponent implements OnInit {
       });
   }
 }
+

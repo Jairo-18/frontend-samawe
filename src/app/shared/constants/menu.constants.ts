@@ -1,5 +1,4 @@
 import { MenuInterface } from '../interfaces/menu.interface';
-
 export const MENU_CONST: MenuInterface[] = [
   {
     module: 'Panel de Recepcionista',
@@ -64,7 +63,6 @@ export const MENU_CONST: MenuInterface[] = [
     ]
   }
 ];
-
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   Cliente: [''],
   Recepcionista: [
@@ -108,12 +106,3 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
   MESERO: ['Recetas', 'Facturas', 'Inicio']
 };
 
-// export const ROUTE_MAP: Record<string, string> = {
-//   'Crear usuario': '/organizational/users/create',
-//   'Ver usuarios': '/organizational/users/list',
-//   'Crear productos': '/products/create-products',
-//   'Ver productos': '/products/see-products',
-//   'Crear facturas': '/invoices/create-invoices',
-//   'Ver facturas': '/invoices/see-invoices',
-//   Usuarios: '/organizational/users/list' // del panel de admin
-// };

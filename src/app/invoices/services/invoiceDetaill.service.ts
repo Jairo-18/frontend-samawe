@@ -11,18 +11,9 @@ import {
   TogglePaymentBulkResponse,
   TogglePaymentResponse
 } from '../interface/invoiceDetaill.interface';
-
 @Injectable({ providedIn: 'root' })
 export class InvoiceDetaillService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
-
-  /**
-   * Crea un nuevo detalle de factura asociado a una factura específica.
-   *
-   * @param invoiceId - ID de la factura a la que se le añadirá el detalle.
-   * @param invoiceDetaill - Objeto con los datos del detalle a crear.
-   * @returns Observable con la respuesta del backend que implementa `ApiResponseCreateInterface`.
-   */
   createInvoiceDetaill(
     invoiceId: number,
     invoiceDetaill: CreateInvoiceDetaill[]
@@ -32,14 +23,6 @@ export class InvoiceDetaillService {
       invoiceDetaill
     );
   }
-
-  /**
-   * Crea un nuevo detalle de factura asociado a una factura específica.
-   *
-   * @param invoiceId - ID de la factura a la que se le añadirá el detalle.
-   * @param invoiceDetaill - Objeto con los datos del detalle a crear.
-   * @returns Observable con la respuesta del backend que implementa `ApiResponseCreateInterface`.
-   */
   createInvoiceDetaillMultiple(
     invoiceId: number,
     invoiceDetails: CreateInvoiceDetaill[]
@@ -49,26 +32,11 @@ export class InvoiceDetaillService {
       { details: invoiceDetails }
     );
   }
-
-  /**
-   * Elimina un detalle específico de una factura.
-   *
-   * @param invoiceDetailId - ID del detalle de la factura que se desea eliminar.
-   * @returns Observable con la respuesta del servidor (vacía).
-   */
   deleteItemInvoice(invoiceDetailId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}invoices/details/${invoiceDetailId}`
     );
   }
-
-  /**
-   * Cambia el estado de pago de un detalle de factura.
-   *
-   * @param invoiceId - ID de la factura.
-   * @param detailId - ID del detalle.
-   * @returns Observable con la respuesta del servidor.
-   */
   toggleDetailPayment(
     invoiceId: number,
     detailId: number
@@ -91,3 +59,4 @@ export class InvoiceDetaillService {
     );
   }
 }
+

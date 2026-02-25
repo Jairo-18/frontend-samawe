@@ -1,10 +1,7 @@
-<!-- Contenedor principal centrado verticalmente con padding -->
 <div class="brand-content-center">
-  <!-- Contenedor del formulario de registro -->
   <article
     class="w-[90%] xl:w-[60%] lg:w-[90%] h-full md:h-full my-10 md:my-5 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
   >
-    <!-- Sección izquierda: Imagen decorativa (solo visible en pantallas medianas en adelante) -->
     <section class="h-full w-full hidden md:flex flex-col">
       <img
         src="../../../../assets/images/registernew.jpg"
@@ -12,32 +9,24 @@
         class="min-h-[790px] object-cover w-full rounded-l-2xl"
       />
     </section>
-
-    <!-- Sección derecha: Formulario -->
     <section
       class="h-full w-full flex flex-col text-center py-5 gap-0 md:gap-1"
     >
-      <!-- Encabezado -->
       <div class="flex flex-col gap-1.5">
         <span class="font-extrabold text-lg md:text-xl">Registrarse</span>
         <span class="font-medium text-sm">Crea una nueva cuenta</span>
       </div>
-
-      <!-- Formulario con paso a paso usando mat-stepper -->
       <mat-horizontal-stepper
         [linear]="false"
         #stepper
         class="w-full h-full bg-white"
       >
-        <!-- Paso 1: Información personal -->
         <mat-step [stepControl]="formStep1">
           <form
             [formGroup]="formStep1"
             class="flex flex-col gap-[25px] md:gap-2 mt-5"
           >
             <ng-template matStepLabel>Información Personal</ng-template>
-
-            <!-- Tipo de identificación -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Tipo de Identificación</mat-label>
               <mat-select formControlName="identificationTypeId" required>
@@ -60,8 +49,6 @@
                 Tipo de identificación requerido
               </mat-error>
             </mat-form-field>
-
-            <!-- Número de identificación -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Número de identificación</mat-label>
               <input matInput formControlName="identificationNumber" required />
@@ -74,8 +61,6 @@
                 Número de identificación requerido
               </mat-error>
             </mat-form-field>
-
-            <!-- Nombres -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Nombres Completos</mat-label>
               <input matInput formControlName="firstName" required />
@@ -86,8 +71,6 @@
                 Nombres completos requerido
               </mat-error>
             </mat-form-field>
-
-            <!-- Apellidos -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Apellidos Completos</mat-label>
               <input matInput formControlName="lastName" required />
@@ -98,8 +81,6 @@
                 Apellidos completos requerido
               </mat-error>
             </mat-form-field>
-
-            <!-- Botón siguiente -->
             <div actions class="w-full flex justify-end text-sm md:text-base">
               <button
                 mat-fab
@@ -112,16 +93,12 @@
             </div>
           </form>
         </mat-step>
-
-        <!-- Paso 2: Datos de la cuenta -->
         <mat-step [stepControl]="formStep2">
           <form
             [formGroup]="formStep2"
             class="flex flex-col gap-[25px] md:gap-2 mt-5"
           >
             <ng-template matStepLabel>Tu cuenta</ng-template>
-
-            <!-- Correo electrónico -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Correo Electrónico</mat-label>
               <input matInput formControlName="email" required />
@@ -133,8 +110,6 @@
                 Correo electrónico inválido
               </mat-error>
             </mat-form-field>
-
-            <!-- País -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>País</mat-label>
               <mat-select formControlName="phoneCodeId" required>
@@ -155,8 +130,6 @@
                 País requerido
               </mat-error>
             </mat-form-field>
-
-            <!-- Teléfono -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Teléfono</mat-label>
               <input matInput formControlName="phone" />
@@ -168,8 +141,6 @@
                 Solo números, máximo 15 dígitos
               </mat-error>
             </mat-form-field>
-
-            <!-- Contraseña -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Contraseña</mat-label>
               <input
@@ -200,8 +171,6 @@
                 y un carácter especial.
               </mat-error>
             </mat-form-field>
-
-            <!-- Confirmar contraseña -->
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Confirmar Contraseña</mat-label>
               <input
@@ -229,8 +198,6 @@
                 Las contraseñas no coinciden
               </mat-error>
             </mat-form-field>
-
-            <!-- Botones para cambiar de paso o registrar -->
             <section
               actions
               class="w full content-between md:flex gap-x-2 text-sm md:text-base"
@@ -259,8 +226,6 @@
           </form>
         </mat-step>
       </mat-horizontal-stepper>
-
-      <!-- Enlace para usuarios con cuenta -->
       <div
         class="text-center d-flex justify-content-center align-items-center text-sm md:text-base"
       >
@@ -275,3 +240,4 @@
     </section>
   </article>
 </div>
+

@@ -36,7 +36,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -65,7 +64,6 @@ export class AddProductComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
-
   private readonly _producsService: ProductsService = inject(ProductsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
@@ -78,13 +76,11 @@ export class AddProductComponent implements OnInit {
   invoiceId?: number;
   form: FormGroup;
   filteredProducts: ProductComplete[] = [];
-
   ngOnInit(): void {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) {
       this.invoiceId = Number(id);
     }
-
     this.form.valueChanges.subscribe((val) => {
       if (val.startDate && val.startTime) {
         this.form.patchValue(
@@ -94,7 +90,6 @@ export class AddProductComponent implements OnInit {
           { emitEvent: false }
         );
       }
-
       if (val.endDate && val.endTime) {
         this.form.patchValue(
           { endDateTime: this.combineDateAndTime(val.endDate, val.endTime) },
@@ -102,7 +97,6 @@ export class AddProductComponent implements OnInit {
         );
       }
     });
-
     this.form
       .get('amountSale')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
@@ -116,12 +110,10 @@ export class AddProductComponent implements OnInit {
       .get('taxeTypeId')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
   }
-
   constructor() {
     const now = new Date();
     const endTime = new Date(now);
     endTime.setMinutes(endTime.getMinutes() + 5);
-
     this.form = this._fb.group({
       name: ['', Validators.required],
       productId: [null, Validators.required],
@@ -132,7 +124,6 @@ export class AddProductComponent implements OnInit {
       amountSale: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
       amount: [0],
-
       startDate: [now, Validators.required],
       startTime: [now, Validators.required],
       endDate: [now, Validators.required],
@@ -140,7 +131,6 @@ export class AddProductComponent implements OnInit {
       startDateTime: [null, Validators.required],
       endDateTime: [null, Validators.required]
     });
-
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -156,14 +146,12 @@ export class AddProductComponent implements OnInit {
         this.filteredProducts = res.data ?? [];
       });
   }
-
   combineDateAndTime(date: Date, time: Date): Date {
     const d = new Date(date);
     const t = new Date(time);
     d.setHours(t.getHours(), t.getMinutes(), 0, 0);
     return d;
   }
-
   onProductFocus(): void {
     if (!this.filteredProducts.length) {
       this._producsService.getProductWithPagination({}).subscribe((res) => {
@@ -171,11 +159,9 @@ export class AddProductComponent implements OnInit {
       });
     }
   }
-
   onProductSelected(name: string): void {
     const product = this.filteredProducts.find((p) => p.name === name);
     if (!product) return;
-
     this.form.patchValue({
       productId: product.productId,
       priceSale: product.priceSale,
@@ -186,12 +172,10 @@ export class AddProductComponent implements OnInit {
     });
     this.updateFinalPrice();
   }
-
   resetForm(): void {
     const now = new Date();
     const endTime = new Date(now);
     endTime.setMinutes(endTime.getMinutes() + 5);
-
     this.form.reset({
       name: '',
       productId: null,
@@ -210,37 +194,29 @@ export class AddProductComponent implements OnInit {
       startDateTime: null,
       endDateTime: null
     });
-
     Object.keys(this.form.controls).forEach((key) => {
       const control = this.form.get(key);
       control?.setErrors(null);
     });
-
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
       replaceUrl: true
     });
-
     this._cdr.detectChanges();
   }
-
   private getTaxRate(): number {
     const id = this.form.get('taxeTypeId')?.value;
     const tax = this.taxeTypes?.find((t) => t.taxeTypeId === id);
     if (!tax || tax.percentage == null) return 0;
-
     let rate =
       typeof tax.percentage === 'string'
         ? parseFloat(tax.percentage)
         : tax.percentage;
-
     if (!isFinite(rate) || rate < 0) return 0;
-
     if (rate > 1) rate = rate / 100;
     return rate;
   }
-
   private updateFinalPrice() {
     const base = Number(
       this.form.get('priceWithoutTax')?.value ??
@@ -249,30 +225,24 @@ export class AddProductComponent implements OnInit {
     );
     const amountSale = Number(this.form.get('amountSale')?.value ?? 0);
     const taxRate = this.getTaxRate();
-
     const unitWithTax = base * (1 + taxRate);
     const total = unitWithTax * amountSale;
-
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
-
   private round(n: number, d = 2): number {
     const p = Math.pow(10, d);
     return Math.round((n + Number.EPSILON) * p) / p;
   }
-
   clearProductSelection(): void {
     this.resetForm();
     this.filteredProducts = [];
   }
-
   addProduct(): void {
     if (!this.form.value.productId) {
       this.form.get('name')?.setErrors({ required: true });
       this.form.markAllAsTouched();
       return;
     }
-
     if (this.form.invalid) {
       Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
@@ -288,9 +258,7 @@ export class AddProductComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-
     const formValue = this.form.value;
-
     const invoiceDetailPayload: CreateInvoiceDetaill = {
       productId: formValue.productId,
       accommodationId: 0,
@@ -302,7 +270,6 @@ export class AddProductComponent implements OnInit {
       startDate: new Date(formValue.startDateTime).toISOString(),
       endDate: new Date(formValue.endDateTime).toISOString()
     };
-
     if (!this.saveToBackend) {
       const pendingItem: PendingInvoiceDetail = {
         id: crypto.randomUUID(),
@@ -314,14 +281,11 @@ export class AddProductComponent implements OnInit {
       this.resetForm();
       return;
     }
-
     if (!this.invoiceId) {
       console.error('❌ No hay invoiceId definido');
       return;
     }
-
     this.isLoading = true;
-
     this._invoiceDetaillService
       .createInvoiceDetaill(this.invoiceId, [invoiceDetailPayload])
       .subscribe({
@@ -337,3 +301,4 @@ export class AddProductComponent implements OnInit {
       });
   }
 }
+

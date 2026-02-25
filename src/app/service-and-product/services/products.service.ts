@@ -12,7 +12,6 @@ import {
   ProductComplete
 } from '../interface/product.interface';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +19,6 @@ export class ProductsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-
   getProductWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
     data: ProductComplete[];
@@ -31,7 +29,6 @@ export class ProductsService {
       data: ProductComplete[];
     }>(`${environment.apiUrl}product/paginated-list`, { params });
   }
-
   getAllProducts(): Observable<{
     data: ProductComplete[];
     pagination: PaginationInterface;
@@ -45,7 +42,6 @@ export class ProductsService {
       pagination: PaginationInterface;
     }>(`${environment.apiUrl}product/paginated-list`, { params });
   }
-
   getProductEditPanel(
     productId: number
   ): Observable<ApiResponseInterface<ProductComplete>> {
@@ -53,7 +49,6 @@ export class ProductsService {
       `${environment.apiUrl}product/${productId}`
     );
   }
-
   createProductPanel(
     product: CreateProductPanel
   ): Observable<ApiResponseCreateInterface> {
@@ -62,15 +57,14 @@ export class ProductsService {
       product
     );
   }
-
   updateProductPanel(productId: number, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}product/${productId}`,
       body
     );
   }
-
   deleteProductPanel(productId: number): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}product/${productId}`);
   }
 }
+

@@ -8,3 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './excursion.component.scss'
 })
 export class ExcursionComponent {}
+
+
+

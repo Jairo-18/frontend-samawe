@@ -6,3 +6,4 @@ export interface OrderUpdate {
   tableNumber?: string;
   updatedAt: Date | string;
 }
+

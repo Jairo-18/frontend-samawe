@@ -47,15 +47,15 @@ export class ImageCropperDialogComponent {
   }
 
   imageLoaded() {
-    // show cropper
+
   }
 
   cropperReady() {
-    // cropper ready
+
   }
 
   loadImageFailed() {
-    // show message
+
   }
 
   rotateLeft() {
@@ -84,3 +84,4 @@ export class ImageCropperDialogComponent {
     }
   }
 }
+

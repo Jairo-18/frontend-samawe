@@ -5,7 +5,7 @@ export interface PaginatedUserPartial {
   lastName: string;
   isActive: boolean;
 }
-
 export interface GeneralPartial {
   name: string;
 }
+

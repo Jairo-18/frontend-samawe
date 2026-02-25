@@ -38,7 +38,6 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
-
 @Component({
   selector: 'app-create-or-edit-accommodation',
   standalone: true,
@@ -70,32 +69,25 @@ export class CreateOrEditAccommodationComponent
   @Input() currentAccommodation?: AccommodationComplete;
   @Output() accommodationSaved = new EventEmitter<void>();
   @Output() accommodationCanceled = new EventEmitter<void>();
-
   @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
-
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
     this.visibleCategoryTypes = value
       .filter((c) => ['Hospedaje', 'HOSPEDAJE'].includes(c.name))
       .sort((a, b) => a.name.localeCompare(b.name));
-
     if (this.currentAccommodation && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithAccommodation(this.currentAccommodation);
     }
-
     if (this.pendingAccommodationId && this.visibleCategoryTypes.length > 0) {
       this.getAccommodationToEdit(this.pendingAccommodationId);
       this.pendingAccommodationId = null;
     }
-
     this.cdr.detectChanges();
   }
-
   get categoryTypes(): CategoryType[] {
     return this._categoryTypes;
   }
-
   private _categoryTypes: CategoryType[] = [];
   visibleCategoryTypes: CategoryType[] = [];
   accommodationForm!: FormGroup;
@@ -104,20 +96,17 @@ export class CreateOrEditAccommodationComponent
   accommodationImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
   private pendingAccommodationId: number | null = null;
-
   private readonly _accommodationService: AccommodationsService = inject(
     AccommodationsService
   );
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
-
   constructor(
     private _fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
   }
-
   private initializeForm(): void {
     this.accommodationForm = this._fb.group({
       categoryTypeId: [null, Validators.required],
@@ -149,15 +138,12 @@ export class CreateOrEditAccommodationComponent
       stateTypeId: [null, Validators.required]
     });
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentAccommodation']) {
       const queryParams = this._activatedRoute.snapshot.queryParams;
-
       if (this.currentAccommodation) {
         this.accommodationId = this.currentAccommodation.accommodationId;
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithAccommodation(this.currentAccommodation);
         }
@@ -168,7 +154,6 @@ export class CreateOrEditAccommodationComponent
       } else if (!isNaN(+queryParams['editAccommodation'])) {
         this.accommodationId = Number(queryParams['editAccommodation']);
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.getAccommodationToEdit(this.accommodationId);
           this.imageUploader?.resetPending();
@@ -178,7 +163,6 @@ export class CreateOrEditAccommodationComponent
       }
     }
   }
-
   private updateFormWithAccommodation(
     accommodation: AccommodationComplete
   ): void {
@@ -196,11 +180,9 @@ export class CreateOrEditAccommodationComponent
       priceSale: accommodation.priceSale,
       stateTypeId: accommodation.stateType?.stateTypeId
     });
-
     this.accommodationImages = accommodation.images || [];
     this.cdr.detectChanges();
   }
-
   private resetFormToDefaults(): void {
     this.accommodationForm.reset({
       categoryTypeId: null,
@@ -222,7 +204,6 @@ export class CreateOrEditAccommodationComponent
     }
     this.cdr.detectChanges();
   }
-
   resetForm() {
     this.resetFormToDefaults();
     Object.keys(this.accommodationForm.controls).forEach((key) => {
@@ -238,7 +219,6 @@ export class CreateOrEditAccommodationComponent
     });
     this.cdr.detectChanges();
   }
-
   private getAccommodationToEdit(accommodationId: number): void {
     this.isLoadingImages = true;
     this._accommodationService
@@ -247,7 +227,6 @@ export class CreateOrEditAccommodationComponent
         next: (res) => {
           const accommodation = res.data;
           this.accommodationId = accommodation.accommodationId;
-
           this.updateFormWithAccommodation(accommodation);
           this.isLoadingImages = false;
           this.cdr.detectChanges();
@@ -262,11 +241,9 @@ export class CreateOrEditAccommodationComponent
         }
       });
   }
-
   save() {
     if (this.accommodationForm.valid) {
       const formValue = this.accommodationForm.value;
-
       const accommodationSave: CreateAccommodationPanel = {
         accommodationId: this.isEditMode ? this.accommodationId : undefined,
         code: formValue.code,
@@ -282,11 +259,9 @@ export class CreateOrEditAccommodationComponent
         bedTypeId: formValue.bedTypeId,
         stateTypeId: formValue.stateTypeId
       };
-
       if (this.isEditMode) {
         const updateData = { ...accommodationSave };
         delete updateData.accommodationId;
-
         this._accommodationService
           .updateAccommodationPanel(this.accommodationId, updateData)
           .subscribe({
@@ -330,8 +305,8 @@ export class CreateOrEditAccommodationComponent
       this.accommodationForm.markAllAsTouched();
     }
   }
-
   ngOnDestroy(): void {
     this.resetForm();
   }
 }
+

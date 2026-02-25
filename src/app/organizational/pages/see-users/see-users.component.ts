@@ -3,7 +3,6 @@ import {
   PhoneCode,
   RoleType
 } from './../../../shared/interfaces/relatedDataGeneral';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchField } from './../../../shared/interfaces/search.interface';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
@@ -32,7 +31,6 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
-
 @Component({
   selector: 'app-see-users',
   standalone: true,
@@ -64,7 +62,6 @@ export class SeeUsersComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
-
   displayedColumns: string[] = [
     'identificationType',
     'identificationNumber',
@@ -76,7 +73,6 @@ export class SeeUsersComponent implements OnInit {
     'isActive',
     'actions'
   ];
-
   dataSource = new MatTableDataSource<UserComplete>([]);
   roleType: RoleType[] = [];
   identificationType: IdentificationType[] = [];
@@ -97,10 +93,6 @@ export class SeeUsersComponent implements OnInit {
     hasPreviousPage: false,
     hasNextPage: false
   };
-
-  /**
-   * @param searchFields - Creación del buscador.
-   */
   searchFields: SearchField[] = [
     {
       name: 'search',
@@ -139,24 +131,15 @@ export class SeeUsersComponent implements OnInit {
       placeholder: 'Buscar por estado'
     }
   ];
-
-  /**
-   * @param ngOnInit - Inicialización de las funciones.
-   */
   ngOnInit(): void {
     this.loadUsers();
     this.getDataForFields();
   }
-
   constructor() {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }
-
-  /**
-   * @param _getDataForFields - Obtiene los select de roles y tipos de identificación.
-   */
   private getDataForFields(): void {
     if (this._relatedDataService.relatedData()) {
       this._applyRelatedData(this._relatedDataService.relatedData()!.data);
@@ -179,16 +162,13 @@ export class SeeUsersComponent implements OnInit {
         }
       });
   }
-
   private _applyRelatedData(data: any): void {
     const role = data?.roleType || [];
     const identificationType = data?.identificationType || [];
     const phoneCode = data?.phoneCode || [];
-
     this.roleType = role;
     this.identificationType = identificationType;
     this.phoneCode = phoneCode;
-
     const roleOption = this.searchFields.find(
       (field) => field.name === 'roleType'
     );
@@ -198,7 +178,6 @@ export class SeeUsersComponent implements OnInit {
     const phoneCodeOption = this.searchFields.find(
       (field) => field.name === 'phoneCode'
     );
-
     if (roleOption) {
       roleOption.options = role.map((r: any) => ({
         value: r.roleTypeId,
@@ -220,66 +199,41 @@ export class SeeUsersComponent implements OnInit {
       }));
     }
   }
-
   getRoleName(id: string): string {
     return this.roleType.find((r) => r.roleTypeId === id)?.name || '';
   }
-
   getIdentificationTypeName(id: string): string {
     return (
       this.identificationType.find((t) => t.identificationTypeId === id)
         ?.code || ''
     );
   }
-
   getPhoneCodeDisplay(id: string): string {
     const phoneCode = this.phoneCode.find((p) => p.phoneCodeId === id);
     return phoneCode ? `${phoneCode.code} - ${phoneCode.name}` : '';
   }
-
-  /**
-   * @param onSearchSubmit - Botón de búsqueda.
-   */
   onSearchSubmit(values: any): void {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadUsers();
   }
-
-  /**
-   * @param onChangePagination - Cambio de paginación.
-   */
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadUsers();
   }
-
-  /**
-   * @param onTabChange - Cambio de tabla.
-   */
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
     this.paginationParams.page = 1;
     this.loadUsers();
   }
-
-  /**
-   * @param goToCreateUser - Ir a crear usuarios
-   */
   goToCreateUser(): void {
     this._router.navigate(['/users/create']);
   }
-
-  /**
-   * @param loadUsers - Carga de usuarios.
-   * @param getUserWithPagination - Obtiene los usuarios con paginación.
-   */
   loadUsers(filter: string = ''): void {
     this.loading = true;
     const query = {
@@ -288,7 +242,6 @@ export class SeeUsersComponent implements OnInit {
       search: filter,
       ...this.params
     };
-
     this._usersService.getUserWithPagination(query).subscribe({
       next: (res) => {
         this.dataSource.data = (res.data || []).sort((a, b) =>
@@ -303,10 +256,6 @@ export class SeeUsersComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param _deleteUser - Ellimina un usuario.
-   */
   private deleteUser(userId: string): void {
     this.loading = true;
     this._usersService.deleteUserPanel(userId).subscribe({
@@ -320,10 +269,6 @@ export class SeeUsersComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
-   */
   openDeleteUserDialog(id: string): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -331,24 +276,16 @@ export class SeeUsersComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
         this.deleteUser(id);
       }
     });
   }
-
-  /**
-   * Verifica si el usuario actual puede editar a otro usuario
-   * @param user - Usuario a editar
-   * @returns boolean - true si puede editar, false si no
-   */
   canEditUser(user: UserComplete): boolean {
     const loggedInRoleName = this.userLogged?.roleType?.name?.toUpperCase();
     const userToActOnRoleName = user.roleType?.name?.toUpperCase();
     const isCurrentUser = this.userLogged?.userId === user.userId;
-
     if (loggedInRoleName === 'ADMINISTRADOR') {
       return true;
     }
@@ -364,17 +301,10 @@ export class SeeUsersComponent implements OnInit {
     }
     return false;
   }
-
-  /**
-   * Verifica si el usuario actual puede eliminar a otro usuario
-   * @param user - Usuario a eliminar
-   * @returns boolean - true si puede eliminar, false si no
-   */
   canDeleteUser(user: UserComplete): boolean {
     const loggedInRoleName = this.userLogged?.roleType?.name?.toUpperCase();
     const userToActOnRoleName = user.roleType?.name?.toUpperCase();
     const isCurrentUser = this.userLogged?.userId === user.userId;
-
     if (isCurrentUser) {
       return false;
     }
@@ -388,23 +318,11 @@ export class SeeUsersComponent implements OnInit {
     }
     return false;
   }
-
-  /**
-   * Método unificado para verificar si se puede realizar alguna acción sobre un usuario
-   * (Mantener por compatibilidad si es necesario, pero usar los métodos específicos)
-   * @param user - Usuario sobre el que se quiere actuar
-   * @returns boolean - true si NO puede realizar acciones, false si SÍ puede
-   */
   validateIfCanEditUserOrDelete(user: UserComplete): boolean {
     return !this.canEditUser(user) && !this.canDeleteUser(user);
   }
-
-  /**
-   * Verifica si el usuario puede ver ciertas acciones
-   * @param user - Usuario a verificar
-   * @returns boolean - true si puede ver acciones
-   */
   canViewUserActions(user: UserComplete): boolean {
     return this.canEditUser(user) || this.canDeleteUser(user);
   }
 }
+

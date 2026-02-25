@@ -3,7 +3,6 @@ import {
   StateType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
-
 export interface CreateExcursionPanel {
   excursionId?: number;
   code: string;
@@ -15,7 +14,6 @@ export interface CreateExcursionPanel {
   stateTypeId: number;
   categoryTypeId: number;
 }
-
 export interface ExcursionComplete {
   excursionId: number;
   code: string;
@@ -31,7 +29,7 @@ export interface ExcursionComplete {
   deletedAt: Date;
   images?: ImageItem[];
 }
-
 export interface ExcursionListResponse {
   excursions: ExcursionComplete[];
 }
+

@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-
 @Pipe({
   name: 'truncate',
 })
@@ -8,3 +7,4 @@ export class TruncatePipe implements PipeTransform {
     return value.length > max ? value.substring(0, max) + '...' : value;
   }
 }
+

@@ -1,11 +1,9 @@
-<!-- Componente reutilizable -->
 <app-base-page
   contentTitle="Gestiona las facturas de tu hotel"
   [showContentTitle]="true"
   contentInfo="Mira los movimientos realizados dentro de tu hotel"
   [showContentInfo]="true"
 >
-  <!-- Botón de dialogo para crear factura -->
   <div slot="actions" class="w-full md:w-[25%]">
     <button
       mat-fab
@@ -16,10 +14,7 @@
       Crear factura
     </button>
   </div>
-
-  <!-- Condición, si no es mobile muestre en destok -->
   @if (!isMobile) {
-    <!-- Filtros de búsqueda -->
     <app-search-fields
       [searchFields]="searchFields"
       [form]="form"
@@ -27,8 +22,6 @@
       (searchSubmit)="onSearchSubmit($event)"
       (searchChange)="onSearchChange($event)"
     ></app-search-fields>
-
-    <!-- Limpiar filtros -->
     <section class="flex w-full justify-end items-center gap-2 mt-2">
       <div class="w-[24%]">
         <button
@@ -43,16 +36,12 @@
         </button>
       </div>
     </section>
-
     <div class="mt-4">
       <div class="overflow-auto mb-3">
-        <!-- Condición del loader -->
         @if (loading) {
           <app-loader></app-loader>
         } @else if (dataSource.data.length > 0) {
-          <!-- Tabla de facturas -->
           <table mat-table [dataSource]="dataSource" matSort>
-            <!-- Tipo de factura -->
             <ng-container matColumnDef="invoiceType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Tipo Factura
@@ -70,8 +59,6 @@
                 {{ invoice.invoiceType?.code || '---' }}
               </td>
             </ng-container>
-
-            <!-- Código -->
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Código
@@ -80,8 +67,6 @@
                 {{ invoice?.code || '---' }}
               </td>
             </ng-container>
-
-            <!-- Nombre del cliente -->
             <ng-container matColumnDef="clientName">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Cliente
@@ -90,8 +75,6 @@
                 {{ invoice?.clientName || '---' }}
               </td>
             </ng-container>
-
-            <!-- Número de identificación del cliente -->
             <ng-container matColumnDef="clientIdentification">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Identificación
@@ -100,8 +83,6 @@
                 {{ invoice?.clientIdentification || '---' }}
               </td>
             </ng-container>
-
-            <!-- Nombre del Recepcionista -->
             <ng-container matColumnDef="employeeName">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Recepcionista
@@ -110,8 +91,6 @@
                 {{ invoice?.employeeName || '---' }}
               </td>
             </ng-container>
-
-            <!-- Subtotal de la factura  -->
             <ng-container matColumnDef="subtotalWithoutTax">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Subtotal
@@ -129,7 +108,6 @@
                 {{ invoice?.subtotalWithoutTax ?? 0 | formatCop }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="startDate">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Fecha
@@ -142,8 +120,6 @@
                 }}
               </td>
             </ng-container>
-
-            <!-- IVA de la factura -->
             <ng-container matColumnDef="totalTaxes">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Impuesto
@@ -152,8 +128,6 @@
                 {{ invoice?.totalTaxes ?? 0 | formatCop }}
               </td>
             </ng-container>
-
-            <!-- Total de la factura -->
             <ng-container matColumnDef="total">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Total
@@ -171,8 +145,6 @@
                 {{ invoice?.total ?? 0 | formatCop }}
               </td>
             </ng-container>
-
-            <!-- Tipo de pago de la factura -->
             <ng-container matColumnDef="payType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Tipo Pago
@@ -181,8 +153,6 @@
                 {{ invoice?.payType?.name || 'NO APLICA' }}
               </td>
             </ng-container>
-
-            <!-- Estado de pago de la factura -->
             <ng-container matColumnDef="paidType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Estado Pago
@@ -207,8 +177,6 @@
                 {{ invoice?.paidType?.name || 'NO APLICA' }}
               </td>
             </ng-container>
-
-            <!-- Tabla de facturas -->
             <ng-container matColumnDef="invoiceElectronic">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 F. Elec
@@ -223,7 +191,6 @@
                 }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Acciones
@@ -232,7 +199,6 @@
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                   <mat-icon>more_vert</mat-icon>
                 </button>
-
                 <mat-menu #menu="matMenu">
                   <button
                     mat-menu-item
@@ -265,13 +231,9 @@
                 </mat-menu>
               </td>
             </ng-container>
-
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
-
-          <!-- Paginador -->
-
           <mat-paginator
             [length]="paginationParams.total"
             [pageSize]="paginationParams.perPage"
@@ -300,7 +262,6 @@
             (searchChange)="onSearchChange($event)"
           ></app-search-fields>
         </div>
-
         <section class="flex flex-col w-full gap-2 p-2">
           <button
             mat-fab
@@ -322,7 +283,6 @@
           </button>
         </section>
       </mat-tab>
-
       <mat-tab label="Resultados">
         <app-loader *ngIf="loading"></app-loader>
         <div
@@ -347,7 +307,6 @@
                 {{ invoice.invoiceType?.name || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Código
@@ -356,7 +315,6 @@
                 {{ invoice?.code || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="clientName">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Cliente
@@ -365,7 +323,6 @@
                 {{ invoice?.clientName || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="clientIdentification">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Identificación Cliente
@@ -374,7 +331,6 @@
                 {{ invoice?.clientIdentification || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="startDate">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Fecha
@@ -387,7 +343,6 @@
                 }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="employeeName">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Recepcionista
@@ -396,7 +351,6 @@
                 {{ invoice?.employeeName || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="subtotalWithoutTax">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Subtotal
@@ -414,8 +368,6 @@
                 {{ invoice?.subtotalWithoutTax ?? 0 | formatCop }}
               </td>
             </ng-container>
-
-            <!-- IVA de la factura -->
             <ng-container matColumnDef="totalTaxes">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Impuesto
@@ -424,7 +376,6 @@
                 {{ invoice?.totalTaxes ?? 0 | formatCop }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="total">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Total
@@ -442,7 +393,6 @@
                 {{ invoice?.total ?? 0 | formatCop }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="payType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Tipo de Pago
@@ -451,7 +401,6 @@
                 {{ invoice.payType?.name || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="paidType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Estado de Pago
@@ -476,7 +425,6 @@
                 {{ invoice?.paidType?.name || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="taxeType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Tipo impuesto
@@ -485,7 +433,6 @@
                 {{ invoice.taxeType?.name || '' }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="invoiceElectronic">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 F. Elec
@@ -500,7 +447,6 @@
                 }}
               </td>
             </ng-container>
-
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 Acciones
@@ -513,7 +459,6 @@
                 >
                   <mat-icon>more_vert</mat-icon>
                 </button>
-
                 <mat-menu #menu="matMenu">
                   <button
                     mat-menu-item
@@ -536,7 +481,6 @@
                     <mat-icon>print</mat-icon>
                     <span class="green-color">Descargar</span>
                   </button>
-
                   <button
                     mat-menu-item
                     (click)="
@@ -549,7 +493,6 @@
                 </mat-menu>
               </td>
             </ng-container>
-
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
@@ -577,3 +520,4 @@
     #invoiceToPrintRef
   ></app-invoice-pdf>
 </app-base-page>
+

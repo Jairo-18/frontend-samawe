@@ -1,5 +1,4 @@
 import { Component, input, InputSignal } from '@angular/core';
-
 @Component({
   selector: 'app-base-dialog',
   imports: [],
@@ -11,3 +10,4 @@ export class BaseDialogComponent {
   subtitle: InputSignal<string> = input('');
   description: InputSignal<string> = input('');
 }
+

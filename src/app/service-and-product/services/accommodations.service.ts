@@ -13,7 +13,6 @@ import { Observable } from 'rxjs';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { HttpClient } from '@angular/common/http';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +20,6 @@ export class AccommodationsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-
   getAccommodationWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
     data: GetAccommodationPaginatedList[];
@@ -32,7 +30,6 @@ export class AccommodationsService {
       data: GetAccommodationPaginatedList[];
     }>(`${environment.apiUrl}accommodation/paginated-list`, { params });
   }
-
   getAccommodationEditPanel(
     accommodationId: number
   ): Observable<ApiResponseInterface<AccommodationComplete>> {
@@ -40,7 +37,6 @@ export class AccommodationsService {
       `${environment.apiUrl}accommodation/${accommodationId}`
     );
   }
-
   createAccommodationPanel(
     accommodation: CreateAccommodationPanel
   ): Observable<ApiResponseCreateInterface> {
@@ -49,7 +45,6 @@ export class AccommodationsService {
       accommodation
     );
   }
-
   updateAccommodationPanel(
     accommodationId: number,
     body: unknown
@@ -59,10 +54,10 @@ export class AccommodationsService {
       body
     );
   }
-
   deleteAccommodationPanel(accommodationId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}accommodation/${accommodationId}`
     );
   }
 }
+

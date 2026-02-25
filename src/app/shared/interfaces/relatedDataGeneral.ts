@@ -2,11 +2,9 @@ export interface CreateType {
   code: string;
   name: string;
 }
-
 export interface TypeForEditResponse<T extends CreateType> {
   type: T;
 }
-
 export interface CategoryType {
   categoryTypeId: number;
   code?: string;
@@ -15,7 +13,6 @@ export interface CategoryType {
   updatedAt: Date;
   deletedAt: Date;
 }
-
 export interface StateType {
   stateTypeId: number;
   code?: string;
@@ -24,7 +21,6 @@ export interface StateType {
   updatedAt: Date;
   deletedAt: Date;
 }
-
 export interface BedType {
   bedTypeId: number;
   code?: string;
@@ -33,7 +29,6 @@ export interface BedType {
   updatedAt: Date;
   deletedAt: Date;
 }
-
 export interface RoleType {
   roleTypeId: string;
   code?: string;
@@ -42,7 +37,6 @@ export interface RoleType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface PhoneCode {
   phoneCodeId: string;
   code?: string;
@@ -51,7 +45,6 @@ export interface PhoneCode {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface IdentificationType {
   identificationTypeId: string;
   code?: string;
@@ -60,7 +53,6 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface IdentificationType {
   identificationTypeId: string;
   code?: string;
@@ -69,7 +61,6 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface PayType {
   payTypeId: string;
   code?: string;
@@ -78,7 +69,6 @@ export interface PayType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface PaidType {
   paidTypeId: string;
   code?: string;
@@ -87,7 +77,6 @@ export interface PaidType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface InvoiceType {
   invoiceTypeId: string;
   code?: string;
@@ -96,7 +85,6 @@ export interface InvoiceType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface AllTypes {
   bedType: TypeItem[];
   categoryType: TypeItem[];
@@ -109,15 +97,13 @@ export interface AllTypes {
   stateType: TypeItem[];
   taxeType: TypeItem[];
 }
-
 export interface TypeItem {
   id: string;
   code: string;
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   [key: string]: any;
 }
-
 export interface AdditionalType {
   additionalTypeId: number;
   code: string;
@@ -127,7 +113,6 @@ export interface AdditionalType {
   updatedAt: Date;
   deletedAt: Date;
 }
-
 export interface DiscountType {
   discountTypeId: number;
   code: string;
@@ -137,7 +122,6 @@ export interface DiscountType {
   updatedAt: Date;
   deletedAt: Date;
 }
-
 export interface TaxeType {
   taxeTypeId: number;
   code?: string;
@@ -152,7 +136,6 @@ export interface UnitOfMeasure {
   code: string;
   name: string;
 }
-
 export interface AppRelatedData {
   identificationType: IdentificationType[];
   phoneCode: PhoneCode[];
@@ -168,3 +151,4 @@ export interface AppRelatedData {
   discountType: DiscountType[];
   additionalType: AdditionalType[];
 }
+

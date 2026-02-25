@@ -4,7 +4,6 @@ import { organizationalRoutes } from './organizational/organizational.routes';
 import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
 import { invoicesRoutes } from './invoices/invoices.routes';
-
 export const routes: Routes = [
   {
     path: '',
@@ -71,9 +70,9 @@ export const routes: Routes = [
       }
     ]
   },
-
   {
     path: '**',
     redirectTo: '/home'
   }
 ];
+

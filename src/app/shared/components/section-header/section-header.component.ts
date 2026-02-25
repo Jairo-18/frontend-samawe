@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 @Component({
   selector: 'app-section-header',
   standalone: true,
@@ -11,3 +10,4 @@ export class SectionHeaderComponent {
   @Input() title: string = '';
   @Input() subtitle: string = '';
 }
+

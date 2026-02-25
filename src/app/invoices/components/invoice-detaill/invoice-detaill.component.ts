@@ -25,7 +25,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
-
 @Component({
   selector: 'app-invoice-detaill',
   standalone: true,
@@ -47,12 +46,10 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
   @Input() reload: boolean = false;
   @Output() itemDelete = new EventEmitter<void>();
   @Output() allItemsSaved = new EventEmitter<void>();
-
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
-
   loading: boolean = false;
   isMobile: boolean = false;
   paginationParams: PaginationInterface = {
@@ -75,25 +72,18 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     'isPaid',
     'actions'
   ];
-
   dataSource = new MatTableDataSource<InvoiceDetail>();
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   private paginatorInitialized = false;
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['invoiceDetails'] && this.invoiceDetails) {
       this.dataSource.data = this.invoiceDetails;
-
       if (this.paginatorInitialized) {
         this.dataSource.paginator = this.paginator;
-
         setTimeout(() => {
           const totalItems = this.dataSource.data.length;
           const pageSize = this.paginator.pageSize;
           const lastPageIndex = Math.ceil(totalItems / pageSize) - 1;
-
           if (lastPageIndex >= 0) {
             this.paginator.pageIndex = lastPageIndex;
             this.paginator._changePageSize(this.paginator.pageSize);
@@ -101,7 +91,6 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
         });
       }
     }
-
     if (changes['reload'] && changes['reload'].currentValue) {
       this.dataSource.data = this.invoiceDetails;
       if (this.paginator) {
@@ -109,22 +98,17 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
       }
     }
   }
-
   ngAfterViewInit(): void {
     this.paginatorInitialized = true;
     this.dataSource.paginator = this.paginator;
   }
-
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
   }
-
   addItem(detail: InvoiceDetail): void {
     if (!detail) return;
-
     this.dataSource.data = [...this.dataSource.data, detail];
-
     if (this.paginator) {
       const totalItems = this.dataSource.data.length;
       const pageSize = this.paginator.pageSize;
@@ -132,10 +116,6 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
       this.paginator._changePageSize(pageSize);
     }
   }
-
-  /**
-   * @param _deleteUser - Elimina un usuario.
-   */
   private deleteItem(invoiceDetailId: number): void {
     this.loading = true;
     this._invoiceDetaillService.deleteItemInvoice(invoiceDetailId).subscribe({
@@ -149,19 +129,15 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
       }
     });
   }
-
   togglePayment(detail: InvoiceDetail): void {
     if (!this.invoiceId) return;
-
     this.loading = true;
     this._invoiceDetaillService
       .toggleDetailPayment(this.invoiceId, detail.invoiceDetailId)
       .subscribe({
         next: (res) => {
           this.loading = false;
-
           detail.isPaid = res.data.isPaid;
-
           this.allItemsSaved.emit();
         },
         error: (err) => {
@@ -170,10 +146,6 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
         }
       });
   }
-
-  /**
-   * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
-   */
   openDeleteItemDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -181,7 +153,6 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm: boolean) => {
       if (confirm) {
         this.deleteItem(id);
@@ -189,3 +160,4 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     });
   }
 }
+

@@ -39,7 +39,6 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-
 @Component({
   selector: 'app-add-excursion',
   standalone: true,
@@ -68,24 +67,20 @@ export class AddExcursionComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
-
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
   private readonly _activateRouter = inject(ActivatedRoute);
   private readonly _fb = inject(FormBuilder);
   private readonly _router = inject(Router);
   private readonly _cdr = inject(ChangeDetectorRef);
-
   form: FormGroup;
   isLoading: boolean = false;
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
   isLoadingExcursions: boolean = false;
   invoiceId?: number;
-
   constructor() {
     const now = new Date();
     const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000);
-
     this.form = this._fb.group({
       name: ['', Validators.required],
       excursionId: [null, Validators.required],
@@ -101,7 +96,6 @@ export class AddExcursionComponent implements OnInit {
       startDateTime: [null, Validators.required],
       endDateTime: [null, Validators.required]
     });
-
     this.form.valueChanges.subscribe((val) => {
       if (val.startDate && val.startTime) {
         this.form.patchValue(
@@ -118,7 +112,6 @@ export class AddExcursionComponent implements OnInit {
         );
       }
     });
-
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -132,18 +125,15 @@ export class AddExcursionComponent implements OnInit {
         this.filteredExcursions = res.data ?? [];
       });
   }
-
   ngOnInit(): void {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) this.invoiceId = Number(id);
-
     ['amount', 'priceSale', 'priceWithoutTax', 'taxeTypeId'].forEach((field) =>
       this.form
         .get(field)
         ?.valueChanges.subscribe(() => this.updateFinalPrice())
     );
   }
-
   onExcursionFocus() {
     if (!this.filteredExcursions.length) {
       this._excursionsService
@@ -153,7 +143,6 @@ export class AddExcursionComponent implements OnInit {
         });
     }
   }
-
   onExcursionSelected(name: string) {
     const exc = this.filteredExcursions.find((e) => e.name === name);
     if (!exc) return;
@@ -167,7 +156,6 @@ export class AddExcursionComponent implements OnInit {
     );
     this.updateFinalPrice();
   }
-
   private getTaxRate(): number {
     const id = this.form.get('taxeTypeId')?.value;
     const tax = this.taxeTypes?.find((t) => t.taxeTypeId === id);
@@ -180,7 +168,6 @@ export class AddExcursionComponent implements OnInit {
     if (rate > 1) rate /= 100;
     return rate;
   }
-
   private updateFinalPrice() {
     const base = Number(this.form.get('priceWithoutTax')?.value ?? 0);
     const amount = Number(this.form.get('amount')?.value ?? 0);
@@ -188,19 +175,16 @@ export class AddExcursionComponent implements OnInit {
     const total = base * (1 + taxRate) * amount;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
-
   private round(n: number, d = 2): number {
     const p = Math.pow(10, d);
     return Math.round((n + Number.EPSILON) * p) / p;
   }
-
   private combineDateAndTime(date: Date, time: Date): Date {
     const d = new Date(date);
     const t = new Date(time);
     d.setHours(t.getHours(), t.getMinutes(), 0, 0);
     return d;
   }
-
   resetForm() {
     const now = new Date();
     const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000);
@@ -222,12 +206,10 @@ export class AddExcursionComponent implements OnInit {
     });
     this._cdr.detectChanges();
   }
-
   clearExcursionSelection(): void {
     this.resetForm();
     this.filteredExcursions = [];
   }
-
   addExcursion(): void {
     if (!this.form.value.excursionId) {
       this.form.get('name')?.setErrors({ required: true });
@@ -238,7 +220,6 @@ export class AddExcursionComponent implements OnInit {
       console.error('❌ No hay invoiceId definido');
       return;
     }
-
     if (this.form.valid) {
       const val = this.form.getRawValue();
       const payload: CreateInvoiceDetaill = {
@@ -252,7 +233,6 @@ export class AddExcursionComponent implements OnInit {
         startDate: new Date(val.startDateTime).toISOString(),
         endDate: new Date(val.endDateTime).toISOString()
       };
-
       if (!this.saveToBackend) {
         const pendingItem: PendingInvoiceDetail = {
           id: crypto.randomUUID(),
@@ -264,7 +244,6 @@ export class AddExcursionComponent implements OnInit {
         this.resetForm();
         return;
       }
-
       this.isLoading = true;
       this._invoiceDetaillService
         .createInvoiceDetaill(this.invoiceId, [payload])
@@ -282,3 +261,4 @@ export class AddExcursionComponent implements OnInit {
     }
   }
 }
+

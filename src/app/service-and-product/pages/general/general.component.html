@@ -9,7 +9,6 @@
           (productCanceled)="currentProduct = undefined"
           [currentProduct]="currentProduct"
         ></app-create-or-edit-product>
-
         <app-see-products
           [searchFieldsProducts]="searchFieldsProducts"
           [categoryTypes]="categoryTypes"
@@ -28,7 +27,6 @@
           (excursionCanceled)="currentExcursion = undefined"
           [currentExcursion]="currentExcursion"
         ></app-create-or-edit-excursion>
-
         <app-see-excursions
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypes"
@@ -50,7 +48,6 @@
           (accommodationCanceled)="currentAccommodation = undefined"
           [currentAccommodation]="currentAccommodation"
         ></app-create-or-edit-accommodation>
-
         <app-see-accommodations
           [searchFieldsAccommodations]="searchFieldsAccommodations"
           [stateTypes]="stateTypes"
@@ -62,3 +59,4 @@
     </mat-tab>
   </mat-tab-group>
 </app-base-page>
+

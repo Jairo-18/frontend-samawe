@@ -7,3 +7,4 @@ export interface DashboardCard {
   iconNext?: string;
   allowedRoles?: string[];
 }
+

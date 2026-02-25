@@ -41,3 +41,4 @@ export class RecipeCardComponent {
     return 'high-cost';
   }
 }
+

@@ -20,21 +20,18 @@
         Tipo requerido
       </mat-error>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Código o prefijo</mat-label>
       <input matInput formControlName="code" required appUppercase />
       <mat-icon matPrefix>person</mat-icon>
       <mat-error *ngIf="formType.get('code')"> Código requerido </mat-error>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" required appUppercase />
       <mat-icon matPrefix>person</mat-icon>
       <mat-error *ngIf="formType.get('name')"> Nombre requerido </mat-error>
     </mat-form-field>
-
     <section
       actions
       class="w-full flex content-between gap-x-2 items-center justify-end"
@@ -54,3 +51,4 @@
     </section>
   </form>
 </app-base-dialog>
+

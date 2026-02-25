@@ -13,7 +13,6 @@ export interface UserInterface {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface RoleType {
   roleTypeId: string;
   code?: string;
@@ -22,7 +21,6 @@ export interface RoleType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface PhoneCode {
   phoneCodeId: string;
   code?: string;
@@ -31,7 +29,6 @@ export interface PhoneCode {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface IdentificationType {
   identificationTypeId: string;
   code?: string;
@@ -40,3 +37,4 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
+

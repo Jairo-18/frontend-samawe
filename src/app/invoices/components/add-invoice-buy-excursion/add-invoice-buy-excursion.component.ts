@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ChangeDetectorRef,
   Component,
@@ -37,7 +36,6 @@ import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
-
 @Component({
   selector: 'app-add-invoice-buy-excursion',
   standalone: true,
@@ -63,20 +61,17 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
-
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
   private readonly _activateRouter = inject(ActivatedRoute);
   private readonly _fb = inject(FormBuilder);
   private readonly _router = inject(Router);
   private readonly _cdr = inject(ChangeDetectorRef);
-
   form: FormGroup;
   isLoading: boolean = false;
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
   isLoadingExcursions: boolean = false;
   invoiceId?: number;
-
   constructor() {
     this.form = this._fb.group({
       name: ['', Validators.required],
@@ -87,7 +82,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       amount: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0]
     });
-
     this.form.get('priceSale')?.valueChanges.subscribe((value) => {
       const numericValue = this.parseNumber(value);
       this.form.patchValue(
@@ -96,7 +90,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       );
       this.updateFinalPrice();
     });
-
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -110,11 +103,9 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         this.filteredExcursions = res.data ?? [];
       });
   }
-
   ngOnInit(): void {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) this.invoiceId = Number(id);
-
     this.form
       .get('amount')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
@@ -122,18 +113,13 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       .get('taxeTypeId')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
   }
-
-  /** 🔑 Convierte strings con , y . a number real */
   private parseNumber(value: any): number {
     if (value == null) return 0;
     if (typeof value === 'number' && Number.isFinite(value)) return value;
-
     let s = String(value).trim();
     s = s.replace(/[^\d\-,.]/g, '');
-
     const hasDot = s.includes('.');
     const hasComma = s.includes(',');
-
     if (hasDot && hasComma) {
       if (s.lastIndexOf('.') > s.lastIndexOf(',')) {
         s = s.replace(/,/g, '');
@@ -145,11 +131,9 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     } else {
       s = s.replace(/,/g, '');
     }
-
     const n = parseFloat(s);
     return Number.isFinite(n) ? n : 0;
   }
-
   onExcursionFocus() {
     if (!this.filteredExcursions.length) {
       this._excursionsService
@@ -159,16 +143,13 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         });
     }
   }
-
   onExcursionSelected(name: string) {
     const exc = this.filteredExcursions.find((e) => e.name === name);
     if (!exc) return;
-
     const currentPriceSale = this.parseNumber(
       this.form.get('priceSale')?.value
     );
     const shouldUpdatePrice = !currentPriceSale || currentPriceSale === 0;
-
     this.form.patchValue({
       excursionId: exc.excursionId,
       ...(shouldUpdatePrice && {
@@ -176,26 +157,20 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         priceWithoutTax: exc.priceSale
       })
     });
-
     this.updateFinalPrice();
   }
-
   private getTaxRate(): number {
     const id = this.form.get('taxeTypeId')?.value;
     const tax = this.taxeTypes?.find((t) => t.taxeTypeId === id);
     if (!tax || tax.percentage == null) return 0;
-
     let rate =
       typeof tax.percentage === 'string'
         ? parseFloat(tax.percentage)
         : tax.percentage;
-
     if (!isFinite(rate) || rate < 0) return 0;
     if (rate > 1) rate = rate / 100;
     return rate;
   }
-
-  /** Calcula finalPrice = (precio_sin_IVA * (1+IVA)) * cantidad */
   private updateFinalPrice() {
     const base = this.parseNumber(
       this.form.get('priceWithoutTax')?.value ??
@@ -204,18 +179,14 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     );
     const amount = this.parseNumber(this.form.get('amount')?.value ?? 0);
     const taxRate = this.getTaxRate();
-
     const unitWithTax = base * (1 + taxRate);
     const total = unitWithTax * amount;
-
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
-
   private round(n: number, d = 2): number {
     const p = Math.pow(10, d);
     return Math.round((n + Number.EPSILON) * p) / p;
   }
-
   resetForm() {
     this.form.reset({
       name: '',
@@ -226,21 +197,17 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       amount: 1,
       finalPrice: 0
     });
-
     Object.keys(this.form.controls).forEach((key) => {
       const control = this.form.get(key);
       control?.setErrors(null);
     });
-
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
       replaceUrl: true
     });
-
     this._cdr.detectChanges();
   }
-
   clearExcursionSelection(): void {
     this.form.patchValue({
       name: '',
@@ -249,14 +216,12 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     });
     this.filteredExcursions = [];
   }
-
   addExcursion(): void {
     if (!this.form.value.excursionId) {
       this.form.get('name')?.setErrors({ required: true });
       this.form.markAllAsTouched();
       return;
     }
-
     if (this.form.invalid) {
       Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
@@ -272,12 +237,9 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-
     const formValue = this.form.getRawValue();
-
     const startDate = new Date();
     const endDate = new Date(startDate.getTime() + 60000);
-
     const payload: CreateInvoiceDetaill = {
       productId: 0,
       accommodationId: 0,
@@ -289,7 +251,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString()
     };
-
     if (!this.saveToBackend) {
       const pendingItem: PendingInvoiceDetail = {
         id: crypto.randomUUID(),
@@ -301,12 +262,10 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       this.resetForm();
       return;
     }
-
     if (!this.invoiceId) {
       console.error('❌ No hay invoiceId definido');
       return;
     }
-
     this.isLoading = true;
     this._invoiceDetaillService
       .createInvoiceDetaill(this.invoiceId, [payload])
@@ -323,3 +282,4 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       });
   }
 }
+

@@ -8,7 +8,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TaxeType } from '../../../shared/interfaces/relatedDataGeneral';
 import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
-
 @Component({
   selector: 'app-pending-items-table',
   standalone: true,
@@ -28,10 +27,8 @@ export class PendingItemsTableComponent {
   @Input() pendingItems: PendingInvoiceDetail[] = [];
   @Input() taxeTypes: TaxeType[] = [];
   @Input() isSaving: boolean = false;
-
   @Output() itemDeleted = new EventEmitter<number>();
   @Output() saveAll = new EventEmitter<void>();
-
   displayedColumns: string[] = [
     'type',
     'name',
@@ -43,7 +40,6 @@ export class PendingItemsTableComponent {
     'subtotal',
     'actions'
   ];
-
   getTaxPercentage(taxeTypeId?: number): number {
     if (!taxeTypeId) return 0;
     const tax = this.taxeTypes.find((t) => t.taxeTypeId === taxeTypeId);
@@ -55,26 +51,23 @@ export class PendingItemsTableComponent {
     if (rate > 1) rate = rate / 100;
     return rate;
   }
-
   calculateTaxAmount(item: PendingInvoiceDetail): number {
     const priceWithoutTax = Number(item.payload.priceWithoutTax || 0);
     const amount = Number(item.payload.amount || 1);
     const taxRate = this.getTaxPercentage(item.payload.taxeTypeId);
     return priceWithoutTax * amount * taxRate;
   }
-
   calculateSubtotal(item: PendingInvoiceDetail): number {
     const priceWithoutTax = Number(item.payload.priceWithoutTax || 0);
     const amount = Number(item.payload.amount || 1);
     const taxAmount = this.calculateTaxAmount(item);
     return priceWithoutTax * amount + taxAmount;
   }
-
   onDelete(index: number) {
     this.itemDeleted.emit(index);
   }
-
   onSave() {
     this.saveAll.emit();
   }
 }
+

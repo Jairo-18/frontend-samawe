@@ -1,5 +1,4 @@
 import { ProductComplete } from './../../interface/product.interface';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -38,7 +37,6 @@ import {
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
-
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -71,7 +69,6 @@ export class SeeProductsComponent implements OnInit {
   @Output() productClean = new EventEmitter<number>();
   @Output() printRequested = new EventEmitter<void>();
   @ViewChild('productsPrint') productsPrintComponent!: ProductsPrintComponent;
-
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router = inject(Router);
@@ -79,7 +76,6 @@ export class SeeProductsComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
-
   displayedColumns: string[] = [
     'categoryType',
     'code',
@@ -91,7 +87,6 @@ export class SeeProductsComponent implements OnInit {
     'priceSale',
     'actions'
   ];
-
   dataSource = new MatTableDataSource<ProductComplete>([]);
   allProducts: ProductComplete[] = [];
   userLogged: UserInterface;
@@ -109,66 +104,40 @@ export class SeeProductsComponent implements OnInit {
     hasPreviousPage: false,
     hasNextPage: false
   };
-
-  /**
-   * @param ngOnInit - Inicialización de las funciones.
-   */
   ngOnInit(): void {
     this.loadProducts();
   }
-
   constructor() {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }
-
   getCategoryTypeName(product: ProductComplete): string {
     const categoryTypeId = product?.categoryType?.categoryTypeId;
-
     const category = this.categoryTypes.find(
       (r) => r.categoryTypeId === categoryTypeId
     );
-
     return category?.name || 'N/A';
   }
-
-  /**
-   * @param onSearchSubmit - Botón de búsqueda.
-   */
   onSearchSubmit(values: any): void {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadProducts();
   }
-
-  /**
-   * @param onChangePagination - Cambio de paginación.
-   */
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadProducts();
   }
-
-  /**
-   * @param onTabChange - Cambio de tabla.
-   */
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
     this.paginationParams.page = 1;
     this.loadProducts();
   }
-
-  /**
-   * @param loadUsers - Carga de usuarios.
-   * @param getUserWithPagination - Obtiene los usuarios con paginación.
-   */
   loadProducts(filter: string = ''): void {
     this.loading = true;
     const query = {
@@ -177,7 +146,6 @@ export class SeeProductsComponent implements OnInit {
       search: filter,
       ...this.params
     };
-
     this._productsService.getProductWithPagination(query).subscribe({
       next: (res) => {
         this.dataSource.data = (res.data || []).sort((a, b) =>
@@ -192,17 +160,12 @@ export class SeeProductsComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param _deleteUser - Ellimina un usuario.
-   */
   private deleteProduct(productId: number): void {
     this.loading = true;
     this._productsService.deleteProductPanel(productId).subscribe({
       next: () => {
         this.loadProducts();
         this.cleanQueryParamDelete(productId);
-
         this.loading = false;
       },
       error: (error) => {
@@ -211,10 +174,6 @@ export class SeeProductsComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
-   */
   openDeleteProductDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -222,14 +181,12 @@ export class SeeProductsComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
         this.deleteProduct(id);
       }
     });
   }
-
   cleanQueryParamDelete(id: number) {
     const queryParams = this._activatedRoute.snapshot.queryParams;
     if (queryParams['editProduct']) {
@@ -244,12 +201,10 @@ export class SeeProductsComponent implements OnInit {
       }
     }
   }
-
   validateIfCanEditUserOrDelete(): boolean {
     const roleName = this.userLogged?.roleType?.name?.toUpperCase();
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
-
   printProducts(): void {
     this._productsService.getAllProducts().subscribe({
       next: (res) => {
@@ -262,12 +217,10 @@ export class SeeProductsComponent implements OnInit {
             return a.name.localeCompare(b.name);
           }
         );
-
         if (!this.allProducts.length) {
           console.warn('No hay productos para imprimir');
           return;
         }
-
         setTimeout(() => {
           this.productsPrintComponent.print();
         }, 0);
@@ -275,3 +228,4 @@ export class SeeProductsComponent implements OnInit {
     });
   }
 }
+

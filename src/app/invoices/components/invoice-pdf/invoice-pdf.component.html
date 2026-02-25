@@ -1,4 +1,3 @@
-<!-- CONTENEDOR A IMPRIMIR -->
 <article #pdfWrapper class="invoice-pdf">
   <section class="invoice-header">
     <section class="flex flex-col w-[50%]">
@@ -45,9 +44,7 @@
       </div>
     </section>
   </section>
-
   <div class="separator"></div>
-
   <table *ngIf="invoiceData?.invoiceDetails">
     <thead>
       <tr>
@@ -89,10 +86,8 @@
       </tr>
     </tbody>
   </table>
-
   <section class="invoice-totals">
     <div class="separator"></div>
-
     @if (invoiceData.cash && invoiceData.cash > 0) {
     <div class="row">
       <div class="col-left"><span class="label">Efectivo:</span></div>
@@ -110,7 +105,6 @@
       </div>
     </div>
     }
-
     <div class="row">
       <div class="col-left"><span class="label">Estado de pago:</span></div>
       <div class="col-right">
@@ -128,14 +122,12 @@
         </span>
       </div>
     </div>
-
     <div class="row">
       <div class="col-left"><span class="label">Tipo de pago:</span></div>
       <div class="col-right">
         <span>{{ invoiceData.payType?.name || '' }}</span>
       </div>
     </div>
-
     <div class="row">
       <div class="col-left">
         <span class="label">Subtotal sin impuestos:</span>
@@ -144,14 +136,12 @@
         <span>{{ invoiceData.subtotalWithoutTax ?? 0 | formatCop }}</span>
       </div>
     </div>
-
     <div class="row">
       <div class="col-left"><span class="label">Impuestos:</span></div>
       <div class="col-right">
         <span>{{ invoiceData.totalTaxes ?? 0 | formatCop }}</span>
       </div>
     </div>
-
     <div class="row total">
       <div class="col-left"><span class="label">Total:</span></div>
       <div class="col-right">
@@ -159,7 +149,6 @@
       </div>
     </div>
   </section>
-
   <footer>
     <span>
       "Gracias por su compañía - Factura generada por Samawe Putumayo S A S
@@ -167,3 +156,4 @@
     </span>
   </footer>
 </article>
+

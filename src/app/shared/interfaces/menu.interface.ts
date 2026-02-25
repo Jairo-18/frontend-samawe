@@ -4,7 +4,6 @@ export interface MenuInterface {
   order: number;
   items: ItemInterface[];
 }
-
 export interface ItemInterface {
   name: string;
   route?: string;
@@ -13,14 +12,13 @@ export interface ItemInterface {
   subItems?: SubItemInterface[];
   isOpen?: boolean;
 }
-
 export interface SubItemInterface {
   name: string;
   icon: string;
   route: string;
 }
-
 export interface MenuItemSelectedInterface {
   moduleName: string;
   itemRoute: string;
 }
+

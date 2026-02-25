@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -40,7 +39,6 @@ import {
 import { AccommodationsService } from '../../services/accommodations.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
-
 @Component({
   selector: 'app-see-accommodations',
   standalone: true,
@@ -70,7 +68,6 @@ export class SeeAccommodationsComponent implements OnInit {
   @Input() bedTypes: BedType[] = [];
   @Output() accommodationSelect = new EventEmitter<AccommodationComplete>();
   @Output() accommodationClean = new EventEmitter<number>();
-
   private readonly _accommodationService: AccommodationsService = inject(
     AccommodationsService
   );
@@ -80,7 +77,6 @@ export class SeeAccommodationsComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
-
   displayedColumns: string[] = [
     'code',
     'name',
@@ -94,9 +90,7 @@ export class SeeAccommodationsComponent implements OnInit {
     'priceSale',
     'actions'
   ];
-
   dataSource = new MatTableDataSource<CreateAccommodationPanel>([]);
-
   userLogged: UserInterface;
   form!: FormGroup;
   showClearButton: boolean = false;
@@ -112,84 +106,53 @@ export class SeeAccommodationsComponent implements OnInit {
     hasPreviousPage: false,
     hasNextPage: false
   };
-
-  /**
-   * @param ngOnInit - Inicialización de las funciones.
-   */
   ngOnInit(): void {
     this.loadAccommodations();
   }
-
   constructor() {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }
-
   getBedTypeName(accommodation: AccommodationComplete): string {
     const bedTypeId = accommodation?.bedType?.bedTypeId;
-
     const stateType = this.bedTypes.find((r) => r.bedTypeId === bedTypeId);
-
     return stateType?.name || 'N/A';
   }
-
   getStateTypeName(accommodation: AccommodationComplete): string {
     const stateTypeId = accommodation?.stateType?.stateTypeId;
-
     const stateType = this.stateTypes.find(
       (r) => r.stateTypeId === stateTypeId
     );
-
     return stateType?.name || 'N/A';
   }
-
-  /**
-   * @param onSearchSubmit - Botón de búsqueda.
-   */
   onSearchSubmit(values: any): void {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadAccommodations();
   }
-
-  /**
-   * @param onChangePagination - Cambio de paginación.
-   */
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadAccommodations();
   }
-
-  /**
-   * @param onTabChange - Cambio de tabla.
-   */
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
     this.paginationParams.page = 1;
     this.loadAccommodations();
   }
-
-  /**
-   * @param loadUsers - Carga de usuarios.
-   * @param getUserWithPagination - Obtiene los usuarios con paginación.
-   */
   loadAccommodations(filter: string = ''): void {
     this.loading = true;
-
     const query = {
       page: this.paginationParams.page,
       perPage: this.paginationParams.perPage,
       search: filter,
       ...this.params
     };
-
     this._accommodationService.getAccommodationWithPagination(query).subscribe({
       next: (res) => {
         this.dataSource.data = (res.data || []).sort((a, b) =>
@@ -204,10 +167,6 @@ export class SeeAccommodationsComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param _deleteUser - Ellimina un usuario.
-   */
   private deleteAccommodation(accommodationId: number): void {
     this.loading = true;
     this._accommodationService
@@ -216,7 +175,6 @@ export class SeeAccommodationsComponent implements OnInit {
         next: () => {
           this.loadAccommodations();
           this.cleanQueryParamDelete(accommodationId);
-
           this.loading = false;
         },
         error: (error) => {
@@ -225,10 +183,6 @@ export class SeeAccommodationsComponent implements OnInit {
         }
       });
   }
-
-  /**
-   * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
-   */
   openDeleteAccommodationDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -236,14 +190,12 @@ export class SeeAccommodationsComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
         this.deleteAccommodation(id);
       }
     });
   }
-
   cleanQueryParamDelete(id: number) {
     const queryParams = this._activatedRoute.snapshot.queryParams;
     if (queryParams['editAccommodation']) {
@@ -258,9 +210,9 @@ export class SeeAccommodationsComponent implements OnInit {
       }
     }
   }
-
   validateIfCanEditUserOrDelete(): boolean {
     const roleName = this.userLogged?.roleType?.name?.toUpperCase();
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
 }
+

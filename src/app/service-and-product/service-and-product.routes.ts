@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-
 export const serviceAndProductRoutes: Routes = [
   {
     path: '',
@@ -14,3 +13,4 @@ export const serviceAndProductRoutes: Routes = [
     ]
   }
 ];
+

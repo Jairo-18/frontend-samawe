@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { Invoice } from '../../interface/invoice.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
-
 @Component({
   selector: 'app-invoice-pdf',
   standalone: true,
@@ -14,9 +13,7 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 export class InvoicePdfComponent {
   @Input() invoiceData!: Invoice;
   @ViewChild('pdfWrapper') pdfWrapper!: ElementRef;
-
   printDate = new Date();
-
   displayedColumns: string[] = [
     'nro',
     'item',
@@ -28,8 +25,8 @@ export class InvoicePdfComponent {
   get dataSource() {
     return this.invoiceData?.invoiceDetails || [];
   }
-
   get nativeElement(): HTMLElement {
     return this.pdfWrapper?.nativeElement;
   }
 }
+

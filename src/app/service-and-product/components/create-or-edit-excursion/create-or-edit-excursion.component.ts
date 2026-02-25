@@ -39,7 +39,6 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
-
 @Component({
   selector: 'app-create-or-edit-excursion',
   standalone: true,
@@ -68,9 +67,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   @Input() currentExcursion?: ExcursionComplete;
   @Output() excursionSaved = new EventEmitter<void>();
   @Output() excursionCanceled = new EventEmitter<void>();
-
   @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
-
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
@@ -79,23 +76,18 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name)
       )
       .sort((a, b) => a.name.localeCompare(b.name));
-
     if (this.currentExcursion && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithExcursion(this.currentExcursion);
     }
-
     if (this.pendingExcursionId && this.visibleCategoryTypes.length > 0) {
       this.getExcursionToEdit(this.pendingExcursionId);
       this.pendingExcursionId = null;
     }
-
     this.cdr.detectChanges();
   }
-
   get categoryTypes(): CategoryType[] {
     return this._categoryTypes;
   }
-
   private _categoryTypes: CategoryType[] = [];
   visibleCategoryTypes: CategoryType[] = [];
   excursionForm!: FormGroup;
@@ -104,19 +96,16 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   excursionImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
   private pendingExcursionId: number | null = null;
-
   private readonly _excursionService: ExcursionsService =
     inject(ExcursionsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
-
   constructor(
     private _fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
   }
-
   private initializeForm(): void {
     this.excursionForm = this._fb.group({
       categoryTypeId: [null, Validators.required],
@@ -134,15 +123,12 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       stateTypeId: [null, Validators.required]
     });
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentExcursion']) {
       const queryParams = this._activatedRoute.snapshot.queryParams;
-
       if (this.currentExcursion) {
         this.excursionId = this.currentExcursion.excursionId;
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithExcursion(this.currentExcursion);
         }
@@ -153,7 +139,6 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       } else if (!isNaN(+queryParams['editExcursion'])) {
         this.excursionId = Number(queryParams['editExcursion']);
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.getExcursionToEdit(this.excursionId);
           this.imageUploader?.resetPending();
@@ -163,7 +148,6 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       }
     }
   }
-
   private updateFormWithExcursion(excursion: ExcursionComplete): void {
     this.excursionForm.patchValue({
       categoryTypeId: excursion.categoryType?.categoryTypeId,
@@ -174,11 +158,9 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       priceSale: excursion.priceSale,
       stateTypeId: excursion.stateType?.stateTypeId
     });
-
     this.excursionImages = excursion.images || [];
     this.cdr.detectChanges();
   }
-
   private resetFormToDefaults(): void {
     this.excursionForm.reset({
       categoryTypeId: null,
@@ -195,7 +177,6 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     }
     this.cdr.detectChanges();
   }
-
   resetForm() {
     this.resetFormToDefaults();
     Object.keys(this.excursionForm.controls).forEach((key) => {
@@ -211,14 +192,12 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     });
     this.cdr.detectChanges();
   }
-
   private getExcursionToEdit(excursionId: number): void {
     this.isLoadingImages = true;
     this._excursionService.getExcursionEditPanel(excursionId).subscribe({
       next: (res) => {
         const excursion = res.data;
         this.excursionId = excursion.excursionId;
-
         this.updateFormWithExcursion(excursion);
         this.isLoadingImages = false;
         this.cdr.detectChanges();
@@ -233,11 +212,9 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       }
     });
   }
-
   save() {
     if (this.excursionForm.valid) {
       const formValue = this.excursionForm.value;
-
       const excursionSave: CreateExcursionPanel = {
         excursionId: this.isEditMode ? this.excursionId : undefined,
         code: formValue.code,
@@ -248,11 +225,9 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         categoryTypeId: formValue.categoryTypeId,
         stateTypeId: formValue.stateTypeId
       };
-
       if (this.isEditMode) {
         const updateData = { ...excursionSave };
         delete updateData.excursionId;
-
         this._excursionService
           .updateExcursionPanel(this.excursionId, updateData)
           .subscribe({
@@ -294,8 +269,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       this.excursionForm.markAllAsTouched();
     }
   }
-
   ngOnDestroy(): void {
     this.resetForm();
   }
 }
+

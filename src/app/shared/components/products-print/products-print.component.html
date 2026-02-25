@@ -8,24 +8,8 @@
       Lista de Productos, Bar, Mecato, Restaurante y Otros
     </p>
   </section>
-
-  <!-- ✅ TABLA CON DIVS Y FLEXBOX -->
   <div class="w-full" *ngIf="products" style="width: 100%">
-    <!-- HEADER -->
     <div class="flex w-full" style="display: flex; width: 100%">
-      <!-- <div
-        class="flex-1 border text-sm p-1 font-bold text-center"
-        style="
-          flex: 1;
-          border: 1px solid black;
-          padding: 4px;
-          background-color: #06a606;
-          color: white;
-          font-weight: bold;
-          text-align: center;
-          font-size: 14px;
-        "
-      ></div> -->
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
         style="
@@ -102,8 +86,6 @@
         P. Venta
       </div>
     </div>
-
-    <!-- MENSAJE SI NO HAY PRODUCTOS -->
     <div
       *ngIf="products.length === 0"
       class="flex w-full"
@@ -122,28 +104,11 @@
         No hay productos registrados
       </div>
     </div>
-
-    <!-- FILAS DE PRODUCTOS -->
     <div
       *ngFor="let product of products; let i = index"
       class="flex w-full"
       style="display: flex; width: 100%"
     >
-      <!-- Número -->
-      <!-- <div
-        class="flex-1 border px-4 p-1 text-center text-xs"
-        style="
-          flex: 1;
-          border: 1px solid black;
-          padding: 4px;
-          text-align: center;
-          font-size: 12px;
-        "
-      >
-        {{ i + 1 }}
-      </div> -->
-
-      <!-- Código -->
       <div
         class="flex-[2] border px-4 p-1 text-center text-xs"
         style="
@@ -156,8 +121,6 @@
       >
         {{ product.categoryType.name || 'N/A' }}
       </div>
-
-      <!-- Nombre -->
       <div
         class="flex-[4] border px-4 p-1 text-left text-xs"
         style="
@@ -170,8 +133,6 @@
       >
         {{ product.name || 'N/A' }}
       </div>
-
-      <!-- Unidades con colores -->
       <div
         class="flex-1 border px-4 p-1 text-center text-xs font-bold"
         [ngClass]="{
@@ -190,8 +151,6 @@
       >
         {{ product?.amount ?? 0 }}
       </div>
-
-      <!-- Precio Compra -->
       <div
         class="flex-[2] border px-4 p-1 text-right text-xs font-bold text-red-700"
         style="
@@ -204,8 +163,6 @@
       >
         {{ product?.priceBuy ?? 0 | formatCop }}
       </div>
-
-      <!-- Precio Venta -->
       <div
         class="flex-[2] border px-4 p-1 text-right text-xs font-bold text-green-700"
         style="
@@ -219,8 +176,6 @@
         {{ product?.priceSale ?? 0 | formatCop }}
       </div>
     </div>
-
-    <!-- FOOTER/TOTAL -->
     <div class="flex w-full" style="display: flex; width: 100%">
       <div
         class="flex-[7] border p-1 text-right text-xs font-bold"
@@ -254,3 +209,4 @@
     </div>
   </div>
 </article>
+

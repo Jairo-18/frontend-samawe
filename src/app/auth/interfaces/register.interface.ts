@@ -3,7 +3,6 @@ import {
   PhoneCode,
   RoleType
 } from '../../shared/interfaces/relatedDataGeneral';
-
 export interface RegisterUser {
   userId: string;
   identificationType: string;
@@ -17,14 +16,13 @@ export interface RegisterUser {
   confirmPassword: string;
   roleType?: string;
 }
-
 export interface CreateUserRelatedData {
   identificationType: IdentificationType[];
   roleType: RoleType[];
   phoneCode: PhoneCode[];
 }
-
 export interface RegisterUserRelatedData {
   identificationType: IdentificationType[];
   phoneCode: PhoneCode[];
 }
+

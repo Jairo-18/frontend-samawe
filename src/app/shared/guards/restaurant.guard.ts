@@ -1,12 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../services/localStorage.service';
 import { inject } from '@angular/core';
-
-/**
- * Guard del módulo de restaurante / recetas.
- * Permite acceso a: ADMINISTRADOR, RECEPCIONISTA, CHEF y MESERO.
- * Bloquea a CLIENTE y PROVEEDOR.
- */
 const RESTAURANT_ROLES = ['administrador', 'recepcionista', 'chef', 'mesero'];
 
 export const restaurantGuard: CanActivateFn = () => {
@@ -23,3 +17,4 @@ export const restaurantGuard: CanActivateFn = () => {
 
   return true;
 };
+

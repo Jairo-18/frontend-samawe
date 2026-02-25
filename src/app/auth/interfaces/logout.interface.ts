@@ -3,3 +3,4 @@ export interface LogOutInterface {
   accessToken: string;
   accessSessionId: string;
 }
+

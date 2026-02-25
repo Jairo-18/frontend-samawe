@@ -3,7 +3,6 @@ import {
   UnitOfMeasure
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
-
 export interface CreateProductPanel {
   productId?: number;
   code: string;
@@ -17,7 +16,6 @@ export interface CreateProductPanel {
   categoryTypeId: number;
   unitOfMeasureId?: number;
 }
-
 export interface ProductComplete {
   productId: number;
   code: string;
@@ -35,7 +33,7 @@ export interface ProductComplete {
   deletedAt: Date;
   images?: ImageItem[];
 }
-
 export interface ProductListResponse {
   products: ProductComplete[];
 }
+

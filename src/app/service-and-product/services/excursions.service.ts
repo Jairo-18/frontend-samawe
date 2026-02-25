@@ -13,7 +13,6 @@ import {
 } from '../../shared/interfaces/api-response.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +20,6 @@ export class ExcursionsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-
   getExcursionWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
     data: CreateExcursionPanel[];
@@ -32,13 +30,11 @@ export class ExcursionsService {
       data: CreateExcursionPanel[];
     }>(`${environment.apiUrl}excursion/paginated-list`, { params });
   }
-
   getAllExcursions(): Observable<{ data: ExcursionListResponse }> {
     return this._httpClient.get<{ data: ExcursionListResponse }>(
       `${environment.apiUrl}excursion`
     );
   }
-
   getExcursionEditPanel(
     excursionId: number
   ): Observable<ApiResponseInterface<ExcursionComplete>> {
@@ -46,7 +42,6 @@ export class ExcursionsService {
       `${environment.apiUrl}excursion/${excursionId}`
     );
   }
-
   createExcursionPanel(
     excursion: CreateExcursionPanel
   ): Observable<ApiResponseCreateInterface> {
@@ -55,17 +50,16 @@ export class ExcursionsService {
       excursion
     );
   }
-
   updateExcursionPanel(excursionId: number, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}excursion/${excursionId}`,
       body
     );
   }
-
   deleteExcursionPanel(excursionId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}excursion/${excursionId}`
     );
   }
 }
+

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import {
@@ -24,7 +23,6 @@ import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-ed
 import { TypesService } from '../../services/types.service';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { SearchField } from '../../../shared/interfaces/search.interface';
-
 @Component({
   selector: 'app-see-types',
   standalone: true,
@@ -47,7 +45,6 @@ export class SeeTypesComponent implements OnInit {
   private readonly _typesService = inject(TypesService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _fb: FormBuilder = inject(FormBuilder);
-
   results?: TypeItem[];
   loading: boolean = false;
   showClearButton: boolean = false;
@@ -64,75 +61,60 @@ export class SeeTypesComponent implements OnInit {
   };
   buttons: Record<string, string> = TYPE_ENTITY_LABELS_ES;
   buttonsControll: FormControl = new FormControl('categoryType');
-
   form!: FormGroup;
-
   searchFields: SearchField[] = [
     {
       name: 'code',
       label: 'Código',
-
       type: 'text',
       placeholder: 'Buscar por código'
     },
     {
       name: 'name',
       label: 'Nombre',
-
       type: 'text',
       placeholder: 'Buscar por nombre'
     }
   ];
-
   ngOnInit(): void {
     this.form = this._fb.group({
       code: [''],
       name: ['']
     });
-
     this.loadGroupData(this.selectedType);
-
     this.buttonsControll.valueChanges.subscribe((value) => {
       this.selectedType = value;
       this.loadGroupData(value);
     });
   }
-
   onSearchSubmit(values: any): void {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadGroupData(this.selectedType);
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
     this.paginationParams.page = 1;
     this.loadGroupData(this.selectedType);
   }
-
   onClearSearch() {
     this.params = {};
     this.paginationParams.page = 1;
     this.loadGroupData(this.selectedType);
   }
-
   public onButtonSelect(type: string) {
     this.selectedType = type;
     this.loadGroupData(type);
   }
-
   hasContent(data: TypeItem[]): boolean {
     return data.length > 0;
   }
-
   get buttonLabel() {
     return Object.entries(this.buttons) || [];
   }
-
   openDialog() {
     const isMobile = window.innerWidth <= 768;
-
     const dialogRef = this._matDialog.open(CreateOrEditTypesComponent, {
       width: isMobile ? '90vw' : 'auto',
       height: 'auto',
@@ -142,14 +124,12 @@ export class SeeTypesComponent implements OnInit {
         editMode: false
       }
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadGroupData(this.selectedType);
       }
     });
   }
-
   onEditType(event: { type: string; id: number | string }) {
     this._typesService
       .getTypeForEdit(event.type, event.id.toString())
@@ -169,7 +149,6 @@ export class SeeTypesComponent implements OnInit {
               name: data.name
             }
           });
-
           dialogRef.afterClosed().subscribe((result) => {
             if (result) {
               this.loadGroupData(this.selectedType);
@@ -181,20 +160,17 @@ export class SeeTypesComponent implements OnInit {
         }
       });
   }
-
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadGroupData(this.selectedType);
   }
-
   loadGroupData(type: string): void {
     const query = {
       page: this.paginationParams.page,
       perPage: this.paginationParams.perPage,
       ...this.params
     };
-
     this.loading = true;
     this._typesService.getEntitiesWithPagination(type, query).subscribe({
       next: (res) => {
@@ -208,7 +184,6 @@ export class SeeTypesComponent implements OnInit {
       }
     });
   }
-
   onDeleteType(event: { type: string; id: number | string }) {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -216,12 +191,10 @@ export class SeeTypesComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         const type = event.type.trim();
         const id = event.id.toString();
-
         this._typesService.deleteType(type, id).subscribe({
           next: () => this.loadGroupData(this.selectedType),
           error: (err) => console.error('Error al eliminar', err)
@@ -230,3 +203,4 @@ export class SeeTypesComponent implements OnInit {
     });
   }
 }
+

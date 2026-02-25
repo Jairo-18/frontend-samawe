@@ -62,27 +62,13 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
   ]
 })
 export class SideBarComponent implements OnInit, OnChanges {
-  /** Trigger del menú contextual */
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
-
-  /** Datos básicos del usuario logueado (usado para cargar datos completos) */
   @Input() userRole?: UserInterface;
-
-  /** Escucha si el sidebar debe cerrarse desde el padre */
   @Input() closeSideBar: boolean = false;
-
-  /** Evento emitido al colapsar o expandir el sidebar */
   @Output() collapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  /** Evento emitido para cerrar sesión */
   @Output() logout = new EventEmitter<void>();
-
-  /** Router para detectar rutas activas */
   private readonly _router: Router = inject(Router);
-
-  /** Servicio para obtener datos completos del usuario */
   private readonly _usersService: UsersService = inject(UsersService);
-
   isCollapsed: boolean = true;
   currentRoute: string = '';
   menuWithItems: MenuInterface[] = [];
@@ -92,17 +78,8 @@ export class SideBarComponent implements OnInit, OnChanges {
   openSubMenu: Record<string, boolean> = {};
   userComplete?: UserComplete;
   isLoading: boolean = false;
-
-  /**
-   * Método del ciclo de vida que inicializa el componente:
-   * - Guarda la ruta actual
-   * - Escucha cambios de ruta
-   * - Carga los datos completos del usuario si hay un ID
-   * - Filtra el menú según el rol
-   */
   ngOnInit(): void {
     this.currentRoute = this._router.url;
-
     if (this.userRole?.userId) {
       this.isLoading = true;
       this._usersService.getUserEditPanel(this.userRole.userId).subscribe({
@@ -120,29 +97,18 @@ export class SideBarComponent implements OnInit, OnChanges {
       this.menuWithItems = [];
     }
   }
-
-  /**
-   * Detecta cambios en los `@Input()`.
-   * Si se cierra el sidebar desde el padre, lo cierra localmente también.
-   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['closeSideBar'] && this.closeSideBar) {
       this.closeSideBarMethod();
     }
   }
-
-  /**
-   * Filtra los módulos y items del menú según los permisos del rol actual.
-   */
   private filterMenuByRole(): void {
     const roleName = this.userComplete?.roleType?.name;
     if (!roleName) {
       this.menuWithItems = [];
       return;
     }
-
     const allowedItems = ROLE_PERMISSIONS[roleName];
-
     this.menuWithItems = MENU_CONST.map((module) => ({
       ...module,
       items: module.items
@@ -159,64 +125,34 @@ export class SideBarComponent implements OnInit, OnChanges {
         )
     })).filter((module) => module.items.length > 0);
   }
-
-  /**
-   * Alterna entre colapsar y expandir el sidebar.
-   * Cierra los submenús si se colapsa.
-   */
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) this.closeAllSubMenus();
     this.collapsed.emit(this.isCollapsed);
   }
-
-  /**
-   * Cierra el sidebar desde una señal externa (`closeSideBar`).
-   */
   closeSideBarMethod(): void {
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) this.closeAllSubMenus();
   }
-
-  /** Cierra todos los submenús */
   closeAllSubMenus(): void {
     this.openSubMenu = {};
   }
-
-  /**
-   * Alterna un submenú solo si el sidebar está expandido.
-   * @param item - Item del menú para alternar subitems
-   */
   toggleSubMenu(item: ItemInterface): void {
     if (!this.isCollapsed) {
       this.openSubMenu[item.name] = !this.openSubMenu[item.name];
     }
   }
-
-  /**
-   * Cierra el menú contextual manualmente.
-   */
   closeMenu(): void {
     if (this.menuTrigger) {
       this.menuTrigger.closeMenu();
     }
   }
-
-  /**
-   * Quita el foco del elemento clickeado para evitar que el hover se quede pegado
-   * @param event - Evento del click
-   */
   removeFocus(event: MouseEvent): void {
     const target = event.currentTarget as HTMLElement;
     if (target) {
       target.blur();
     }
   }
-
-  /**
-   * Maneja el click de un ítem del menú.
-   * Evita el hover pegado y abre el submenú si el sidebar no está colapsado.
-   */
   onItemClick(event: MouseEvent, item: ItemInterface): void {
     this.removeFocus(event);
     if (!this.isCollapsed) {
@@ -224,3 +160,4 @@ export class SideBarComponent implements OnInit, OnChanges {
     }
   }
 }
+

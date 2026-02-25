@@ -16,17 +16,13 @@ import {
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { LoginSuccessInterface } from '../../auth/interfaces/login.interface';
 import { NotificationsService } from '../services/notifications.service';
-
 const tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
-
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService: AuthService = inject(AuthService);
   const injector = inject(Injector);
   const notificationsService: NotificationsService =
     inject(NotificationsService);
-
   const authRequest: HttpRequest<unknown> = addTokenToRequest(req);
-
   return next(authRequest).pipe(
     catchError((err: HttpErrorResponse) => {
       const refreshToken = authService.getRefreshToken();
@@ -34,7 +30,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         case 401:
           if (refreshToken && !authService.getRefreshingToken) {
             tokenSubject.next('');
-
             return authService.refreshToken(refreshToken).pipe(
               switchMap(
                 (newToken: ApiResponseInterface<LoginSuccessInterface>) => {
@@ -88,17 +83,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-
 export const addTokenToRequest = (
   req: HttpRequest<unknown>,
   refreshToken?: string
 ): HttpRequest<unknown> => {
   const authService: AuthService = inject(AuthService);
   const authToken: string = refreshToken ?? (authService.getAuthToken() || '');
-
   return req.clone({
     setHeaders: {
       Authorization: `Bearer ${authToken}`
     }
   });
 };
+

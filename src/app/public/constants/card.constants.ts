@@ -1,5 +1,4 @@
 import { DashboardCard } from '../interface/card.interface';
-
 export const DASHBOARD_CARDS: DashboardCard[] = [
   {
     icon: 'person',
@@ -96,3 +95,4 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     ]
   }
 ];
+

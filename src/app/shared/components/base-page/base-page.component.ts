@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-
 @Component({
   selector: 'app-base-page',
   standalone: true,
@@ -23,12 +22,10 @@ export class BasePageComponent {
   @Input() infoText: string = '';
   @Input() contentTitle: string = '';
   @Input() contentInfo: string = '';
-
   @Input() showBackButton: boolean = false;
   @Input() backButtonText: string = 'Volver';
   @Input() backButtonRoute: string = '';
   @Input() backButtonTooltip: string = 'Volver';
-
   @Input() showHeader: boolean = true;
   @Input() showInfo: boolean = true;
   @Input() showActions: boolean = true;
@@ -37,3 +34,4 @@ export class BasePageComponent {
   @Input() showBorder: boolean = true;
   @Input() pxMobile: boolean = true;
 }
+

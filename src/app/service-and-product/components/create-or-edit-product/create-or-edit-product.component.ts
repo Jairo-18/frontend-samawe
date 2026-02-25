@@ -38,7 +38,6 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
-
 @Component({
   selector: 'app-create-or-edit-product',
   standalone: true,
@@ -66,9 +65,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   @Input() currentProduct?: ProductComplete;
   @Output() productSaved = new EventEmitter<void>();
   @Output() productCanceled = new EventEmitter<void>();
-
   @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
-
   @Input()
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
@@ -88,23 +85,18 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         ].includes(c.name)
       )
       .sort((a, b) => a.name.localeCompare(b.name));
-
     if (this.currentProduct && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithProduct(this.currentProduct);
     }
-
     if (this.pendingProductId && this.visibleCategoryTypes.length > 0) {
       this.getProductToEdit(this.pendingProductId);
       this.pendingProductId = null;
     }
-
     this.cdr.detectChanges();
   }
-
   get categoryTypes(): CategoryType[] {
     return this._categoryTypes;
   }
-
   private _categoryTypes: CategoryType[] = [];
   @Input() unitOfMeasureTypes: UnitOfMeasure[] = [];
   productForm!: FormGroup;
@@ -114,18 +106,15 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   productImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
   private pendingProductId: number | null = null;
-
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
-
   constructor(
     private _fb: FormBuilder,
     private cdr: ChangeDetectorRef
   ) {
     this.initializeForm();
   }
-
   private initializeForm(): void {
     this.productForm = this._fb.group({
       categoryTypeId: [null, [Validators.required]],
@@ -145,15 +134,12 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       unitOfMeasureId: [1, [Validators.required]]
     });
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentProduct']) {
       const queryParams = this._activatedRoute.snapshot.queryParams;
-
       if (this.currentProduct) {
         this.productId = this.currentProduct.productId;
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.updateFormWithProduct(this.currentProduct);
         }
@@ -164,7 +150,6 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       } else if (!isNaN(+queryParams['editProduct'])) {
         this.productId = Number(queryParams['editProduct']);
         this.isEditMode = true;
-
         if (this.visibleCategoryTypes.length > 0) {
           this.getProductToEdit(this.productId);
           this.imageUploader?.resetPending();
@@ -174,7 +159,6 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       }
     }
   }
-
   private updateFormWithProduct(product: ProductComplete): void {
     this.productForm.patchValue({
       categoryTypeId: product.categoryType?.categoryTypeId,
@@ -187,11 +171,9 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       isActive: product.isActive ?? false,
       unitOfMeasureId: product.unitOfMeasure?.unitOfMeasureId ?? null
     });
-
     this.productImages = product.images || [];
     this.cdr.detectChanges();
   }
-
   private resetFormToDefaults(): void {
     this.productForm.reset({
       categoryTypeId: null,
@@ -210,7 +192,6 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     }
     this.cdr.detectChanges();
   }
-
   resetForm() {
     this.resetFormToDefaults();
     Object.keys(this.productForm.controls).forEach((key) => {
@@ -226,7 +207,6 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     });
     this.cdr.detectChanges();
   }
-
   private getProductToEdit(productId: number): void {
     this.isLoadingImages = true;
     this._productsService.getProductEditPanel(productId).subscribe({
@@ -244,11 +224,9 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       }
     });
   }
-
   save() {
     if (this.productForm.valid) {
       const formValue = this.productForm.value;
-
       const productSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : undefined,
         code: formValue.code,
@@ -261,11 +239,9 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         isActive: formValue.isActive,
         unitOfMeasureId: formValue.unitOfMeasureId ?? undefined
       };
-
       if (this.isEditMode) {
         const updateData = { ...productSave };
         delete updateData.productId;
-
         this._productsService
           .updateProductPanel(this.productId, updateData)
           .subscribe({
@@ -304,8 +280,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       this.productForm.markAllAsTouched();
     }
   }
-
   ngOnDestroy(): void {
     this.resetForm();
   }
 }
+

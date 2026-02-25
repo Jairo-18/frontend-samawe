@@ -7,7 +7,6 @@
   "
 >
   <form form [formGroup]="form" class="flex flex-col gap-4">
-    <!-- Tipo de Factura -->
     @if (!isLoading) {
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Tipo de factura</mat-label>
@@ -24,8 +23,6 @@
         Tipo de factura requerido
       </mat-error>
     </mat-form-field>
-
-    <!-- Buscar Cliente -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Buscar Cliente</mat-label>
       <input
@@ -54,8 +51,6 @@
       >
         <mat-icon>clear</mat-icon>
       </button>
-
-      <!-- CORRECCIÓN: Se usa [displayWith] y se pasa el objeto cliente completo en [value] -->
       <mat-autocomplete
         #clientAuto="matAutocomplete"
         [displayWith]="displayClient"
@@ -65,7 +60,6 @@
           <div
             class="flex justify-between items-center w-full font-medium text-xs md:text-base"
           >
-            <!-- Nombre + Identificación a la derecha -->
             <span class="text-right">
               <span
                 >{{ client.firstName || 'N/A' }}
@@ -74,7 +68,6 @@
               <span *ngIf="client.identificationNumber">
                 - {{ client.identificationNumber }}</span
               >
-
               <span
                 [ngClass]="client.isActive ? 'text-green-600' : 'text-red-600'"
               >
@@ -91,8 +84,6 @@
         Cliente requerido
       </mat-error>
     </mat-form-field>
-
-    <!-- Factura electrónica -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Factura electrónica</mat-label>
       <mat-select formControlName="invoiceElectronic" required>
@@ -101,8 +92,6 @@
       </mat-select>
       <mat-icon matPrefix>bolt</mat-icon>
     </mat-form-field>
-
-    <!-- Tipo de pago -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Tipo de pago</mat-label>
       <mat-select formControlName="payTypeId" required>
@@ -112,8 +101,6 @@
       </mat-select>
       <mat-icon matPrefix>credit_card</mat-icon>
     </mat-form-field>
-
-    <!-- Estado de pago -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Estado de pago</mat-label>
       <mat-select formControlName="paidTypeId" required>
@@ -123,7 +110,6 @@
       </mat-select>
       <mat-icon matPrefix>monetization_on</mat-icon>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Efectivo</mat-label>
       <input
@@ -134,7 +120,6 @@
       />
       <mat-icon matSuffix>attach_money</mat-icon>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Transferencia</mat-label>
       <input
@@ -145,7 +130,6 @@
       />
       <mat-icon matSuffix>attach_money</mat-icon>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Observaciones</mat-label>
       <textarea
@@ -163,8 +147,6 @@
     <app-loader></app-loader>
     }
   </form>
-
-  <!-- Acciones -->
   <section actions class="w-full flex gap-2 justify-end pt-4">
     <button
       class="w-full"
@@ -187,3 +169,4 @@
     </button>
   </section>
 </app-base-dialog>
+

@@ -10,7 +10,6 @@ import {
   TaxeType
 } from './../../shared/interfaces/relatedDataGeneral';
 import { InvoiceDetail } from './invoiceDetaill.interface';
-
 export interface createInvoiceRelatedData {
   categoryType: CategoryType[];
   identificationType: IdentificationType[];
@@ -21,13 +20,11 @@ export interface createInvoiceRelatedData {
   additionalType: AdditionalType[];
   discountType: DiscountType[];
 }
-
 export interface Invoice {
   invoiceId: number;
   code: string;
   observations?: string;
   subtotalWithoutTax?: string;
-
   subtotalWithTax?: string;
   total?: string;
   paidTotal?: number;
@@ -46,7 +43,6 @@ export interface Invoice {
   paidType?: PaidType;
   invoiceDetails: InvoiceDetail[];
 }
-
 export interface CreateInvoice {
   invoiceTypeId: number;
   userId: string;
@@ -58,7 +54,6 @@ export interface CreateInvoice {
   startDate: string;
   endDate: string;
 }
-
 export interface EditInvoice {
   invoiceId: number;
   payTypeId: number;
@@ -67,7 +62,6 @@ export interface EditInvoice {
   cash?: number;
   transfer?: number;
 }
-
 export interface InvoiceComplete {
   invoiceId: number;
   code: string;
@@ -92,7 +86,6 @@ export interface InvoiceComplete {
   invoiceDetails: InvoiceDetail[];
   invoiceElectronic: boolean;
 }
-
 export interface DialogData {
   editMode: boolean;
   invoiceId?: number;
@@ -102,3 +95,4 @@ export interface DialogData {
     payType: PayType[];
   };
 }
+

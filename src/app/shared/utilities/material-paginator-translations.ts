@@ -1,5 +1,4 @@
 import { MatPaginatorIntl } from '@angular/material/paginator';
-
 export function getMaterialPaginatorTranslations(): MatPaginatorIntl {
   const paginatorIntl = new MatPaginatorIntl();
   paginatorIntl.itemsPerPageLabel = 'Mostrar';
@@ -10,7 +9,6 @@ export function getMaterialPaginatorTranslations(): MatPaginatorIntl {
   paginatorIntl.getRangeLabel = rangeLabelTranslations;
   return paginatorIntl;
 }
-
 const rangeLabelTranslations = (
   page: number,
   pageSize: number,
@@ -27,3 +25,4 @@ const rangeLabelTranslations = (
       : startIndex + pageSize;
   return `${startIndex + 1} - ${endIndex} de ${length}`;
 };
+

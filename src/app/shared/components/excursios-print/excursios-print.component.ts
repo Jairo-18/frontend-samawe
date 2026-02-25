@@ -3,7 +3,6 @@ import { ExcursionComplete } from '../../../service-and-product/interface/excurs
 import { FormatCopPipe } from '../../pipes/format-cop.pipe';
 import { CommonModule } from '@angular/common';
 import html2pdf from 'html2pdf.js';
-
 @Component({
   selector: 'app-excursios-print',
   standalone: true,
@@ -14,15 +13,12 @@ import html2pdf from 'html2pdf.js';
 export class ExcursiosPrintComponent {
   @Input() excursions: ExcursionComplete[] = [];
   @ViewChild('printSection') printSection!: ElementRef;
-
   print() {
     const element = this.printSection?.nativeElement;
     if (!element) return;
-
     setTimeout(() => {
       const element = this.printSection.nativeElement;
       if (!element) return;
-
       const options = {
         margin: 0.5,
         filename: `pasadias-${new Date().toISOString().split('T')[0]}.pdf`,
@@ -34,13 +30,12 @@ export class ExcursiosPrintComponent {
           orientation: 'portrait' as const
         }
       };
-
       html2pdf()
         .set(options)
         .from(element)
         .toPdf()
         .get('pdf')
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         .then((pdf: any) => {
           const pdfUrl = pdf.output('bloburl');
           window.open(pdfUrl, '_blank');
@@ -48,3 +43,4 @@ export class ExcursiosPrintComponent {
     }, 0);
   }
 }
+

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InvoiceService } from './../../services/invoice.service';
 import {
   Component,
@@ -36,7 +35,6 @@ import { Invoice } from '../../interface/invoice.interface';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormGroup } from '@angular/forms';
-
 @Component({
   selector: 'app-see-invoices',
   standalone: true,
@@ -62,16 +60,13 @@ export class SeeInvoicesComponent implements OnInit {
   @ViewChild('invoiceToPrintRef') invoiceToPrintRef!: ElementRef;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
-
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _authService: AuthService = inject(AuthService);
-
   selectedInvoice: any = null;
   invoiceToPrintData?: Invoice;
-
   displayedColumns: string[] = [
     'invoiceType',
     'code',
@@ -86,7 +81,6 @@ export class SeeInvoicesComponent implements OnInit {
     'total',
     'actions'
   ];
-
   form!: FormGroup;
   dataSource = new MatTableDataSource<any>([]);
   isMobile: boolean = false;
@@ -95,7 +89,6 @@ export class SeeInvoicesComponent implements OnInit {
   userLogged: UserInterface;
   params: any = {};
   selectedTabIndex: number = 0;
-
   paginationParams: PaginationInterface = {
     page: 1,
     perPage: 25,
@@ -104,7 +97,6 @@ export class SeeInvoicesComponent implements OnInit {
     hasPreviousPage: false,
     hasNextPage: false
   };
-
   searchFields: SearchField[] = [
     {
       name: 'search',
@@ -156,18 +148,15 @@ export class SeeInvoicesComponent implements OnInit {
       placeholder: 'Buscar por facturación electrónica'
     }
   ];
-
   constructor(private _invoicePrintService: InvoicePrintService) {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }
-
   ngOnInit(): void {
     this.loadInvoices();
     this.loadRelatedData();
   }
-
   loadRelatedData(): void {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
@@ -178,7 +167,6 @@ export class SeeInvoicesComponent implements OnInit {
           payTypeId: res.data.payType,
           taxeTypeId: res.data.taxeType
         };
-
         this.searchFields = this.searchFields.map((field) => {
           const key = field.name as keyof typeof optionMap;
           const options = optionMap[key];
@@ -199,7 +187,6 @@ export class SeeInvoicesComponent implements OnInit {
       }
     });
   }
-
   openCreateDialog(): void {
     const isMobile = window.innerWidth <= 768;
     this._matDialog
@@ -219,7 +206,6 @@ export class SeeInvoicesComponent implements OnInit {
         if (result) this.loadInvoices();
       });
   }
-
   openEditDialog(invoiceId: number): void {
     const isMobile = window.innerWidth <= 768;
     this._matDialog
@@ -228,7 +214,6 @@ export class SeeInvoicesComponent implements OnInit {
         data: {
           editMode: true,
           invoiceId: invoiceId,
-
           relatedData: {
             payType: this.getOptions('payTypeId'),
             paidType: this.getOptions('paidTypeId')
@@ -240,7 +225,6 @@ export class SeeInvoicesComponent implements OnInit {
         if (result) this.loadInvoices();
       });
   }
-
   private getOptions(fieldName: string): any[] {
     const field = this.searchFields.find((f) => f.name === fieldName);
     return (
@@ -250,57 +234,47 @@ export class SeeInvoicesComponent implements OnInit {
       })) || []
     );
   }
-
   onSearchSubmit(values: any): void {
     this.params = this.formatParams(values);
     this.paginationParams.page = 1;
     this.loadInvoices();
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = this.formatParams(form?.value);
     this.paginationParams.page = 1;
     this.loadInvoices();
   }
-
   private formatParams(values: any): any {
     const formattedParams: any = {};
     Object.keys(values).forEach((key) => {
       const val = values[key];
       if (val === null || val === '' || val === undefined) return;
-
       if (key.endsWith('Id')) {
         formattedParams[key] = Number(val);
         return;
       }
-
       if (this.searchFields.find((f) => f.name === key)?.type === 'date') {
         formattedParams[key] = this.formatDateISO(val);
         return;
       }
-
       formattedParams[key] = val;
     });
     return formattedParams;
   }
-
   private formatDateISO(date: any): string {
     if (!date) return '';
     const d = date instanceof Date ? date : new Date(date);
     return d.toISOString().split('T')[0];
   }
-
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadInvoices();
   }
-
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
   loadInvoices(filter: string = ''): void {
     this.loading = true;
     const query = {
@@ -309,7 +283,6 @@ export class SeeInvoicesComponent implements OnInit {
       search: filter,
       ...this.params
     };
-
     this._invoiceService.getInvoiceWithPagination(query).subscribe({
       next: (res) => {
         const transformedData = res.data.map((invoice: any) => ({
@@ -330,7 +303,6 @@ export class SeeInvoicesComponent implements OnInit {
             invoice.invoiceElectronic === 'true' ||
             invoice.invoiceElectronic === 1
         }));
-
         this.dataSource.data = transformedData;
         this.paginationParams = res?.pagination;
         this.loading = false;
@@ -341,7 +313,6 @@ export class SeeInvoicesComponent implements OnInit {
       }
     });
   }
-
   private deleteInvoice(invoiceId: number): void {
     this.loading = true;
     this._invoiceService.deleteInvoice(invoiceId).subscribe({
@@ -355,7 +326,6 @@ export class SeeInvoicesComponent implements OnInit {
       }
     });
   }
-
   openDeleteInvoiceDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -363,14 +333,12 @@ export class SeeInvoicesComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
         this.deleteInvoice(id);
       }
     });
   }
-
   validateIfCanEditUserOrDelete(user: UserComplete): boolean {
     return (
       this.userLogged?.roleType?.name === 'Administrador' ||
@@ -379,14 +347,11 @@ export class SeeInvoicesComponent implements OnInit {
       user.roleType?.name === 'CLIENTE'
     );
   }
-
   async onPrintInvoice(invoiceId: number): Promise<void> {
     const res = await this._invoicePrintService['_invoiceService']
       .getInvoiceToEdit(invoiceId)
       .toPromise();
-
     this.invoiceToPrintData = res?.data;
-
     setTimeout(() => {
       if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
         this._invoicePrintService.printInvoice(
@@ -396,14 +361,11 @@ export class SeeInvoicesComponent implements OnInit {
       }
     }, 300);
   }
-
   async onDownloadInvoice(invoiceId: number): Promise<void> {
     const res = await this._invoicePrintService['_invoiceService']
       .getInvoiceToEdit(invoiceId)
       .toPromise();
-
     this.invoiceToPrintData = res?.data;
-
     setTimeout(() => {
       if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
         this._invoicePrintService.downloadInvoice(
@@ -414,3 +376,4 @@ export class SeeInvoicesComponent implements OnInit {
     }, 300);
   }
 }
+

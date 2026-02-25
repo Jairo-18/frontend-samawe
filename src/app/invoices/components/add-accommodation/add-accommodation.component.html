@@ -1,5 +1,4 @@
 <form [formGroup]="form" class="w-full mt-3">
-  <!-- Buscar hospedaje -->
   <mat-form-field appearance="outline" class="w-full">
     <mat-label>Buscar Hospedaje</mat-label>
     <input
@@ -10,8 +9,6 @@
       (focus)="onAccommodationFocus()"
     />
     <mat-icon matPrefix>home</mat-icon>
-
-    <!-- Botón limpiar -->
     <button
       *ngIf="
         form.get('name')?.enabled &&
@@ -26,7 +23,6 @@
     >
       <mat-icon>clear</mat-icon>
     </button>
-
     <mat-autocomplete
       #auto="matAutocomplete"
       [displayWith]="displayAccommodation"
@@ -58,10 +54,7 @@
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
-
-  <!-- Precios -->
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
-    <!-- Precio Original -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Precio Unitario</mat-label>
       <input
@@ -73,8 +66,6 @@
       />
       <mat-icon matSuffix>attach_money</mat-icon>
     </mat-form-field>
-
-    <!-- Precio Final Calculado -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Precio Final</mat-label>
       <input
@@ -86,8 +77,6 @@
       />
       <mat-icon matSuffix>monetization_on</mat-icon>
     </mat-form-field>
-
-    <!-- Cantidad -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Cantidad</mat-label>
       <input
@@ -100,7 +89,6 @@
       <mat-icon matSuffix>numbers</mat-icon>
     </mat-form-field>
   </div>
-
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Mínimo Personas</mat-label>
@@ -113,7 +101,6 @@
       />
       <mat-icon matSuffix>person</mat-icon>
     </mat-form-field>
-
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Máximo Personas</mat-label>
       <input
@@ -126,9 +113,7 @@
       <mat-icon matSuffix>group</mat-icon>
     </mat-form-field>
   </div>
-
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
-    <!-- Tipo de Descuento -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Descuento</mat-label>
       <mat-select formControlName="discountTypeId">
@@ -142,8 +127,6 @@
       </mat-select>
       <mat-icon matPrefix>percent</mat-icon>
     </mat-form-field>
-
-    <!-- Tipo Adicional -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Personas Adicionales</mat-label>
       <mat-select formControlName="additionalTypeId">
@@ -158,10 +141,7 @@
       <mat-icon matPrefix>add_circle</mat-icon>
     </mat-form-field>
   </div>
-
-  <!-- Fechas y horas -->
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
-    <!-- Fecha entrada -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Fecha de entrada</mat-label>
       <input
@@ -176,8 +156,6 @@
       ></mat-datepicker-toggle>
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
-
-    <!-- Hora entrada -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Hora de entrada</mat-label>
       <input
@@ -192,8 +170,6 @@
       ></mat-timepicker-toggle>
       <mat-icon matPrefix>access_time</mat-icon>
     </mat-form-field>
-
-    <!-- Fecha salida -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Fecha de salida</mat-label>
       <input
@@ -208,8 +184,6 @@
       ></mat-datepicker-toggle>
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
-
-    <!-- Hora salida -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Hora de salida</mat-label>
       <input
@@ -225,8 +199,6 @@
       <mat-icon matPrefix>access_time</mat-icon>
     </mat-form-field>
   </div>
-
-  <!-- Tipo impuesto -->
   <mat-form-field appearance="outline" class="w-full">
     <mat-label>Tipo de impuesto</mat-label>
     <mat-select formControlName="taxeTypeId">
@@ -236,8 +208,6 @@
     </mat-select>
     <mat-icon matPrefix>calculate</mat-icon>
   </mat-form-field>
-
-  <!-- Botón -->
   <button
     class="!w-full !rounded-lg"
     mat-fab
@@ -251,3 +221,4 @@
     </ng-template>
   </button>
 </form>
+

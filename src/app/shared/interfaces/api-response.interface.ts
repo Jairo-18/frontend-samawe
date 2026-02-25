@@ -1,5 +1,4 @@
 import { PaginationInterface } from './pagination.interface';
-
 export interface ApiResponseInterface<T> {
   message?: string;
   title?: string;
@@ -11,14 +10,13 @@ export interface ApiResponseInterface<T> {
     validations: string[];
   };
 }
-
 interface DataNewRecordInterface {
   rowId: string;
 }
-
 export interface ApiResponseCreateInterface
   extends ApiResponseInterface<DataNewRecordInterface> {
   data: {
     rowId: string;
   };
 }
+

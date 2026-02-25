@@ -8,11 +8,9 @@
       : 'Aquí puedes crear pasadías con sus respectivos campos'
   "
 ></app-section-header>
-
 <form [formGroup]="excursionForm" class="flex flex-col">
   <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-      <!-- Categoría -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Categoría</mat-label>
         <mat-select formControlName="categoryTypeId" required>
@@ -33,7 +31,6 @@
           Categoría requerida
         </mat-error>
       </mat-form-field>
-
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Tipo de estado</mat-label>
         <mat-select formControlName="stateTypeId" required>
@@ -54,8 +51,6 @@
           Tipo de estado requerido
         </mat-error>
       </mat-form-field>
-
-      <!-- Código -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Código</mat-label>
         <mat-icon matPrefix>qr_code</mat-icon>
@@ -64,8 +59,6 @@
           Código requerido
         </mat-error>
       </mat-form-field>
-
-      <!-- Nombre -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Nombre de la pasadía o servicio</mat-label>
         <mat-icon matPrefix>tour</mat-icon>
@@ -74,26 +67,8 @@
           Nombre requerido
         </mat-error>
       </mat-form-field>
-
-      <!-- Descripción -->
-      <!-- <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción</mat-label>
-        <textarea
-          matInput
-          formControlName="description"
-          rows="3"
-          #descTextarea
-          maxlength="500"
-        ></textarea>
-        <mat-icon matPrefix>notes</mat-icon>
-        <mat-hint align="end">
-          {{ descTextarea.value ? descTextarea.value.length : 0 }}/250
-        </mat-hint>
-      </mat-form-field> -->
     </section>
-
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-      <!-- Precio de compra -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Precio de compra</mat-label>
         <input
@@ -103,12 +78,7 @@
           class="text-right"
         />
         <mat-icon matSuffix>shopping_cart</mat-icon>
-        <!-- <mat-error *ngIf="excursionForm.get('priceBuy')?.hasError('required')">
-          Precio de compra requerido
-        </mat-error> -->
       </mat-form-field>
-
-      <!-- Precio de venta -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Precio de venta</mat-label>
         <input
@@ -118,13 +88,9 @@
           class="text-right"
         />
         <mat-icon matSuffix>attach_money</mat-icon>
-        <!-- <mat-error *ngIf="excursionForm.get('priceSale')?.hasError('required')">
-          Precio de venta requerido
-        </mat-error> -->
       </mat-form-field>
     </section>
   </div>
-
   <section class="w-full mt-4 mb-4">
     <app-image-uploader
       #imageUploader
@@ -135,7 +101,6 @@
       (imagesChanged)="excursionImages = $event"
     ></app-image-uploader>
   </section>
-
   <section
     actions
     class="w-full h-full items-end justify-end flex flex-col md:flex-row text-sm md:text-base gap-2"
@@ -160,3 +125,4 @@
     </div>
   </section>
 </form>
+

@@ -20,14 +20,10 @@ export class OrdersSocketService {
     });
 
     this.socket.on('connect', () => {
-      console.log('Connected to orders websocket');
+      console.log('Connected to orders websockettttt');
       this.socket.emit('joinOrders');
     });
   }
-
-  /**
-   * Escucha el evento de actualización de pedidos.
-   */
   onOrderUpdated(): Observable<OrderUpdate> {
     return new Observable<OrderUpdate>((observer) => {
       this.socket.on('orderUpdated', (data: OrderUpdate) => {
@@ -35,10 +31,6 @@ export class OrdersSocketService {
       });
     });
   }
-
-  /**
-   * Desconecta el socket.
-   */
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();

@@ -3,7 +3,6 @@ import {
   PhoneCode,
   RoleType
 } from '../../shared/interfaces/relatedDataGeneral';
-
 export interface CreateUserPanel {
   userId?: string;
   identificationType: string;
@@ -18,7 +17,6 @@ export interface CreateUserPanel {
   isActive?: boolean;
   roleType?: string;
 }
-
 export interface UserComplete {
   userId: string;
   identificationType: IdentificationType;
@@ -36,7 +34,6 @@ export interface UserComplete {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
 export interface ChangePassword {
   oldPassword?: string;
   newPassword: string;
@@ -44,3 +41,4 @@ export interface ChangePassword {
   userId?: string;
   resetToken?: string;
 }
+

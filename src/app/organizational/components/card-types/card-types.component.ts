@@ -9,8 +9,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
- 
-
 @Component({
   selector: 'app-card-types',
   imports: [
@@ -31,15 +29,13 @@ export class CardTypesComponent {
   @Output() edit = new EventEmitter<{ type: string; id: number | string }>();
   @Output() remove = new EventEmitter<{ type: string; id: number | string }>();
   @Input() selectedType!: string;
-
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
-
   loading: boolean = false;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getIdKey(item: any): string {
     return Object.keys(item).find((key) => key.endsWith('Id')) || 'id';
   }
 }
+

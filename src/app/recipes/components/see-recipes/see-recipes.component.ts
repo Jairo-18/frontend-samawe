@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -120,10 +120,6 @@ export class SeeRecipesComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param onSearchSubmit - Botón de búsqueda.
-   */
   onSearchSubmit(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value || form;
@@ -167,3 +163,4 @@ export class SeeRecipesComponent implements OnInit {
     return ['ADMINISTRADOR', 'RECEPCIONISTA'].includes(role || '');
   }
 }
+

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -41,7 +40,6 @@ import { ExcursionsService } from '../../services/excursions.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { ExcursiosPrintComponent } from '../../../shared/components/excursios-print/excursios-print.component';
-
 @Component({
   selector: 'app-see-excursions',
   standalone: true,
@@ -72,7 +70,6 @@ export class SeeExcursionsComponent implements OnInit {
   @Input() categoryTypes: CategoryType[] = [];
   @Output() excursionSelect = new EventEmitter<ExcursionComplete>();
   @Output() excursionClean = new EventEmitter<number>();
-
   private readonly _excursionService: ExcursionsService =
     inject(ExcursionsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -83,7 +80,6 @@ export class SeeExcursionsComponent implements OnInit {
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
   @ViewChild('excursionsPrint')
   excursionsPrintComponent!: ExcursiosPrintComponent;
-
   displayedColumns: string[] = [
     'categoryType',
     'code',
@@ -93,7 +89,6 @@ export class SeeExcursionsComponent implements OnInit {
     'priceSale',
     'actions'
   ];
-
   dataSource = new MatTableDataSource<CreateExcursionPanel>([]);
   allExcursions: ExcursionComplete[] = [];
   userLogged: UserInterface;
@@ -111,95 +106,62 @@ export class SeeExcursionsComponent implements OnInit {
     hasPreviousPage: false,
     hasNextPage: false
   };
-
-  /**
-   * @param ngOnInit - Inicialización de las funciones.
-   */
   ngOnInit(): void {
     this.loadExcursions();
   }
-
   constructor() {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }
-
   getCategoryTypeName(excursion: ExcursionComplete): string {
     const categoryTypeId = excursion?.categoryType?.categoryTypeId;
-
     const category = this.categoryTypes.find(
       (r) => r.categoryTypeId === categoryTypeId
     );
-
     return category?.name || 'N/A';
   }
-
   getStateTypeName(excursion: ExcursionComplete): string {
     const stateTypeId = excursion?.stateType?.stateTypeId;
-
     const stateType = this.stateTypes.find(
       (r) => r.stateTypeId === stateTypeId
     );
-
     return stateType?.name || 'N/A';
   }
-
-  /**
-   * @param onSearchSubmit - Botón de búsqueda.
-   */
   onSearchSubmit(values: any): void {
     this.params = values;
     this.paginationParams.page = 1;
     this.loadExcursions();
   }
-
-  /**
-   * @param onChangePagination - Cambio de paginación.
-   */
   onChangePagination(event: PageEvent): void {
     this.paginationParams.page = event.pageIndex + 1;
     this.paginationParams.perPage = event.pageSize;
     this.loadExcursions();
   }
-
-  /**
-   * @param onTabChange - Cambio de tabla.
-   */
   onTabChange(index: number): void {
     this.selectedTabIndex = index;
   }
-
   onSearchChange(form: any): void {
     this.showClearButton = !!form.length;
     this.params = form?.value;
     this.paginationParams.page = 1;
     this.loadExcursions();
   }
-
-  /**
-   * @param loadUsers - Carga de usuarios.
-   * @param getUserWithPagination - Obtiene los usuarios con paginación.
-   */
   loadExcursions(filter: string = ''): void {
     this.loading = true;
-
     const parsedParams = {
       ...this.params,
-
       bedType: this.params.bedType ? Number(this.params.bedType) : undefined,
       stateType: this.params.stateType
         ? Number(this.params.stateType)
         : undefined
     };
-
     const query = {
       page: this.paginationParams.page,
       perPage: this.paginationParams.perPage,
       search: filter,
       ...parsedParams
     };
-
     this._excursionService.getExcursionWithPagination(query).subscribe({
       next: (res) => {
         this.dataSource.data = (res.data || []).sort((a, b) =>
@@ -214,17 +176,12 @@ export class SeeExcursionsComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param _deleteUser - Ellimina un usuario.
-   */
   private deleteExcursion(excursionId: number): void {
     this.loading = true;
     this._excursionService.deleteExcursionPanel(excursionId).subscribe({
       next: () => {
         this.loadExcursions();
         this.cleanQueryParamDelete(excursionId);
-
         this.loading = false;
       },
       error: (error) => {
@@ -233,10 +190,6 @@ export class SeeExcursionsComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param openDeleteUserDialog - Abre un modal para eliminar un usuario.
-   */
   openDeleteExcursionDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
@@ -244,14 +197,12 @@ export class SeeExcursionsComponent implements OnInit {
         message: 'Esta acción no se puede deshacer.'
       }
     });
-
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
         this.deleteExcursion(id);
       }
     });
   }
-
   cleanQueryParamDelete(id: number) {
     const queryParams = this._activatedRoute.snapshot.queryParams;
     if (queryParams['editExcursion']) {
@@ -266,12 +217,10 @@ export class SeeExcursionsComponent implements OnInit {
       }
     }
   }
-
   validateIfCanEditUserOrDelete(): boolean {
     const roleName = this.userLogged?.roleType?.name?.toUpperCase();
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
-
   printExcursions(): void {
     this._excursionService.getAllExcursions().subscribe({
       next: (res) => {
@@ -284,12 +233,10 @@ export class SeeExcursionsComponent implements OnInit {
             return a.name.localeCompare(b.name);
           }
         );
-
         if (!this.allExcursions.length) {
           console.warn('No hay pasadias o servicios para imprimir');
           return;
         }
-
         setTimeout(() => {
           this.excursionsPrintComponent.print();
         }, 0);
@@ -297,3 +244,4 @@ export class SeeExcursionsComponent implements OnInit {
     });
   }
 }
+

@@ -1,8 +1,6 @@
-<!-- Tabla principal de items guardados -->
 <div class="overflow-auto m-4 md:m-0">
   @if (dataSource.data && dataSource.data.length > 0) {
     <table mat-table [dataSource]="dataSource">
-      <!-- Code Column -->
       <ng-container matColumnDef="code">
         <th mat-header-cell *matHeaderCellDef class="center-text">Código</th>
         <td mat-cell *matCellDef="let detail" class="center-text">
@@ -14,8 +12,6 @@
           }}
         </td>
       </ng-container>
-
-      <!-- Name Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef class="center-text">Item</th>
         <td mat-cell *matCellDef="let detail">
@@ -27,8 +23,6 @@
           }}
         </td>
       </ng-container>
-
-      <!-- Start Date -->
       <ng-container matColumnDef="startDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Entrada
@@ -41,8 +35,6 @@
           }}
         </td>
       </ng-container>
-
-      <!-- End Date -->
       <ng-container matColumnDef="endDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Salida
@@ -53,16 +45,12 @@
           }}
         </td>
       </ng-container>
-
-      <!-- Amount -->
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef class="center-text">Und</th>
         <td mat-cell *matCellDef="let detail" class="center-text">
           {{ detail.amount }}
         </td>
       </ng-container>
-
-      <!-- Price Without Tax -->
       <ng-container matColumnDef="priceWithoutTax">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           P. sin impuesto
@@ -71,24 +59,18 @@
           {{ detail.priceWithoutTax | formatCop }}
         </td>
       </ng-container>
-
-      <!-- Price With Tax -->
       <ng-container matColumnDef="priceWithTax">
         <th mat-header-cell *matHeaderCellDef class="center-text">Impuesto</th>
         <td mat-cell *matCellDef="let detail" class="right-text">
           {{ +detail.priceWithTax - +detail.priceWithoutTax | formatCop }}
         </td>
       </ng-container>
-
-      <!-- Subtotal -->
       <ng-container matColumnDef="subtotal">
         <th mat-header-cell *matHeaderCellDef class="center-text">Subtotal</th>
         <td mat-cell *matCellDef="let detail" class="right-text">
           {{ detail.subtotal | formatCop }}
         </td>
       </ng-container>
-
-      <!-- Payment Status Column -->
       <ng-container matColumnDef="isPaid">
         <th mat-header-cell *matHeaderCellDef class="center-text">Pagado</th>
         <td mat-cell *matCellDef="let detail" class="center-text">
@@ -106,7 +88,6 @@
           </button>
         </td>
       </ng-container>
-
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef class="center-text">Acciones</th>
         <td mat-cell *matCellDef="let detail" class="center-text">
@@ -119,12 +100,9 @@
           </button>
         </td>
       </ng-container>
-
-      <!-- Header and Row -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-
     <mat-paginator
       [length]="paginationParams.total"
       [pageSize]="paginationParams.perPage"
@@ -138,3 +116,4 @@
     </div>
   }
 </div>
+

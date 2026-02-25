@@ -6,7 +6,6 @@
       'px-5': pxMobile
     }"
   >
-    <!-- Back Button Section -->
     @if (showBackButton) {
       <div class="mb-4">
         <button
@@ -23,15 +22,11 @@
         </button>
       </div>
     }
-
-    <!-- Header Section -->
     @if (showHeader) {
       <section class="w-full flex">
         <span class="text-xl md:text-3xl">{{ headerTitle }}</span>
       </section>
     }
-
-    <!-- Info Section -->
     @if (showInfo && infoText) {
       <div class="mb-4">
         <span class="text-sm md:text-base text-black-50 fw-semibold">
@@ -39,8 +34,6 @@
         </span>
       </div>
     }
-
-    <!-- Actions Section -->
     @if (showActions) {
       <section
         class="w-full h-full items-end justify-end flex text-sm md:text-base"
@@ -48,8 +41,6 @@
         <ng-content select="[slot=actions]"></ng-content>
       </section>
     }
-
-    <!-- Content Title Section -->
     @if (showContentTitle) {
       <section
         class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[#06a606]"
@@ -57,8 +48,6 @@
         <span class="text-2xl md:text-3xl">{{ contentTitle }}</span>
       </section>
     }
-
-    <!-- Content Info Section -->
     @if (showContentInfo && contentInfo) {
       <div class="mb-4">
         <span class="brand-text-body-m text-black-50 fw-semibold">
@@ -66,8 +55,7 @@
         </span>
       </div>
     }
-
-    <!-- Main Content -->
     <ng-content></ng-content>
   </article>
 </article>
+

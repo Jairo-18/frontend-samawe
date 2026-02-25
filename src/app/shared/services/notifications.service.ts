@@ -4,13 +4,11 @@ import {
   NotificationInterface,
   NotificationsTypes
 } from '../interfaces/notifications.interface';
-
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsService {
   private _toastrService: ToastrService = inject(ToastrService);
-
   showNotification(
     type: NotificationsTypes,
     information: string,
@@ -23,13 +21,11 @@ export class NotificationsService {
     };
     this._showToast(notification);
   }
-
   private _showToast(notification: NotificationInterface): void {
     const iconMap = {
       success: '<i class="fas fa-check-circle"></i>',
       error: '<i class="fas fa-exclamation-circle"></i>'
     };
-
     const template = `
       <div class="flex items-center">
         <div class="toast-icon">${iconMap[notification.type]}</div>
@@ -39,7 +35,6 @@ export class NotificationsService {
         </div>
       </div>
     `;
-
     this._toastrService.show(template, '', {
       timeOut: 3000,
       tapToDismiss: true,
@@ -52,3 +47,4 @@ export class NotificationsService {
     });
   }
 }
+

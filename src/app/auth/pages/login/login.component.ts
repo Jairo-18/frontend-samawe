@@ -15,7 +15,6 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -38,31 +37,18 @@ export class LoginComponent {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
-
   form: FormGroup;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
   showPassword: boolean = false;
-
-  /**
-   * Se recibe la información diligenciada en el formulario.
-   * @param constructor - Creación del formulario.
-   * @param form - Formulario para iniciar sesión.
-   * @param formStep2 - Formulario 2 de cuenta.
-   */
   constructor(private _fb: FormBuilder) {
     this.form = this._fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
-
-  /**
-   * @param login - Enviamos al backend la información para que nos permita ingresar al sistema.
-   */
   login(): void {
     if (this.form.invalid) return;
-
     this._authService.login(this.form.value).subscribe({
       next: () => {
         this._router.navigateByUrl('/home');
@@ -74,3 +60,4 @@ export class LoginComponent {
     });
   }
 }
+

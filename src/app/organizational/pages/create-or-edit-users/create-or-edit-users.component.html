@@ -32,7 +32,6 @@
             Rol requerido
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Tipo de Identificación</mat-label>
           <mat-select formControlName="identificationTypeId" required>
@@ -53,7 +52,6 @@
             Tipo de identificación requerido
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Número de identificación</mat-label>
           <mat-icon matPrefix>credit_card</mat-icon>
@@ -69,7 +67,6 @@
             Número de identificación requerido
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Nombres completos</mat-label>
           <input matInput formControlName="firstName" required appUppercase />
@@ -78,7 +75,6 @@
             Nombres completos requeridos
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Apellidos completos</mat-label>
           <input matInput formControlName="lastName" required appUppercase />
@@ -88,7 +84,6 @@
           </mat-error>
         </mat-form-field>
       </section>
-
       <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Correo Electrónico</mat-label>
@@ -99,7 +94,6 @@
           />
           <mat-icon matPrefix>email</mat-icon>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Buscar país</mat-label>
           <mat-icon matPrefix>flag</mat-icon>
@@ -135,7 +129,6 @@
             País requerido
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Teléfono</mat-label>
           <input matInput formControlName="phone" />
@@ -147,7 +140,6 @@
             Solo números, máximo 15 dígitos
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Estado</mat-label>
           <mat-select formControlName="isActive">
@@ -157,7 +149,6 @@
         </mat-form-field>
       </section>
     </div>
-
     <section
       class="w-full h-full items-end justify-end flex text-sm md:text-base"
     >
@@ -170,3 +161,4 @@
   </form>
   } @else {<app-loader></app-loader>}
 </app-base-page>
+

@@ -3,7 +3,6 @@ import { HomeComponent } from './pages/home/home.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
 import { AccommodationComponent } from './pages/accommodation/accommodation.component';
 import { ExcursionComponent } from './pages/excursion/excursion.component';
-
 export const publicRoutes: Routes = [
   {
     path: '',
@@ -27,3 +26,4 @@ export const publicRoutes: Routes = [
     ]
   }
 ];
+

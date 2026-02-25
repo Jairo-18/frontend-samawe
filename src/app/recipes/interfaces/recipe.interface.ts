@@ -52,3 +52,4 @@ export interface IngredientAvailability {
   unit: string;
   isAvailable: boolean;
 }
+

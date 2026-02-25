@@ -24,7 +24,6 @@ import {
   IdentificationType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
-
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -53,7 +52,6 @@ export class RegisterComponent implements OnInit {
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
-
   private readonly _registerService: RegisterService = inject(RegisterService);
   private readonly _router: Router = inject(Router);
   private readonly _relatedDataService: RelatedDataService =
@@ -63,15 +61,6 @@ export class RegisterComponent implements OnInit {
   );
   private readonly _passwordValidationService: CustomValidationsService =
     inject(CustomValidationsService);
-
-  /**
-   * Se recibe la información diligenciada en el formulario.
-   * @param constructor - Creación del formulario.
-   * @param formStep1 - Formulario 1 de información personal.
-   * @param formStep2 - Formulario 2 de cuenta.
-   * @param passwordStrength - Válida que la contraseña poseea más de 6 carácteres, 1 minúscula, 1 mayúscula y 1 carácter especial.
-   * @param passwordsMatch - Válida que la contraseña sea igual a confirmar contraseña.
-   */
   constructor(private _fb: FormBuilder) {
     this.formStep1 = this._fb.group({
       identificationTypeId: ['', Validators.required],
@@ -79,7 +68,6 @@ export class RegisterComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', [Validators.required]]
     });
-
     this.formStep2 = this._fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
@@ -102,13 +90,6 @@ export class RegisterComponent implements OnInit {
       }
     );
   }
-
-  /**
-   * Inicializa el campo confirmar contraseña como disable.
-   * @param ngOnInit - Trae la data.
-   * @param formStep2 - Le decimos al campo confirmPassword que inicie bloqueado.
-   * @param formStep2 - Luego condicionamos para que al llenar password se desbloque confirmPassword.
-   */
   ngOnInit(): void {
     this.getRelatedData();
     this.formStep2.get('confirmPassword')?.disable();
@@ -120,10 +101,6 @@ export class RegisterComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param getRelatedData - Obtiene los tipos de identificación y prefijos de paises.
-   */
   getRelatedData(): void {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
@@ -132,19 +109,11 @@ export class RegisterComponent implements OnInit {
       }
     });
   }
-
-  /**
-   * @param nextStep - Función para seguir al siguiente formulario.
-   */
   nextStep() {
     if (this.formStep1.valid) {
       this.currentStep = 'two';
     }
   }
-
-  /**
-   * @param save - Envío de información al backend para registrar al usuario.
-   */
   save() {
     if (this.formStep2.valid && this.formStep1.valid) {
       const userToRegister: RegisterUser = {
@@ -166,18 +135,11 @@ export class RegisterComponent implements OnInit {
       });
     }
   }
-
-  /**
-   * @param togglePasswordVisibility - Ver contraseña.
-   */
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
-
-  /**
-   * @param toggleConfirmPasswordVisibility - Ver confirmar contraseña.
-   */
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 }
+

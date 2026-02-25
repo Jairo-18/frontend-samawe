@@ -5,7 +5,6 @@ import {
   StateType,
   TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
-
 export interface InvoiceDetail {
   invoiceDetailId: number;
   amountSale: string;
@@ -25,7 +24,6 @@ export interface InvoiceDetail {
   taxeType: TaxeType;
   isPaid: boolean;
 }
-
 export interface CreateInvoiceDetaill {
   productId?: number;
   accommodationId?: number;
@@ -38,7 +36,6 @@ export interface CreateInvoiceDetaill {
   startDate?: string;
   endDate?: string;
 }
-
 export interface AddedProductInvoiceDetaill {
   productId?: number;
   code: string;
@@ -51,7 +48,6 @@ export interface AddedProductInvoiceDetaill {
   categoryTypeId: number;
   taxeTypeId?: number;
 }
-
 export interface AddedAccommodationInvoiceDetaill {
   accommodationId?: number;
   code: string;
@@ -68,7 +64,6 @@ export interface AddedAccommodationInvoiceDetaill {
   stateType?: StateType;
   taxeTypeId?: number;
 }
-
 export interface AddedExcursionInvoiceDetaill {
   excursionId?: number;
   code: string;
@@ -80,16 +75,15 @@ export interface AddedExcursionInvoiceDetaill {
   categoryTypeId: number;
   taxeTypeId?: number;
 }
-
 export interface TogglePaymentResponse {
   invoiceDetailId: number;
   isPaid: boolean;
   invoicePaidTotal: number;
 }
-
 export interface TogglePaymentBulkResponse {
   invoiceId: number;
   updatedCount: number;
   invoicePaidTotal: number;
   updatedDetails: { invoiceDetailId: number; isPaid: boolean }[];
 }
+

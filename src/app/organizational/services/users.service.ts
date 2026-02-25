@@ -13,7 +13,6 @@ import {
 } from '../interfaces/create.interface';
 import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +20,6 @@ export class UsersService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-
   getUserWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
     data: UserComplete[];
@@ -32,7 +30,6 @@ export class UsersService {
       data: UserComplete[];
     }>(`${environment.apiUrl}user/paginated-list`, { params });
   }
-
   recoveryPasswordByUserId(
     changePasswordPayload: ChangePassword
   ): Observable<ApiResponseInterface<ChangePassword>> {
@@ -41,7 +38,6 @@ export class UsersService {
       changePasswordPayload
     );
   }
-
   getUserEditPanel(
     userId: string
   ): Observable<ApiResponseInterface<UserComplete>> {
@@ -49,29 +45,26 @@ export class UsersService {
       `${environment.apiUrl}user/${userId}`
     );
   }
-
   updateUserProfile(userId: string, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}user/${userId}`,
       body
     );
   }
-
   createUser(user: CreateUserPanel): Observable<ApiResponseCreateInterface> {
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}user/register`,
       user
     );
   }
-
   updateUser(userId: string, body: unknown): Observable<void> {
     return this._httpClient.patch<void>(
       `${environment.apiUrl}user/${userId}`,
       body
     );
   }
-
   deleteUserPanel(userId: string): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
   }
 }
+

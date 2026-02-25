@@ -9,22 +9,18 @@
   backButtonTooltip="Volver a la lista"
 >
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
-    <!-- Mostrar loader solo en carga inicial -->
     @if (initialLoading) {
       <div class="h-full w-full justify-center items-center flex">
         <app-loader></app-loader>
       </div>
     } @else {
-      <!-- Columna izquierda -->
       <div class="flex flex-col w-full gap-3">
         <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
-          <!-- Información de la factura - aparece cuando invoiceData esté disponible -->
           @if (invoiceData) {
             <span class="text-xs md:text-xl font-extrabold">
               {{ invoiceData.invoiceType.name || '' }} Nr°
               {{ invoiceData.code || '' }}
             </span>
-
             <section class="flex-row md:flex w-full">
               <div
                 class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
@@ -64,11 +60,8 @@
               </div>
             </section>
           }
-
-          <!-- Tabs siempre visibles después de la carga inicial -->
           <mat-tab-group animationDuration="0ms">
             @if (invoiceData?.invoiceType?.code === 'FV') {
-              <!-- Producto: siempre disponible -->
               <mat-tab label="Producto">
                 <ng-template matTabContent>
                   <app-add-product
@@ -80,7 +73,6 @@
                   ></app-add-product>
                 </ng-template>
               </mat-tab>
-
               <mat-tab label="Hospedaje">
                 <ng-template matTabContent>
                   <app-add-accommodation
@@ -94,7 +86,6 @@
                   ></app-add-accommodation>
                 </ng-template>
               </mat-tab>
-
               <mat-tab label="Pasadías y Servicios">
                 <ng-template matTabContent>
                   <app-add-excursion
@@ -118,7 +109,6 @@
                   ></app-add-invoice-buy>
                 </ng-template>
               </mat-tab>
-
               <mat-tab label="Pasadías y Servicios">
                 <ng-template matTabContent>
                   <app-add-invoice-buy-excursion
@@ -133,8 +123,6 @@
             }
           </mat-tab-group>
         </section>
-
-        <!-- Sección de Items Pendientes -->
         @if (pendingItems.length > 0) {
           <app-pending-items-table
             [pendingItems]="pendingItems"
@@ -144,8 +132,6 @@
             (saveAll)="saveAllPendingItems()"
           ></app-pending-items-table>
         }
-
-        <!-- Detalle factura - aparece cuando invoiceData esté disponible -->
         <section
           class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
         >
@@ -184,3 +170,4 @@
     #invoiceToPrint
   ></app-invoice-pdf>
 </app-base-page>
+

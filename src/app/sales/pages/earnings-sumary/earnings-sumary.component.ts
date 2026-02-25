@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { GrapicComponent } from '../../components/grapic/grapic.component';
-
 @Component({
   selector: 'app-earnings-sumary',
   standalone: true,
@@ -45,40 +44,33 @@ import { GrapicComponent } from '../../components/grapic/grapic.component';
 })
 export class EarningsSumaryComponent implements OnInit {
   private readonly _earningService: EarningService = inject(EarningService);
-
   productSummary?: ProductSummary;
   inventoryTotal?: TotalInventory;
   invoiceBalance?: InvoiceBalance;
   invoiceSummaryGroup?: InvoiceSummaryGroupedResponse;
   dashboardSummary?: DashboardStateSummary;
   isLoading: boolean = true;
-
   selectedPeriod: 'daily' | 'weekly' | 'monthly' | 'yearly' = 'daily';
-
   readonly periods = [
     { label: 'Diario', value: 'daily' },
     { label: 'Semanal', value: 'weekly' },
     { label: 'Mensual', value: 'monthly' },
     { label: 'Anual', value: 'yearly' }
   ] as const;
-
   ngOnInit(): void {
     this.loadStaticData();
     this.loadGroupedInvoices(this.selectedPeriod);
   }
-
   get activeProductsCount(): number {
     return Number(
       this.dashboardSummary?.products?.find((p) => p.isActive)?.count ?? 0
     );
   }
-
   get inactiveProductsCount(): number {
     return Number(
       this.dashboardSummary?.products?.find((p) => !p.isActive)?.count ?? 0
     );
   }
-
   get availableAccommodationsCount(): number {
     return Number(
       this.dashboardSummary?.accommodations?.find(
@@ -86,7 +78,6 @@ export class EarningsSumaryComponent implements OnInit {
       )?.count ?? 0
     );
   }
-
   get maintenanceAccommodationsCount(): number {
     return Number(
       this.dashboardSummary?.accommodations?.find(
@@ -94,7 +85,6 @@ export class EarningsSumaryComponent implements OnInit {
       )?.count ?? 0
     );
   }
-
   get occupiedAccommodationsCount(): number {
     return Number(
       this.dashboardSummary?.accommodations?.find(
@@ -102,7 +92,6 @@ export class EarningsSumaryComponent implements OnInit {
       )?.count ?? 0
     );
   }
-
   get noServiceAccommodationsCount(): number {
     return Number(
       this.dashboardSummary?.accommodations?.find(
@@ -111,11 +100,9 @@ export class EarningsSumaryComponent implements OnInit {
       )?.count ?? 0
     );
   }
-
   get reservedAccommodationsCount(): number {
     return this.dashboardSummary?.reservedAccommodations?.length ?? 0;
   }
-
   getSelectedPeriodLabel(): string {
     const labels: Record<string, string> = {
       daily: 'Diario',
@@ -125,16 +112,13 @@ export class EarningsSumaryComponent implements OnInit {
     };
     return labels[this.selectedPeriod] || this.selectedPeriod;
   }
-
   onPeriodChange(period: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
     if (this.selectedPeriod === period) return;
     this.selectedPeriod = period;
     this.loadGroupedInvoices(period);
   }
-
   private loadStaticData(): void {
     this.isLoading = true;
-
     forkJoin({
       productSummary: this._earningService.getGeneragetProductSummary(),
       invoiceBalance: this._earningService.getInvoiceBalance(),
@@ -148,7 +132,6 @@ export class EarningsSumaryComponent implements OnInit {
           inventoryTotal,
           dashboardSummary
         } = res;
-
         if (
           !productSummary ||
           !invoiceBalance ||
@@ -158,7 +141,6 @@ export class EarningsSumaryComponent implements OnInit {
           this.isLoading = false;
           return;
         }
-
         this.productSummary = productSummary;
         this.invoiceBalance = invoiceBalance;
         this.inventoryTotal = inventoryTotal;
@@ -170,7 +152,6 @@ export class EarningsSumaryComponent implements OnInit {
       }
     });
   }
-
   private loadGroupedInvoices(
     period: 'daily' | 'weekly' | 'monthly' | 'yearly'
   ): void {
@@ -182,12 +163,11 @@ export class EarningsSumaryComponent implements OnInit {
         console.error('Error al cargar resumen de facturas agrupadas:', err)
     });
   }
-
   payReport() {
     this._earningService.downloadPayReport();
   }
-
   detaillsReport() {
     this._earningService.downloadDetailsReport();
   }
 }
+

@@ -1,7 +1,6 @@
 <div
   class="flex flex-col bg-white rounded-2xl border border-indigo-50 shadow-[0_2px_12px_rgba(63,81,181,0.06)] overflow-hidden transition-all duration-200 hover:shadow-[0_8px_28px_rgba(63,81,181,0.14)] hover:-translate-y-0.5"
 >
-  <!-- Cover Image -->
   <div class="w-full aspect-square bg-indigo-50 overflow-hidden relative group">
     @if (recipe.images && recipe.images.length > 0) {
       <img
@@ -11,7 +10,6 @@
       />
 
       @if (recipe.images.length > 1) {
-        <!-- Flechas de navegación -->
         <button
           type="button"
           (click)="$event.stopPropagation(); prevImage(recipe.images.length)"
@@ -27,8 +25,6 @@
         >
           <mat-icon class="text-lg w-[18px] h-[18px]">chevron_right</mat-icon>
         </button>
-
-        <!-- Paginador de puntos -->
         <div
           class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 w-full px-4"
         >
@@ -52,8 +48,6 @@
       </div>
     }
   </div>
-
-  <!-- Card header -->
   <div
     class="flex justify-between items-start px-5 pt-[18px] pb-4 bg-gradient-to-br from-[#3949ab] to-[#5c6bc0] text-white"
   >
@@ -102,8 +96,6 @@
       }
     </div>
   </div>
-
-  <!-- Ingredients table -->
   <div class="px-5">
     <div
       class="grid grid-cols-[1.4fr_0.7fr_0.5fr_0.7fr] md:grid-cols-[1.8fr_0.8fr_0.6fr_0.8fr] gap-2 pt-2.5 pb-1.5 border-b-2 border-indigo-50 text-[0.75rem] font-bold text-[#7986cb] uppercase tracking-[0.5px]"
@@ -130,8 +122,6 @@
       </div>
     }
   </div>
-
-  <!-- Card footer: costo total -->
   <div
     class="flex justify-between items-center px-5 py-3.5 bg-[#f5f7ff] border-t border-[#e8eaf6] mt-1 flex-1"
   >
@@ -161,3 +151,4 @@
     </div>
   </div>
 </div>
+

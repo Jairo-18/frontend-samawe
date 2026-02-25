@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Component,
   EventEmitter,
@@ -19,7 +18,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
-
 @Component({
   selector: 'app-search-fields',
   standalone: true,
@@ -42,20 +40,15 @@ export class SearchFieldsComponent implements OnInit {
   @Input() searchFields: SearchField[] = [];
   @Input() form!: FormGroup;
   @Input() debounceTime: number = 500;
-
   @Output() searchChange = new EventEmitter<any>();
   @Output() searchSubmit = new EventEmitter<any>();
   @Output() formReady = new EventEmitter<FormGroup>();
-
   private readonly _fb: FormBuilder = inject(FormBuilder);
-
   ngOnInit() {
     if (!this.form) {
       this.initializeForm();
     }
-
     this.formReady.emit(this.form);
-
     this.form.valueChanges
       .pipe(
         distinctUntilChanged(
@@ -66,10 +59,8 @@ export class SearchFieldsComponent implements OnInit {
       .subscribe((value) => {
         this.emitSearchChange(value);
       });
-
     this._listenAutocompleteChanges();
   }
-
   private _listenAutocompleteChanges(): void {
     this.searchFields.map((field) => {
       if (field.type === 'autocomplete') {
@@ -82,10 +73,8 @@ export class SearchFieldsComponent implements OnInit {
       }
     });
   }
-
   private initializeForm(): void {
     const group: any = {};
-
     this.searchFields.forEach((field) => {
       if (field.type !== 'dateRange') {
         group[field.name] = [field.defaultValue || '', field.validators || []];
@@ -94,10 +83,8 @@ export class SearchFieldsComponent implements OnInit {
         group[field.name + 'End'] = [''];
       }
     });
-
     this.form = this._fb.group(group);
   }
-
   private emitSearchChange(value: any): void {
     const filteredValues = Object.entries(value).reduce((acc, [key, val]) => {
       if (val !== null && val !== '' && val !== undefined) {
@@ -105,21 +92,19 @@ export class SearchFieldsComponent implements OnInit {
       }
       return acc;
     }, {} as any);
-
     this.searchChange.emit({
       value: filteredValues,
       length: Object.keys(filteredValues).length
     });
   }
-
   public submitSearch(): void {
     if (this.form.valid) {
       this.searchSubmit.emit(this.form.value);
     }
   }
-
   public reset(): void {
     this.form.reset({}, { emitEvent: false });
     this.emitSearchChange({});
   }
 }
+

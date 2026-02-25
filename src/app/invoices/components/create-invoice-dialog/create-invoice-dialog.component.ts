@@ -75,7 +75,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
   isLoadingClients: boolean = false;
   isLoading: boolean = false;
   invoice!: InvoiceComplete;
-
   private readonly _dialogRef = inject(
     MatDialogRef<CreateInvoiceDialogComponent>
   );
@@ -85,7 +84,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     PaginationPartialService
   );
   private readonly _router: Router = inject(Router);
-
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = this._fb.group({
       invoiceTypeId: ['', Validators.required],
@@ -98,12 +96,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
       transfer: [0]
     });
   }
-
   ngOnInit(): void {
     this.invoiceTypes = this.data.relatedData.invoiceType;
     this.paidTypes = this.data.relatedData.paidType;
     this.payTypes = this.data.relatedData.payType;
-
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
@@ -111,7 +107,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.setupClientAutocomplete();
     }
   }
-
   private loadInvoiceData(invoiceId: number): void {
     this.isLoading = true;
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
@@ -127,7 +122,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
       }
     });
   }
-
   private patchForm(invoice: InvoiceComplete): void {
     this.form.patchValue({
       invoiceTypeId: invoice.invoiceType?.invoiceTypeId,
@@ -139,7 +133,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
       cash: invoice.cash,
       transfer: invoice.transfer
     });
-
     if (invoice.user) {
       const clientForDisplay: Partial<CreateUserPanel> = {
         userId: invoice.user.userId,
@@ -150,13 +143,11 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.clientFilterControl.setValue(clientForDisplay as CreateUserPanel);
     }
   }
-
   private disableNonEditableFields(): void {
     this.form.get('invoiceTypeId')?.disable();
     this.form.get('userId')?.disable();
     this.clientFilterControl.disable();
   }
-
   private setupClientAutocomplete(): void {
     this.clientFilterControl.valueChanges
       .pipe(
@@ -184,7 +175,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
         this.isLoadingClients = false;
       });
   }
-
   onClientFocus(): void {
     if (
       !this.filteredClients.length &&
@@ -206,19 +196,16 @@ export class CreateInvoiceDialogComponent implements OnInit {
         });
     }
   }
-
   onClientSelected(event: MatAutocompleteSelectedEvent): void {
     const client = event.option.value as CreateUserPanel;
     this.form.patchValue({
       userId: client.userId
     });
   }
-
   clearClientSelection(): void {
     this.form.patchValue({ userId: '' });
     this.clientFilterControl.setValue('');
   }
-
   get showNoResultsMessage(): boolean {
     const value = this.clientFilterControl.value;
     const searchText = typeof value === 'string' ? value : '';
@@ -229,20 +216,16 @@ export class CreateInvoiceDialogComponent implements OnInit {
       searchText.length >= 2
     );
   }
-
   displayClient(client: CreateUserPanel | null): string {
     return client
       ? `${client.firstName || ''} ${client.lastName || ''}`.trim()
       : '';
   }
-
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-
       return;
     }
-
     this.isLoading = true;
     if (this.data.editMode) {
       this.updateInvoice();
@@ -250,13 +233,9 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.createInvoice();
     }
   }
-
   private updateInvoice(): void {
-    console.log('Actualizando con ID', this.data.invoiceId);
     if (!this.data.invoiceId) return;
-
     const formValue = this.form.getRawValue();
-
     const updatePayload = {
       invoiceId: this.data.invoiceId,
       payTypeId: formValue.payTypeId,
@@ -266,12 +245,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
       cash: Math.abs(Number(formValue.cash)),
       transfer: Math.abs(Number(formValue.transfer))
     };
-
     this._invoiceService
       .updateInvoice(this.data.invoiceId, updatePayload)
       .subscribe({
-        next: (response) => {
-          console.log('Respuesta del servidor:', response);
+        next: () => {
           this.isLoading = false;
           this._dialogRef.close(true);
         },
@@ -281,22 +258,18 @@ export class CreateInvoiceDialogComponent implements OnInit {
         }
       });
   }
-
   get observationsLength(): number {
     return this.form.get('observations')?.value?.length || 0;
   }
-
   private createInvoice(): void {
     const today = new Date();
     const formattedDate = today.toLocaleDateString('en-CA');
-
     const payload = {
       ...this.form.value,
       userId: this.form.get('userId')?.value,
       startDate: formattedDate,
       endDate: formattedDate
     };
-
     this._invoiceService.createInvoice(payload).subscribe({
       next: (res) => {
         this._router.navigateByUrl(`/invoice/invoices/${res.data.rowId}/edit`);
@@ -304,7 +277,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
       }
     });
   }
-
   cancel(): void {
     this._dialogRef.close(null);
   }

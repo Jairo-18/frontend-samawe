@@ -8,7 +8,6 @@ import {
   GeneralPartial,
   PaginatedUserPartial
 } from '../interfaces/paginatedPartial.interface';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +15,6 @@ export class PaginationPartialService {
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private readonly _httpClient: HttpClient = inject(HttpClient);
-
   getUserPartial(query: object): Observable<{
     pagination: PaginationInterface;
     data: PaginatedUserPartial[];
@@ -27,7 +25,6 @@ export class PaginationPartialService {
       data: PaginatedUserPartial[];
     }>(`${environment.apiUrl}user/paginated-list`, { params });
   }
-
   getProductPartial(query: object): Observable<{
     pagination: PaginationInterface;
     data: GeneralPartial[];
@@ -38,7 +35,6 @@ export class PaginationPartialService {
       data: GeneralPartial[];
     }>(`${environment.apiUrl}user/paginated-partial`, { params });
   }
-
   getAccommodationPartial(query: object): Observable<{
     pagination: PaginationInterface;
     data: GeneralPartial[];
@@ -49,7 +45,6 @@ export class PaginationPartialService {
       data: GeneralPartial[];
     }>(`${environment.apiUrl}accommodation/paginated-partial`, { params });
   }
-
   getExcursionPartial(query: object): Observable<{
     pagination: PaginationInterface;
     data: GeneralPartial[];
@@ -61,3 +56,4 @@ export class PaginationPartialService {
     }>(`${environment.apiUrl}excursion/paginated-partial`, { params });
   }
 }
+

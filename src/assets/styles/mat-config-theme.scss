@@ -42,7 +42,6 @@ $brand-primary: mat.m2-define-palette($brand-palette, 700);
 $brand-accent: mat.m2-define-palette($brand-palette, 300);
 $brand-warn: mat.m2-define-palette($brand-palette, 900);
 
-// Definir el tema basado en colores claros
 $custom-theme: mat.m2-define-light-theme(
   (
     color: (
@@ -53,5 +52,4 @@ $custom-theme: mat.m2-define-light-theme(
   )
 );
 
-// Aplicar los estilos de componentes globalmente
 @include mat.all-component-themes($custom-theme);

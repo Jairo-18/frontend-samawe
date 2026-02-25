@@ -29,7 +29,6 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
-
     <div class="md:hidden flex justify-center my-2 w-full px-2">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Período</mat-label>
@@ -43,10 +42,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-
-    <!-- Main Cards Grid -->
     <div class="grid gap-6 md:grid-cols-3 sm:grid-cols-1">
-      <!-- Productos Vendidos -->
       <div
         class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
@@ -79,8 +75,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Balance de Facturas -->
       <div
         class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
@@ -127,8 +121,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Inventario -->
       <div
         class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
@@ -181,7 +173,6 @@
           </div>
         </div>
       </div>
-
       <div
         class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
@@ -205,26 +196,22 @@
               availableAccommodationsCount
             }}</span>
           </div>
-
           <div class="flex justify-between text-yellow-600">
             <span class="text-slate-600">En Mantenimiento</span>
             <span class="font-semibold">{{
               maintenanceAccommodationsCount
             }}</span>
           </div>
-
           <div class="flex justify-between text-red-600">
             <span class="text-slate-600">Ocupados</span>
             <span class="font-semibold">{{ occupiedAccommodationsCount }}</span>
           </div>
-
           <div class="flex justify-between text-red-600">
             <span class="text-slate-600">Fuera de Servicio</span>
             <span class="font-semibold">{{
               noServiceAccommodationsCount
             }}</span>
           </div>
-
           <div class="flex justify-between text-blue-600">
             <span class="text-slate-600">Reservadas</span>
             <span class="font-semibold">{{ reservedAccommodationsCount }}</span>
@@ -239,11 +226,10 @@
         </button>
       </div>
     </div>
-
-    <!-- Chart -->
     <app-grapic
       [invoiceSummaryGroup]="invoiceSummaryGroup"
       [selectedPeriod]="selectedPeriod"
     ></app-grapic>
   }
 </app-base-page>
+

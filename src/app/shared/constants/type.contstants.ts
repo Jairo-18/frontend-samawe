@@ -8,10 +8,10 @@ export const TYPE_ENTITY_LABELS_ES: Record<string, string> = {
   invoiceType: 'Tipo de facturas',
   roleType: 'Roles',
   stateType: 'Estados hab / pas'
-  // taxeType: 'Impuestos'
-};
 
+};
 export const TYPE_ACCOMMODATION_LABELS_ES: Record<string, string> = {
   additionalType: 'Addicional',
   discountType: 'Descuentos'
 };
+

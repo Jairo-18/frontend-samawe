@@ -1,5 +1,4 @@
 <article class="flex relative">
-  <!-- Sidebar para Administrador o Recepcionista -->
   @if (isLoggedUser && (userInfo?.roleType?.name === 'Administrador' ||
   userInfo?.roleType?.name === 'ADMINISTRADOR' || userInfo?.roleType?.name ===
   'Recepcionista' || userInfo?.roleType?.name === 'RECEPCIONISTA')) {
@@ -11,20 +10,10 @@
     (logout)="logout()"
   ></app-side-bar>
   }
-
-  <!-- Contenido principal -->
   <div class="app-container w-full">
-    <!-- Navbar para Usuario normal o no logeado -->
-    <!-- @if ((isLoggedUser && userInfo?.roleType?.name === 'Usuario') ||
-    !isLoggedUser) {
-    <app-nav-bar class="brand-nav-bar"></app-nav-bar>
-    } -->
     <main class="main w-full">
       <router-outlet></router-outlet>
-      <!-- @if ((isLoggedUser && userInfo?.roleType?.name === 'Usuario') ||
-      !isLoggedUser) {
-      <app-footer class="brand-footer"></app-footer>
-      } -->
     </main>
   </div>
 </article>
+

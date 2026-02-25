@@ -14,3 +14,4 @@ export interface PaginatedNotification {
   type: 'LOW_PRODUCT' | string;
   createdAt: string;
 }
+

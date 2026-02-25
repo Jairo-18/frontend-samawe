@@ -4,26 +4,20 @@
       Items Pendientes por Guardar ({{ pendingItems.length }})
     </span>
   </div>
-
   <div class="overflow-x-auto mb-4">
     <table mat-table [dataSource]="pendingItems" class="w-full bg-transparent">
-      <!-- Type Column -->
       <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef class="center-text">Tipo</th>
         <td mat-cell *matCellDef="let item" class="center-text font-medium">
           {{ item.type }}
         </td>
       </ng-container>
-
-      <!-- Name Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef class="center-text">Item</th>
         <td mat-cell *matCellDef="let item" class="center-text">
           {{ item.name }}
         </td>
       </ng-container>
-
-      <!-- Start Date Column -->
       <ng-container matColumnDef="startDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Entrada
@@ -33,8 +27,6 @@
           'dd/MM/yyyy HH:mm') : 'N/A' }}
         </td>
       </ng-container>
-
-      <!-- End Date Column -->
       <ng-container matColumnDef="endDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Salida
@@ -44,16 +36,12 @@
           HH:mm') : 'N/A' }}
         </td>
       </ng-container>
-
-      <!-- Amount Column -->
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef class="center-text">Und</th>
         <td mat-cell *matCellDef="let item" class="center-text">
           {{ item.payload.amount }}
         </td>
       </ng-container>
-
-      <!-- Price Without Tax Column -->
       <ng-container matColumnDef="priceWithoutTax">
         <th mat-header-cell *matHeaderCellDef class="center-text">
           P. sin impuesto
@@ -62,24 +50,18 @@
           {{ item.payload.priceWithoutTax | formatCop }}
         </td>
       </ng-container>
-
-      <!-- Tax Column -->
       <ng-container matColumnDef="tax">
         <th mat-header-cell *matHeaderCellDef class="center-text">Impuesto</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ calculateTaxAmount(item) | formatCop}}
         </td>
       </ng-container>
-
-      <!-- Subtotal Column -->
       <ng-container matColumnDef="subtotal">
         <th mat-header-cell *matHeaderCellDef class="center-text">Subtotal</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ calculateSubtotal(item) | formatCop }}
         </td>
       </ng-container>
-
-      <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef class="center-text">Acciones</th>
         <td mat-cell *matCellDef="let item; let i = index" class="center-text">
@@ -93,7 +75,6 @@
           </button>
         </td>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
@@ -111,3 +92,4 @@
     </ng-template>
   </button>
 </section>
+

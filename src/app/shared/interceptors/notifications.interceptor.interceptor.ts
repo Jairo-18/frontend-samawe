@@ -7,19 +7,16 @@ import { NotificationsService } from '../services/notifications.service';
 import { inject } from '@angular/core';
 import { catchError, tap, throwError } from 'rxjs';
 import { ApiResponseCreateInterface } from '../interfaces/api-response.interface';
-
 export const notificationsInterceptorInterceptor: HttpInterceptorFn = (
   req,
   next
 ) => {
   const notificationsService: NotificationsService =
     inject(NotificationsService);
-
   return next(req).pipe(
     tap((event) => {
       if (event instanceof HttpResponse) {
         const { message } = event.body as ApiResponseCreateInterface;
-
         if (message && !req.url.includes('/images')) {
           notificationsService.showNotification('success', message);
         }
@@ -34,3 +31,4 @@ export const notificationsInterceptorInterceptor: HttpInterceptorFn = (
     })
   );
 };
+

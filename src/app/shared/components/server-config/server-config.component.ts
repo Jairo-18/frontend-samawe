@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { ApiConfigService } from '../../services/api-config.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
 @Component({
   selector: 'app-server-config',
   standalone: true,
@@ -36,7 +35,6 @@ import { Router } from '@angular/router';
             >Conecta esta tablet al servidor de recepción</mat-card-subtitle
           >
         </mat-card-header>
-
         <mat-card-content>
           <form [formGroup]="configForm" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
@@ -62,7 +60,6 @@ import { Router } from '@angular/router';
                 <mat-error>Formato de IP inválido</mat-error>
               }
             </mat-form-field>
-
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Puerto</mat-label>
               <input
@@ -74,12 +71,10 @@ import { Router } from '@angular/router';
               <mat-icon matPrefix>settings_ethernet</mat-icon>
               <mat-hint>Puerto del servidor (por defecto: 3001)</mat-hint>
             </mat-form-field>
-
             <div class="current-config" *ngIf="currentConfig">
               <p><strong>Configuración actual:</strong></p>
               <p>{{ currentConfig }}</p>
             </div>
-
             <div class="connection-status" *ngIf="connectionStatus">
               <mat-icon
                 [class.success]="connectionSuccess"
@@ -91,7 +86,6 @@ import { Router } from '@angular/router';
             </div>
           </form>
         </mat-card-content>
-
         <mat-card-actions>
           <button
             mat-raised-button
@@ -102,7 +96,6 @@ import { Router } from '@angular/router';
             <mat-icon>wifi_find</mat-icon>
             {{ testing ? 'Probando...' : 'Probar Conexión' }}
           </button>
-
           <button
             mat-raised-button
             color="accent"
@@ -112,14 +105,12 @@ import { Router } from '@angular/router';
             <mat-icon>save</mat-icon>
             Guardar y Continuar
           </button>
-
           <button mat-button (click)="resetConfig()" type="button">
             <mat-icon>refresh</mat-icon>
             Restablecer
           </button>
         </mat-card-actions>
       </mat-card>
-
       <div class="help-section">
         <mat-card>
           <mat-card-header>
@@ -149,30 +140,25 @@ import { Router } from '@angular/router';
         padding: 20px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       }
-
       .config-card {
         width: 100%;
         max-width: 500px;
         margin-bottom: 20px;
       }
-
       .full-width {
         width: 100%;
         margin-bottom: 15px;
       }
-
       mat-card-actions {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
         padding: 16px;
       }
-
       mat-card-actions button {
         flex: 1;
         min-width: 140px;
       }
-
       .current-config {
         background: #f5f5f5;
         padding: 10px;
@@ -180,7 +166,6 @@ import { Router } from '@angular/router';
         margin: 10px 0;
         font-family: monospace;
       }
-
       .connection-status {
         display: flex;
         align-items: center;
@@ -190,28 +175,22 @@ import { Router } from '@angular/router';
         margin: 10px 0;
         background: #f5f5f5;
       }
-
       .connection-status mat-icon.success {
         color: #4caf50;
       }
-
       .connection-status mat-icon.error {
         color: #f44336;
       }
-
       .help-section {
         width: 100%;
         max-width: 500px;
       }
-
       .help-section mat-card {
         background: rgba(255, 255, 255, 0.95);
       }
-
       .help-section ol {
         padding-left: 20px;
       }
-
       .help-section li {
         margin-bottom: 8px;
       }
@@ -224,7 +203,6 @@ export class ServerConfigComponent implements OnInit {
   connectionStatus: string = '';
   connectionSuccess: boolean = false;
   testing: boolean = false;
-
   constructor(
     private fb: FormBuilder,
     private apiConfigService: ApiConfigService,
@@ -242,11 +220,9 @@ export class ServerConfigComponent implements OnInit {
       ]
     });
   }
-
   ngOnInit(): void {
     const config = this.apiConfigService.getConfig();
     this.currentConfig = config.apiUrl;
-
     if (!this.apiConfigService.isUsingLocalhost()) {
       try {
         const url = new URL(config.apiUrl);
@@ -259,38 +235,31 @@ export class ServerConfigComponent implements OnInit {
       }
     }
   }
-
   private getProtocol(): string {
     return window.location.protocol === 'https:' ? 'https' : 'http';
   }
-
   async testConnection(): Promise<void> {
     if (this.configForm.invalid) return;
-
     this.testing = true;
     this.connectionStatus = 'Probando conexión...';
     this.connectionSuccess = false;
-
     const { serverIp, port } = this.configForm.value;
     const protocol = this.getProtocol();
     const testUrl = `${protocol}://${serverIp}:${port}/health`;
-
     try {
       const response = await this.http
         .get<any>(testUrl, { observe: 'response' })
         .toPromise();
-
       if (response?.status === 200) {
         this.connectionSuccess = true;
         this.connectionStatus = '✓ Conexión exitosa al servidor';
-
         try {
           const serverInfo = await this.http
             .get<any>(`${protocol}://${serverIp}:${port}/server-info`)
             .toPromise();
           this.connectionStatus = `✓ Conectado a servidor: ${serverInfo.primaryAddress}:${serverInfo.port}`;
         } catch (e) {
-          // No es crítico si falla
+
         }
       } else {
         this.connectionSuccess = false;
@@ -308,20 +277,15 @@ export class ServerConfigComponent implements OnInit {
       this.testing = false;
     }
   }
-
   onSubmit(): void {
     if (this.configForm.invalid) return;
-
     const { serverIp, port } = this.configForm.value;
     const protocol = this.getProtocol();
     const apiUrl = `${protocol}://${serverIp}:${port}/`;
-
     this.apiConfigService.setApiUrl(apiUrl);
     this.currentConfig = apiUrl;
-
     window.location.href = '/';
   }
-
   resetConfig(): void {
     this.apiConfigService.resetConfig();
     this.currentConfig = this.apiConfigService.getConfig().apiUrl;
@@ -330,3 +294,4 @@ export class ServerConfigComponent implements OnInit {
     this.connectionSuccess = false;
   }
 }
+

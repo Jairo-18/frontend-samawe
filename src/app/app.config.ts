@@ -11,7 +11,6 @@ import {
   MAT_NATIVE_DATE_FORMATS,
   provideNativeDateAdapter
 } from '@angular/material/core';
-
 import { ToastrModule } from 'ngx-toastr';
 import { routes } from './app.routes';
 import { MatPaginatorIntl } from '@angular/material/paginator';
@@ -26,9 +25,7 @@ import { MyErrorStateMatcher } from './shared/matchers/error-state.matcher';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
 import { notificationsInterceptorInterceptor } from './shared/interceptors/notifications.interceptor.interceptor';
 import { apiUrlInterceptor } from './shared/interceptors/api-url.interceptor';
-
 registerLocaleData(localeEs);
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -58,3 +55,4 @@ export const appConfig: ApplicationConfig = {
     TransformDateService
   ]
 };
+

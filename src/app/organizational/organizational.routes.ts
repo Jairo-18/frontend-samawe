@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { SeeUsersComponent } from './pages/see-users/see-users.component';
 import { SeeTypesComponent } from './pages/see-types/see-types.component';
 import { CreateOrEditUsersComponent } from './pages/create-or-edit-users/create-or-edit-users.component';
-
 export const organizationalRoutes: Routes = [
   {
     path: '',
@@ -41,3 +40,4 @@ export const organizationalRoutes: Routes = [
     ]
   }
 ];
+
