@@ -14,151 +14,179 @@
   [showContentInfo]="true"
 >
   @if (!loading) {
-  <form [formGroup]="userForm" class="flex flex-col">
-    <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
-      <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Rol</mat-label>
-          <mat-select formControlName="roleTypeId" required>
-            <mat-option value="" disabled selected
-              >Seleccione el rol</mat-option
+    <form [formGroup]="userForm" class="flex flex-col">
+      <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
+        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="roleTypeId" required>
+              <mat-option value="" disabled selected
+                >Seleccione el rol</mat-option
+              >
+              <mat-option
+                *ngFor="let role of roleType"
+                [value]="role.roleTypeId"
+              >
+                {{ role.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>library_books</mat-icon>
+            <mat-error *ngIf="userForm.get('roleTypeId')?.hasError('required')">
+              Rol requerido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tipo de Identificación</mat-label>
+            <mat-select formControlName="identificationTypeId" required>
+              <mat-option value="" disabled selected
+                >Seleccione el tipo de identificación</mat-option
+              >
+              <mat-option
+                *ngFor="let type of identificationType"
+                [value]="type.identificationTypeId.toString()"
+              >
+                {{ type.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>table_chart</mat-icon>
+            <mat-error
+              *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
             >
-            <mat-option *ngFor="let role of roleType" [value]="role.roleTypeId">
-              {{ role.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>library_books</mat-icon>
-          <mat-error *ngIf="userForm.get('roleTypeId')?.hasError('required')">
-            Rol requerido
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tipo de Identificación</mat-label>
-          <mat-select formControlName="identificationTypeId" required>
-            <mat-option value="" disabled selected
-              >Seleccione el tipo de identificación</mat-option
+              Tipo de identificación requerido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Número de identificación</mat-label>
+            <mat-icon matPrefix>credit_card</mat-icon>
+            <input
+              matInput
+              formControlName="identificationNumber"
+              required
+              appUppercase
+            />
+            <mat-error
+              *ngIf="userForm.get('identificationNumber')?.hasError('required')"
             >
-            <mat-option
-              *ngFor="let type of identificationType"
-              [value]="type.identificationTypeId.toString()"
+              Número de identificación requerido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nombres completos</mat-label>
+            <input matInput formControlName="firstName" required appUppercase />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="userForm.get('firstName')">
+              Nombres completos requeridos
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Apellidos completos</mat-label>
+            <input matInput formControlName="lastName" required appUppercase />
+            <mat-icon matPrefix>people</mat-icon>
+            <mat-error *ngIf="userForm.get('lastName')">
+              Apellidos completos requeridos
+            </mat-error>
+          </mat-form-field>
+        </section>
+        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Correo Electrónico</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              (input)="onEmailInput($event)"
+            />
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Buscar país</mat-label>
+            <mat-icon matPrefix>flag</mat-icon>
+            <input
+              type="text"
+              matInput
+              formControlName="phoneCodeSearch"
+              [matAutocomplete]="autoPhoneCode"
+              placeholder="Escribe para buscar..."
+              required
+            />
+            <mat-autocomplete
+              #autoPhoneCode="matAutocomplete"
+              [displayWith]="displayPhoneCode"
+              (optionSelected)="onPhoneCodeSelected($event.option.value)"
             >
-              {{ type.name }}
-            </mat-option>
-          </mat-select>
-          <mat-icon matPrefix>table_chart</mat-icon>
-          <mat-error
-            *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
+              @if (loadingPhoneCodes) {
+                <mat-option disabled>
+                  <span>Buscando...</span>
+                </mat-option>
+              } @else if (filteredPhoneCodes.length === 0) {
+                <mat-option disabled>
+                  <span>No se encontraron resultados</span>
+                </mat-option>
+              } @else {
+                @for (
+                  phoneCode of filteredPhoneCodes;
+                  track phoneCode.phoneCodeId
+                ) {
+                  <mat-option [value]="phoneCode">
+                    {{ phoneCode.code }} {{ phoneCode.name }}
+                  </mat-option>
+                }
+              }
+            </mat-autocomplete>
+            <mat-error
+              *ngIf="userForm.get('phoneCodeId')?.hasError('required')"
+            >
+              País requerido
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="phone" />
+            <mat-icon matPrefix>phone_iphone</mat-icon>
+            <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
+              Teléfono requerido
+            </mat-error>
+            <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">
+              Solo números, máximo 15 dígitos
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="isActive">
+              <mat-option [value]="true">Activo</mat-option>
+              <mat-option [value]="false">Inactivo</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </section>
+      </div>
+      <div
+        class="flex flex-col-reverse md:flex-row justify-end gap-3 mt-8 pt-6 border-t border-emerald-50 w-full"
+      >
+        @if (isEditMode) {
+          <button
+            mat-fab
+            extended="true"
+            color="warn"
+            type="button"
+            [routerLink]="['/organizational/users/list']"
+            class="w-full md:w-auto"
           >
-            Tipo de identificación requerido
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Número de identificación</mat-label>
-          <mat-icon matPrefix>credit_card</mat-icon>
-          <input
-            matInput
-            formControlName="identificationNumber"
-            required
-            appUppercase
-          />
-          <mat-error
-            *ngIf="userForm.get('identificationNumber')?.hasError('required')"
-          >
-            Número de identificación requerido
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Nombres completos</mat-label>
-          <input matInput formControlName="firstName" required appUppercase />
-          <mat-icon matPrefix>person</mat-icon>
-          <mat-error *ngIf="userForm.get('firstName')">
-            Nombres completos requeridos
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Apellidos completos</mat-label>
-          <input matInput formControlName="lastName" required appUppercase />
-          <mat-icon matPrefix>people</mat-icon>
-          <mat-error *ngIf="userForm.get('lastName')">
-            Apellidos completos requeridos
-          </mat-error>
-        </mat-form-field>
-      </section>
-      <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Correo Electrónico</mat-label>
-          <input
-            matInput
-            formControlName="email"
-            (input)="onEmailInput($event)"
-          />
-          <mat-icon matPrefix>email</mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Buscar país</mat-label>
-          <mat-icon matPrefix>flag</mat-icon>
-          <input
-            type="text"
-            matInput
-            formControlName="phoneCodeSearch"
-            [matAutocomplete]="autoPhoneCode"
-            placeholder="Escribe para buscar..."
-            required
-          />
-          <mat-autocomplete
-            #autoPhoneCode="matAutocomplete"
-            [displayWith]="displayPhoneCode"
-            (optionSelected)="onPhoneCodeSelected($event.option.value)"
-          >
-            @if (loadingPhoneCodes) {
-            <mat-option disabled>
-              <span>Buscando...</span>
-            </mat-option>
-            } @else if (filteredPhoneCodes.length === 0) {
-            <mat-option disabled>
-              <span>No se encontraron resultados</span>
-            </mat-option>
-            } @else { @for (phoneCode of filteredPhoneCodes; track
-            phoneCode.phoneCodeId) {
-            <mat-option [value]="phoneCode">
-              {{ phoneCode.code }} {{ phoneCode.name }}
-            </mat-option>
-            } }
-          </mat-autocomplete>
-          <mat-error *ngIf="userForm.get('phoneCodeId')?.hasError('required')">
-            País requerido
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Teléfono</mat-label>
-          <input matInput formControlName="phone" />
-          <mat-icon matPrefix>phone_iphone</mat-icon>
-          <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
-            Teléfono requerido
-          </mat-error>
-          <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">
-            Solo números, máximo 15 dígitos
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Estado</mat-label>
-          <mat-select formControlName="isActive">
-            <mat-option [value]="true">Activo</mat-option>
-            <mat-option [value]="false">Inactivo</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </section>
-    </div>
-    <section
-      class="w-full h-full items-end justify-end flex text-sm md:text-base"
-    >
-      <div class="w-full md:w-[25%]">
-        <button mat-fab extended="true" class="!w-full" (click)="save()">
+            Cancelar
+          </button>
+        }
+        <button
+          mat-fab
+          extended
+          color="primary"
+          type="button"
+          class="mt-2 md:mt-0"
+          (click)="save()"
+        >
+          <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
           {{ isEditMode ? 'Guardar cambios' : 'Crear usuario' }}
         </button>
       </div>
-    </section>
-  </form>
-  } @else {<app-loader></app-loader>}
+    </form>
+  } @else {
+    <app-loader></app-loader>
+  }
 </app-base-page>
-

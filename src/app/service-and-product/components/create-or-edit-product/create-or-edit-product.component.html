@@ -109,28 +109,31 @@
       (imagesChanged)="productImages = $event"
     ></app-image-uploader>
   </section>
-  <section
-    actions
-    class="w-full h-full items-end justify-end flex flex-col md:flex-row text-sm md:text-base gap-2"
+  <div
+    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt-8 pt-6 border-t border-emerald-50 w-full"
   >
     @if (isEditMode) {
-      <div class="w-full flex content-between md:w-[24%]">
-        <button
-          mat-fab
-          extended="true"
-          color="warn"
-          class="!w-full"
-          (click)="resetForm()"
-        >
-          Cancelar
-        </button>
-      </div>
-    }
-    <div class="w-full flex content-between md:w-[24%]">
-      <button mat-fab extended="true" class="!w-full" (click)="save()">
-        {{ isEditMode ? 'Guardar cambios' : 'Crear producto' }}
+      <button
+        mat-fab
+        extended="true"
+        color="warn"
+        type="button"
+        (click)="resetForm()"
+        class="w-full md:w-auto"
+      >
+        Cancelar
       </button>
-    </div>
-  </section>
+    }
+    <button
+      mat-fab
+      extended
+      color="primary"
+      type="button"
+      class="mt-2 md:mt-0"
+      (click)="save()"
+    >
+      <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
+      {{ isEditMode ? 'Guardar cambios' : 'Crear producto' }}
+    </button>
+  </div>
 </form>
-

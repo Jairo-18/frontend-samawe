@@ -1,1 +1,40 @@
+:host {
+  display: block;
+}
 
+// Override material table styles to match the card's theme
+::ng-deep .custom-recipe-table {
+  background: transparent !important;
+
+  .mat-mdc-header-row {
+    height: 38px !important;
+  }
+
+  .mat-mdc-row {
+    height: 44px !important;
+    &:hover {
+      background-color: #f8f9ff;
+    }
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    border-bottom-color: #f0f2ff !important;
+    &:first-of-type {
+      padding-left: 0 !important;
+    }
+    &:last-of-type {
+      padding-right: 0 !important;
+    }
+  }
+
+  .mat-mdc-header-cell {
+    border-bottom: 2px solid #eef2ff !important;
+  }
+}
+.blue-color {
+  color: rgb(14, 58, 154) !important;
+}
+.red-color {
+  color: rgb(255, 27, 27) !important;
+}

@@ -56,6 +56,21 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     ]
   },
   {
+    icon: 'restaurant',
+    title: 'Recetas',
+    description: 'Crea tus recetas y administra tus recetas',
+    route: '/recipes/general',
+    iconNext: 'navigate_next',
+    allowedRoles: [
+      'Recepcionista',
+      'Administrador',
+      'ADMINISTRADOR',
+      'RECEPCIONISTA',
+      'MESERO',
+      'CHEF'
+    ]
+  },
+  {
     icon: 'note',
     title: 'Facturación',
     description: 'Genera y gestiona facturas, pagos y cobros',
@@ -65,7 +80,9 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
       'Recepcionista',
       'Administrador',
       'ADMINISTRADOR',
-      'RECEPCIONISTA'
+      'RECEPCIONISTA',
+      'Mesero',
+      'MESERO'
     ]
   },
   {
@@ -95,4 +112,3 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     ]
   }
 ];
-

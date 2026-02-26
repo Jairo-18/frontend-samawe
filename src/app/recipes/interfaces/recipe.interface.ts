@@ -7,6 +7,7 @@ export interface RecipeIngredient {
   quantity: number;
   cost: number;
   totalCost: number;
+  ingredientAmount: number;
   notes?: string;
 }
 
@@ -21,6 +22,7 @@ export interface RecipeWithDetails {
   ingredients: RecipeIngredient[];
   totalRecipeCost: number;
   availablePortions?: number;
+  minIngredientAmount?: number;
   product?: ProductComplete;
 }
 
@@ -52,4 +54,3 @@ export interface IngredientAvailability {
   unit: string;
   isAvailable: boolean;
 }
-

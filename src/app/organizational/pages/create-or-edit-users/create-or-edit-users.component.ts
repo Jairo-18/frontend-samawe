@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -48,7 +48,8 @@ import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
     MatIcon,
     BasePageComponent,
     LoaderComponent,
-    UppercaseDirective
+    UppercaseDirective,
+    RouterLink
   ],
   templateUrl: './create-or-edit-users.component.html',
   styleUrl: './create-or-edit-users.component.scss'
@@ -278,4 +279,3 @@ export class CreateOrEditUsersComponent implements OnInit {
       ?.setValue(input.value.toLowerCase(), { emitEvent: false });
   }
 }
-

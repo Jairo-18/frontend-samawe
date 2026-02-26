@@ -105,4 +105,3 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
   CHEF: ['Recetas', 'Inicio'],
   MESERO: ['Recetas', 'Facturas', 'Inicio']
 };
-

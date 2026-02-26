@@ -1,14 +1,20 @@
 <article class="flex relative">
-  @if (isLoggedUser && (userInfo?.roleType?.name === 'Administrador' ||
-  userInfo?.roleType?.name === 'ADMINISTRADOR' || userInfo?.roleType?.name ===
-  'Recepcionista' || userInfo?.roleType?.name === 'RECEPCIONISTA')) {
-  <app-side-bar
-    [userRole]="userInfo"
-    class="brand-side-bar"
-    (collapsed)="listenEvent($event)"
-    [closeSideBar]="closeSideBar"
-    (logout)="logout()"
-  ></app-side-bar>
+  @if (
+    isLoggedUser &&
+    (userInfo?.roleType?.name === 'Administrador' ||
+      userInfo?.roleType?.name === 'ADMINISTRADOR' ||
+      userInfo?.roleType?.name === 'Recepcionista' ||
+      userInfo?.roleType?.name === 'RECEPCIONISTA' ||
+      userInfo?.roleType?.name === 'MESERO' ||
+      userInfo?.roleType?.name === 'CHEF')
+  ) {
+    <app-side-bar
+      [userRole]="userInfo"
+      class="brand-side-bar"
+      (collapsed)="listenEvent($event)"
+      [closeSideBar]="closeSideBar"
+      (logout)="logout()"
+    ></app-side-bar>
   }
   <div class="app-container w-full">
     <main class="main w-full">
@@ -16,4 +22,3 @@
     </main>
   </div>
 </article>
-

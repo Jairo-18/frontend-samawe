@@ -1,8 +1,21 @@
-<div
-  class="flex flex-col bg-white rounded-2xl border border-indigo-50 shadow-[0_2px_12px_rgba(63,81,181,0.06)] overflow-hidden transition-all duration-200 hover:shadow-[0_8px_28px_rgba(63,81,181,0.14)] hover:-translate-y-0.5"
->
-  <div class="w-full aspect-square bg-indigo-50 overflow-hidden relative group">
+<div class="flex flex-col h-full bg-white rounded-2xl border border-[#06a606]">
+  <div
+    class="w-full aspect-square overflow-hidden relative group rounded-t-2xl"
+  >
     @if (recipe.images && recipe.images.length > 0) {
+      <div
+        class="absolute inset-0 bg-black/45 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
+      >
+        <div
+          class="pb-[2px] pt-[7px] px-[9px] rounded-full bg-[#06a606] text-white scale-[0.85] group-hover:scale-100 transition-transform duration-150 shadow-lg cursor-pointer hover:scale-110"
+          (click)="
+            $event.stopPropagation();
+            openPreview(recipe.images[currentImageIndex].imageUrl)
+          "
+        >
+          <mat-icon>zoom_in</mat-icon>
+        </div>
+      </div>
       <img
         [src]="recipe.images[currentImageIndex].imageUrl"
         [alt]="recipe.productName"
@@ -39,7 +52,7 @@
       }
     } @else {
       <div
-        class="w-full h-full flex flex-col items-center justify-center text-indigo-200 bg-indigo-50"
+        class="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-indigo-50"
       >
         <mat-icon class="text-5xl w-12 h-12 opacity-50 mb-2"
           >restaurant</mat-icon
@@ -49,106 +62,140 @@
     }
   </div>
   <div
-    class="flex justify-between items-start px-5 pt-[18px] pb-4 bg-gradient-to-br from-[#3949ab] to-[#5c6bc0] text-white"
+    class="flex justify-between items-start px-3 md:px-5 py-2 md:py-4 bg-[#06a606] text-black"
   >
-    <div class="flex items-start gap-3">
-      <span class="text-[2rem] leading-none mt-0.5">🍽️</span>
-      <div>
-        <h3 class="text-[1.05rem] font-bold text-white m-0 mb-1.5">
-          {{ recipe.productName }}
-        </h3>
-        <span
-          class="inline-flex items-center gap-1 text-[0.78rem] font-semibold px-2.5 py-1 rounded-full text-white"
-          [ngClass]="{
-            'bg-red-600/35':
-              getPortionColor(+(recipe.availablePortions ?? 0)) === 'danger',
-            'bg-orange-500/35':
-              getPortionColor(+(recipe.availablePortions ?? 0)) === 'warning',
-            'bg-green-600/35':
-              getPortionColor(+(recipe.availablePortions ?? 0)) === 'success'
-          }"
-        >
-          <mat-icon class="text-[0.85rem] w-[0.85rem] h-[0.85rem]"
-            >inventory_2</mat-icon
-          >
-          {{ recipe.availablePortions ?? 0 }} porciones disponibles
-        </span>
-      </div>
+    <div class="flex flex-col items-start gap-1">
+      <span class="font-bold text-black text-sm md:text-base">
+        {{ recipe.productName }}
+      </span>
+      <span
+        class="inline-flex items-center text-xs md:text-sm font-semibold rounded-full text-black px-2 py-1"
+        [ngClass]="{
+          'bg-red-500':
+            getPortionColor(+(recipe.availablePortions ?? 0)) === 'danger',
+          'bg-yellow-500':
+            getPortionColor(+(recipe.availablePortions ?? 0)) === 'warning',
+          'bg-green-500':
+            getPortionColor(+(recipe.availablePortions ?? 0)) === 'success'
+        }"
+      >
+        {{ recipe.availablePortions ?? 0 }} porciones disponibles
+      </span>
     </div>
     <div
       class="flex gap-1 [&>button]:!text-white/[0.85] hover:[&>button]:!text-white hover:[&>button]:!bg-white/15"
     >
       @if (canEdit) {
-        <button
-          mat-icon-button
-          matTooltip="Editar receta"
-          (click)="edit.emit(recipe)"
-        >
-          <mat-icon>edit</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+          <mat-icon class="text-black">more_vert</mat-icon>
         </button>
-        <button
-          mat-icon-button
-          matTooltip="Eliminar receta"
-          (click)="delete.emit(recipe)"
-        >
-          <mat-icon>delete_outline</mat-icon>
-        </button>
+        <mat-menu #actionMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="edit.emit(recipe)">
+            <mat-icon class="blue-color">edit</mat-icon>
+            <span>Editar receta</span>
+          </button>
+          <button mat-menu-item (click)="delete.emit(recipe)">
+            <mat-icon class="red-color">delete</mat-icon>
+            <span>Eliminar receta</span>
+          </button>
+        </mat-menu>
       }
     </div>
   </div>
-  <div class="px-5">
-    <div
-      class="grid grid-cols-[1.4fr_0.7fr_0.5fr_0.7fr] md:grid-cols-[1.8fr_0.8fr_0.6fr_0.8fr] gap-2 pt-2.5 pb-1.5 border-b-2 border-indigo-50 text-[0.75rem] font-bold text-[#7986cb] uppercase tracking-[0.5px]"
+  <div class="px-5 pb-2 overflow-x-auto">
+    <table
+      mat-table
+      [dataSource]="recipe.ingredients"
+      class="w-full bg-transparent shadow-none custom-recipe-table"
     >
-      <span>Ingrediente</span>
-      <span>Cantidad</span>
-      <span>Unidad</span>
-      <span>Costo</span>
-    </div>
-    @for (ing of recipe.ingredients; track ing.ingredientProductId) {
-      <div
-        class="grid grid-cols-[1.4fr_0.7fr_0.5fr_0.7fr] md:grid-cols-[1.8fr_0.8fr_0.6fr_0.8fr] gap-2 py-2 border-b border-[#f0f2ff] last:border-0 text-[0.8rem] md:text-[0.875rem] items-center transition-colors"
-      >
-        <span class="text-[#283593] font-medium">{{
-          ing.ingredientProductName
-        }}</span>
-        <span class="text-[#3949ab] font-semibold">{{
-          ing.quantity | number: '1.0-3'
-        }}</span>
-        <span class="text-[#7986cb] text-[0.8rem]">{{ ing.unit }}</span>
-        <span class="text-[#43a047] font-semibold text-right"
-          >${{ ing.totalCost | number: '1.0-0' }}</span
+      <!-- Ingredient Column -->
+      <ng-container matColumnDef="ingredient">
+        <th mat-header-cell *matHeaderCellDef class="center-text">
+          Ingrediente
+        </th>
+        <td mat-cell *matCellDef="let ing">
+          <span
+            class="inline-flex items-center text-[0.8rem] md:text-[0.875rem] font-semibold rounded-md px-2 py-1"
+            [ngClass]="{
+              'bg-red-500 text-white':
+                getPortionColor(getIngPortions(ing)) === 'danger',
+              'bg-yellow-500 text-black':
+                getPortionColor(getIngPortions(ing)) === 'warning',
+              'bg-green-500 text-white':
+                getPortionColor(getIngPortions(ing)) === 'success'
+            }"
+          >
+            {{ ing.ingredientProductName }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef class="center-text">Cantidad</th>
+        <td mat-cell *matCellDef="let ing" class="center-text">
+          {{ ing.quantity | unitFormat: ing.unit : 'qty' | number: '1.0-3' }}
+        </td>
+      </ng-container>
+
+      <!-- Unit Column -->
+      <ng-container matColumnDef="unit">
+        <th mat-header-cell *matHeaderCellDef class="center-text">Unidad</th>
+        <td mat-cell *matCellDef="let ing" class="center-text">
+          {{ ing.quantity | unitFormat: ing.unit : 'unit' }}
+        </td>
+      </ng-container>
+
+      <!-- Cost Column -->
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef class="center-text">Costo</th>
+        <td
+          mat-cell
+          *matCellDef="let ing"
+          class="!text-[#43a047] !font-semibold !text-[0.8rem] md:!text-[0.875rem] !text-right !px-2 !py-2 !border-b !border-[#f0f2ff]"
         >
-      </div>
-    }
+          {{ ing.totalCost | formatCop }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
   </div>
-  <div
-    class="flex justify-between items-center px-5 py-3.5 bg-[#f5f7ff] border-t border-[#e8eaf6] mt-1 flex-1"
-  >
-    <div class="flex flex-col">
-      <span
-        class="text-[0.75rem] text-[#9fa8da] font-semibold uppercase tracking-[0.5px]"
-        >Costo total de la receta</span
-      >
-      <span
-        class="text-[1.25rem] font-extrabold"
-        [ngClass]="{
-          'text-[#43a047]': getCostClass(recipe.totalRecipeCost) === 'low-cost',
-          'text-[#fb8c00]': getCostClass(recipe.totalRecipeCost) === 'mid-cost',
-          'text-[#e53935]': getCostClass(recipe.totalRecipeCost) === 'high-cost'
-        }"
-      >
-        ${{ recipe.totalRecipeCost | number: '1.0-0' }}
-      </span>
-    </div>
+  @if (!isMesero) {
     <div
-      class="flex items-center gap-1 bg-[#e8eaf6] text-[#3949ab] rounded-[20px] px-3 py-1 text-[0.8rem] font-semibold [&>mat-icon]:text-[0.9rem] [&>mat-icon]:w-[0.9rem] [&>mat-icon]:h-[0.9rem]"
+      class="flex flex-col items-start px-5 py-3.5 border-t border-[#06a606] mt-1 flex-1 rounded-b-2xl"
     >
-      <mat-icon>egg_alt</mat-icon>
-      {{ recipe.ingredients.length }} ingrediente{{
-        recipe.ingredients.length !== 1 ? 's' : ''
-      }}
+      <div class="flex flex-col">
+        <span class="text-sm md:text-base font-semibold"
+          >Costo total de la receta</span
+        >
+        <span class="text-sm md:text-base font-extrabold text-[#43a047]">
+          {{ recipe.totalRecipeCost | formatCop }}
+        </span>
+      </div>
     </div>
-  </div>
+  }
 </div>
 
+<!-- Image Preview Overlay -->
+@if (previewImageUrl) {
+  <div
+    class="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300"
+    (click)="closePreview()"
+  >
+    <button
+      mat-icon-button
+      class="!absolute top-4 right-4 text-white hover:bg-white/10"
+      (click)="closePreview()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    <img
+      [src]="previewImageUrl"
+      class="max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20"
+      alt="Vista previa de receta"
+      (click)="$event.stopPropagation()"
+    />
+  </div>
+}

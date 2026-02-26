@@ -6,6 +6,7 @@ import { SeeRecipesComponent } from '../../components/see-recipes/see-recipes.co
 import { CreateOrEditRecipeComponent } from '../../components/create-or-edit-recipe/create-or-edit-recipe.component';
 import { RecipeWithDetails } from '../../interfaces/recipe.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 
 @Component({
   selector: 'app-recipes-general',
@@ -27,10 +28,16 @@ export class RecipesGeneralComponent implements AfterViewInit {
   createOrEditComponent!: CreateOrEditRecipeComponent;
 
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _localStorage = inject(LocalStorageService);
 
   currentRecipe?: RecipeWithDetails;
+  allRecipes: RecipeWithDetails[] = [];
+  isMesero: boolean = false;
 
   ngAfterViewInit(): void {
+    const userData = this._localStorage.getUserData();
+    const role = userData?.roleType?.name?.toUpperCase();
+    this.isMesero = role === 'MESERO';
     this._route.queryParams.subscribe((params) => {
       if (params['editRecipe']) {
         this.tabGroup.selectedIndex = 1;
@@ -60,6 +67,11 @@ export class RecipesGeneralComponent implements AfterViewInit {
   onRecipeCanceled(): void {
     this.currentRecipe = undefined;
     this.tabGroup.selectedIndex = 0;
+    this.seeRecipesComponent?.loadRecipes();
+  }
+
+  onRecipesLoaded(recipes: RecipeWithDetails[]): void {
+    this.allRecipes = recipes;
   }
 
   private _goToTop(): void {
@@ -67,4 +79,3 @@ export class RecipesGeneralComponent implements AfterViewInit {
     if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
-

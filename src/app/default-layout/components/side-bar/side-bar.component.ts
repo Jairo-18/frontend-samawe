@@ -160,4 +160,3 @@ export class SideBarComponent implements OnInit, OnChanges {
     }
   }
 }
-

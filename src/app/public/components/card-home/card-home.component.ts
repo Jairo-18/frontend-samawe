@@ -20,7 +20,15 @@ export class CardHomeComponent {
     const userRole = userData?.roleType?.name;
     this.cards = DASHBOARD_CARDS.filter((card) =>
       card.allowedRoles?.includes(userRole)
-    );
+    ).map((card) => {
+      if (card.title === 'Recetas' && userRole?.toUpperCase() === 'MESERO') {
+        return {
+          ...card,
+          description:
+            'Eres mesero, aquí podrás ver los platillos para mostrar a los clientes'
+        };
+      }
+      return card;
+    });
   }
 }
-

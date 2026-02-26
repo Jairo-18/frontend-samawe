@@ -34,4 +34,3 @@ export class BasePageComponent {
   @Input() showBorder: boolean = true;
   @Input() pxMobile: boolean = true;
 }
-

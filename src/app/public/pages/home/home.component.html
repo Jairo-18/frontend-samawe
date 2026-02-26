@@ -3,7 +3,11 @@
   (userInfo?.roleType?.name === 'Administrador' ||
     userInfo?.roleType?.name === 'ADMINISTRADOR' ||
     userInfo?.roleType?.name === 'Recepcionista' ||
-    userInfo?.roleType?.name === 'RECEPCIONISTA')
+    userInfo?.roleType?.name === 'RECEPCIONISTA' ||
+    userInfo?.roleType?.name === 'Mesero' ||
+    userInfo?.roleType?.name === 'MESERO' ||
+    userInfo?.roleType?.name === 'Chef' ||
+    userInfo?.roleType?.name === 'CHEF')
 ) {
   <app-base-page
     [showBorder]="false"
@@ -58,4 +62,3 @@
     </div>
   </article>
 }
-

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   FormArray,
   FormBuilder,
@@ -31,7 +31,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatOptionModule } from '@angular/material/core';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, EMPTY, switchMap } from 'rxjs';
 import { RecipeService } from '../../services/recipe.service';
 import { RecipeWithDetails } from '../../interfaces/recipe.interface';
 import { ProductsService } from '../../../service-and-product/services/products.service';
@@ -46,7 +46,6 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
   standalone: true,
   imports: [
     CommonModule,
-    DecimalPipe,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -68,29 +67,25 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 })
 export class CreateOrEditRecipeComponent implements OnChanges {
   @Input() currentRecipe?: RecipeWithDetails;
-
   @Output() recipeSaved = new EventEmitter<void>();
   @Output() recipeCanceled = new EventEmitter<void>();
-
+  @ViewChild(MatTable) table?: MatTable<AbstractControl>;
   @ViewChild('imageUploader') imageUploader!: ImageUploaderComponent;
 
-  private readonly _recipeService = inject(RecipeService);
-  private readonly _productsService = inject(ProductsService);
-  private readonly _fb = inject(FormBuilder);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _recipeService: RecipeService = inject(RecipeService);
+  private readonly _productsService: ProductsService = inject(ProductsService);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   form!: FormGroup;
-  isEditMode = false;
-  @ViewChild(MatTable) table?: MatTable<AbstractControl>;
-
-  saving = false;
+  isEditMode: boolean = false;
+  saving: boolean = false;
   selectedProductId: number | null = null;
-
   displayedColumns: string[] = ['name', 'quantity', 'cost', 'actions'];
-
   filteredDishes: ProductComplete[] = [];
   filteredIngredients: ProductComplete[][] = [];
   ingredientPriceMap: Record<number, number> = {};
+  existingRecipeProductIds: Set<number> = new Set();
 
   get dishSearchControl(): FormControl {
     return this.form.get('dishSearch') as FormControl;
@@ -99,6 +94,10 @@ export class CreateOrEditRecipeComponent implements OnChanges {
   constructor() {
     this.initForm();
     this._setupDishAutocomplete();
+  }
+
+  @Input() set allRecipes(recipes: RecipeWithDetails[]) {
+    this.existingRecipeProductIds = new Set(recipes.map((r) => r.productId));
   }
 
   get ingredientsArray(): FormArray {
@@ -128,14 +127,15 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       .pipe(
         debounceTime(400),
         distinctUntilChanged(),
-
         switchMap((val: any) => {
           const name = typeof val === 'string' ? val : val?.name || '';
+          if (!name || name.trim().length < 2) {
+            return EMPTY;
+          }
           return this._productsService.getProductWithPagination({
             name: name.trim(),
             isActive: true,
-            perPage: 20,
-            categoryTypeCode: 'RES'
+            perPage: 10
           });
         })
       )
@@ -170,21 +170,21 @@ export class CreateOrEditRecipeComponent implements OnChanges {
   }
 
   onDishFocus(): void {
-    const control = this.dishSearchControl;
     if (!this.filteredDishes.length) {
       this._productsService
         .getProductWithPagination({
           isActive: true,
-          perPage: 20,
-          categoryTypeCode: 'RES'
+          perPage: 10
         })
         .subscribe((res) => {
-          this.filteredDishes = res.data;
-          this._cdr.detectChanges();
-          if (!control.value) control.setValue('');
+          this.filteredDishes = res?.data || [];
+          this._cdr.markForCheck();
+          const currentValue = this.dishSearchControl.value;
+          this.dishSearchControl.setValue(currentValue);
         });
     } else {
-      if (!control.value) control.setValue('');
+      const currentValue = this.dishSearchControl.value;
+      this.dishSearchControl.setValue(currentValue);
     }
   }
 
@@ -195,36 +195,11 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     this.selectedProductId = dish.productId;
     this.dishSearchControl.setValue(dish.name, { emitEvent: false });
 
-    this._recipeService.getByProduct(dish.productId).subscribe({
-      next: (res) => {
-        if (res.data?.ingredients && res.data.ingredients.length > 0) {
-          this.isEditMode = true;
-          this.ingredientsArray.clear();
-          this.filteredIngredients = [];
-          for (const ing of res.data.ingredients) {
-            this.ingredientPriceMap[ing.ingredientProductId] = ing.cost ?? 0;
-            this._addIngredientRow({
-              ingredientProductId: ing.ingredientProductId,
-              quantity: ing.quantity,
-              ingredientProductName: ing.ingredientProductName
-            });
-          }
-        } else {
-          this.isEditMode = false;
-          this.ingredientsArray.clear();
-          this.filteredIngredients = [];
-          this.addIngredient();
-        }
-        this._cdr.detectChanges();
-      },
-      error: () => {
-        this.isEditMode = false;
-        this.ingredientsArray.clear();
-        this.filteredIngredients = [];
-        this.addIngredient();
-        this._cdr.detectChanges();
-      }
-    });
+    this.isEditMode = false;
+    this.ingredientsArray.clear();
+    this.filteredIngredients = [];
+    this.addIngredient();
+    this._cdr.detectChanges();
   }
 
   displayFn(product: ProductComplete | string | null): string {
@@ -236,21 +211,40 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     return this.ingredientsArray.at(index).get('ingSearch') as FormControl;
   }
 
+  private _getSelectedIngredientIds(excludeIndex?: number): Set<number> {
+    const ids = new Set<number>();
+    for (let i = 0; i < this.ingredientsArray.length; i++) {
+      if (i === excludeIndex) continue;
+      const id = Number(
+        this.ingredientsArray.at(i).get('ingredientProductId')?.value
+      );
+      if (id) ids.add(id);
+    }
+    return ids;
+  }
+
   onIngFocus(index: number): void {
     const control = this.getIngSearchControl(index);
     if (!this.filteredIngredients[index]?.length) {
       this._productsService
         .getProductWithPagination({
           isActive: true,
-          perPage: 20,
+          perPage: 10,
           categoryTypeCode: 'ING'
         })
         .subscribe((res) => {
-          this.filteredIngredients[index] = res.data;
+          const selected = this._getSelectedIngredientIds(index);
+          this.filteredIngredients[index] = res.data.filter(
+            (p) => !selected.has(p.productId!)
+          );
           this._cdr.detectChanges();
           if (!control.value) control.setValue('');
         });
     } else {
+      const selected = this._getSelectedIngredientIds(index);
+      this.filteredIngredients[index] = this.filteredIngredients[index].filter(
+        (p) => !selected.has(p.productId!)
+      );
       if (!control.value) control.setValue('');
     }
   }
@@ -271,9 +265,11 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     ctrl.valueChanges
       .pipe(
         debounceTime(400),
-
         switchMap((val: any) => {
           const name = typeof val === 'string' ? val : val?.name || '';
+          if (!name || name.trim().length < 2) {
+            return EMPTY;
+          }
           return this._productsService.getProductWithPagination({
             name: name.trim(),
             isActive: true,
@@ -283,7 +279,10 @@ export class CreateOrEditRecipeComponent implements OnChanges {
         })
       )
       .subscribe((res) => {
-        this.filteredIngredients[index] = res.data;
+        const selected = this._getSelectedIngredientIds(index);
+        this.filteredIngredients[index] = res.data.filter(
+          (p) => !selected.has(p.productId!)
+        );
         this._cdr.markForCheck();
       });
   }
@@ -312,7 +311,11 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     ing?: Parameters<typeof this._buildIngredientGroup>[0]
   ): void {
     const idx = this.ingredientsArray.length;
-    this.ingredientsArray.push(this._buildIngredientGroup(ing));
+    const group = this._buildIngredientGroup(ing);
+    if (this.isEditMode && ing?.ingredientProductId) {
+      group.get('ingSearch')?.disable();
+    }
+    this.ingredientsArray.push(group);
     this.filteredIngredients.push([]);
     this._setupIngAutocomplete(idx);
     this.table?.renderRows();
@@ -361,7 +364,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       }[]
     ).map((v) => ({
       ingredientProductId: v.ingredientProductId,
-      quantity: v.quantity,
+      quantity: Number(v.quantity),
       notes: ''
     }));
 

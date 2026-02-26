@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   ChangeDetectionStrategy,
@@ -55,17 +56,18 @@ import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
 export class SeeRecipesComponent implements OnInit {
   @Input() restaurantProducts: ProductComplete[] = [];
   @Output() editRecipe = new EventEmitter<RecipeWithDetails>();
+  @Output() recipesLoaded = new EventEmitter<RecipeWithDetails[]>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
 
-  private readonly _recipeService = inject(RecipeService);
-  private readonly _dialog = inject(MatDialog);
-  private readonly _authService = inject(AuthService);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _recipeService: RecipeService = inject(RecipeService);
+  private readonly _dialog: MatDialog = inject(MatDialog);
+  private readonly _authService: AuthService = inject(AuthService);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   recipes: RecipeWithDetails[] = [];
-  loading = false;
-  showClearButton = false;
+  loading: boolean = false;
+  showClearButton: boolean = false;
   form!: FormGroup;
   userLogged: UserInterface;
 
@@ -111,6 +113,7 @@ export class SeeRecipesComponent implements OnInit {
         this.recipes = res.data || [];
         this.paginationParams = res.pagination;
         this.loading = false;
+        this.recipesLoaded.emit(this.recipes);
         this._cdr.markForCheck();
       },
       error: () => {
@@ -163,4 +166,3 @@ export class SeeRecipesComponent implements OnInit {
     return ['ADMINISTRADOR', 'RECEPCIONISTA'].includes(role || '');
   }
 }
-
