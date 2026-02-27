@@ -77,6 +77,26 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   searchFieldsProducts: SearchField[] = searchFieldsProducts;
   searchFieldsAccommodations: SearchField[] = searchFieldsAccommodations;
   searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
+
+  get stateTypesAccommodation(): StateType[] {
+    const allowed = [
+      'MANTENIMIENTO',
+      'DISPONIBLE',
+      'OCUPADO',
+      'FUERA DE SERVICIO',
+      'RESERVADO'
+    ];
+    return this.stateTypes.filter((s) =>
+      allowed.includes(s.name?.toUpperCase())
+    );
+  }
+
+  get stateTypesExcursion(): StateType[] {
+    const allowed = ['DISPONIBLE', 'FUERA DE SERVICIO'];
+    return this.stateTypes.filter((s) =>
+      allowed.includes(s.name?.toUpperCase())
+    );
+  }
   ngOnInit(): void {
     this.loadRelatedData();
   }
@@ -139,16 +159,28 @@ export class GeneralComponent implements AfterViewInit, OnInit {
         field.options = options;
       }
     };
-    const categoryOptions = this.categoryTypes.map((type) => ({
-      value: type.categoryTypeId,
-      label: type.name || ''
-    }));
-    updateOptions(this.searchFieldsProducts, 'categoryType', categoryOptions);
-    updateOptions(this.searchFieldsExcursions, 'categoryType', categoryOptions);
+    const EXCURSION_CATS = ['PASADIA', 'SERVICIOS'];
+    const PRODUCT_EXCLUDED_CATS = ['PASADIA', 'SERVICIOS', 'HOSPEDAJE'];
+
+    const productCategoryOptions = this.categoryTypes
+      .filter(
+        (type) => !PRODUCT_EXCLUDED_CATS.includes(type.name?.toUpperCase())
+      )
+      .map((type) => ({ value: type.categoryTypeId, label: type.name || '' }));
+
+    const excursionCategoryOptions = this.categoryTypes
+      .filter((type) => EXCURSION_CATS.includes(type.name?.toUpperCase()))
+      .map((type) => ({ value: type.categoryTypeId, label: type.name || '' }));
+
     updateOptions(
-      this.searchFieldsAccommodations,
+      this.searchFieldsProducts,
       'categoryType',
-      categoryOptions
+      productCategoryOptions
+    );
+    updateOptions(
+      this.searchFieldsExcursions,
+      'categoryType',
+      excursionCategoryOptions
     );
     const stateOptions = this.stateTypes.map((type) => ({
       value: type.stateTypeId,
@@ -196,4 +228,3 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     }
   }
 }
-

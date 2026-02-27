@@ -32,13 +32,6 @@ export const searchFieldsAccommodations: SearchField[] = [
     placeholder: ' '
   },
   {
-    name: 'categoryType',
-    label: 'Categoría',
-    type: 'select',
-    options: [],
-    placeholder: 'Buscar por categoría'
-  },
-  {
     name: 'bedType',
     label: 'Camas',
     type: 'select',
@@ -85,4 +78,3 @@ export const searchFieldsExcursions: SearchField[] = [
     placeholder: 'Buscar por estado'
   }
 ];
-

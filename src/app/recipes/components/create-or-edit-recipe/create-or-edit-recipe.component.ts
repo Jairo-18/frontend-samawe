@@ -135,7 +135,9 @@ export class CreateOrEditRecipeComponent implements OnChanges {
           return this._productsService.getProductWithPagination({
             name: name.trim(),
             isActive: true,
-            perPage: 10
+            perPage: 10,
+            categoryTypeCode: 'RES,ING',
+            excludeWithRecipe: true
           });
         })
       )
@@ -174,7 +176,9 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       this._productsService
         .getProductWithPagination({
           isActive: true,
-          perPage: 10
+          perPage: 10,
+          categoryTypeCode: 'RES,ING',
+          excludeWithRecipe: true
         })
         .subscribe((res) => {
           this.filteredDishes = res?.data || [];
