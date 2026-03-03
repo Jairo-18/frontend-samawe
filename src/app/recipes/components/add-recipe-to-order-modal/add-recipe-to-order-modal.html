@@ -1,72 +1,40 @@
-<div class="p-6">
-  <h2 class="text-xl font-bold text-[#06a606] mb-2 flex items-center gap-2">
-    <mat-icon>assignment</mat-icon>
-    Añadir a Pedido
-  </h2>
-  <p class="text-sm text-gray-600 mb-4">
-    Vas a agregar <strong>{{ data.productName }}</strong> a un pedido existente.
-  </p>
+<app-base-dialog [title]="'Añadir a Pedido'"
+  [description]="'Complete todos los campos requeridos. Vas a agregar ' + data.productName + ' a un pedido existente.'">
 
-  <form [formGroup]="searchForm" class="flex flex-col gap-4">
+  <form form [formGroup]="searchForm" class="flex flex-col gap-4">
     <!-- Buscador de Factura (Autocomplete) -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Buscar Factura</mat-label>
-      <input
-        type="text"
-        matInput
-        [matAutocomplete]="invoiceAuto"
-        formControlName="search"
-        placeholder="Mesa o Nombre del cliente..."
-        (focus)="onInvoiceFocus()"
-      />
+      <input type="text" matInput [matAutocomplete]="invoiceAuto" formControlName="search"
+        placeholder="Mesa o Nombre del cliente..." (focus)="onInvoiceFocus()" />
       <mat-icon matPrefix>search</mat-icon>
       @if(isLoadingInvoices) {
       <mat-icon matSuffix>
         <mat-spinner diameter="20"></mat-spinner>
       </mat-icon>
       } @if(searchForm.get('search')?.value && !isLoadingInvoices) {
-      <button
-        matSuffix
-        mat-icon-button
-        type="button"
-        (click)="clearInvoiceSelection()"
-        matTooltip="Limpiar selección"
-      >
+      <button matSuffix mat-icon-button type="button" (click)="clearInvoiceSelection()" matTooltip="Limpiar selección">
         <mat-icon>clear</mat-icon>
       </button>
       }
 
-      <mat-autocomplete
-        #invoiceAuto="matAutocomplete"
-        [displayWith]="displayInvoice"
-        (optionSelected)="onInvoiceSelected($event.option.value)"
-      >
+      <mat-autocomplete #invoiceAuto="matAutocomplete" [displayWith]="displayInvoice"
+        (optionSelected)="onInvoiceSelected($event.option.value)">
         @for(invoice of invoices; track invoice.invoiceId) {
         <mat-option [value]="invoice">
-          <div
-            class="flex justify-between items-center w-full font-medium text-xs md:text-base"
-          >
+          <div class="flex justify-between items-center w-full font-medium text-xs md:text-base">
             <span class="flex items-center gap-2">
-              <mat-icon
-                class="!text-[#06a606] !text-base !w-5 !h-5 !leading-5 align-middle"
-                >table_restaurant</mat-icon
-              >
+              <mat-icon class="!text-[#06a606] !text-base !w-5 !h-5 !leading-5 align-middle">table_restaurant</mat-icon>
               <span>Mesa {{ invoice.tableNumber }}</span>
-              <span class="text-gray-600"
-                >- {{ invoice.user.firstName }} {{ invoice.user.lastName
-                }}</span
-              >
-              <span class="text-gray-400 font-normal"
-                >({{ invoice.code }})</span
-              >
+              <span class="text-gray-600">- {{ invoice.user.firstName }} {{ invoice.user.lastName
+                }}</span>
+              <span class="text-gray-400 font-normal">({{ invoice.code }})</span>
             </span>
           </div>
         </mat-option>
         } @if(showNoResultsMessage) {
         <mat-option disabled>
-          <span class="text-gray-500"
-            >No se encontraron pedidos activos en mesas.</span
-          >
+          <span class="text-gray-500">No se encontraron pedidos activos en mesas.</span>
         </mat-option>
         }
       </mat-autocomplete>
@@ -85,24 +53,16 @@
     </mat-form-field>
   </form>
 
-  <div class="flex justify-end gap-2 mt-6">
-    <button
-      mat-stroked-button
-      color="warn"
-      mat-dialog-close
-      [disabled]="isSubmitting"
-    >
+  <section actions class="flex justify-end gap-2 mt-6">
+    <button mat-stroked-button color="warn" mat-dialog-close [disabled]="isSubmitting">
       Cancelar
     </button>
-    <button
-      mat-flat-button
-      class="!bg-[#06a606] !text-white hover:!bg-[#048a04]"
-      [disabled]="!selectedInvoice || searchForm.invalid || isSubmitting"
-      (click)="confirm()"
-    >
+    <button mat-flat-button class="!bg-[#06a606] !text-white hover:!bg-[#048a04]"
+      [disabled]="!selectedInvoice || searchForm.invalid || isSubmitting" (click)="confirm()">
       @if(isSubmitting) {
       <mat-icon class="animate-spin">sync</mat-icon>
       } {{ isSubmitting ? 'Añadiendo...' : 'Añadir a pedido' }}
     </button>
-  </div>
-</div>
+  </section>
+
+</app-base-dialog>
