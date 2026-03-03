@@ -1,0 +1,141 @@
+<app-base-page
+  [headerTitle]="'Editar Orden de Restaurante'"
+  [showContentTitle]="true"
+  [showBackButton]="true"
+  [showBorder]="false"
+  [pxMobile]="false"
+  backButtonRoute="/recipes/restaurant-order"
+  backButtonText="Volver"
+  backButtonTooltip="Volver a órdenes"
+>
+  <article class="flex flex-col md:flex-row gap-3 w-full h-full">
+    @if (initialLoading) {
+      <div class="h-full w-full justify-center items-center flex">
+        <app-loader></app-loader>
+      </div>
+    } @else {
+      <div class="flex flex-col w-full gap-3">
+        <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+          @if (invoiceData) {
+            <span class="text-xs md:text-xl font-extrabold">
+              Orden Nr° {{ invoiceData.code || '' }}
+              <span class="text-gray-500 font-normal text-sm ml-2"
+                >- {{ invoiceData.stateType?.name || 'Nuevo' }}</span
+              >
+            </span>
+            <section class="flex-row md:flex w-full mt-2">
+              <div
+                class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
+              >
+                <div class="flex flex-col">
+                  <div class="flex flex-row gap-2">
+                    <span class="font-bold text-xs md:text-base">CLIENTE:</span>
+                    <span class="font-normal text-xs md:text-base">
+                      {{ invoiceData.user.firstName || 'Consumidor' }}
+                      {{ invoiceData.user.lastName || 'Final' }}
+                    </span>
+                  </div>
+                  <div
+                    class="flex flex-row gap-2 font-bold"
+                    *ngIf="invoiceData.tableNumber"
+                  >
+                    <span class="font-bold text-xs md:text-base">MESA:</span>
+                    <span class="font-normal text-xs md:text-base">
+                      {{ invoiceData.tableNumber }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex w-full md:w-[50%] justify-start md:justify-end">
+                <span class="font-bold text-xs md:text-base">
+                  ATENDIÓ:
+                  <span class="font-normal text-xs md:text-base">
+                    {{ invoiceData.employee.firstName || '' }}
+                    {{ invoiceData.employee.lastName || '' }}
+                  </span>
+                </span>
+              </div>
+            </section>
+          }
+
+          <mat-tab-group animationDuration="0ms" class="mt-4">
+            <mat-tab label="Productos/Menú">
+              <ng-template matTabContent>
+                <app-add-product
+                  [categoryTypes]="categoryTypes"
+                  [taxeTypes]="taxeTypes"
+                  [saveToBackend]="false"
+                  (itemSaved)="onItemSaved()"
+                  (pendingItem)="onPendingItem($event)"
+                ></app-add-product>
+              </ng-template>
+            </mat-tab>
+            <mat-tab label="Hospedaje">
+              <ng-template matTabContent>
+                <app-add-accommodation
+                  [categoryTypes]="categoryTypes"
+                  [taxeTypes]="taxeTypes"
+                  [additionalTypes]="additionalTypes"
+                  [discountTypes]="discountTypes"
+                  [saveToBackend]="false"
+                  (itemSaved)="onItemSaved()"
+                  (pendingItem)="onPendingItem($event)"
+                ></app-add-accommodation>
+              </ng-template>
+            </mat-tab>
+            <mat-tab label="Pasadías y Servicios">
+              <ng-template matTabContent>
+                <app-add-excursion
+                  [categoryTypes]="categoryTypes"
+                  [taxeTypes]="taxeTypes"
+                  [saveToBackend]="false"
+                  (itemSaved)="onItemSaved()"
+                  (pendingItem)="onPendingItem($event)"
+                ></app-add-excursion>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+        </section>
+
+        @if (pendingItems.length > 0) {
+          <app-pending-items-table
+            [pendingItems]="pendingItems"
+            [taxeTypes]="taxeTypes"
+            [isSaving]="isSavingItems"
+            (itemDeleted)="removePendingItem($event)"
+            (saveAll)="saveAllPendingItems()"
+          ></app-pending-items-table>
+        }
+
+        <section
+          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
+        >
+          <div class="w-full text-center mb-2">
+            <span class="font-bold text-sm md:text-base"
+              >Productos Agregados a la Orden</span
+            >
+          </div>
+          <app-invoice-detaill
+            *ngIf="invoiceData"
+            [invoiceDetails]="invoiceData.invoiceDetails"
+            [invoiceId]="orderId"
+            [reload]="reloadInvoiceDetails"
+            (itemDelete)="onItemDeleted()"
+          ></app-invoice-detaill>
+        </section>
+
+        <div
+          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
+        >
+          <app-invoice-summary
+            *ngIf="invoiceData"
+            [invoiceData]="invoiceData"
+            [payTypes]="payTypes"
+            (editRequested)="openEditInvoiceDialog()"
+            (toggleAllPaymentStatus)="toggleAllPayments($event)"
+          ></app-invoice-summary>
+        </div>
+      </div>
+    }
+  </article>
+</app-base-page>

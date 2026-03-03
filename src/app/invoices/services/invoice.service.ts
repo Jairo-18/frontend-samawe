@@ -20,12 +20,12 @@ export class InvoiceService {
     inject(HttpUtilitiesService);
   getInvoiceWithPagination(query: object): Observable<{
     pagination: PaginationInterface;
-    data: CreateInvoice[];
+    data: InvoiceComplete[];
   }> {
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
-      data: CreateInvoice[];
+      data: InvoiceComplete[];
     }>(`${environment.apiUrl}invoices/paginated-list`, { params });
   }
   getInvoiceToEdit(
@@ -57,5 +57,14 @@ export class InvoiceService {
       `${environment.apiUrl}invoices/${invoiceId}`
     );
   }
-}
 
+  addDetails(
+    invoiceId: number,
+    details: any[]
+  ): Observable<ApiResponseCreateInterface> {
+    return this._httpClient.post<ApiResponseCreateInterface>(
+      `${environment.apiUrl}invoices/invoice/${invoiceId}/details`,
+      details
+    );
+  }
+}

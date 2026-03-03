@@ -16,8 +16,15 @@
       (logout)="logout()"
     ></app-side-bar>
   }
-  <div class="app-container w-full">
-    <main class="main w-full">
+  <div class="app-container w-full relative">
+    <app-notification-button
+      [showNotificationsIcon]="showNotificationsIcon"
+      [userInfo]="userInfo"
+      class="absolute top-4 right-6 z-50"
+    >
+    </app-notification-button>
+
+    <main class="main w-full h-full overflow-y-auto">
       <router-outlet></router-outlet>
     </main>
   </div>

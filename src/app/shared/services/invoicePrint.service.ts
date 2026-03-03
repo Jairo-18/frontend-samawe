@@ -4,7 +4,7 @@ import { InvoiceService } from '../../invoices/services/invoice.service';
 import { Invoice } from '../../invoices/interface/invoice.interface';
 @Injectable({ providedIn: 'root' })
 export class InvoicePrintService {
-  private readonly _invoiceService = inject(InvoiceService);
+  private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   async printInvoice(invoice: Invoice, element: HTMLElement): Promise<void> {
     const options = {
       margin: 0.5,
@@ -35,4 +35,3 @@ export class InvoicePrintService {
     await html2pdf().set(options).from(element).save();
   }
 }
-

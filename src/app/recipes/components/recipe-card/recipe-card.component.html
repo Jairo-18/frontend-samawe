@@ -93,6 +93,10 @@
             <mat-icon class="blue-color">edit</mat-icon>
             <span>Editar receta</span>
           </button>
+          <button mat-menu-item (click)="addToOrder.emit(recipe)">
+            <mat-icon style="color: #06a606">assignment</mat-icon>
+            <span>Añadir a pedido</span>
+          </button>
           <button mat-menu-item (click)="delete.emit(recipe)">
             <mat-icon class="red-color">delete</mat-icon>
             <span>Eliminar receta</span>

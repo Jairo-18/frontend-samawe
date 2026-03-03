@@ -55,4 +55,3 @@ export const appConfig: ApplicationConfig = {
     TransformDateService
   ]
 };
-

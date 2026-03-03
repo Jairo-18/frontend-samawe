@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { OrderUpdate } from '../interfaces/order-socket.interface';
 
@@ -9,6 +9,12 @@ import { OrderUpdate } from '../interfaces/order-socket.interface';
 })
 export class OrdersSocketService {
   private socket: Socket;
+
+  private _notifications = new BehaviorSubject<OrderUpdate[]>([]);
+  public notifications$ = this._notifications.asObservable();
+
+  private _unreadCount = new BehaviorSubject<number>(0);
+  public unreadCount$ = this._unreadCount.asObservable();
 
   constructor() {
     const baseUrl = environment.apiUrl.endsWith('/')
@@ -20,10 +26,25 @@ export class OrdersSocketService {
     });
 
     this.socket.on('connect', () => {
-      console.log('Connected to orders websockettttt');
       this.socket.emit('joinOrders');
     });
+
+    this.socket.on('orderUpdated', (data: OrderUpdate) => {
+      this.addNotification(data);
+    });
   }
+
+  private addNotification(notification: OrderUpdate) {
+    const current = this._notifications.getValue();
+    const updated = [notification, ...current].slice(0, 20);
+    this._notifications.next(updated);
+    this._unreadCount.next(this._unreadCount.getValue() + 1);
+  }
+
+  public markAsRead() {
+    this._unreadCount.next(0);
+  }
+
   onOrderUpdated(): Observable<OrderUpdate> {
     return new Observable<OrderUpdate>((observer) => {
       this.socket.on('orderUpdated', (data: OrderUpdate) => {
@@ -31,6 +52,13 @@ export class OrdersSocketService {
       });
     });
   }
+
+  joinUserRoom(userId: string) {
+    if (this.socket) {
+      this.socket.emit('joinUserRoom', { userId });
+    }
+  }
+
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();

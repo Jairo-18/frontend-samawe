@@ -7,7 +7,8 @@ import {
   InvoiceType,
   PaidType,
   PayType,
-  TaxeType
+  TaxeType,
+  StateType
 } from './../../shared/interfaces/relatedDataGeneral';
 import { InvoiceDetail } from './invoiceDetaill.interface';
 export interface createInvoiceRelatedData {
@@ -42,6 +43,11 @@ export interface Invoice {
   payType?: PayType;
   paidType?: PaidType;
   invoiceDetails: InvoiceDetail[];
+  tableNumber?: string;
+  orderTime?: string;
+  readyTime?: string;
+  servedTime?: string;
+  stateType?: StateType;
 }
 export interface CreateInvoice {
   invoiceTypeId: number;
@@ -85,14 +91,19 @@ export interface InvoiceComplete {
   paidType: PaidType;
   invoiceDetails: InvoiceDetail[];
   invoiceElectronic: boolean;
+  tableNumber?: string;
+  orderTime?: string;
+  readyTime?: string;
+  servedTime?: string;
+  stateType?: StateType;
 }
 export interface DialogData {
   editMode: boolean;
   invoiceId?: number;
   relatedData: {
-    invoiceType: InvoiceType[];
+    invoiceType?: InvoiceType[];
     paidType: PaidType[];
     payType: PayType[];
+    stateType?: StateType[];
   };
 }
-

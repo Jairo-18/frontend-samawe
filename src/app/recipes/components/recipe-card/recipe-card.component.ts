@@ -40,6 +40,7 @@ export class RecipeCardComponent implements OnInit {
   @Input() canEdit: boolean = false;
   @Output() edit = new EventEmitter<RecipeWithDetails>();
   @Output() delete = new EventEmitter<RecipeWithDetails>();
+  @Output() addToOrder = new EventEmitter<RecipeWithDetails>();
 
   isMesero: boolean = false;
   showAllIngredients: boolean = false;

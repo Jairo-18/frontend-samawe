@@ -11,7 +11,8 @@ import { InvoiceService } from '../../services/invoice.service';
 import {
   InvoiceType,
   PaidType,
-  PayType
+  PayType,
+  StateType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { CreateUserPanel } from '../../../organizational/interfaces/create.interface';
 import { MatButtonModule } from '@angular/material/button';
@@ -70,11 +71,12 @@ export class CreateInvoiceDialogComponent implements OnInit {
   invoiceTypes: InvoiceType[] = [];
   paidTypes: PaidType[] = [];
   payTypes: PayType[] = [];
+  stateTypes: StateType[] = [];
   filteredClients: PaginatedUserPartial[] = [];
   clientFilterControl = new FormControl<string | CreateUserPanel>('');
   isLoadingClients: boolean = false;
   isLoading: boolean = false;
-  invoice!: InvoiceComplete;
+  invoice?: InvoiceComplete;
   private readonly _dialogRef = inject(
     MatDialogRef<CreateInvoiceDialogComponent>
   );
@@ -93,13 +95,20 @@ export class CreateInvoiceDialogComponent implements OnInit {
       paidTypeId: ['', Validators.required],
       payTypeId: ['', Validators.required],
       cash: [0],
-      transfer: [0]
+      transfer: [0],
+      stateTypeId: [null]
     });
   }
   ngOnInit(): void {
-    this.invoiceTypes = this.data.relatedData.invoiceType;
-    this.paidTypes = this.data.relatedData.paidType;
-    this.payTypes = this.data.relatedData.payType;
+    this.invoiceTypes = this.data.relatedData.invoiceType || [];
+    this.paidTypes = this.data.relatedData.paidType || [];
+    this.payTypes = this.data.relatedData.payType || [];
+
+    const allowedStateTypes = [6, 7, 8, 9, 10];
+    this.stateTypes = (this.data.relatedData.stateType || []).filter((state) =>
+      allowedStateTypes.includes(Number(state.stateTypeId))
+    );
+
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
@@ -131,7 +140,8 @@ export class CreateInvoiceDialogComponent implements OnInit {
       payTypeId: invoice.payType?.payTypeId,
       paidTypeId: invoice.paidType?.paidTypeId,
       cash: invoice.cash,
-      transfer: invoice.transfer
+      transfer: invoice.transfer,
+      stateTypeId: invoice.stateType?.stateTypeId
     });
     if (invoice.user) {
       const clientForDisplay: Partial<CreateUserPanel> = {
@@ -245,6 +255,9 @@ export class CreateInvoiceDialogComponent implements OnInit {
       cash: Math.abs(Number(formValue.cash)),
       transfer: Math.abs(Number(formValue.transfer))
     };
+    if (formValue.stateTypeId && this.invoice?.tableNumber) {
+      Object.assign(updatePayload, { stateTypeId: formValue.stateTypeId });
+    }
     this._invoiceService
       .updateInvoice(this.data.invoiceId, updatePayload)
       .subscribe({

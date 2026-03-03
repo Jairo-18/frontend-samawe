@@ -24,6 +24,7 @@ import {
 import { FormGroup } from '@angular/forms';
 import { RecipeService } from '../../services/recipe.service';
 import { RecipeWithDetails } from '../../interfaces/recipe.interface';
+import { AddRecipeToOrderModalComponent } from '../add-recipe-to-order-modal/add-recipe-to-order-modal';
 import { ProductComplete } from '../../../service-and-product/interface/product.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
@@ -163,6 +164,17 @@ export class SeeRecipesComponent implements OnInit {
 
   canEdit(): boolean {
     const role = this.userLogged?.roleType?.name?.toUpperCase();
-    return ['ADMINISTRADOR', 'RECEPCIONISTA'].includes(role || '');
+    return ['ADMINISTRADOR', 'RECEPCIONISTA', 'CHEF'].includes(role || '');
+  }
+
+  onAddToOrder(recipe: RecipeWithDetails): void {
+    this._dialog.open(AddRecipeToOrderModalComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      data: {
+        productId: recipe.productId,
+        productName: recipe.productName
+      }
+    });
   }
 }

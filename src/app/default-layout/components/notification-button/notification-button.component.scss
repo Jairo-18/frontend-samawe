@@ -1,0 +1,22 @@
+::ng-deep .mat-badge-content {
+  background-color: #ef4444 !important; /* Un rojo más moderno (Tailwind red-500) */
+  color: white !important;
+  font-weight: normal !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  /* Puedes experimentar con tamaño o borde aquí, ej:
+  border: 1.5px solid white;
+  transform: scale(0.9);
+  */
+}
+
+::ng-deep .custom-notif-menu .mat-mdc-menu-content,
+::ng-deep .custom-notif-menu .mat-menu-content {
+  padding: 0 !important;
+  height: 100%;
+}

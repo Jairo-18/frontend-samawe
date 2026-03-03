@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of, tap, shareReplay } from 'rxjs';
 import { ApiResponseInterface } from '../interfaces/api-response.interface';
 import { environment } from '../../../environments/environment';
 import { AppRelatedData, PhoneCode } from '../interfaces/relatedDataGeneral';
@@ -24,21 +24,26 @@ export class RelatedDataService {
     null
   );
   readonly relatedData = this._relatedData.asReadonly();
+  private _relatedDataRequest$: Observable<
+    ApiResponseInterface<AppRelatedData>
+  > | null = null;
   getRelatedData(
     forceRefresh: boolean = false
   ): Observable<ApiResponseInterface<AppRelatedData>> {
     if (!forceRefresh && this._relatedData()) {
       return of(this._relatedData()!);
     }
-    return this._httpClient
-      .get<
-        ApiResponseInterface<AppRelatedData>
-      >(`${environment.apiUrl}app/related-data`)
-      .pipe(
-        tap((response) => {
-          this._relatedData.set(response);
-        })
-      );
+    if (!this._relatedDataRequest$) {
+      this._relatedDataRequest$ = this._httpClient
+        .get<
+          ApiResponseInterface<AppRelatedData>
+        >(`${environment.apiUrl}app/related-data`)
+        .pipe(
+          tap((response) => this._relatedData.set(response)),
+          shareReplay(1)
+        );
+    }
+    return this._relatedDataRequest$;
   }
   clearRelatedDataCache(): void {
     this._relatedData.set(null);
@@ -61,4 +66,3 @@ export class RelatedDataService {
     );
   }
 }
-

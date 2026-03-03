@@ -14,7 +14,6 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LocalStorageService } from '../../../shared/services/localStorage.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -35,8 +34,6 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
 export class LoginComponent {
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
-  private readonly _localStorage: LocalStorageService =
-    inject(LocalStorageService);
   form: FormGroup;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
@@ -60,4 +57,3 @@ export class LoginComponent {
     });
   }
 }
-

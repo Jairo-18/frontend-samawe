@@ -177,9 +177,9 @@
     }
     <div class="w-full flex content-between md:w-[24%]">
       <button mat-fab extended="true" class="!w-full" (click)="save()">
+        <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
         {{ isEditMode ? 'Guardar cambios' : 'Crear hospedaje' }}
       </button>
     </div>
   </section>
 </form>
-

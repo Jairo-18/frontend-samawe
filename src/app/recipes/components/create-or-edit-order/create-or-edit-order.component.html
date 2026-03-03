@@ -1,0 +1,164 @@
+<app-section-header
+  [title]="editMode ? 'Editar orden' : 'Crear orden'"
+  [subtitle]="
+    editMode
+      ? 'Edita los campos que desees'
+      : 'Aquí puedes crear una nueva orden de restaurante'
+  "
+></app-section-header>
+<div class="px-2 md:px-6 py-4">
+  <form [formGroup]="form" class="flex flex-col gap-4">
+    @if (!isLoading) {
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Buscar Cliente </mat-label>
+        <input
+          type="text"
+          matInput
+          [matAutocomplete]="clientAuto"
+          [formControl]="clientFilterControl"
+          placeholder="Nombre del cliente..."
+          (focus)="onClientFocus()"
+        />
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-icon *ngIf="isLoadingClients" matSuffix>
+          <mat-spinner diameter="20"></mat-spinner>
+        </mat-icon>
+        <button
+          *ngIf="
+            clientFilterControl.enabled &&
+            clientFilterControl.value &&
+            !isLoadingClients
+          "
+          matSuffix
+          mat-icon-button
+          type="button"
+          (click)="clearClientSelection()"
+          matTooltip="Limpiar selección"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-autocomplete
+          #clientAuto="matAutocomplete"
+          [displayWith]="displayClient"
+          (optionSelected)="onClientSelected($event)"
+        >
+          <mat-option *ngFor="let client of filteredClients" [value]="client">
+            <div
+              class="flex justify-between items-center w-full font-medium text-xs md:text-base"
+            >
+              <span class="text-right">
+                <span
+                  >{{ client.firstName || 'N/A' }}
+                  {{ client.lastName || 'N/A' }}</span
+                >
+                <span *ngIf="client.identificationNumber">
+                  - {{ client.identificationNumber }}</span
+                >
+              </span>
+            </div>
+          </mat-option>
+          <mat-option *ngIf="showNoResultsMessage" disabled>
+            <span class="text-gray-500">No se encontraron clientes</span>
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Table Number -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Número de Mesa</mat-label>
+          <mat-select formControlName="tableNumber">
+            <mat-option
+              *ngFor="let table of tableOptions"
+              [value]="table.toString()"
+            >
+              Mesa {{ table }}
+            </mat-option>
+            <mat-option value="Barra">Barra</mat-option>
+            <mat-option value="Para llevar">Para llevar</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>restaurant</mat-icon>
+        </mat-form-field>
+
+        <!-- Order State -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Estado de la Orden</mat-label>
+          <mat-select formControlName="stateTypeId" required>
+            <mat-option
+              *ngFor="let type of stateTypes"
+              [value]="type.stateTypeId"
+            >
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>room_service</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Pay Type -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Tipo de pago</mat-label>
+          <mat-select formControlName="payTypeId" required>
+            <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>credit_card</mat-icon>
+        </mat-form-field>
+
+        <!-- Paid State -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Estado de pago</mat-label>
+          <mat-select formControlName="paidTypeId" required>
+            <mat-option
+              *ngFor="let type of paidTypes"
+              [value]="type.paidTypeId"
+            >
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>monetization_on</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Observations -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Notas adicionales</mat-label>
+        <textarea
+          matInput
+          formControlName="observations"
+          rows="3"
+          maxlength="500"
+          appUppercase
+        ></textarea>
+        <mat-icon matPrefix>notes</mat-icon>
+        <mat-hint align="end">{{ observationsLength }}/500 caracteres</mat-hint>
+      </mat-form-field>
+    } @else {
+      <app-loader></app-loader>
+    }
+  </form>
+
+  <section class="w-full flex gap-2 justify-end pt-4">
+    <button
+      class="w-full md:w-auto"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="resetForm()"
+    >
+      Limpiar
+    </button>
+    <button
+      class="w-full md:w-auto"
+      mat-fab
+      extended="true"
+      type="button"
+      (click)="save()"
+      [disabled]="form.invalid || isLoading"
+    >
+      {{ editMode ? 'Guardar cambios' : 'Crear orden' }}
+    </button>
+  </section>
+</div>

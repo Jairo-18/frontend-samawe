@@ -12,10 +12,23 @@ export const recipesRoutes: Routes = [
           )
       },
       {
+        path: 'restaurant-order',
+        loadComponent: () =>
+          import('./pages/restaurant-order/restaurant-order.component').then(
+            (m) => m.RestaurantOrderComponent
+          )
+      },
+      {
+        path: 'restaurant-order/:id/edit',
+        loadComponent: () =>
+          import('./pages/edit-order/edit-order.component').then(
+            (m) => m.EditOrderComponent
+          )
+      },
+      {
         path: '**',
         redirectTo: 'general'
       }
     ]
   }
 ];
-

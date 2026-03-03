@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -7,19 +7,23 @@ import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
+import { NotificationButtonComponent } from '../../components/notification-button/notification-button.component';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
-  imports: [SideBarComponent, RouterOutlet, CommonModule],
+  imports: [
+    SideBarComponent,
+    RouterOutlet,
+    CommonModule,
+    NotificationButtonComponent
+  ],
   templateUrl: './default-layout.component.html',
   styleUrl: './default-layout.component.scss'
 })
-export class DefaultLayoutComponent implements OnInit {
+export class DefaultLayoutComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _router: Router = inject(Router);
   private readonly _localStorage: LocalStorageService =
-    inject(LocalStorageService);
-  private _localStorageService: LocalStorageService =
     inject(LocalStorageService);
   private _subscription: Subscription = new Subscription();
   isLoggedUser: boolean = false;
@@ -28,6 +32,8 @@ export class DefaultLayoutComponent implements OnInit {
   isPhone: boolean = false;
   user?: UserInterface;
   closeSideBar: boolean = false;
+  showNotificationsIcon: boolean = false;
+
   constructor() {
     this.isPhone = window.innerWidth <= 768;
   }
@@ -36,17 +42,41 @@ export class DefaultLayoutComponent implements OnInit {
       this._authService._isLoggedSubject.subscribe((isLogged) => {
         this.isLoggedUser = isLogged;
         this.userInfo = this._localStorage.getUserData();
+        this.checkRolesForNotifications();
       })
     );
     this.isLoggedUser = this._authService.isAuthenticated();
+    this.userInfo = this._localStorage.getUserData();
+    this.checkRolesForNotifications();
+
     this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.isLoggedUser = this._authService.isAuthenticated();
         this.userInfo = this._localStorage.getUserData();
+        this.checkRolesForNotifications();
       });
-    this.userInfo = this._localStorage.getUserData();
   }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
+  private checkRolesForNotifications() {
+    if (!this.userInfo?.roleType?.name) {
+      this.showNotificationsIcon = false;
+      return;
+    }
+
+    const roleName = this.userInfo.roleType.name.toUpperCase();
+    this.showNotificationsIcon = [
+      'ADMINISTRADOR',
+      'MESERO',
+      'CHEF',
+      'RECEPCIONISTA'
+    ].includes(roleName);
+  }
+
   listenEvent(event: boolean): void {
     this.isCollapsedSideBar = event;
     this.closeSideBar = false;
@@ -55,7 +85,7 @@ export class DefaultLayoutComponent implements OnInit {
     if (!this.isLoggedUser) {
       this._router.navigateByUrl('/auth/login');
     } else {
-      const allSessionData = this._localStorageService.getAllSessionData();
+      const allSessionData = this._localStorage.getAllSessionData();
       if (
         !allSessionData?.user?.userId ||
         !allSessionData?.tokens?.accessToken ||

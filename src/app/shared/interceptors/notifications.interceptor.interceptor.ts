@@ -17,18 +17,23 @@ export const notificationsInterceptorInterceptor: HttpInterceptorFn = (
     tap((event) => {
       if (event instanceof HttpResponse) {
         const { message } = event.body as ApiResponseCreateInterface;
-        if (message && !req.url.includes('/images')) {
+        if (
+          message &&
+          !req.url.includes('/images') &&
+          !req.url.includes('/notifications')
+        ) {
           notificationsService.showNotification('success', message);
         }
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      notificationsService.showNotification(
-        'error',
-        error?.error?.message || 'Ha ocurrido un error.'
-      );
+      if (!req.url.includes('/notifications')) {
+        notificationsService.showNotification(
+          'error',
+          error?.error?.message || 'Ha ocurrido un error.'
+        );
+      }
       return throwError(() => error);
     })
   );
 };
-

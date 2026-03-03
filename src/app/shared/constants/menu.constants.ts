@@ -34,17 +34,24 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
+        name: 'Restaurante',
+        route: '/recipes/restaurant-order',
+        icon: 'restaurant',
+        order: 5,
+        subItems: []
+      },
+      {
         name: 'Facturas',
         route: '/invoice/invoices/list',
         icon: 'notes',
-        order: 5,
+        order: 6,
         subItems: []
       },
       {
         name: 'Reportes / Ganancias',
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
-        order: 6,
+        order: 7,
         subItems: []
       }
     ]
@@ -64,14 +71,15 @@ export const MENU_CONST: MenuInterface[] = [
   }
 ];
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
-  Cliente: [''],
+  Cliente: ['Restaurante'],
   Recepcionista: [
     'Clientes',
     'Productos y servicios',
     'Recetas',
     'Facturas',
     'Reportes / Ganancias',
-    'Inicio'
+    'Inicio',
+    'Restaurante'
   ],
   Administrador: [
     'Clientes',
@@ -80,18 +88,20 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Gestión',
     'Facturas',
     'Reportes / Ganancias',
-    'Inicio'
+    'Inicio',
+    'Restaurante'
   ],
-  Chef: ['Recetas', 'Inicio'],
-  Mesero: ['Recetas', 'Facturas', 'Inicio'],
-  CLIENTE: [''],
+  Chef: ['Recetas', 'Inicio', 'Restaurante'],
+  Mesero: ['Recetas', 'Facturas', 'Inicio', 'Restaurante'],
+  CLIENTE: ['Restaurante'],
   RECEPCIONISTA: [
     'Clientes',
     'Productos y servicios',
     'Recetas',
     'Facturas',
     'Reportes / Ganancias',
-    'Inicio'
+    'Inicio',
+    'Restaurante'
   ],
   ADMINISTRADOR: [
     'Clientes',
@@ -100,8 +110,9 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Gestión',
     'Facturas',
     'Reportes / Ganancias',
-    'Inicio'
+    'Inicio',
+    'Restaurante'
   ],
-  CHEF: ['Recetas', 'Inicio'],
-  MESERO: ['Recetas', 'Facturas', 'Inicio']
+  CHEF: ['Recetas', 'Inicio', 'Restaurante'],
+  MESERO: ['Recetas', 'Facturas', 'Inicio', 'Restaurante']
 };

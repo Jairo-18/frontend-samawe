@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InvoiceService } from './../../services/invoice.service';
 import {
   Component,
@@ -75,8 +76,9 @@ export class SeeInvoicesComponent implements OnInit {
     'startDate',
     'payType',
     'paidType',
+    'stateType',
     'invoiceElectronic',
-    'subtotalWithoutTax',
+    'tableNumber',
     'totalTaxes',
     'total',
     'actions'
@@ -138,6 +140,13 @@ export class SeeInvoicesComponent implements OnInit {
       placeholder: 'Buscar por tipo de impuesto'
     },
     {
+      name: 'stateTypeId',
+      label: 'Estado de la orden',
+      type: 'select',
+      options: [],
+      placeholder: 'Buscar por estado de la orden'
+    },
+    {
       name: 'invoiceElectronic',
       label: 'Facturación electrónica',
       type: 'select',
@@ -165,15 +174,23 @@ export class SeeInvoicesComponent implements OnInit {
           identificationTypeId: res.data.identificationType,
           paidTypeId: res.data.paidType,
           payTypeId: res.data.payType,
-          taxeTypeId: res.data.taxeType
+          taxeTypeId: res.data.taxeType,
+          stateTypeId: res.data.stateType
         };
         this.searchFields = this.searchFields.map((field) => {
           const key = field.name as keyof typeof optionMap;
           const options = optionMap[key];
           if (options) {
+            let filteredOptions: any[] = options;
+            if (key === 'stateTypeId') {
+              filteredOptions = options.filter((state: any) =>
+                [6, 7, 8, 9, 10].includes(Number(state.stateTypeId))
+              );
+            }
+
             return {
               ...field,
-              options: options.map((t: any) => ({
+              options: filteredOptions.map((t: any) => ({
                 value: t[key],
                 label: t.name ?? 'Sin nombre'
               }))
@@ -197,7 +214,8 @@ export class SeeInvoicesComponent implements OnInit {
           relatedData: {
             invoiceType: this.getOptions('invoiceTypeId'),
             payType: this.getOptions('payTypeId'),
-            paidType: this.getOptions('paidTypeId')
+            paidType: this.getOptions('paidTypeId'),
+            stateType: this.getOptions('stateTypeId')
           }
         }
       })
@@ -216,7 +234,8 @@ export class SeeInvoicesComponent implements OnInit {
           invoiceId: invoiceId,
           relatedData: {
             payType: this.getOptions('payTypeId'),
-            paidType: this.getOptions('paidTypeId')
+            paidType: this.getOptions('paidTypeId'),
+            stateType: this.getOptions('stateTypeId')
           }
         }
       })
@@ -297,6 +316,8 @@ export class SeeInvoicesComponent implements OnInit {
           employeeName: invoice.employee
             ? `${invoice.employee.firstName} ${invoice.employee.lastName}`
             : '---',
+          tableNumber: invoice.tableNumber ?? null,
+          stateType: invoice.stateType?.name ?? null,
           taxeType: invoice.invoiceDetails?.[0]?.taxeType || null,
           invoiceElectronic:
             invoice.invoiceElectronic === true ||
@@ -376,4 +397,3 @@ export class SeeInvoicesComponent implements OnInit {
     }, 300);
   }
 }
-

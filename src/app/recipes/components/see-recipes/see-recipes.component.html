@@ -55,6 +55,7 @@
             [canEdit]="canEdit()"
             (edit)="editRecipe.emit($event)"
             (delete)="openDeleteDialog($event)"
+            (addToOrder)="onAddToOrder($event)"
           ></app-recipe-card>
         }
       </div>

@@ -80,9 +80,24 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
       'Recepcionista',
       'Administrador',
       'ADMINISTRADOR',
+      'RECEPCIONISTA'
+    ]
+  },
+  {
+    icon: 'restaurant_menu',
+    title: 'Restaurante',
+    description: 'Crea, edita y consulta órdenes de mesa',
+    route: '/recipes/see-orders',
+    iconNext: 'navigate_next',
+    allowedRoles: [
+      'Recepcionista',
+      'Administrador',
+      'ADMINISTRADOR',
       'RECEPCIONISTA',
       'Mesero',
-      'MESERO'
+      'MESERO',
+      'Chef',
+      'CHEF'
     ]
   },
   {
