@@ -10,6 +10,7 @@ export interface UserInterface {
   password: string;
   confirmPassword: string;
   roleType?: RoleType;
+  personType?: PersonType;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -37,4 +38,11 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
-
+export interface PersonType {
+  personTypeId: number;
+  code?: string;
+  name?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}

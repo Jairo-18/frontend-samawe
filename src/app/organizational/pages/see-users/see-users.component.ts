@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   IdentificationType,
   PhoneCode,
-  RoleType
+  RoleType,
+  PersonType
 } from './../../../shared/interfaces/relatedDataGeneral';
 import { SearchField } from './../../../shared/interfaces/search.interface';
 import { CommonModule } from '@angular/common';
@@ -68,6 +70,7 @@ export class SeeUsersComponent implements OnInit {
     'firstName',
     'lastName',
     'roleType',
+    'personType',
     'phoneCode',
     'phone',
     'isActive',
@@ -77,6 +80,7 @@ export class SeeUsersComponent implements OnInit {
   roleType: RoleType[] = [];
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
+  personType: PersonType[] = [];
   userLogged: UserInterface;
   form!: FormGroup;
   showClearButton: boolean = false;
@@ -119,6 +123,13 @@ export class SeeUsersComponent implements OnInit {
       label: 'Nacionalidad',
       type: 'select',
       placeholder: 'Buscar por nacionalidad'
+    },
+    {
+      name: 'personType',
+      label: 'Tipo de persona',
+      type: 'select',
+      options: [],
+      placeholder: 'Buscar por tipo de persona'
     },
     {
       name: 'isActive',
@@ -166,9 +177,11 @@ export class SeeUsersComponent implements OnInit {
     const role = data?.roleType || [];
     const identificationType = data?.identificationType || [];
     const phoneCode = data?.phoneCode || [];
+    const personType = data?.personType || [];
     this.roleType = role;
     this.identificationType = identificationType;
     this.phoneCode = phoneCode;
+    this.personType = personType;
     const roleOption = this.searchFields.find(
       (field) => field.name === 'roleType'
     );
@@ -177,6 +190,9 @@ export class SeeUsersComponent implements OnInit {
     );
     const phoneCodeOption = this.searchFields.find(
       (field) => field.name === 'phoneCode'
+    );
+    const personTypeOption = this.searchFields.find(
+      (field) => field.name === 'personType'
     );
     if (roleOption) {
       roleOption.options = role.map((r: any) => ({
@@ -198,6 +214,12 @@ export class SeeUsersComponent implements OnInit {
         label: type.name || ''
       }));
     }
+    if (personTypeOption) {
+      personTypeOption.options = personType.map((pt: any) => ({
+        value: pt.personTypeId?.toString(),
+        label: pt.name || ''
+      }));
+    }
   }
   getRoleName(id: string): string {
     return this.roleType.find((r) => r.roleTypeId === id)?.name || '';
@@ -211,6 +233,9 @@ export class SeeUsersComponent implements OnInit {
   getPhoneCodeDisplay(id: string): string {
     const phoneCode = this.phoneCode.find((p) => p.phoneCodeId === id);
     return phoneCode ? `${phoneCode.code} - ${phoneCode.name}` : '';
+  }
+  getPersonTypeName(id: number): string {
+    return this.personType.find((pt) => pt.personTypeId === id)?.name || '';
   }
   onSearchSubmit(values: any): void {
     this.params = values;
@@ -325,4 +350,3 @@ export class SeeUsersComponent implements OnInit {
     return this.canEditUser(user) || this.canDeleteUser(user);
   }
 }
-

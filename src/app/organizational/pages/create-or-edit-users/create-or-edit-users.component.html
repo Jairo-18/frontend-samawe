@@ -56,6 +56,21 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Tipo de persona</mat-label>
+            <mat-select formControlName="personTypeId" [disabled]="true">
+              <mat-option value="" disabled selected
+                >Seleccione el tipo de persona</mat-option
+              >
+              <mat-option
+                *ngFor="let pt of personType"
+                [value]="pt.personTypeId.toString()"
+              >
+                {{ pt.name }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
             <mat-label>Número de identificación</mat-label>
             <mat-icon matPrefix>credit_card</mat-icon>
             <input

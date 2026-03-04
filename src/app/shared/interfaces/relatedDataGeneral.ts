@@ -61,6 +61,14 @@ export interface IdentificationType {
   updatedAt: Date;
   deletedAt?: Date;
 }
+export interface PersonType {
+  personTypeId: number;
+  code?: string;
+  name?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
 export interface PayType {
   payTypeId: string;
   code?: string;
@@ -150,5 +158,5 @@ export interface AppRelatedData {
   paidType: PaidType[];
   discountType: DiscountType[];
   additionalType: AdditionalType[];
+  personType: PersonType[];
 }
-

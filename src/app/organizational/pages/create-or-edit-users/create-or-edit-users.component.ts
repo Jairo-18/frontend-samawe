@@ -24,7 +24,8 @@ import { CustomValidationsService } from '../../../shared/validators/customValid
 import {
   IdentificationType,
   PhoneCode,
-  RoleType
+  RoleType,
+  PersonType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -70,6 +71,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   userId: string = '';
   identificationType: IdentificationType[] = [];
   roleType: RoleType[] = [];
+  personType: PersonType[] = [];
   phoneCode: PhoneCode[] = [];
   filteredPhoneCodes: PhoneCode[] = [];
   isEditMode: boolean = false;
@@ -89,13 +91,15 @@ export class CreateOrEditUsersComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-      isActive: [true, Validators.required]
+      isActive: [true, Validators.required],
+      personTypeId: ['']
     });
   }
   ngOnInit(): void {
     this.userLogged = this._authService.getUserLoggedIn();
     this.getRelatedData();
     this.setupPhoneCodeSearch();
+    this.setupIdentificationTypeListener();
     this.userId = this._activatedRoute.snapshot.params['id'];
     this.isEditMode = !!this.userId;
     if (this.isEditMode) {
@@ -124,6 +128,7 @@ export class CreateOrEditUsersComponent implements OnInit {
           this.roleType = allRoles;
         }
         this.identificationType = res.data?.identificationType || [];
+        this.personType = res.data?.personType || [];
         this.loading = false;
       },
       error: (error) => {
@@ -194,6 +199,43 @@ export class CreateOrEditUsersComponent implements OnInit {
       });
     }
   }
+  private setupIdentificationTypeListener(): void {
+    this.userForm
+      .get('identificationTypeId')
+      ?.valueChanges.subscribe((selectedId: string) => {
+        this.applyPersonTypeLock(selectedId);
+      });
+  }
+  private applyPersonTypeLock(identificationTypeId: string): void {
+    const selectedType = this.identificationType.find(
+      (t) => t.identificationTypeId?.toString() === identificationTypeId
+    );
+    if (!selectedType) return;
+    const isNit = selectedType?.name?.toUpperCase().includes('NIT');
+    if (isNit) {
+      const juridica = this.personType.find(
+        (pt) =>
+          pt.name?.toUpperCase().includes('JUR\u00CDDICA') ||
+          pt.name?.toUpperCase().includes('JURIDICA')
+      );
+      if (juridica) {
+        this.userForm.patchValue(
+          { personTypeId: juridica.personTypeId.toString() },
+          { emitEvent: false }
+        );
+      }
+    } else {
+      const natural = this.personType.find((pt) =>
+        pt.name?.toUpperCase().includes('NATURAL')
+      );
+      if (natural) {
+        this.userForm.patchValue(
+          { personTypeId: natural.personTypeId.toString() },
+          { emitEvent: false }
+        );
+      }
+    }
+  }
   private getUserToEdit(userId: string): void {
     this.loading = true;
     this._usersService.getUserEditPanel(userId).subscribe({
@@ -211,7 +253,8 @@ export class CreateOrEditUsersComponent implements OnInit {
           phoneCodeId: user.phoneCode?.phoneCodeId.toString(),
           phoneCodeSearch: user.phoneCode,
           phone: user.phone,
-          isActive: user.isActive
+          isActive: user.isActive,
+          personTypeId: user.personType?.personTypeId?.toString() || ''
         });
         this.loading = false;
       },
@@ -238,7 +281,8 @@ export class CreateOrEditUsersComponent implements OnInit {
         phone: formValue.phone,
         password: formValue.identificationNumber,
         confirmPassword: formValue.identificationNumber,
-        isActive: formValue.isActive
+        isActive: formValue.isActive,
+        personType: formValue.personTypeId || undefined
       };
       if (this.userId) {
         if (this.userForm.invalid) return;
