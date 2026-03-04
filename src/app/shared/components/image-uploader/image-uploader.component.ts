@@ -92,12 +92,14 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   private processInitialImages() {
     this.toDeleteImages = [];
     if (this.initialImages && this.initialImages.length > 0) {
-      this.images = this.initialImages.map((img: unknown) =>
-        this.imageService.mapResponseToStandardItem(
-          this.entityType,
-          img as RawImageItem
+      this.images = this.initialImages
+        .map((img: unknown) =>
+          this.imageService.mapResponseToStandardItem(
+            this.entityType,
+            img as RawImageItem
+          )
         )
-      );
+        .sort((a, b) => b.imageId - a.imageId);
       this.loadedEntityId = this.entityId;
       this.cdr.detectChanges();
     } else if (this.entityId && (!this.images || this.images.length === 0)) {
@@ -113,7 +115,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.loadedEntityId = this.entityId;
     this.imageService.getImages(this.entityType, this.entityId).subscribe({
       next: (images) => {
-        this.images = images;
+        this.images = [...images].sort((a, b) => b.imageId - a.imageId);
         this.imagesChanged.emit(this.images);
         this.cdr.detectChanges();
       },
@@ -168,9 +170,12 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     }
   }
   private openCropper(file: File): Promise<Blob | null> {
+    const isMobile = window.innerWidth < 768;
     const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
       data: { file },
-      width: '600px',
+      width: isMobile ? '95vw' : '500px',
+      maxWidth: isMobile ? '95vw' : '500px',
+      maxHeight: '90vh',
       disableClose: true
     });
     return lastValueFrom(dialogRef.afterClosed());
@@ -203,7 +208,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
             const res = await lastValueFrom(
               this.imageService.uploadImage(this.entityType, finalId, file)
             );
-            this.images = [...this.images, res.item];
+            this.images = [res.item, ...this.images];
           } catch (err) {
             console.error('Error subiendo imagen en applyChanges', err);
           }
@@ -237,7 +242,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
         .uploadImage(this.entityType, this.entityId, file)
         .subscribe({
           next: (res: UploadResponse) => {
-            this.images = [...this.images, res.item];
+            this.images = [res.item, ...this.images];
             uploadsCompleted++;
             this.checkUploadComplete(uploadsCompleted, files.length);
           },

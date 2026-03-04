@@ -1,9 +1,14 @@
-<span mat-dialog-title class="text-xl font-bold">Recortar Imagen</span>
-<mat-dialog-content class="mat-typography">
-  <div class="flex flex-col items-center gap-4 py-4">
+<app-base-dialog title="Recortar Imagen">
+  <div form class="flex flex-col items-center gap-4">
     <div
-      class="cropper-wrapper w-full max-h-[60vh] overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
+      class="cropper-wrapper w-full overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
     >
+      @if (isLoading) {
+        <div class="loader-overlay">
+          <mat-spinner diameter="48"></mat-spinner>
+          <span class="mt-2 text-sm text-gray-500">Cargando imagen...</span>
+        </div>
+      }
       <image-cropper
         [imageFile]="imageFile"
         [maintainAspectRatio]="true"
@@ -19,10 +24,13 @@
         (cropperReady)="cropperReady()"
         (loadImageFailed)="loadImageFailed()"
         class="w-full"
+        [class.hidden]="isLoading"
       ></image-cropper>
     </div>
 
-    <div class="flex justify-center gap-6 w-full mt-2">
+    <div
+      class="toolbar flex justify-center gap-3 md:gap-6 w-full mt-2 flex-wrap"
+    >
       <button
         mat-mini-fab
         color="primary"
@@ -66,15 +74,34 @@
       </button>
     </div>
   </div>
-</mat-dialog-content>
-<mat-dialog-actions align="end" class="gap-2 p-4">
-  <button mat-button (click)="onCancel()" color="warn">Cancelar</button>
-  <button
-    mat-raised-button
-    (click)="onSave()"
-    color="primary"
-    [disabled]="!croppedImage"
-  >
-    Finalizar Recorte
-  </button>
-</mat-dialog-actions>
+
+  <div actions class="w-full">
+    <section class="flex flex-col-reverse md:flex-row justify-end gap-3 w-full">
+      <div class="w-full flex content-between md:w-[50%]">
+        <button
+          mat-fab
+          extended="true"
+          color="warn"
+          class="!w-full"
+          (click)="onCancel()"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <div class="w-full flex content-between md:w-[50%]">
+        <button
+          mat-fab
+          extended
+          color="primary"
+          type="button"
+          class="mt-2 md:mt-0 !w-full"
+          (click)="onSave()"
+          [disabled]="!croppedImage"
+        >
+          Finalizar Recorte
+        </button>
+      </div>
+    </section>
+  </div>
+</app-base-dialog>

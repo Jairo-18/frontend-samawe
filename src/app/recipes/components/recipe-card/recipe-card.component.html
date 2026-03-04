@@ -17,9 +17,11 @@
         </div>
       </div>
       <img
-        [src]="recipe.images[currentImageIndex].imageUrl"
+        [ngSrc]="recipe.images[currentImageIndex].imageUrl"
         [alt]="recipe.productName"
-        class="w-full h-full object-cover"
+        fill
+        priority
+        class="object-cover"
       />
 
       @if (recipe.images.length > 1) {
@@ -89,18 +91,22 @@
           <mat-icon class="text-black">more_vert</mat-icon>
         </button>
         <mat-menu #actionMenu="matMenu" xPosition="before">
-          <button mat-menu-item (click)="edit.emit(recipe)">
-            <mat-icon class="blue-color">edit</mat-icon>
-            <span>Editar receta</span>
-          </button>
+          @if (!isMesero) {
+            <button mat-menu-item (click)="edit.emit(recipe)">
+              <mat-icon class="blue-color">edit</mat-icon>
+              <span>Editar receta</span>
+            </button>
+          }
           <button mat-menu-item (click)="addToOrder.emit(recipe)">
             <mat-icon style="color: #06a606">assignment</mat-icon>
             <span>Añadir a pedido</span>
           </button>
-          <button mat-menu-item (click)="delete.emit(recipe)">
-            <mat-icon class="red-color">delete</mat-icon>
-            <span>Eliminar receta</span>
-          </button>
+          @if (!isMesero) {
+            <button mat-menu-item (click)="delete.emit(recipe)">
+              <mat-icon class="red-color">delete</mat-icon>
+              <span>Eliminar receta</span>
+            </button>
+          }
         </mat-menu>
       }
     </div>
@@ -178,16 +184,15 @@
   >
     <button
       mat-icon-button
-      class="!absolute top-4 right-4 text-white hover:bg-white/10"
-      (click)="closePreview()"
+      class="!absolute top-4 right-4 text-white hover:bg-white/10 z-[1010]"
+      (click)="closePreview(); $event.stopPropagation()"
     >
       <mat-icon>close</mat-icon>
     </button>
     <img
       [src]="previewImageUrl"
-      class="max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20"
+      class="object-contain max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20 z-[1005]"
       alt="Vista previa de receta"
-      (click)="$event.stopPropagation()"
     />
   </div>
 }

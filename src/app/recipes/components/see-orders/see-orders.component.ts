@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
   MatPaginator,
   MatPaginatorModule,
@@ -17,7 +16,6 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTabsModule } from '@angular/material/tabs';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -34,6 +32,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { InvoicePdfComponent } from '../../../invoices/components/invoice-pdf/invoice-pdf.component';
 import { CreateInvoiceDialogComponent } from '../../../invoices/components/create-invoice-dialog/create-invoice-dialog.component';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
 
 @Component({
   selector: 'app-see-orders',
@@ -41,17 +41,16 @@ import { CreateInvoiceDialogComponent } from '../../../invoices/components/creat
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatTableModule,
     MatPaginatorModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    MatTabsModule,
     SearchFieldsComponent,
     LoaderComponent,
     FormatCopPipe,
     SectionHeaderComponent,
-    InvoicePdfComponent
+    InvoicePdfComponent,
+    RelativeTimePipe
   ],
   templateUrl: './see-orders.component.html',
   styleUrls: ['./see-orders.component.scss']
@@ -68,24 +67,14 @@ export class SeeOrdersComponent implements OnInit {
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _invoicePrintService: InvoicePrintService =
     inject(InvoicePrintService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
 
   form!: FormGroup;
   invoiceToPrintData?: any;
+  isMesero: boolean = false;
 
-  dataSource = new MatTableDataSource<InvoiceComplete>([]);
-  displayedColumns: string[] = [
-    'code',
-    'tableNumber',
-    'startDate',
-    'orderTime',
-    'readyTime',
-    'servedTime',
-    'payType',
-    'paidType',
-    'stateType',
-    'total',
-    'actions'
-  ];
+  orders: InvoiceComplete[] = [];
 
   isMobile: boolean = false;
   loading: boolean = false;
@@ -143,6 +132,10 @@ export class SeeOrdersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const userInfo = this._localStorage.getUserData();
+    const role = userInfo?.roleType?.name?.toUpperCase() || '';
+    this.isMesero = role === 'MESERO';
+
     this.loadOrders();
     this.loadRelatedData();
   }
@@ -251,7 +244,7 @@ export class SeeOrdersComponent implements OnInit {
         data: InvoiceComplete[];
         pagination: PaginationInterface;
       }) => {
-        this.dataSource.data = res.data;
+        this.orders = res.data;
         this.paginationParams = res?.pagination;
         this.loading = false;
       },
@@ -322,7 +315,7 @@ export class SeeOrdersComponent implements OnInit {
 
   private deleteOrder(orderId: number): void {
     this.loading = true;
-    this.dataSource.data = [];
+    this.orders = [];
     this._invoiceService.deleteInvoice(orderId).subscribe({
       next: () => {
         this.loadOrders();

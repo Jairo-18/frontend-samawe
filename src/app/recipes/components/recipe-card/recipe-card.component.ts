@@ -6,7 +6,7 @@ import {
   inject,
   OnInit
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -30,7 +30,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatMenuModule,
     UnitFormatPipe,
     FormatCopPipe,
-    DecimalPipe
+    DecimalPipe,
+    NgOptimizedImage
   ],
   templateUrl: './recipe-card.component.html',
   styleUrl: './recipe-card.component.scss'

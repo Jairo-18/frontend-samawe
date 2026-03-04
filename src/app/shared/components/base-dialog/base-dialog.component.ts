@@ -10,4 +10,3 @@ export class BaseDialogComponent {
   subtitle: InputSignal<string> = input('');
   description: InputSignal<string> = input('');
 }
-

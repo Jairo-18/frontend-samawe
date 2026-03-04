@@ -71,19 +71,6 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     ]
   },
   {
-    icon: 'note',
-    title: 'Facturación',
-    description: 'Genera y gestiona facturas, pagos y cobros',
-    route: '/invoice/invoices/list',
-    iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
-  },
-  {
     icon: 'restaurant_menu',
     title: 'Restaurante',
     description: 'Crea, edita y consulta órdenes de mesa',
@@ -98,6 +85,19 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
       'MESERO',
       'Chef',
       'CHEF'
+    ]
+  },
+  {
+    icon: 'note',
+    title: 'Facturación',
+    description: 'Genera y gestiona facturas, pagos y cobros',
+    route: '/invoice/invoices/list',
+    iconNext: 'navigate_next',
+    allowedRoles: [
+      'Recepcionista',
+      'Administrador',
+      'ADMINISTRADOR',
+      'RECEPCIONISTA'
     ]
   },
   {

@@ -5,7 +5,7 @@
   >
     <button
       mat-icon-button
-      [matMenuTriggerFor]="notificationMenu"
+      (click)="toggleMenu($event)"
       class="!bg-white shadow border border-gray-300 relative"
       matBadge="{{ unreadNotifications }}"
       [matBadgeHidden]="unreadNotifications === 0"
@@ -15,262 +15,180 @@
       <mat-icon class="text-[#06a606]"> notifications </mat-icon>
     </button>
 
-    <mat-menu
-      #notificationMenu="matMenu"
-      class="h-[650px] !max-h-[85vh] w-[700px] !max-w-[95vw] border border-[#06a606]"
-    >
-      <div
-        class="h-full w-full flex flex-col"
+    @if (isMenuOpen) {
+      <article
+        class="fixed top-[70px] right-2 md:right-6 z-[1050] bg-[#F0F4F9]/95 backdrop-blur-sm rounded-lg shadow-2xl border-[0.5px] border-[#06a606] overflow-hidden"
+        style="
+          width: 900px;
+          max-width: 95vw;
+          max-height: 60vh;
+          display: flex;
+          flex-direction: column;
+          z-index: 1000;
+        "
         (click)="$event.stopPropagation()"
       >
-        <div
-          class="px-4 py-3 border-b border-[#06a606] font-bold flex flex-col gap-2"
-          (click)="$event.stopPropagation()"
-        >
-          <div class="flex justify-between items-center">
-            <span class="text-lg md:text-xl">Notificaciones de Órdenes</span>
-            <span class="text-xs font-normal text-gray-500"
-              >{{ unreadNotifications }} no leídas globales</span
-            >
-          </div>
-          <div class="flex gap-2">
-            <button
-              mat-stroked-button
-              color="primary"
-              class="!text-[10px] !h-7 !px-2 flex items-center gap-1"
-              (click)="$event.stopPropagation(); markAllRead()"
-            >
-              <mat-icon class="!text-sm !w-4 !h-4">done_all</mat-icon> Marcar
-              todo leído
-            </button>
-            <button
-              mat-stroked-button
-              class="!text-[10px] !h-7 !px-2 flex items-center gap-1 !border-gray-400 !text-gray-600"
-              (click)="$event.stopPropagation(); markAllUnread()"
-            >
-              <mat-icon class="!text-sm !w-4 !h-4">mark_as_unread</mat-icon>
-              Marcar no leído
-            </button>
-            <button
-              mat-stroked-button
-              color="warn"
-              class="!text-[10px] !h-7 !px-2 flex items-center gap-1"
-              (click)="$event.stopPropagation(); deleteAll()"
-            >
-              <mat-icon class="!text-sm !w-4 !h-4">delete_sweep</mat-icon>
-              Limpiar todo
-            </button>
-          </div>
-        </div>
-
-        <mat-tab-group
-          mat-stretch-tabs="false"
-          mat-align-tabs="center"
-          (click)="$event.stopPropagation()"
-        >
-          <mat-tab
-            label="Pendiente ({{ tabStates['PEN'].pagination?.total || 0 }})"
-          >
-            <ng-template
-              matTabContent
-              *ngTemplateOutlet="
-                notifList;
-                context: { $implicit: tabStates['PEN'].data, stateCode: 'PEN' }
-              "
-            ></ng-template>
-          </mat-tab>
-          <mat-tab
-            label="En Cocina ({{ tabStates['ENC'].pagination?.total || 0 }})"
-          >
-            <ng-template
-              matTabContent
-              *ngTemplateOutlet="
-                notifList;
-                context: { $implicit: tabStates['ENC'].data, stateCode: 'ENC' }
-              "
-            ></ng-template>
-          </mat-tab>
-          <mat-tab
-            label="Listo para servir ({{
-              tabStates['LIS'].pagination?.total || 0
-            }})"
-          >
-            <ng-template
-              matTabContent
-              *ngTemplateOutlet="
-                notifList;
-                context: { $implicit: tabStates['LIS'].data, stateCode: 'LIS' }
-              "
-            ></ng-template>
-          </mat-tab>
-          <mat-tab
-            label="Entregado ({{ tabStates['ENT'].pagination?.total || 0 }})"
-          >
-            <ng-template
-              matTabContent
-              *ngTemplateOutlet="
-                notifList;
-                context: { $implicit: tabStates['ENT'].data, stateCode: 'ENT' }
-              "
-            ></ng-template>
-          </mat-tab>
-          <mat-tab
-            label="Cancelado ({{ tabStates['CAN'].pagination?.total || 0 }})"
-          >
-            <ng-template
-              matTabContent
-              *ngTemplateOutlet="
-                notifList;
-                context: { $implicit: tabStates['CAN'].data, stateCode: 'CAN' }
-              "
-            ></ng-template>
-          </mat-tab>
-        </mat-tab-group>
-
-        <ng-template
-          #notifList
-          let-list
-          let-stateCode="stateCode"
-          (click)="$event.stopPropagation()"
-        >
+        <div class="h-full w-full flex flex-col">
           <div
-            class="overflow-y-auto max-h-[50vh] min-h-[150px]"
-            (scroll)="onScroll($event, stateCode)"
-            (click)="$event.stopPropagation()"
+            class="w-full px-4 py-3 border-b border-[#06a606] font-bold flex flex-col gap-2 bg-white/50"
           >
-            @if (!list || list.length === 0) {
-              <div class="p-8 text-center text-gray-400 text-sm">
-                <mat-icon class="!w-12 !h-12 !text-5xl mb-2 opacity-20"
-                  >notifications_off</mat-icon
+            <div class="w-full flex flex-col">
+              <span class="text-lg md:text-xl text-gray-800"
+                >Notificaciones</span
+              >
+              @if (unreadNotifications > 0) {
+                <span class="text-xs font-normal text-gray-600"
+                  >{{ unreadNotifications }} notificaciones sin leer</span
                 >
-                <p>No tienes notificaciones aquí</p>
-              </div>
-            } @else {
-              @for (notif of list || []; track notif.notificationId) {
-                <div
-                  class="relative group border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
-                  [ngClass]="{ 'bg-blue-50/30': !notif.read }"
-                  (click)="$event.stopPropagation()"
+              }
+            </div>
+            <div class="w-full flex gap-2">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="!text-[10px] md:!text-[12px] !h-8 md:!h-10 !px-2 flex items-center gap-1 w-full"
+                (click)="markAllRead()"
+              >
+                <mat-icon class="!text-sm !w-4 !h-4">done_all</mat-icon> Leer
+                todo
+              </button>
+              <button
+                mat-stroked-button
+                class="!text-[10px] md:!text-[12px] !h-8 md:!h-10 !px-2 flex items-center gap-1 !text-gray-600 w-full"
+                (click)="markAllUnread()"
+              >
+                <mat-icon class="!text-sm !w-4 !h-4">mark_as_unread</mat-icon>
+                No leído
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                class="!text-[10px] md:!text-[12px] !h-8 md:!h-10 !px-2 flex items-center gap-1 w-full"
+                (click)="deleteAll()"
+              >
+                <mat-icon
+                  class="!text-xs md:!text-base !w-4 md:!w-6 !h-4 md:!h-6"
+                  >delete_sweep</mat-icon
                 >
-                  <div class="flex p-3 gap-3">
-                    <!-- Icon Status -->
-                    <div class="mt-1">
-                      <div
-                        class="w-10 h-10 rounded-full flex items-center justify-center"
-                        [ngClass]="{
-                          'bg-yellow-100 text-yellow-600':
-                            notif.metadata?.stateCode === 'ENC' ||
-                            notif.metadata?.stateCode === 'PEN',
-                          'bg-green-100 text-green-600':
-                            notif.metadata?.stateCode === 'ENT',
-                          'bg-blue-100 text-blue-600':
-                            notif.metadata?.stateCode === 'LIS',
-                          'bg-red-100 text-red-600':
-                            notif.metadata?.stateCode === 'CAN'
-                        }"
-                      >
-                        <mat-icon>{{
-                          notif.metadata?.stateCode === 'CAN'
-                            ? 'cancel'
-                            : 'restaurant'
-                        }}</mat-icon>
-                      </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div
-                      class="flex-1 cursor-pointer"
-                      (click)="goToOrder(notif)"
-                    >
-                      <div class="flex justify-between items-start mb-0.5">
-                        <span
-                          class="font-bold text-sm"
-                          [ngClass]="{ 'text-[#06a606]': !notif.read }"
-                          >Factura: {{ notif.metadata?.code }}</span
-                        >
-                        <span class="text-[10px] text-gray-400">{{
-                          notif.createdAt | date: 'shortTime'
-                        }}</span>
-                      </div>
-
-                      <div
-                        class="text-xs font-semibold mb-1"
-                        [ngClass]="{
-                          'text-yellow-600':
-                            notif.metadata?.stateCode === 'ENC' ||
-                            notif.metadata?.stateCode === 'PEN',
-                          'text-green-600': notif.metadata?.stateCode === 'ENT',
-                          'text-blue-100/10 text-blue-600':
-                            notif.metadata?.stateCode === 'LIS',
-                          'text-red-600': notif.metadata?.stateCode === 'CAN'
-                        }"
-                      >
-                        Estado: {{ notif.metadata?.state }}
-                        @if (notif.metadata?.tableNumber) {
-                          <span
-                            class="ml-2 text-gray-600 bg-gray-200 px-1.5 py-0.5 rounded"
-                            >Mesa: {{ notif.metadata?.tableNumber }}</span
-                          >
-                        }
-                      </div>
-
-                      <div class="text-[11px] text-gray-500 leading-tight mb-2">
-                        {{ notif.message }}
-                      </div>
-
-                      <div class="flex items-center gap-2">
-                        <span
-                          class="text-[10px] text-blue-600 font-medium flex items-center gap-0.5"
-                        >
-                          <mat-icon class="!text-xs !w-3 !h-3"
-                            >visibility</mat-icon
-                          >
-                          Ver pedido
-                        </span>
-                      </div>
-                    </div>
-
-                    <!-- Actions -->
-                    <div
-                      class="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <button
-                        mat-icon-button
-                        class="!w-8 !h-8 !leading-8"
-                        [title]="
-                          notif.read
-                            ? 'Marcar como no leído'
-                            : 'Marcar como leído'
-                        "
-                        (click)="toggleRead($event, notif)"
-                      >
-                        <mat-icon class="!text-lg text-gray-400">{{
-                          notif.read ? 'mark_as_unread' : 'drafts'
-                        }}</mat-icon>
-                      </button>
-                      <button
-                        mat-icon-button
-                        class="!w-8 !h-8 !leading-8"
-                        title="Eliminar"
-                        (click)="deleteNotification($event, notif)"
-                      >
-                        <mat-icon class="!text-lg text-red-400"
-                          >delete_outline</mat-icon
-                        >
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
-              @if (tabStates[stateCode].loading) {
-                <div class="p-4 text-center text-gray-400 text-xs">
-                  Cargando más notificaciones...
-                </div>
-              }
-            }
+                Limpiar
+              </button>
+            </div>
           </div>
-        </ng-template>
-      </div>
-    </mat-menu>
+
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-1">restaurant</mat-icon>
+                <div class="flex items-center gap-1">
+                  <span>Pendiente</span>
+                  <span
+                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
+                  >
+                    {{ tabStates['PEN'].pagination?.total || 0 }}
+                  </span>
+                </div>
+              </ng-template>
+              <app-notification-tab-content
+                [list]="tabStates['PEN'].data"
+                [stateCode]="'PEN'"
+                [loading]="tabStates['PEN'].loading"
+                (scrollContent)="onScroll($event.event, $event.stateCode)"
+                (itemClick)="goToOrder($event)"
+                (toggleRead)="toggleRead($event.event, $event.notif)"
+                (delete)="deleteNotification($event.event, $event.notif)"
+              ></app-notification-tab-content>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-1">outdoor_grill</mat-icon>
+                <div class="flex items-center gap-1">
+                  <span>Cocina</span>
+                  <span
+                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
+                  >
+                    {{ tabStates['ENC'].pagination?.total || 0 }}
+                  </span>
+                </div>
+              </ng-template>
+              <app-notification-tab-content
+                [list]="tabStates['ENC'].data"
+                [stateCode]="'ENC'"
+                [loading]="tabStates['ENC'].loading"
+                (scrollContent)="onScroll($event.event, $event.stateCode)"
+                (itemClick)="goToOrder($event)"
+                (toggleRead)="toggleRead($event.event, $event.notif)"
+                (delete)="deleteNotification($event.event, $event.notif)"
+              ></app-notification-tab-content>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-1">room_service</mat-icon>
+                <div class="flex items-center gap-1">
+                  <span>Listo</span>
+                  <span
+                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
+                  >
+                    {{ tabStates['LIS'].pagination?.total || 0 }}
+                  </span>
+                </div>
+              </ng-template>
+              <app-notification-tab-content
+                [list]="tabStates['LIS'].data"
+                [stateCode]="'LIS'"
+                [loading]="tabStates['LIS'].loading"
+                (scrollContent)="onScroll($event.event, $event.stateCode)"
+                (itemClick)="goToOrder($event)"
+                (toggleRead)="toggleRead($event.event, $event.notif)"
+                (delete)="deleteNotification($event.event, $event.notif)"
+              ></app-notification-tab-content>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-1">check_circle</mat-icon>
+                <div class="flex items-center gap-1">
+                  <span>Entregado</span>
+                  <span
+                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
+                  >
+                    {{ tabStates['ENT'].pagination?.total || 0 }}
+                  </span>
+                </div>
+              </ng-template>
+              <app-notification-tab-content
+                [list]="tabStates['ENT'].data"
+                [stateCode]="'ENT'"
+                [loading]="tabStates['ENT'].loading"
+                (scrollContent)="onScroll($event.event, $event.stateCode)"
+                (itemClick)="goToOrder($event)"
+                (toggleRead)="toggleRead($event.event, $event.notif)"
+                (delete)="deleteNotification($event.event, $event.notif)"
+              ></app-notification-tab-content>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon class="mr-1">cancel</mat-icon>
+                <div class="flex items-center gap-1">
+                  <span>Cancelado</span>
+                  <span
+                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
+                  >
+                    {{ tabStates['CAN'].pagination?.total || 0 }}
+                  </span>
+                </div>
+              </ng-template>
+              <app-notification-tab-content
+                [list]="tabStates['CAN'].data"
+                [stateCode]="'CAN'"
+                [loading]="tabStates['CAN'].loading"
+                (scrollContent)="onScroll($event.event, $event.stateCode)"
+                (itemClick)="goToOrder($event)"
+                (toggleRead)="toggleRead($event.event, $event.notif)"
+                (delete)="deleteNotification($event.event, $event.notif)"
+              ></app-notification-tab-content>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </article>
+    }
   </div>
 }

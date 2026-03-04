@@ -2,179 +2,54 @@
   [title]="'Ver órdenes'"
   [subtitle]="'Aquí puedes ver las órdenes de restaurante'"
 ></app-section-header>
-@if (!isMobile) {
-  <app-search-fields
-    [searchFields]="searchFields"
-    [form]="form"
-    [debounceTime]="300"
-    (searchSubmit)="onSearchSubmit($event)"
-    (searchChange)="onSearchChange($event)"
-  ></app-search-fields>
 
-  <section class="flex w-full justify-end items-center gap-2 mt-2">
-    <div class="w-[24%]">
-      <button
-        class="!w-full"
-        mat-fab
-        extended="true"
-        color="warn"
-        (click)="searchComponent.reset()"
-        [disabled]="!showClearButton"
-      >
-        Limpiar filtros
-      </button>
-    </div>
-  </section>
+<app-search-fields
+  [searchFields]="searchFields"
+  [form]="form"
+  [debounceTime]="300"
+  (searchSubmit)="onSearchSubmit($event)"
+  (searchChange)="onSearchChange($event)"
+></app-search-fields>
 
-  <div class="mt-4">
-    <div class="overflow-auto mb-3">
-      @if (loading) {
-        <app-loader></app-loader>
-      } @else if (dataSource.data.length > 0) {
-        <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Código
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{ order?.code || '---' }}
-            </td>
-          </ng-container>
+<section class="flex w-full justify-end items-center gap-2 mt-2">
+  <button
+    mat-fab
+    extended="true"
+    color="warn"
+    class="!text-sm"
+    (click)="searchComponent.reset()"
+    [disabled]="!showClearButton"
+  >
+    Limpiar filtros
+  </button>
+</section>
 
-          <ng-container matColumnDef="tableNumber">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Mesa</th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold text-blue-800"
-            >
-              {{ order?.tableNumber || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Fecha</th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.startDate ? (order.startDate | date: 'dd/MM/yyyy') : 'N/A'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="orderTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora Orden
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="readyTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora Listo
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.readyTime ? (order.readyTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="servedTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora Servido
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.servedTime ? (order.servedTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="stateType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Estado Orden
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold"
-              [ngClass]="{
-                '!text-green-700': order.stateType?.name === 'ENTREGADO',
-                '!text-red-700':
-                  order.stateType?.name === 'EN COCINA' ||
-                  order.stateType?.name === 'PENDIENTE' ||
-                  order.stateType?.name === 'CANCELADO',
-                '!text-yellow-700':
-                  order.stateType?.name === 'LISTO PARA SERVIR'
-              }"
-            >
-              {{ order.stateType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="payType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Tipo Pago
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text font-bold">
-              {{ order?.payType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="paidType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Estado Pago
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold"
-              [ngClass]="{
-                '!text-green-700':
-                  order?.paidType?.name === 'Pagado' ||
-                  order?.paidType?.name === 'PAGADO' ||
-                  order?.paidType?.name === 'RESERVADO - PAGADO' ||
-                  order?.paidType?.name === 'Reservado - Pagado',
-                '!text-red-700':
-                  order?.paidType?.name === 'PENDIENTE' ||
-                  order?.paidType?.name === 'Pendiente' ||
-                  order?.paidType?.name === 'RESERVADO - PENDIENTE' ||
-                  order?.paidType?.name === 'Reservado - Pendiente'
-              }"
-            >
-              {{ order?.paidType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Total</th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="right-text font-bold"
-              [ngClass]="{
-                '!text-green-700': order.invoiceType?.code === 'FV',
-                '!text-red-700': order.invoiceType?.code === 'FC',
-                '!text-yellow-700': order.invoiceType?.code === 'CO'
-              }"
-            >
-              {{ order?.total ?? 0 | formatCop }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Acciones
-            </th>
-            <td mat-cell *matCellDef="let order">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
+<div class="mt-4">
+  @if (loading) {
+    <app-loader></app-loader>
+  } @else if (orders.length > 0) {
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4"
+    >
+      @for (order of orders; track order.invoiceId) {
+        <div
+          class="bg-white rounded-2xl border border-[#06a606] shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow duration-200"
+        >
+          <!-- Header -->
+          <div class="px-4 pt-4 pb-2 flex justify-between items-start">
+            <div class="flex flex-col gap-0.5">
+              <span class="font-extrabold text-base text-gray-800">{{
+                order.code || '---'
+              }}</span>
+              <span class="text-xs text-gray-400">{{
+                order.startDate | relativeTime
+              }}</span>
+            </div>
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="!-mt-1">
+              <mat-icon class="text-gray-500">more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" xPosition="before">
+              @if (!isMesero) {
                 <button
                   mat-menu-item
                   (click)="openEditInvoiceDialog(order.invoiceId)"
@@ -182,18 +57,19 @@
                   <mat-icon class="blue-color">edit_document</mat-icon>
                   <span>Editar factura</span>
                 </button>
-                <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
-                  <mat-icon class="blue-color">edit</mat-icon>
-                  <span>Editar detalles</span>
-                </button>
-
-                <button
-                  mat-menu-item
-                  (click)="onDownloadInvoice(order.invoiceId)"
-                >
-                  <mat-icon class="green-color">print</mat-icon>
-                  <span>Imprimir factura</span>
-                </button>
+              }
+              <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
+                <mat-icon class="blue-color">edit</mat-icon>
+                <span>Editar detalles</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="onDownloadInvoice(order.invoiceId)"
+              >
+                <mat-icon class="green-color">print</mat-icon>
+                <span>Imprimir factura</span>
+              </button>
+              @if (!isMesero) {
                 <button
                   mat-menu-item
                   (click)="openDeleteOrderDialog(order.invoiceId)"
@@ -201,267 +77,135 @@
                   <mat-icon class="red-color">delete</mat-icon>
                   <span>Eliminar</span>
                 </button>
-              </mat-menu>
-            </td>
-          </ng-container>
+              }
+            </mat-menu>
+          </div>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+          <!-- Body -->
+          <div class="px-4 pb-4 flex flex-col gap-2 flex-1">
+            <!-- Mesa -->
+            <div class="flex items-center gap-2">
+              <mat-icon class="!text-base !w-4 !h-4 text-[#06a606]"
+                >table_restaurant</mat-icon
+              >
+              <span class="text-sm font-semibold text-gray-700"
+                >Mesa {{ order.tableNumber || '---' }}</span
+              >
+            </div>
 
-        <mat-paginator
-          [length]="paginationParams.total"
-          [pageSize]="paginationParams.perPage"
-          [pageSizeOptions]="[5, 10, 25, 100]"
-          [pageIndex]="(paginationParams.page || 0) - 1"
-          (page)="onChangePagination($event)"
-        ></mat-paginator>
-      } @else {
-        <div class="w-full justify-center items-center flex min-h-[150px]">
-          <p>No se encontraron órdenes de restaurante.</p>
+            <!-- Estado orden -->
+            <div class="flex items-center gap-2">
+              <mat-icon class="!text-base !w-4 !h-4 text-gray-400"
+                >info</mat-icon
+              >
+              <span
+                class="text-xs font-bold px-2 py-0.5 rounded-full"
+                [ngClass]="{
+                  'bg-green-100 text-green-700':
+                    order.stateType?.name === 'ENTREGADO',
+                  'bg-blue-100 text-blue-700':
+                    order.stateType?.name === 'LISTO PARA SERVIR',
+                  'bg-yellow-100 text-yellow-700':
+                    order.stateType?.name === 'EN COCINA',
+                  'bg-orange-100 text-orange-700':
+                    order.stateType?.name === 'PENDIENTE',
+                  'bg-red-100 text-red-700':
+                    order.stateType?.name === 'CANCELADO'
+                }"
+                >{{ order.stateType?.name || '---' }}</span
+              >
+            </div>
+
+            <!-- Estado pago -->
+            <div class="flex items-center gap-2">
+              <mat-icon class="!text-base !w-4 !h-4 text-gray-400"
+                >payments</mat-icon
+              >
+              <span
+                class="text-xs font-semibold"
+                [ngClass]="{
+                  'text-green-600': (order.paidType.name || '')
+                    .toLowerCase()
+                    .includes('pagado'),
+                  'text-red-500': (order.paidType.name || '')
+                    .toLowerCase()
+                    .includes('pendiente')
+                }"
+                >{{ order.paidType.name || '---' }}</span
+              >
+              @if (order.payType.name) {
+                <span class="text-[10px] text-gray-400"
+                  >· {{ order.payType.name }}</span
+                >
+              }
+            </div>
+
+            <!-- Horarios -->
+            <div class="grid grid-cols-3 gap-1 text-center mt-1">
+              <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400">Orden</span>
+                <span class="text-xs font-semibold text-gray-600">{{
+                  order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
+                }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400">Listo</span>
+                <span class="text-xs font-semibold text-gray-600">{{
+                  order.readyTime ? (order.readyTime | date: 'hh:mm a') : '---'
+                }}</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400">Servido</span>
+                <span class="text-xs font-semibold text-gray-600">{{
+                  order.servedTime
+                    ? (order.servedTime | date: 'hh:mm a')
+                    : '---'
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer: Total -->
+          <div
+            class="px-4 py-3 border-t border-[#06a606] flex justify-between items-center bg-[#06a606]/5 rounded-b-2xl"
+          >
+            <span class="text-xs text-gray-500">Total</span>
+            <span
+              class="text-base font-extrabold"
+              [ngClass]="{
+                'text-green-700': (order.invoiceType.code ?? '') === 'FV',
+                'text-red-700': (order.invoiceType.code ?? '') === 'FC',
+                'text-yellow-700': (order.invoiceType.code ?? '') === 'CO',
+                'text-gray-800': !['FV', 'FC', 'CO'].includes(
+                  order.invoiceType.code ?? ''
+                )
+              }"
+              >{{ order.total | formatCop }}</span
+            >
+          </div>
         </div>
       }
     </div>
+
+    <mat-paginator
+      [length]="paginationParams.total"
+      [pageSize]="paginationParams.perPage"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageIndex]="(paginationParams.page || 1) - 1"
+      (page)="onChangePagination($event)"
+    ></mat-paginator>
+  } @else {
+    <div class="w-full flex justify-center items-center min-h-[200px]">
+      <p class="text-gray-400">No se encontraron órdenes de restaurante.</p>
+    </div>
+  }
+</div>
+
+<!-- Hidden invoice print container -->
+<div class="hidden">
+  <div #invoiceToPrintRef>
+    @if (invoiceToPrintData) {
+      <app-invoice-pdf [invoiceData]="invoiceToPrintData"></app-invoice-pdf>
+    }
   </div>
-} @else {
-  <!-- Mobile View: Tabs for Search and Results -->
-  <mat-tab-group
-    [(selectedIndex)]="selectedTabIndex"
-    (selectedIndexChange)="onTabChange($event)"
-  >
-    <mat-tab label="Búsqueda">
-      <div class="mt-3 px-2">
-        <app-search-fields
-          [searchFields]="searchFields"
-          [form]="form"
-          [debounceTime]="0"
-          (searchSubmit)="onSearchSubmit($event)"
-          (searchChange)="onSearchChange($event)"
-        ></app-search-fields>
-      </div>
-      <section class="flex flex-col w-full gap-2 p-2">
-        <button
-          mat-fab
-          extended="true"
-          class="!w-full"
-          color="warn"
-          (click)="searchComponent.reset()"
-          [disabled]="!showClearButton"
-        >
-          Limpiar filtros
-        </button>
-        <button
-          mat-fab
-          extended="true"
-          class="!w-full"
-          (click)="searchComponent.submitSearch(); selectedTabIndex = 1"
-        >
-          Buscar
-        </button>
-      </section>
-    </mat-tab>
-
-    <mat-tab label="Resultados">
-      <app-loader *ngIf="loading"></app-loader>
-      <div
-        *ngIf="!loading && dataSource.data.length > 0"
-        class="overflow-auto mb-3"
-      >
-        <table mat-table [dataSource]="dataSource" matSort>
-          <!-- Display fewer columns for mobile, or the same ones -->
-          <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Código
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{ order?.code || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="tableNumber">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Mesa</th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold text-blue-800"
-            >
-              {{ order?.tableNumber || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Fecha</th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.startDate ? (order.startDate | date: 'dd/MM/yyyy') : 'N/A'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="orderTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora Orden
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="readyTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora L.
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.readyTime ? (order.readyTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="servedTime">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Hora S.
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text">
-              {{
-                order.servedTime ? (order.servedTime | date: 'hh:mm a') : '---'
-              }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="stateType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Est. Orden
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold"
-              [ngClass]="{
-                '!text-green-700': order.stateType?.name === 'ENTREGADO',
-                '!text-red-700':
-                  order.stateType?.name === 'EN COCINA' ||
-                  order.stateType?.name === 'PENDIENTE' ||
-                  order.stateType?.name === 'CANCELADO',
-                '!text-yellow-700':
-                  order.stateType?.name === 'LISTO PARA SERVIR'
-              }"
-            >
-              {{ order.stateType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="payType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Tipo Pago
-            </th>
-            <td mat-cell *matCellDef="let order" class="center-text font-bold">
-              {{ order?.payType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="paidType">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Est. Pago
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="center-text font-bold"
-              [ngClass]="{
-                '!text-green-700':
-                  order?.paidType?.name === 'Pagado' ||
-                  order?.paidType?.name === 'PAGADO' ||
-                  order?.paidType?.name === 'RESERVADO - PAGADO' ||
-                  order?.paidType?.name === 'Reservado - Pagado',
-                '!text-red-700':
-                  order?.paidType?.name === 'PENDIENTE' ||
-                  order?.paidType?.name === 'Pendiente' ||
-                  order?.paidType?.name === 'RESERVADO - PENDIENTE' ||
-                  order?.paidType?.name === 'Reservado - Pendiente'
-              }"
-            >
-              {{ order?.paidType?.name || '---' }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef class="center-text">Total</th>
-            <td
-              mat-cell
-              *matCellDef="let order"
-              class="right-text font-bold"
-              [ngClass]="{
-                '!text-green-700': order.invoiceType?.code === 'FV',
-                '!text-red-700': order.invoiceType?.code === 'FC',
-                '!text-yellow-700': order.invoiceType?.code === 'CO'
-              }"
-            >
-              {{ order?.total ?? 0 | formatCop }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="center-text">
-              Acccs.
-            </th>
-            <td mat-cell *matCellDef="let order">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button
-                  mat-menu-item
-                  (click)="openEditInvoiceDialog(order.invoiceId)"
-                >
-                  <mat-icon class="blue-color">edit_document</mat-icon>
-                  <span>Editar factura</span>
-                </button>
-                <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
-                  <mat-icon class="blue-color">edit</mat-icon>
-                  <span>Editar detalles</span>
-                </button>
-
-                <button
-                  mat-menu-item
-                  (click)="onDownloadInvoice(order.invoiceId)"
-                >
-                  <mat-icon class="green-color">print</mat-icon>
-                  <span>Imprimir factura</span>
-                </button>
-                <button
-                  mat-menu-item
-                  (click)="openDeleteOrderDialog(order.invoiceId)"
-                >
-                  <mat-icon class="red-color">delete</mat-icon>
-                  <span>Eliminar</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-      <div *ngIf="!loading && dataSource.data.length === 0" class="text-center">
-        <p>No se encontraron órdenes.</p>
-      </div>
-      <mat-paginator
-        [length]="paginationParams.total"
-        [pageSize]="paginationParams.perPage"
-        [pageSizeOptions]="[5, 10, 25, 100]"
-        [pageIndex]="(paginationParams.page || 0) - 1"
-        (page)="onChangePagination($event)"
-      ></mat-paginator>
-    </mat-tab>
-  </mat-tab-group>
-}
-<app-invoice-pdf
-  class="hidden"
-  *ngIf="invoiceToPrintData"
-  [invoiceData]="invoiceToPrintData"
-  #invoiceToPrintRef
-></app-invoice-pdf>
+</div>

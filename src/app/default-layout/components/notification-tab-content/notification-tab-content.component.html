@@ -1,0 +1,119 @@
+<div
+  class="overflow-y-auto max-h-[calc(60vh-200px)] min-h-[150px] pb-4"
+  (scroll)="onScroll($event)"
+  (click)="$event.stopPropagation()"
+>
+  @if (!list || list.length === 0) {
+    <div
+      class="flex justify-center items-center p-8 text-center text-gray-400 text-sm min-h-[150px] md:min-h-[300px]"
+    >
+      <mat-icon class="!w-12 !h-12 !text-5xl mb-2 opacity-20"
+        >notifications_off</mat-icon
+      >
+      <p>No tienes notificaciones aquí</p>
+    </div>
+  } @else {
+    @for (notif of list || []; track notif.notificationId) {
+      <div
+        class="relative group border-b border-gray-100 last:border-0 transition-colors"
+        [ngClass]="{
+          'bg-[#06a606]/10': !notif.read,
+          'bg-white hover:bg-gray-50': notif.read
+        }"
+        [style.border-left]="!notif.read ? '4px solid #06a606' : 'none'"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="flex p-3 gap-3">
+          <div class="mt-1">
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center"
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-600':
+                  notif.metadata?.stateCode === 'ENC' ||
+                  notif.metadata?.stateCode === 'PEN',
+                'bg-green-100 text-green-600':
+                  notif.metadata?.stateCode === 'ENT',
+                'bg-blue-100 text-blue-600':
+                  notif.metadata?.stateCode === 'LIS',
+                'bg-red-100 text-red-600': notif.metadata?.stateCode === 'CAN'
+              }"
+            >
+              <mat-icon>{{
+                notif.metadata?.stateCode === 'CAN' ? 'cancel' : 'restaurant'
+              }}</mat-icon>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-1 cursor-pointer" (click)="onItemClick(notif)">
+            <div class="flex justify-between items-start mb-0.5">
+              <span
+                class="font-bold text-sm"
+                [ngClass]="{ 'text-[#06a606]': !notif.read }"
+                >Factura: {{ notif.metadata?.code }}</span
+              >
+              <span class="text-[10px] text-gray-400 text-right">{{
+                notif.createdAt | relativeTime
+              }}</span>
+            </div>
+
+            <div
+              class="flex flex-col text-xs font-semibold mb-1"
+              [ngClass]="{
+                'text-yellow-600':
+                  notif.metadata?.stateCode === 'ENC' ||
+                  notif.metadata?.stateCode === 'PEN',
+                'text-green-600': notif.metadata?.stateCode === 'ENT',
+                'text-blue-100/10 text-blue-600':
+                  notif.metadata?.stateCode === 'LIS',
+                'text-red-600': notif.metadata?.stateCode === 'CAN'
+              }"
+            >
+              Estado: {{ notif.metadata?.state }}
+              @if (notif.metadata?.tableNumber) {
+                <span class="text-gray-600"
+                  >Mesa: {{ notif.metadata?.tableNumber }}</span
+                >
+              }
+            </div>
+
+            <div class="text-[11px] text-gray-500 leading-tight mb-2">
+              {{ notif.message }}
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div
+            class="flex flex-col md:flex-row items-center shrink-0 gap-1 md:gap-4"
+          >
+            <button
+              mat-icon-button
+              [title]="
+                notif.read ? 'Marcar como no leído' : 'Marcar como leído'
+              "
+              (click)="onToggleRead($event, notif)"
+            >
+              <mat-icon
+                class="!text-lg"
+                [style.color]="notif.read ? '#9ca3af' : '#06a606'"
+                >{{ notif.read ? 'mark_as_unread' : 'drafts' }}</mat-icon
+              >
+            </button>
+            <button
+              mat-icon-button
+              title="Eliminar"
+              (click)="onDelete($event, notif)"
+            >
+              <mat-icon class="!text-lg text-red-400">delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+    @if (loading) {
+      <div class="p-4 text-center text-gray-400 text-xs">
+        Cargando más notificaciones...
+      </div>
+    }
+  }
+</div>

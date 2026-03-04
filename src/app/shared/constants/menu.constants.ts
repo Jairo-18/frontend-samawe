@@ -71,7 +71,7 @@ export const MENU_CONST: MenuInterface[] = [
   }
 ];
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
-  Cliente: ['Restaurante'],
+  Cliente: [''],
   Recepcionista: [
     'Clientes',
     'Productos y servicios',
@@ -92,8 +92,8 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Restaurante'
   ],
   Chef: ['Recetas', 'Inicio', 'Restaurante'],
-  Mesero: ['Recetas', 'Facturas', 'Inicio', 'Restaurante'],
-  CLIENTE: ['Restaurante'],
+  Mesero: ['Recetas', 'Inicio', 'Restaurante'],
+  CLIENTE: [''],
   RECEPCIONISTA: [
     'Clientes',
     'Productos y servicios',
@@ -114,5 +114,5 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Restaurante'
   ],
   CHEF: ['Recetas', 'Inicio', 'Restaurante'],
-  MESERO: ['Recetas', 'Facturas', 'Inicio', 'Restaurante']
+  MESERO: ['Recetas', 'Inicio', 'Restaurante']
 };

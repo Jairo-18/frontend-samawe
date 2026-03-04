@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, OnDestroy, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  Input,
+  HostListener,
+  ElementRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -7,13 +15,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 import { NotificationApiService } from '../../../shared/services/notification-api.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { OrderUpdate } from '../../../shared/interfaces/order-socket.interface';
 import { OrderNotification } from '../../../shared/interfaces/order-notification.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
+import { NotificationTabContentComponent } from '../notification-tab-content/notification-tab-content.component';
 
 @Component({
   selector: 'app-notification-button',
@@ -24,7 +32,8 @@ import { PaginationInterface } from '../../../shared/interfaces/pagination.inter
     MatBadgeModule,
     MatIconModule,
     MatButtonModule,
-    MatTabsModule
+    MatTabsModule,
+    NotificationTabContentComponent
   ],
   templateUrl: './notification-button.component.html',
   styleUrl: './notification-button.component.scss'
@@ -33,6 +42,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   @Input() showNotificationsIcon: boolean = false;
   @Input() userInfo?: UserInterface;
 
+  isMenuOpen: boolean = false;
+  private readonly _elementRef: ElementRef = inject(ElementRef);
   private readonly _router: Router = inject(Router);
   private _ordersSocket: OrdersSocketService = inject(OrdersSocketService);
   private _notificationApi: NotificationApiService = inject(
@@ -61,6 +72,21 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
   private hasLoadedNotifications: boolean = false;
   private hasJoinedSocketRoom: boolean = false;
+
+  toggleMenu(event: Event) {
+    event.stopPropagation();
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.isMenuOpen &&
+      !this._elementRef.nativeElement.contains(event.target)
+    ) {
+      this.isMenuOpen = false;
+    }
+  }
 
   ngOnInit(): void {
     if (this.showNotificationsIcon && this.userInfo) {
@@ -230,7 +256,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     const newNotif: OrderNotification = {
       notificationId: liveUpdate.notificationId || Math.random().toString(),
       title: 'Actualización de Orden',
-      message: `La orden de la mesa ${liveUpdate.tableNumber || 'N/A'} (Factura ${liveUpdate.code}) cambió a ${liveUpdate.state}.`,
+      message: `La orden de la mesa ${liveUpdate.tableNumber || 'N/A'} cambió a ${liveUpdate.state}.`,
       read: false,
       type: 'ORDER_STATE_CHANGED',
       metadata: {
