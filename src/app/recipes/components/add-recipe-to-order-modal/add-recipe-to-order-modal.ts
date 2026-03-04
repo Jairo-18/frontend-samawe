@@ -182,7 +182,7 @@ export class AddRecipeToOrderModalComponent implements OnInit {
       {
         productId: this.data.productId,
         amount: amount,
-        priceWithoutTax: 0 // backend expects this but should calculate real price inside UC ideally. Or we can just send 0 if the backend recalculates based on product. Wait, we should probably check if backend needs priceWithoutTax sent. We'll send 0 or check if it's required for recipes.
+        priceWithoutTax: 0
       }
     ];
 
@@ -195,7 +195,6 @@ export class AddRecipeToOrderModalComponent implements OnInit {
         },
         error: () => {
           this.isSubmitting = false;
-          // error handling here
         }
       });
   }

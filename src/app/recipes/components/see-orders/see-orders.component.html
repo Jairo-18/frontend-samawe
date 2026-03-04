@@ -49,15 +49,13 @@
               <mat-icon class="text-gray-500">more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
-              @if (!isMesero) {
-                <button
-                  mat-menu-item
-                  (click)="openEditInvoiceDialog(order.invoiceId)"
-                >
-                  <mat-icon class="blue-color">edit_document</mat-icon>
-                  <span>Editar factura</span>
-                </button>
-              }
+              <button
+                mat-menu-item
+                (click)="openEditInvoiceDialog(order.invoiceId)"
+              >
+                <mat-icon class="blue-color">edit_document</mat-icon>
+                <span>Editar factura</span>
+              </button>
               <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
                 <mat-icon class="blue-color">edit</mat-icon>
                 <span>Editar detalles</span>
@@ -69,15 +67,13 @@
                 <mat-icon class="green-color">print</mat-icon>
                 <span>Imprimir factura</span>
               </button>
-              @if (!isMesero) {
-                <button
-                  mat-menu-item
-                  (click)="openDeleteOrderDialog(order.invoiceId)"
-                >
-                  <mat-icon class="red-color">delete</mat-icon>
-                  <span>Eliminar</span>
-                </button>
-              }
+              <button
+                mat-menu-item
+                (click)="openDeleteOrderDialog(order.invoiceId)"
+              >
+                <mat-icon class="red-color">delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
             </mat-menu>
           </div>
 

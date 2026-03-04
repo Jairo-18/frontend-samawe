@@ -72,8 +72,6 @@ export class SeeOrdersComponent implements OnInit {
 
   form!: FormGroup;
   invoiceToPrintData?: any;
-  isMesero: boolean = false;
-
   orders: InvoiceComplete[] = [];
 
   isMobile: boolean = false;
@@ -132,10 +130,6 @@ export class SeeOrdersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userInfo = this._localStorage.getUserData();
-    const role = userInfo?.roleType?.name?.toUpperCase() || '';
-    this.isMesero = role === 'MESERO';
-
     this.loadOrders();
     this.loadRelatedData();
   }

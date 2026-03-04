@@ -25,6 +25,7 @@ import {
   MenuInterface
 } from '../../../shared/interfaces/menu.interface';
 import {
+  ALLOWED_MODULES_BY_ROLE,
   MENU_CONST,
   ROLE_PERMISSIONS
 } from '../../../shared/constants/menu.constants';
@@ -109,21 +110,27 @@ export class SideBarComponent implements OnInit, OnChanges {
       return;
     }
     const allowedItems = ROLE_PERMISSIONS[roleName];
-    this.menuWithItems = MENU_CONST.map((module) => ({
-      ...module,
-      items: module.items
-        .map((item) => ({
-          ...item,
-          subItems: item.subItems?.filter((sub) =>
-            allowedItems.includes(sub.name)
+    const allowedModules = ALLOWED_MODULES_BY_ROLE[roleName] || [];
+
+    this.menuWithItems = MENU_CONST.filter((module) =>
+      allowedModules.includes(module.module)
+    )
+      .map((module) => ({
+        ...module,
+        items: module.items
+          .map((item) => ({
+            ...item,
+            subItems: item.subItems?.filter((sub) =>
+              allowedItems.includes(sub.name)
+            )
+          }))
+          .filter(
+            (item) =>
+              allowedItems.includes(item.name) ||
+              (item.subItems && item.subItems.length > 0)
           )
-        }))
-        .filter(
-          (item) =>
-            allowedItems.includes(item.name) ||
-            (item.subItems && item.subItems.length > 0)
-        )
-    })).filter((module) => module.items.length > 0);
+      }))
+      .filter((module) => module.items.length > 0);
   }
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;

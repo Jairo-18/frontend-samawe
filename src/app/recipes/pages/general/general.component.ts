@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -21,7 +27,7 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
 })
-export class RecipesGeneralComponent implements AfterViewInit {
+export class RecipesGeneralComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
   @ViewChild(SeeRecipesComponent) seeRecipesComponent!: SeeRecipesComponent;
   @ViewChild(CreateOrEditRecipeComponent)
@@ -34,10 +40,13 @@ export class RecipesGeneralComponent implements AfterViewInit {
   allRecipes: RecipeWithDetails[] = [];
   isMesero: boolean = false;
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     const userData = this._localStorage.getUserData();
-    const role = userData?.roleType?.name?.toUpperCase();
+    const role = userData?.roleType?.name?.toUpperCase()?.trim() || '';
     this.isMesero = role === 'MESERO';
+  }
+
+  ngAfterViewInit(): void {
     this._route.queryParams.subscribe((params) => {
       if (params['editRecipe']) {
         this.tabGroup.selectedIndex = 1;

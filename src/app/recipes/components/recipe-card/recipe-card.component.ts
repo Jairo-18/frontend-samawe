@@ -3,8 +3,8 @@ import {
   EventEmitter,
   Input,
   Output,
-  inject,
-  OnInit
+  OnInit,
+  inject
 } from '@angular/core';
 import { CommonModule, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,9 +15,9 @@ import {
   RecipeWithDetails,
   RecipeIngredient
 } from '../../interfaces/recipe.interface';
-import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UnitFormatPipe } from '../../../shared/pipes/unit-format.pipe';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 
 @Component({
   selector: 'app-recipe-card',
@@ -52,7 +52,8 @@ export class RecipeCardComponent implements OnInit {
 
   ngOnInit(): void {
     const userData = this._localStorage.getUserData();
-    this.isMesero = userData?.roleType?.name?.toUpperCase() === 'MESERO';
+    const roleName = userData?.roleType?.name?.toUpperCase()?.trim() || '';
+    this.isMesero = roleName === 'MESERO';
   }
 
   nextImage(maxImages: number): void {

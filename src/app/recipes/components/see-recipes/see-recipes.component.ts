@@ -163,10 +163,7 @@ export class SeeRecipesComponent implements OnInit {
   }
 
   canEdit(): boolean {
-    const role = this.userLogged?.roleType?.name?.toUpperCase();
-    return ['ADMINISTRADOR', 'RECEPCIONISTA', 'CHEF', 'MESERO'].includes(
-      role || ''
-    );
+    return !!this.userLogged;
   }
 
   onAddToOrder(recipe: RecipeWithDetails): void {
