@@ -10,13 +10,7 @@ export const routes: Routes = [
     redirectTo: '/home',
     pathMatch: 'full'
   },
-  {
-    path: 'server-config',
-    loadComponent: () =>
-      import('./shared/components/server-config/server-config.component').then(
-        (m) => m.ServerConfigComponent
-      )
-  },
+
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -75,4 +69,3 @@ export const routes: Routes = [
     redirectTo: '/home'
   }
 ];
-
