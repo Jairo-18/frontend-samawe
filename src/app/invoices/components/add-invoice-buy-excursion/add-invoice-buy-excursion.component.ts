@@ -282,4 +282,3 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       });
   }
 }
-

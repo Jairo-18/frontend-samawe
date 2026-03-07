@@ -103,7 +103,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       ],
       priceBuy: [0, [Validators.required, Validators.min(0)]],
       priceWithoutTax: [0, Validators.required],
-      taxeTypeId: [3],
+      taxeTypeId: [2],
       amountSale: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
       amount: [0]
@@ -195,7 +195,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       priceSale: 0,
       priceBuy: 0,
       priceWithoutTax: 0,
-      taxeTypeId: 3,
+      taxeTypeId: 2,
       amountSale: 1,
       amount: 0,
       categoryId: null,
@@ -319,4 +319,3 @@ export class AddInvoiceBuyComponent implements OnInit {
       });
   }
 }
-
