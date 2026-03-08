@@ -75,116 +75,38 @@
             </div>
           </div>
 
-          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="mr-1">restaurant</mat-icon>
-                <div class="flex items-center gap-1">
-                  <span>Pendiente</span>
-                  <span
-                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
-                  >
-                    {{ tabStates['PEN'].pagination?.total || 0 }}
-                  </span>
-                </div>
+          <mat-tab-group>
+            <mat-tab
+              label="Cocina {{ tabStates['ENC'].pagination?.total || 0 }}"
+            >
+              <ng-template matTabContent>
+                <app-notification-tab-content
+                  *ngIf="tabStates['ENC']?.data"
+                  [list]="tabStates['ENC'].data"
+                  [stateCode]="'ENC'"
+                  [loading]="tabStates['ENC'].loading"
+                  (scrollContent)="onScroll($event.event, $event.stateCode)"
+                  (itemClick)="goToOrder($event)"
+                  (toggleRead)="toggleRead($event.event, $event.notif)"
+                  (delete)="deleteNotification($event.event, $event.notif)"
+                ></app-notification-tab-content>
               </ng-template>
-              <app-notification-tab-content
-                [list]="tabStates['PEN'].data"
-                [stateCode]="'PEN'"
-                [loading]="tabStates['PEN'].loading"
-                (scrollContent)="onScroll($event.event, $event.stateCode)"
-                (itemClick)="goToOrder($event)"
-                (toggleRead)="toggleRead($event.event, $event.notif)"
-                (delete)="deleteNotification($event.event, $event.notif)"
-              ></app-notification-tab-content>
             </mat-tab>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="mr-1">outdoor_grill</mat-icon>
-                <div class="flex items-center gap-1">
-                  <span>Cocina</span>
-                  <span
-                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
-                  >
-                    {{ tabStates['ENC'].pagination?.total || 0 }}
-                  </span>
-                </div>
+            <mat-tab
+              label="Entregado {{ tabStates['ENT'].pagination?.total || 0 }}"
+            >
+              <ng-template matTabContent>
+                <app-notification-tab-content
+                  *ngIf="tabStates['ENT']?.data"
+                  [list]="tabStates['ENT'].data"
+                  [stateCode]="'ENT'"
+                  [loading]="tabStates['ENT'].loading"
+                  (scrollContent)="onScroll($event.event, $event.stateCode)"
+                  (itemClick)="goToOrder($event)"
+                  (toggleRead)="toggleRead($event.event, $event.notif)"
+                  (delete)="deleteNotification($event.event, $event.notif)"
+                ></app-notification-tab-content>
               </ng-template>
-              <app-notification-tab-content
-                [list]="tabStates['ENC'].data"
-                [stateCode]="'ENC'"
-                [loading]="tabStates['ENC'].loading"
-                (scrollContent)="onScroll($event.event, $event.stateCode)"
-                (itemClick)="goToOrder($event)"
-                (toggleRead)="toggleRead($event.event, $event.notif)"
-                (delete)="deleteNotification($event.event, $event.notif)"
-              ></app-notification-tab-content>
-            </mat-tab>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="mr-1">room_service</mat-icon>
-                <div class="flex items-center gap-1">
-                  <span>Listo</span>
-                  <span
-                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
-                  >
-                    {{ tabStates['LIS'].pagination?.total || 0 }}
-                  </span>
-                </div>
-              </ng-template>
-              <app-notification-tab-content
-                [list]="tabStates['LIS'].data"
-                [stateCode]="'LIS'"
-                [loading]="tabStates['LIS'].loading"
-                (scrollContent)="onScroll($event.event, $event.stateCode)"
-                (itemClick)="goToOrder($event)"
-                (toggleRead)="toggleRead($event.event, $event.notif)"
-                (delete)="deleteNotification($event.event, $event.notif)"
-              ></app-notification-tab-content>
-            </mat-tab>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="mr-1">check_circle</mat-icon>
-                <div class="flex items-center gap-1">
-                  <span>Entregado</span>
-                  <span
-                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
-                  >
-                    {{ tabStates['ENT'].pagination?.total || 0 }}
-                  </span>
-                </div>
-              </ng-template>
-              <app-notification-tab-content
-                [list]="tabStates['ENT'].data"
-                [stateCode]="'ENT'"
-                [loading]="tabStates['ENT'].loading"
-                (scrollContent)="onScroll($event.event, $event.stateCode)"
-                (itemClick)="goToOrder($event)"
-                (toggleRead)="toggleRead($event.event, $event.notif)"
-                (delete)="deleteNotification($event.event, $event.notif)"
-              ></app-notification-tab-content>
-            </mat-tab>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="mr-1">cancel</mat-icon>
-                <div class="flex items-center gap-1">
-                  <span>Cancelado</span>
-                  <span
-                    class="text-gray-600 text-[14px] px-1.5 py-0.5 rounded-full font-bold"
-                  >
-                    {{ tabStates['CAN'].pagination?.total || 0 }}
-                  </span>
-                </div>
-              </ng-template>
-              <app-notification-tab-content
-                [list]="tabStates['CAN'].data"
-                [stateCode]="'CAN'"
-                [loading]="tabStates['CAN'].loading"
-                (scrollContent)="onScroll($event.event, $event.stateCode)"
-                (itemClick)="goToOrder($event)"
-                (toggleRead)="toggleRead($event.event, $event.notif)"
-                (delete)="deleteNotification($event.event, $event.notif)"
-              ></app-notification-tab-content>
             </mat-tab>
           </mat-tab-group>
         </div>

@@ -109,11 +109,7 @@
                 class="center-text font-bold"
                 [ngClass]="{
                   '!text-green-700': invoice?.stateType === 'ENTREGADO',
-                  '!text-red-700':
-                    invoice?.stateType === 'EN COCINA' ||
-                    invoice?.stateType === 'PENDIENTE' ||
-                    invoice?.stateType === 'CANCELADO',
-                  '!text-yellow-700': invoice?.stateType === 'LISTO PARA SERVIR'
+                  '!text-red-700': invoice?.stateType === 'EN COCINA'
                 }"
               >
                 {{ invoice?.stateType || 'N/A' }}
@@ -380,11 +376,7 @@
                 class="center-text font-bold"
                 [ngClass]="{
                   '!text-green-700': invoice?.stateType === 'ENTREGADO',
-                  '!text-red-700':
-                    invoice?.stateType === 'EN COCINA' ||
-                    invoice?.stateType === 'PENDIENTE' ||
-                    invoice?.stateType === 'CANCELADO',
-                  '!text-yellow-700': invoice?.stateType === 'LISTO PARA SERVIR'
+                  '!text-red-700': invoice?.stateType === 'EN COCINA'
                 }"
               >
                 {{ invoice?.stateType || 'N/A' }}

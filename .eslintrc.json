@@ -17,14 +17,14 @@
       ],
       "rules": {
         "prettier/prettier": 0,
-        "no-unused-vars": "off", // Desactivado para evitar conflicto con @typescript-eslint/no-unused-vars
+        "no-unused-vars": "off",
         "@angular-eslint/template/click-events-have-key-events": "off",
         "@typescript-eslint/no-unused-vars": [
           "error",
           {
-            "vars": "all", // Aplica a todas las variables
-            "args": "after-used", // Solo reporta argumentos no usados si hay otros que sí se usan
-            "ignoreRestSiblings": false // No ignorar los siblings en la desestructuración
+            "vars": "all",
+            "args": "after-used",
+            "ignoreRestSiblings": false
           }
         ],
         "no-empty-function": [

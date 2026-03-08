@@ -124,7 +124,10 @@ export class AddInvoiceBuyComponent implements OnInit {
           if (!name || name.trim().length < 2) {
             return of({ data: [] });
           }
-          return this._producsService.getProductWithPagination({ name });
+          return this._producsService.getProductWithPagination({
+            name,
+            excludeCategoryTypeCode: 'RES'
+          });
         })
       )
       .subscribe((res) => {
@@ -132,7 +135,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       });
   }
 
-  private parseNumber(value: any): number {
+  private parseNumber(value: unknown): number {
     if (value == null) return 0;
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     let s = String(value).trim();
@@ -164,9 +167,11 @@ export class AddInvoiceBuyComponent implements OnInit {
   }
   onProductFocus(): void {
     if (!this.filteredProducts.length) {
-      this._producsService.getProductWithPagination({}).subscribe((res) => {
-        this.filteredProducts = res.data ?? [];
-      });
+      this._producsService
+        .getProductWithPagination({ excludeCategoryTypeCode: 'RES' })
+        .subscribe((res) => {
+          this.filteredProducts = res.data ?? [];
+        });
     }
   }
   onProductSelected(name: string): void {

@@ -63,11 +63,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
       loading: boolean;
     }
   > = {
-    PEN: { data: [], pagination: null, loading: false },
     ENC: { data: [], pagination: null, loading: false },
-    LIS: { data: [], pagination: null, loading: false },
-    ENT: { data: [], pagination: null, loading: false },
-    CAN: { data: [], pagination: null, loading: false }
+    ENT: { data: [], pagination: null, loading: false }
   };
 
   private hasLoadedNotifications: boolean = false;
@@ -120,7 +117,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   private loadNotifications() {
     if (!this.showNotificationsIcon || this.hasLoadedNotifications) return;
 
-    const states = ['PEN', 'ENC', 'LIS', 'ENT', 'CAN'];
+    const states = ['ENC', 'ENT'];
     states.forEach((stateCode) => {
       this.tabStates[stateCode].loading = true;
     });
@@ -244,9 +241,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
     if (
       liveUpdate.stateCode &&
-      !['PEN', 'ENC', 'CAN', 'ENT', 'LIS'].includes(
-        liveUpdate.stateCode.toUpperCase()
-      )
+      !['ENC', 'ENT'].includes(liveUpdate.stateCode.toUpperCase())
     ) {
       return;
     }

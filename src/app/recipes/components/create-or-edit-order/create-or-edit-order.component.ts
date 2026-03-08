@@ -110,7 +110,7 @@ export class CreateOrEditOrderComponent implements OnInit {
     const cachedData = this._relatedDataService.relatedData();
     if (cachedData) {
       this.stateTypes = (cachedData.data.stateType || []).filter((type) =>
-        [6, 7, 8, 9, 10].includes(Number(type.stateTypeId))
+        [7, 9].includes(Number(type.stateTypeId))
       );
       this.paidTypes = cachedData.data.paidType || [];
       this.payTypes = cachedData.data.payType || [];
@@ -119,7 +119,7 @@ export class CreateOrEditOrderComponent implements OnInit {
       this._relatedDataService.getRelatedData().subscribe({
         next: (res: { data: AppRelatedData }) => {
           this.stateTypes = (res.data.stateType || []).filter((type) =>
-            [6, 7, 8, 9, 10].includes(Number(type.stateTypeId))
+            [7, 9].includes(Number(type.stateTypeId))
           );
           this.paidTypes = res.data.paidType || [];
           this.payTypes = res.data.payType || [];
@@ -135,7 +135,7 @@ export class CreateOrEditOrderComponent implements OnInit {
     if (this.editMode) return;
 
     const defaultState = this.stateTypes.find(
-      (s) => s.name?.toUpperCase() === 'PENDIENTE'
+      (s) => s.name?.toUpperCase() === 'EN COCINA'
     );
     const defaultPaid = this.paidTypes.find(
       (p) => p.name?.toUpperCase() === 'PENDIENTE'
