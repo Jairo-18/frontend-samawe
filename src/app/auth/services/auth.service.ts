@@ -125,7 +125,12 @@ export class AuthService {
       >(`${environment.apiUrl}auth/refresh-token`, { refreshToken: refreshToken })
       .pipe(
         tap((response: ApiResponseInterface<LoginSuccessInterface>): void => {
-          this._updateAccessToken(response?.data?.tokens?.accessToken);
+          if (response.data?.tokens) {
+            this._updateSessionTokens(
+              response.data.tokens.accessToken,
+              response.data.tokens.refreshToken
+            );
+          }
           this._isLoggedEmit();
         })
       );
@@ -133,11 +138,15 @@ export class AuthService {
   private _isLoggedEmit(): void {
     this._isLoggedSubject.next(this.isLogged);
   }
-  private _updateAccessToken(accessToken: string): void {
+  private _updateSessionTokens(
+    accessToken: string,
+    refreshToken: string
+  ): void {
     const user: LoginSuccessInterface | null =
       this._localStorageService.getAllSessionData();
-    if (user) {
+    if (user && accessToken && refreshToken) {
       user.tokens.accessToken = accessToken;
+      user.tokens.refreshToken = refreshToken;
       localStorage.setItem(this._tokensStorageKey, JSON.stringify(user));
     }
   }
@@ -176,4 +185,3 @@ export class AuthService {
     }
   }
 }
-

@@ -46,8 +46,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               ),
               catchError((refreshError) => {
                 authService.setRefreshingToken = false;
+                notificationsService.showNotification(
+                  'error',
+                  refreshError?.error?.message || 'Tu sesión caducó'
+                );
                 authService.cleanStorageAndRedirectToLogin();
-                return throwError(refreshError);
+                return throwError(() => refreshError);
               })
             );
           }
@@ -68,15 +72,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               })
             );
           }
+          notificationsService.showNotification(
+            'error',
+            'Tu sesión caducó',
+            'Inicia sesión de nuevo'
+          );
           authService.cleanStorageAndRedirectToLogin();
-          return throwError(err);
+          return throwError(() => err);
         case 403:
           notificationsService.showNotification(
             'error',
             err?.error?.message || 'Algo anda mal',
             'No estás autorizado'
           );
-          return throwError(err);
+          return throwError(() => err);
         default:
           return throwError(err);
       }
@@ -95,4 +104,3 @@ export const addTokenToRequest = (
     }
   });
 };
-

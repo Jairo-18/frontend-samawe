@@ -27,7 +27,11 @@ export const notificationsInterceptorInterceptor: HttpInterceptorFn = (
       }
     }),
     catchError((error: HttpErrorResponse) => {
-      if (!req.url.includes('/notifications')) {
+      if (
+        !req.url.includes('/notifications') &&
+        error.status !== 401 &&
+        error.status !== 403
+      ) {
         notificationsService.showNotification(
           'error',
           error?.error?.message || 'Ha ocurrido un error.'
