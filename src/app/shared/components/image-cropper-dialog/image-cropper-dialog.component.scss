@@ -15,7 +15,6 @@
   align-items: center;
   position: relative;
 
-  // Square-ish container: uses aspect-ratio to keep it compact
   width: 100%;
   aspect-ratio: 1 / 1;
   max-height: 420px;
@@ -52,7 +51,6 @@
   }
 }
 
-// Mobile responsive
 @media (max-width: 767px) {
   .cropper-wrapper {
     max-height: 300px;

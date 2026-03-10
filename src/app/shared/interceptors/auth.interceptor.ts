@@ -74,7 +74,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           }
           notificationsService.showNotification(
             'error',
-            'Tu sesión caducó',
+            err?.error?.message || 'Tu sesión caducó',
             'Inicia sesión de nuevo'
           );
           authService.cleanStorageAndRedirectToLogin();

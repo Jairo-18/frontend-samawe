@@ -1,5 +1,5 @@
 @use 'variables' as *;
-// Supports weights 100-900
+
 @use '@fontsource-variable/noto-serif';
 
 .app-container {
@@ -13,7 +13,6 @@
   flex-direction: column;
   height: 100dvh;
 
-  // Solo en desktop ajustar el ancho según el sidebar
   @media (min-width: 769px) {
     width: calc(100vw - var(--sidebar-width));
     margin-left: var(--sidebar-width);
@@ -38,12 +37,9 @@
     height: 100%;
 
     @media (min-width: 768px) {
-      margin-left: 0; // En desktop quita el margen
+      margin-left: 0;
     }
   }
-  // @media (max-width: 768px) {
-  //   margin-left: 75px;
-  // }
 }
 
 .brand-side-bar {
