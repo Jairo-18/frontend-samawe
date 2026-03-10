@@ -96,7 +96,10 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         debounceTime(500),
         switchMap((name: string) => {
           if (!name || name.trim().length < 2) return of({ data: [] });
-          return this._excursionsService.getExcursionWithPagination({ name });
+          return this._excursionsService.getExcursionWithPagination({
+            name,
+            categoryType: 16
+          });
         })
       )
       .subscribe((res) => {
@@ -113,6 +116,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       .get('taxeTypeId')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private parseNumber(value: any): number {
     if (value == null) return 0;
     if (typeof value === 'number' && Number.isFinite(value)) return value;
@@ -137,7 +141,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   onExcursionFocus() {
     if (!this.filteredExcursions.length) {
       this._excursionsService
-        .getExcursionWithPagination({})
+        .getExcursionWithPagination({ categoryType: 16 })
         .subscribe((res) => {
           this.filteredExcursions = res.data ?? [];
         });
@@ -153,8 +157,8 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     this.form.patchValue({
       excursionId: exc.excursionId,
       ...(shouldUpdatePrice && {
-        priceSale: exc.priceSale,
-        priceWithoutTax: exc.priceSale
+        priceSale: exc.priceBuy,
+        priceWithoutTax: exc.priceBuy
       })
     });
     this.updateFinalPrice();

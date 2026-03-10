@@ -78,13 +78,43 @@ export class AddExcursionComponent implements OnInit {
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
   isLoadingExcursions: boolean = false;
   invoiceId?: number;
+
+  private parseNumber(value: unknown): number {
+    if (value == null) return 0;
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
+    let s = String(value).trim();
+    s = s.replace(/[^\d\-,.]/g, '');
+    const hasDot = s.indexOf('.') !== -1;
+    const hasComma = s.indexOf(',') !== -1;
+    if (hasDot && hasComma) {
+      if (s.lastIndexOf('.') > s.lastIndexOf(',')) {
+        s = s.replace(/,/g, '');
+      } else {
+        s = s.replace(/\./g, '').replace(/,/g, '.');
+      }
+    } else if (hasComma && !hasDot) {
+      s = s.replace(/\./g, '').replace(/,/g, '.');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+
   constructor() {
     const now = new Date();
     const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000);
     this.form = this._fb.group({
       name: ['', Validators.required],
       excursionId: [null, Validators.required],
-      priceSale: [0],
+      priceBuy: [
+        0,
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.pattern(/^\d+([.,]\d{1,2})?$/)
+        ]
+      ],
       priceWithoutTax: [null, Validators.required],
       taxeTypeId: [2],
       amount: [1, [Validators.required, Validators.min(1)]],
@@ -112,6 +142,14 @@ export class AddExcursionComponent implements OnInit {
         );
       }
     });
+    this.form.get('priceBuy')?.valueChanges.subscribe((value) => {
+      const numericValue = this.parseNumber(value);
+      this.form.patchValue(
+        { priceWithoutTax: numericValue },
+        { emitEvent: false }
+      );
+      this.updateFinalPrice();
+    });
     this.form
       .get('name')
       ?.valueChanges.pipe(
@@ -128,7 +166,7 @@ export class AddExcursionComponent implements OnInit {
   ngOnInit(): void {
     const id = this._activateRouter.snapshot.paramMap.get('id');
     if (id) this.invoiceId = Number(id);
-    ['amount', 'priceSale', 'priceWithoutTax', 'taxeTypeId'].forEach((field) =>
+    ['amount', 'priceBuy', 'priceWithoutTax', 'taxeTypeId'].forEach((field) =>
       this.form
         .get(field)
         ?.valueChanges.subscribe(() => this.updateFinalPrice())
@@ -146,11 +184,19 @@ export class AddExcursionComponent implements OnInit {
   onExcursionSelected(name: string) {
     const exc = this.filteredExcursions.find((e) => e.name === name);
     if (!exc) return;
+
+    const fallbackPrice = exc.priceSale ?? exc.priceBuy ?? 0;
+
+    const currentPrice = this.parseNumber(this.form.get('priceBuy')?.value);
+    const shouldUpdatePrice = !currentPrice || currentPrice === 0;
+
     this.form.patchValue(
       {
         excursionId: exc.excursionId,
-        priceWithoutTax: exc.priceSale,
-        priceSale: exc.priceSale
+        ...(shouldUpdatePrice && {
+          priceBuy: fallbackPrice,
+          priceWithoutTax: fallbackPrice
+        })
       },
       { emitEvent: true }
     );
@@ -169,8 +215,12 @@ export class AddExcursionComponent implements OnInit {
     return rate;
   }
   private updateFinalPrice() {
-    const base = Number(this.form.get('priceWithoutTax')?.value ?? 0);
-    const amount = Number(this.form.get('amount')?.value ?? 0);
+    const base = this.parseNumber(
+      this.form.get('priceWithoutTax')?.value ??
+        this.form.get('priceBuy')?.value ??
+        0
+    );
+    const amount = this.parseNumber(this.form.get('amount')?.value ?? 0);
     const taxRate = this.getTaxRate();
     const total = base * (1 + taxRate) * amount;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
@@ -226,9 +276,9 @@ export class AddExcursionComponent implements OnInit {
         productId: 0,
         accommodationId: 0,
         excursionId: val.excursionId,
-        amount: val.amount,
-        priceBuy: 0,
-        priceWithoutTax: Number(val.priceWithoutTax),
+        amount: this.parseNumber(val.amount),
+        priceBuy: this.parseNumber(val.priceBuy),
+        priceWithoutTax: this.parseNumber(val.priceWithoutTax),
         taxeTypeId: val.taxeTypeId,
         startDate: new Date(val.startDateTime).toISOString(),
         endDate: new Date(val.endDateTime).toISOString()
@@ -261,4 +311,3 @@ export class AddExcursionComponent implements OnInit {
     }
   }
 }
-

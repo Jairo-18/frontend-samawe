@@ -80,7 +80,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       .get('amountSale')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
     this.form
-      .get('priceSale')
+      .get('priceBuy')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
     this.form
       .get('priceWithoutTax')
@@ -93,7 +93,7 @@ export class AddInvoiceBuyComponent implements OnInit {
     this.form = this._fb.group({
       name: ['', Validators.required],
       productId: [null, Validators.required],
-      priceSale: [
+      priceBuy: [
         0,
         [
           Validators.required,
@@ -101,14 +101,13 @@ export class AddInvoiceBuyComponent implements OnInit {
           Validators.pattern(/^\d+([.,]\d{1,2})?$/)
         ]
       ],
-      priceBuy: [0, [Validators.required, Validators.min(0)]],
       priceWithoutTax: [0, Validators.required],
       taxeTypeId: [2],
       amountSale: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
       amount: [0]
     });
-    this.form.get('priceSale')?.valueChanges.subscribe((value) => {
+    this.form.get('priceBuy')?.valueChanges.subscribe((value) => {
       const numericValue = this.parseNumber(value);
       this.form.patchValue(
         { priceWithoutTax: numericValue },
@@ -177,17 +176,14 @@ export class AddInvoiceBuyComponent implements OnInit {
   onProductSelected(name: string): void {
     const product = this.filteredProducts.find((p) => p.name === name);
     if (!product) return;
-    const currentPriceSale = this.parseNumber(
-      this.form.get('priceSale')?.value
-    );
-    const shouldUpdatePrice = !currentPriceSale || currentPriceSale === 0;
+    const currentPriceBuy = this.parseNumber(this.form.get('priceBuy')?.value);
+    const shouldUpdatePrice = !currentPriceBuy || currentPriceBuy === 0;
     this.form.patchValue({
       productId: product.productId,
       ...(shouldUpdatePrice && {
-        priceSale: product.priceSale,
-        priceWithoutTax: product.priceSale
+        priceBuy: product.priceBuy ?? 0,
+        priceWithoutTax: product.priceBuy ?? 0
       }),
-      priceBuy: product.priceBuy ?? 0,
       amount: product.amount,
       categoryId: product.categoryType?.categoryTypeId
     });
@@ -197,7 +193,6 @@ export class AddInvoiceBuyComponent implements OnInit {
     this.form.reset({
       name: '',
       productId: null,
-      priceSale: 0,
       priceBuy: 0,
       priceWithoutTax: 0,
       taxeTypeId: 2,
@@ -232,7 +227,7 @@ export class AddInvoiceBuyComponent implements OnInit {
   private updateFinalPrice() {
     const base = this.parseNumber(
       this.form.get('priceWithoutTax')?.value ??
-        this.form.get('priceSale')?.value ??
+        this.form.get('priceBuy')?.value ??
         0
     );
     const amountSale = this.parseNumber(
@@ -252,7 +247,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       name: '',
       productId: null,
       priceBuy: 0,
-      priceWithoutTax: this.parseNumber(this.form.get('priceSale')?.value) || 0,
+      priceWithoutTax: this.parseNumber(this.form.get('priceBuy')?.value) || 0,
       categoryId: null
     });
     this.filteredProducts = [];

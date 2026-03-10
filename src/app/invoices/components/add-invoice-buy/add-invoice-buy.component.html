@@ -39,11 +39,11 @@
   </mat-form-field>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Unitario</mat-label>
+      <mat-label>Precio Unitario (Compra)</mat-label>
       <input
         matInput
         type="text"
-        formControlName="priceSale"
+        formControlName="priceBuy"
         [readonly]="false"
         appCurrencyFormat
         class="text-right"
@@ -52,10 +52,10 @@
         min="0"
       />
       <mat-icon matSuffix>attach_money</mat-icon>
-      <mat-error *ngIf="form.get('priceSale')?.hasError('required')">
-        El precio unitario es requerido
+      <mat-error *ngIf="form.get('priceBuy')?.hasError('required')">
+        El precio de compra es requerido
       </mat-error>
-      <mat-error *ngIf="form.get('priceSale')?.hasError('min')">
+      <mat-error *ngIf="form.get('priceBuy')?.hasError('min')">
         El precio debe ser mayor o igual a 0
       </mat-error>
     </mat-form-field>
