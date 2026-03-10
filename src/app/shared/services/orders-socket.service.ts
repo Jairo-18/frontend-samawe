@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { OrderUpdate } from '../interfaces/order-socket.interface';
+import {
+  InvoiceItemUpdate,
+  OrderUpdate
+} from '../interfaces/order-socket.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +51,14 @@ export class OrdersSocketService {
   onOrderUpdated(): Observable<OrderUpdate> {
     return new Observable<OrderUpdate>((observer) => {
       this.socket.on('orderUpdated', (data: OrderUpdate) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  onInvoiceItemAdded(): Observable<InvoiceItemUpdate> {
+    return new Observable<InvoiceItemUpdate>((observer) => {
+      this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
         observer.next(data);
       });
     });

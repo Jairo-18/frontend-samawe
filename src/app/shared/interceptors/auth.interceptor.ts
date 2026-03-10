@@ -27,7 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: HttpErrorResponse) => {
       const refreshToken = authService.getRefreshToken();
       switch (err.status) {
-        case 401:
+        case 401: {
           if (refreshToken && !authService.getRefreshingToken) {
             tokenSubject.next('');
             return authService.refreshToken(refreshToken).pipe(
@@ -48,7 +48,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 authService.setRefreshingToken = false;
                 notificationsService.showNotification(
                   'error',
-                  refreshError?.error?.message || 'Tu sesión caducó'
+                  'Inicia sesión de nuevo',
+                  'Sesión caducada'
                 );
                 authService.cleanStorageAndRedirectToLogin();
                 return throwError(() => refreshError);
@@ -72,13 +73,17 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               })
             );
           }
+          const isSessionExpired = err?.error?.message === 'Tu sesión caducó';
           notificationsService.showNotification(
             'error',
-            err?.error?.message || 'Tu sesión caducó',
-            'Inicia sesión de nuevo'
+            isSessionExpired
+              ? 'Inicia sesión de nuevo'
+              : err?.error?.message || 'Error de autenticación',
+            isSessionExpired ? 'Sesión caducada' : undefined
           );
           authService.cleanStorageAndRedirectToLogin();
           return throwError(() => err);
+        }
         case 403:
           notificationsService.showNotification(
             'error',

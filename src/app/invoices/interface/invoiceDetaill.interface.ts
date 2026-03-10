@@ -86,4 +86,3 @@ export interface TogglePaymentBulkResponse {
   invoicePaidTotal: number;
   updatedDetails: { invoiceDetailId: number; isPaid: boolean }[];
 }
-

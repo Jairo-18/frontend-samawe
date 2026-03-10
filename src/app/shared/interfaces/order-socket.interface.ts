@@ -1,3 +1,5 @@
+import { InvoiceDetail } from '../../invoices/interface/invoiceDetaill.interface';
+
 export interface OrderUpdate {
   notificationId?: string;
   invoiceId: number;
@@ -9,4 +11,9 @@ export interface OrderUpdate {
   orderTime?: Date | string;
   readyTime?: Date | string;
   servedTime?: Date | string;
+}
+
+export interface InvoiceItemUpdate {
+  invoiceId: number;
+  details: InvoiceDetail;
 }

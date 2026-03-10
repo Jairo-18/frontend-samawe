@@ -2,11 +2,13 @@ import {
   Component,
   ElementRef,
   inject,
+  OnDestroy,
   OnInit,
   ViewChild
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AddProductComponent } from '../../components/add-product/add-product.component';
@@ -41,6 +43,7 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PendingItemsTableComponent } from '../../components/pending-items-table/pending-items-table';
+import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -67,7 +70,10 @@ import { PendingItemsTableComponent } from '../../components/pending-items-table
   templateUrl: './edit-invoice.component.html',
   styleUrls: ['./edit-invoice.component.scss']
 })
-export class EditInvoiceComponent implements OnInit {
+export class EditInvoiceComponent implements OnInit, OnDestroy {
+  private readonly _ordersSocketService: OrdersSocketService =
+    inject(OrdersSocketService);
+  private _destroy$ = new Subject<void>();
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
@@ -90,7 +96,26 @@ export class EditInvoiceComponent implements OnInit {
     const invoiceId = Number(this._route.snapshot.paramMap.get('id'));
     if (invoiceId) {
       this.getInvoiceToEdit(invoiceId);
+      this.setupRealTimeUpdates();
     }
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
+  private setupRealTimeUpdates(): void {
+    this._ordersSocketService
+      .onInvoiceItemAdded()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((update) => {
+        if (update.invoiceId === this.invoiceId) {
+          this.getInvoiceToEdit(this.invoiceId, false);
+          this.reloadInvoiceDetails = true;
+          setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+        }
+      });
   }
   loadRelatedData(): void {
     if (this._relatedDataService.relatedData()) {
@@ -231,11 +256,10 @@ export class EditInvoiceComponent implements OnInit {
           this.getInvoiceToEdit(this.invoiceId!, false);
           this.initialLoading = false;
         },
-        error: (err: any) => {
+        error: (err: unknown) => {
           console.error('Error al actualizar estado masivo', err);
           this.initialLoading = false;
         }
       });
   }
 }
-
