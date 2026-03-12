@@ -9,6 +9,7 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { NotificationButtonComponent } from '../../components/notification-button/notification-button.component';
+import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.component';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
@@ -17,7 +18,8 @@ import { NotificationButtonComponent } from '../../components/notification-butto
     NavBarComponent,
     RouterOutlet,
     CommonModule,
-    NotificationButtonComponent
+    NotificationButtonComponent,
+    MobileMenuComponent
   ],
   templateUrl: './default-layout.component.html',
   styleUrl: './default-layout.component.scss'

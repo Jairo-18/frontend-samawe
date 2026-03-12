@@ -1,6 +1,7 @@
 <article class="flex relative">
   @if (
     isLoggedUser &&
+    !isPhone &&
     (userInfo?.roleType?.name === 'Administrador' ||
       userInfo?.roleType?.name === 'ADMINISTRADOR' ||
       userInfo?.roleType?.name === 'Recepcionista' ||
@@ -29,8 +30,15 @@
     >
     </app-notification-button>
 
-    <main class="main w-full">
+    <main
+      class="main w-full"
+      [ngClass]="{ 'has-mobile-menu': isPhone && isLoggedUser }"
+    >
       <router-outlet></router-outlet>
     </main>
+
+    @if (isPhone && isLoggedUser) {
+      <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
+    }
   </div>
 </article>

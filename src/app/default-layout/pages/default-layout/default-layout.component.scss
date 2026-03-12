@@ -1,0 +1,7 @@
+@use 'variables' as *;
+
+.main {
+  &.has-mobile-menu {
+    height: calc(100dvh - 65px);
+  }
+}

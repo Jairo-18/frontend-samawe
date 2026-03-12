@@ -1,0 +1,19 @@
+<nav
+  class="fixed bottom-0 left-0 w-full h-[65px] bg-white/80 backdrop-blur-md border-t border-[#06a606]/20 z-[1000] flex justify-center items-center pb-[env(safe-area-inset-bottom)]"
+>
+  <ul class="flex justify-around items-center w-full list-none m-0 p-0">
+    <li *ngFor="let item of menuItems" class="flex-1 flex justify-center">
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="text-[#06a606]"
+        class="flex flex-col items-center no-underline text-[#797979] transition-colors duration-300 ease-in-out text-[10px]"
+      >
+        <mat-icon class="!text-[24px] !w-6 !h-6 mb-1">{{ item.icon }}</mat-icon>
+        <span
+          class="text-center whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+          >{{ item.name }}</span
+        >
+      </a>
+    </li>
+  </ul>
+</nav>
