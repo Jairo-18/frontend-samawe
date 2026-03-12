@@ -39,6 +39,7 @@ import { UsersService } from '../../../organizational/services/users.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-side-bar',
@@ -54,7 +55,8 @@ import { Subscription } from 'rxjs';
     NgFor,
     MatTooltipModule,
     CommonModule,
-    LoaderComponent
+    LoaderComponent,
+    NgOptimizedImage
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',

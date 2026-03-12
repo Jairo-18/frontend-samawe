@@ -1,45 +1,89 @@
-<nav>
-  <article class="flex content-between px-6 py-2 items-center">
+<nav
+  class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 ease-in-out py-2"
+  [ngClass]="{
+    'bg-[#06a606] md:bg-transparent': !isScrolled,
+    'bg-white shadow-lg': isScrolled
+  }"
+>
+  <article class="flex px-6 items-center w-full">
+    <!-- Left: Branding -->
     <section
-      class="flex content-between w-[70%] md:w-[40%] items-center text-white gap-x-3"
+      class="flex flex-1 items-center gap-x-3 transition-colors duration-300"
     >
       <img
         routerLink="/"
         [src]="logoUrl"
         [alt]="organizationalName"
-        class="h-11 w-11 md:h-16 md:w-16 cursor-pointer"
+        class="h-14 w-14 md:h-[70px] md:w-[70px] cursor-pointer transition-all duration-300"
       />
-      <h1 class="text-base md:text-xl font-medium md:font-semibold">
+      <h1
+        class="hidden lg:block text-base md:text-base 2xl:text-xl font-medium md:font-semibold"
+      >
         {{ organizationalName }}
       </h1>
     </section>
-    <section class="hidden md:flex justify-between w-[60%] text-white">
+
+    <!-- Center: Navigation -->
+    <section
+      class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-2 transition-colors duration-300"
+      [ngClass]="{ 'text-black': !isScrolled, 'text-gray-800': isScrolled }"
+    >
       @for (item of navBarItems; track $index) {
         <button
           [routerLink]="item.route"
-          class="flex items-center justify-center gap-2 hover:bg-blue-300/55 px-2 rounded min-w-[150px] min-h-[65px]"
+          class="flex items-center justify-center gap-2 hover:bg-black/5 px-2 lg:px-4 rounded-lg transition-all duration-200 py-2 whitespace-nowrap"
         >
-          <mat-icon>{{ item.icon }}</mat-icon>
-          {{ item.title }}
+          <mat-icon class="scale-90" *ngIf="item.icon">{{
+            item.icon
+          }}</mat-icon>
+          <span class="font-medium text-sm lg:text-base">{{ item.title }}</span>
         </button>
       }
     </section>
-    <section class="flex md:hidden justify-end w-[30%] md:w-[60%]">
-      <button
-        mat-icon-button
-        [matMenuTriggerFor]="mobileMenu"
-        aria-label="Menú"
-      >
-        <mat-icon class="text-white">menu</mat-icon>
-      </button>
-      <mat-menu #mobileMenu="matMenu">
-        @for (item of navBarItems; track $index) {
-          <button mat-menu-item [routerLink]="item.route">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <span>{{ item.title }}</span>
+
+    <!-- Right: Login Action -->
+    <section class="flex flex-1 items-center justify-end gap-x-3">
+      <div class="hidden md:flex">
+        <button
+          *ngIf="loginItem"
+          [routerLink]="loginItem.route"
+          class="flex items-center justify-center gap-2 px-6 py-2 rounded-full transition-all duration-200 border-2"
+        >
+          <mat-icon>{{ loginItem.icon }}</mat-icon>
+          <span class="font-bold">{{ loginItem.title }}</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <div class="flex md:hidden">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="mobileMenu"
+          aria-label="Menú"
+          [ngClass]="{
+            'text-black': !isScrolled
+          }"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #mobileMenu="matMenu">
+          @for (item of navBarItems; track $index) {
+            <button mat-menu-item [routerLink]="item.route">
+              <mat-icon class="text-[#06a606]">{{ item.icon }}</mat-icon>
+              <span>{{ item.title }}</span>
+            </button>
+          }
+          <mat-divider></mat-divider>
+          <button
+            mat-menu-item
+            *ngIf="loginItem"
+            [routerLink]="loginItem.route"
+          >
+            <mat-icon class="text-[#06a606]">{{ loginItem.icon }}</mat-icon>
+            <span>{{ loginItem.title }}</span>
           </button>
-        }
-      </mat-menu>
+        </mat-menu>
+      </div>
     </section>
   </article>
 </nav>

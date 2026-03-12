@@ -1,26 +1,27 @@
-<div class="brand-content-center">
+<div class="auth-content-center">
   <article
-    class="w-[90%] xl:w-[60%] lg:w-[90%] h-full md:h-full my-10 md:my-5 flex content-between justify-center items-center border border-black rounded-2xl mx-auto"
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[700px] lg:h-[700px] xl:h-[730px] 2xl:h-[750px] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto overflow-hidden shadow-2xl"
   >
-    <section class="h-full w-full hidden md:flex flex-col">
+    <section class="relative h-full w-full hidden md:flex flex-col">
       <img
-        [src]="registerBgUrl"
-        alt="Register Image"
-        class="min-h-[790px] object-cover w-full rounded-l-2xl"
+        *ngIf="registerBgUrl"
+        [ngSrc]="registerBgUrl"
+        priority
+        fill
+        alt="Register Background"
+        class="object-cover animate-fade-in"
       />
     </section>
     <section
       class="h-full w-full flex flex-col text-center py-5 gap-0 md:gap-1"
     >
       <div class="flex flex-col gap-1.5">
-        <span class="font-extrabold text-lg md:text-xl">Registrarse</span>
-        <span class="font-medium text-sm">Crea una nueva cuenta</span>
+        <span class="font-extrabold text-xl">Registrarse</span>
+        <span class="font-medium text-sm md:text-base"
+          >Crea una nueva cuenta</span
+        >
       </div>
-      <mat-horizontal-stepper
-        [linear]="false"
-        #stepper
-        class="w-full h-full bg-white"
-      >
+      <mat-horizontal-stepper [linear]="false" #stepper class="w-full h-full">
         <mat-step [stepControl]="formStep1">
           <form
             [formGroup]="formStep1"
@@ -120,7 +121,7 @@
                   *ngFor="let type of phoneCode"
                   [value]="type.phoneCodeId.toString()"
                 >
-                  {{ type.code }} {{ type.name }}
+                  {{ type.name }} {{ type.code }}
                 </mat-option>
               </mat-select>
               <mat-icon matPrefix>flag</mat-icon>
@@ -171,7 +172,7 @@
                 y un carácter especial.
               </mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="w-full">
+            <mat-form-field appearance="outline" class="w-full mt-3">
               <mat-label>Confirmar Contraseña</mat-label>
               <input
                 [type]="showConfirmPassword ? 'text' : 'password'"
@@ -227,12 +228,14 @@
         </mat-step>
       </mat-horizontal-stepper>
       <div
-        class="text-center d-flex justify-content-center align-items-center text-sm md:text-base"
+        class="text-center flex justify-center items-center gap-1 mt-3 md:mt-0"
       >
-        <span>¿Ya tienes una cuenta? </span>
+        <span class="font-medium text-sm md:text-base"
+          >¿Ya tienes una cuenta?
+        </span>
         <a
           routerLink="/auth/login"
-          class="cursor-pointer text-green-700 hover:text-green-400 hover-underline-animation"
+          class="cursor-pointer text-[#06a606] hover:text-[#06a606] hover-underline-animation font-medium text-sm md:text-base"
         >
           Inicia sesión aquí
         </a>
@@ -240,4 +243,3 @@
     </section>
   </article>
 </div>
-

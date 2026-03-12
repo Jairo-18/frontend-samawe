@@ -40,7 +40,7 @@ export class AppComponent implements OnDestroy {
   }
 
   private _loadInitialBranding(): void {
-    this._applicationService.loadBrandingBySlug('eco-hotel-samawe');
+    this._applicationService.loadBrandingBySlug('ecohotelsamawe');
   }
   private _setMaterialOutlinedIconsDefault(): void {
     this._iconRegistry.setDefaultFontSetClass('material-icons');

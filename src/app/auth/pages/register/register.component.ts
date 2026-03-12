@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
@@ -39,7 +39,8 @@ import { Subscription } from 'rxjs';
     CommonModule,
     RouterModule,
     MatStepperModule,
-    MatSelectModule
+    MatSelectModule,
+    NgOptimizedImage
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']

@@ -16,7 +16,12 @@
       (logout)="logout()"
     ></app-side-bar>
   }
+
   <div class="app-container w-full relative">
+    @if (showNavBar) {
+      <app-nav-bar class="brand-nav-bar"></app-nav-bar>
+    }
+
     <app-notification-button
       [showNotificationsIcon]="showNotificationsIcon"
       [userInfo]="userInfo"
@@ -24,7 +29,7 @@
     >
     </app-notification-button>
 
-    <main class="main w-full h-full overflow-y-auto">
+    <main class="main w-full">
       <router-outlet></router-outlet>
     </main>
   </div>

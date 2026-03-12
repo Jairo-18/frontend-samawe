@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
+import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { filter, Subscription } from 'rxjs';
@@ -13,6 +14,7 @@ import { NotificationButtonComponent } from '../../components/notification-butto
   standalone: true,
   imports: [
     SideBarComponent,
+    NavBarComponent,
     RouterOutlet,
     CommonModule,
     NotificationButtonComponent
@@ -33,6 +35,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   user?: UserInterface;
   closeSideBar: boolean = false;
   showNotificationsIcon: boolean = false;
+  showNavBar: boolean = false;
 
   constructor() {
     this.isPhone = window.innerWidth <= 768;
@@ -43,11 +46,13 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.isLoggedUser = isLogged;
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
+        this.checkRolesForNavBar();
       })
     );
     this.isLoggedUser = this._authService.isAuthenticated();
     this.userInfo = this._localStorage.getUserData();
     this.checkRolesForNotifications();
+    this.checkRolesForNavBar();
 
     this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -55,6 +60,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.isLoggedUser = this._authService.isAuthenticated();
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
+        this.checkRolesForNavBar();
       });
   }
 
@@ -75,6 +81,16 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       'CHEF',
       'RECEPCIONISTA'
     ].includes(roleName);
+  }
+
+  private checkRolesForNavBar() {
+    if (!this.userInfo?.roleType?.name) {
+      this.showNavBar = true;
+      return;
+    }
+
+    const roleName = this.userInfo.roleType.name.toUpperCase();
+    this.showNavBar = roleName === 'CLIENTE';
   }
 
   listenEvent(event: boolean): void {

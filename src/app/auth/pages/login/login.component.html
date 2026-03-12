@@ -1,19 +1,19 @@
-<div class="brand-content-center">
+<div class="auth-content-center">
   <article
-    class="h-full w-[90%] md:w-[60%] lg:w-[65%] xl:w-[65%] 2xl:w-[65%] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto my-0 md:my-0"
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto md:h-[600px] lg:h-[600px] xl:h-[600px] 2xl:h-[750px] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto overflow-hidden shadow-2xl"
   >
     <section
-      class="h-full w-full flex flex-col text-center justify-center items-center px-5 py-10 gap-4"
+      class="h-full w-full flex flex-col text-center justify-center items-center px-8 py-10 gap-1 md:gap-4"
     >
-      <div class="flex flex-col gap-1.5">
-        <span class="font-extrabold text-lg md:text-xl">Iniciar Sesión</span>
-        <span class="font-medium text-sm">
-          Ingresa tus datos para Iniciar Sesión
+      <div class="flex flex-col gap-0 md:gap-1.5">
+        <span class="font-extrabold text-xl">Iniciar Sesión</span>
+        <span class="font-medium text-sm md:text-base">
+          Ingrese sus datos para acceder a su cuenta
         </span>
       </div>
       <form
         [formGroup]="form"
-        class="flex flex-col w-full items-center gap-1.5"
+        class="flex flex-col w-full items-center gap-0 md:gap-1.5"
       >
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Correo electrónico</mat-label>
@@ -35,6 +35,7 @@
           />
           <mat-icon matPrefix>lock</mat-icon>
           <button
+            type="button"
             matSuffix
             mat-icon-button
             (click)="showPassword = !showPassword"
@@ -46,29 +47,46 @@
             Contraseña requerida
           </mat-error>
         </mat-form-field>
-        <div
-          class="flex w-full content-between items-center justify-center gap-5"
-        >
-          <button mat-fab extended="true" (click)="login()" class="!w-full">
+        <div class="flex flex-col w-full items-center justify-center gap-2">
+          <button
+            mat-fab
+            extended="true"
+            (click)="login()"
+            class="!w-full bg-[#06a606] text-white"
+          >
             <span class="text-sm md:text-base">Iniciar Sesión</span>
           </button>
+          <div>
+            <a
+              class="cursor-pointer text-[#06a606] hover:text-[#06a606] hover-underline-animation font-medium text-sm md:text-base"
+              routerLink="/auth/recovery-password"
+            >
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+          <div
+            class="flex w-full content-between items-center justify-center gap-1"
+          >
+            <span class="font-medium text-sm md:text-base"
+              >¿No tienes una cuenta?</span
+            >
+            <a
+              routerLink="/auth/register"
+              class="cursor-pointer text-[#06a606] hover:text-[#06a606] hover-underline-animation font-medium text-sm md:text-base"
+              >Registrate aquí</a
+            >
+          </div>
         </div>
-        <a
-          class="relative mt-3 md:mt-5 lg:mt-5 2xl:mt-5 3xl:mt-5 font-medium text-sm text-[#06a606] after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-[#06a606] after:bottom-0 after:left-0 after:scale-x-0 after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 cursor-pointer"
-          routerLink="/auth/recovery-password"
-        >
-          ¿Olvidaste tu contraseña?
-        </a>
       </form>
     </section>
-    <section class="md:h-full w-full hidden md:flex flex-col">
+    <section class="relative h-full w-full hidden md:flex flex-col bg-gray-100">
       <img
-        [src]="loginBgUrl"
+        *ngIf="loginBgUrl"
+        [ngSrc]="loginBgUrl"
         priority
-        width="600"
-        height="800"
-        alt="Login Image"
-        class="md:h-full rounded-r-2xl w-full h-full object-cover"
+        fill
+        alt="Login Background"
+        class="object-cover animate-fade-in"
       />
     </section>
   </article>

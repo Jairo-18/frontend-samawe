@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
 
-  isLoggedUser = false;
+  isLoggedUser: boolean = false;
   userInfo?: UserInterface;
   organizationalName: string = '';
   accommodations: GetAccommodationPaginatedList[] = [];
@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   huespedes: string = '2';
   dateRange: { from?: Date; to?: Date } = {};
   faWhatsapp = faWhatsapp;
+  testScrollArray: number[] = Array(50).fill(0);
 
   ngOnInit(): void {
     this._subscription.add(

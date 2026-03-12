@@ -1,9 +1,10 @@
 <aside
   [ngClass]="{
     'flex flex-col bg-[#06a606] items-center font-bold border-r border-black': true,
-    'w-16 !h-full transition-all duration-[600ms] ease-in-out': isCollapsed,
-    'w-64 md:w-72 h-full p-2': !isCollapsed,
-    'fixed md:static z-50': !isCollapsed
+    'w-16 !h-screen sticky top-0 transition-all duration-[600ms] ease-in-out':
+      isCollapsed,
+    'w-64 md:w-72 h-screen p-2': !isCollapsed,
+    'fixed md:sticky top-0 z-50': true
   }"
 >
   @if (isLoading) {
@@ -46,10 +47,12 @@
       }"
     >
       <img
-        [src]="logoUrl"
+        [ngSrc]="logoUrl"
         priority
+        width="150"
+        height="150"
         alt="Logo Ecohotel Samawé"
-        class="w-[150px] h-[150px]"
+        class="w-[90px] md:w-[150px] h-[90px] md:h-[150px] border border-black rounded-full"
         [ngClass]="{ 'img-logo-collapsed': isCollapsed }"
       />
     </div>
