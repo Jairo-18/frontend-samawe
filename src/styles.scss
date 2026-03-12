@@ -14,6 +14,7 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 body {
   margin: 0;
@@ -24,4 +25,3 @@ input.mat-input-element,
 textarea.mat-input-element {
   text-transform: uppercase;
 }
-
