@@ -1,3 +1,5 @@
+import { Organizational } from '../../shared/interfaces/organizational.interface';
+
 export interface CreateType {
   code: string;
   name: string;
@@ -41,14 +43,6 @@ export interface PhoneCode {
   phoneCodeId: string;
   code?: string;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
-}
-export interface IdentificationType {
-  identificationTypeId: string;
-  code?: string;
-  name?: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -110,6 +104,7 @@ export interface TypeItem {
   code: string;
   name: string;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 export interface AdditionalType {
@@ -159,4 +154,5 @@ export interface AppRelatedData {
   discountType: DiscountType[];
   additionalType: AdditionalType[];
   personType: PersonType[];
+  organizational: Organizational[];
 }

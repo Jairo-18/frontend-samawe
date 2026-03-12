@@ -23,18 +23,20 @@ export interface InvoiceDetail {
   excursion?: ExcursionComplete;
   taxeType: TaxeType;
   isPaid: boolean;
+  organizationalId?: string;
 }
 export interface CreateInvoiceDetaill {
   productId?: number;
   accommodationId?: number;
   excursionId?: number;
   amount: number;
-  priceBuy: number;
+  priceBuy?: number;
   taxe?: number;
   priceWithoutTax: number;
   taxeTypeId?: number;
   startDate?: string;
   endDate?: string;
+  organizationalId?: string;
 }
 export interface AddedProductInvoiceDetaill {
   productId?: number;
@@ -47,6 +49,7 @@ export interface AddedProductInvoiceDetaill {
   isActive: boolean;
   categoryTypeId: number;
   taxeTypeId?: number;
+  organizationalId?: string;
 }
 export interface AddedAccommodationInvoiceDetaill {
   accommodationId?: number;
@@ -63,6 +66,7 @@ export interface AddedAccommodationInvoiceDetaill {
   bedTypeId: number;
   stateType?: StateType;
   taxeTypeId?: number;
+  organizationalId?: string;
 }
 export interface AddedExcursionInvoiceDetaill {
   excursionId?: number;
@@ -74,6 +78,7 @@ export interface AddedExcursionInvoiceDetaill {
   stateType?: StateType;
   categoryTypeId: number;
   taxeTypeId?: number;
+  organizationalId?: string;
 }
 export interface TogglePaymentResponse {
   invoiceDetailId: number;

@@ -1,4 +1,5 @@
 import { Component, Inject, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import {
   FormBuilder,
   FormGroup,
@@ -40,11 +41,10 @@ export class CreateOrEditTypesComponent {
     key,
     value
   }));
-  private readonly _dialogRef = inject(
-    MatDialogRef<CreateOrEditTypesComponent>
-  );
-  private readonly _typesService = inject(TypesService);
-  private readonly _fb = inject(FormBuilder);
+  private readonly _dialogRef: MatDialogRef<CreateOrEditTypesComponent> =
+    inject(MatDialogRef<CreateOrEditTypesComponent>);
+  private readonly _typesService: TypesService = inject(TypesService);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.isEditMode = !!data?.editMode;
@@ -73,7 +73,7 @@ export class CreateOrEditTypesComponent {
       code: values.code.trim(),
       name: values.name.trim()
     };
-    let action$;
+    let action$: Observable<any>;
     if (this.isEditMode && this._id) {
       action$ = this._typesService.updateType(type, this._id, payload);
     } else {
@@ -90,4 +90,3 @@ export class CreateOrEditTypesComponent {
     this._dialogRef.close(null);
   }
 }
-

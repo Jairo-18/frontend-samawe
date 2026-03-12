@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -24,6 +24,8 @@ import {
   IdentificationType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
+import { ApplicationService } from '../../../organizational/services/application.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -42,7 +44,7 @@ import {
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   formStep1: FormGroup;
   formStep2: FormGroup;
   currentStep: string = 'one';
@@ -52,6 +54,10 @@ export class RegisterComponent implements OnInit {
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
+  registerBgUrl: string = '';
+  private _subscription: Subscription = new Subscription();
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private readonly _registerService: RegisterService = inject(RegisterService);
   private readonly _router: Router = inject(Router);
   private readonly _relatedDataService: RelatedDataService =
@@ -92,6 +98,7 @@ export class RegisterComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getRelatedData();
+    this.loadRegisterBg();
     this.formStep2.get('confirmPassword')?.disable();
     this.formStep2.get('password')?.valueChanges.subscribe((value) => {
       if (!value) {
@@ -108,6 +115,21 @@ export class RegisterComponent implements OnInit {
         this.phoneCode = res.data?.phoneCode || [];
       }
     });
+  }
+  loadRegisterBg(): void {
+    this._subscription.add(
+      this._applicationService.mediaMap$.subscribe((mediaMap) => {
+        if (mediaMap && mediaMap['REGISTER_BG']) {
+          const bg = mediaMap['REGISTER_BG'];
+          if (bg && bg.length > 0) {
+            this.registerBgUrl = bg[0].url;
+          }
+        }
+      })
+    );
+  }
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
   }
   nextStep() {
     if (this.formStep1.valid) {
@@ -142,4 +164,3 @@ export class RegisterComponent implements OnInit {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 }
-

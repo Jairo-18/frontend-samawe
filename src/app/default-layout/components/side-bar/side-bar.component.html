@@ -46,13 +46,11 @@
       }"
     >
       <img
-        [src]="'assets/images/Logo Samawe.png'"
-        alt="Logo Samawé"
-        class=""
-        [ngClass]="{
-          'h-[90px] w-[90px] sm:h-[100px] sm:w-[100px] md:h-[90px] md:w-[90px] lg:h-[90px] lg:w-[90px] xl:h-[120px] xl:w-[120px] rounded-full border border-black':
-            !isCollapsed
-        }"
+        [src]="logoUrl"
+        priority
+        alt="Logo Ecohotel Samawé"
+        class="w-[150px] h-[150px]"
+        [ngClass]="{ 'img-logo-collapsed': isCollapsed }"
       />
     </div>
     <nav class="w-full h-full px-2 overflow-y-auto">
@@ -233,7 +231,7 @@
           hidden: isCollapsed
         }"
       >
-        © {{ currentYear }} Ecohotel Samawé.
+        © {{ currentYear }} {{ organizationalName }}.
       </span>
     </div>
   }

@@ -18,6 +18,7 @@ export interface CreateUserPanel {
   isActive?: boolean;
   roleType?: string;
   personType?: string;
+  organizationalId?: string;
 }
 export interface UserComplete {
   userId: string;
@@ -33,6 +34,7 @@ export interface UserComplete {
   roleType?: RoleType;
   personType?: PersonType;
   isActive: boolean;
+  organizationalId?: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

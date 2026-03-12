@@ -15,6 +15,7 @@ export interface CreateProductPanel {
   taxe?: number;
   categoryTypeId: number;
   unitOfMeasureId?: number;
+  organizationalId?: string;
 }
 export interface ProductComplete {
   productId: number;
@@ -28,6 +29,7 @@ export interface ProductComplete {
   isActive: boolean;
   categoryType: CategoryType;
   unitOfMeasure?: UnitOfMeasure;
+  organizationalId?: string;
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;

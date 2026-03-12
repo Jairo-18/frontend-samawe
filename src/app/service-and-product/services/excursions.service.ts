@@ -12,7 +12,11 @@ import {
   ApiResponseInterface
 } from '../../shared/interfaces/api-response.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
-import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import {
+  PaginationInterface,
+  BasePaginationParams
+} from '../../shared/interfaces/pagination.interface';
+import { AuthService } from '../../auth/services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,10 +24,15 @@ export class ExcursionsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-  getExcursionWithPagination(query: object): Observable<{
+  private readonly _authService: AuthService = inject(AuthService);
+  getExcursionWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
     data: CreateExcursionPanel[];
   }> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      query.organizationalId = orgId;
+    }
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
@@ -45,6 +54,10 @@ export class ExcursionsService {
   createExcursionPanel(
     excursion: CreateExcursionPanel
   ): Observable<ApiResponseCreateInterface> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      excursion.organizationalId = orgId;
+    }
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}excursion/create`,
       excursion

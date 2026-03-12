@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import {
   ProductSummary,
   InvoiceBalance,
@@ -9,37 +9,52 @@ import {
   InvoiceSummaryGroupedResponse,
   DashboardStateSummary
 } from '../interface/earning.interface';
+import { AuthService } from '../../auth/services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
 export class EarningService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _authService: AuthService = inject(AuthService);
   getGeneragetProductSummary(): Observable<ProductSummary> {
-    return this._httpClient.get<ProductSummary>(
-      `${environment.apiUrl}balance/product-summary`
-    );
+    const orgId = this._authService.getOrganizationalId();
+    const url = orgId
+      ? `${environment.apiUrl}balance/product-summary?organizationalId=${orgId}`
+      : `${environment.apiUrl}balance/product-summary`;
+    return this._httpClient.get<ProductSummary>(url);
   }
   getInvoiceBalance(): Observable<InvoiceBalance> {
-    return this._httpClient.get<InvoiceBalance>(
-      `${environment.apiUrl}balance/invoice-summary`
-    );
+    const orgId = this._authService.getOrganizationalId();
+    const url = orgId
+      ? `${environment.apiUrl}balance/invoice-summary?organizationalId=${orgId}`
+      : `${environment.apiUrl}balance/invoice-summary`;
+    return this._httpClient.get<InvoiceBalance>(url);
   }
   getTotalInventory(): Observable<TotalInventory> {
-    return this._httpClient.get<TotalInventory>(
-      `${environment.apiUrl}balance/total-stock`
-    );
+    const orgId = this._authService.getOrganizationalId();
+    const url = orgId
+      ? `${environment.apiUrl}balance/total-stock?organizationalId=${orgId}`
+      : `${environment.apiUrl}balance/total-stock`;
+    return this._httpClient.get<TotalInventory>(url);
   }
   getGroupedInvoices(): Observable<InvoiceSummaryGroupedResponse> {
-    return this._httpClient.get<InvoiceSummaryGroupedResponse>(
-      `${environment.apiUrl}balance/invoice-chart-list`
-    );
+    const orgId = this._authService.getOrganizationalId();
+    const url = orgId
+      ? `${environment.apiUrl}balance/invoice-chart-list?organizationalId=${orgId}`
+      : `${environment.apiUrl}balance/invoice-chart-list`;
+    return this._httpClient.get<InvoiceSummaryGroupedResponse>(url);
   }
   getDashboardGeneralSummary(): Observable<DashboardStateSummary> {
-    return this._httpClient.get<DashboardStateSummary>(
-      `${environment.apiUrl}balance/general`
-    );
+    const orgId = this._authService.getOrganizationalId();
+    const url = orgId
+      ? `${environment.apiUrl}balance/general?organizationalId=${orgId}`
+      : `${environment.apiUrl}balance/general`;
+    return this._httpClient.get<DashboardStateSummary>(url);
   }
-  private downloadExcelFromResponse(response: any, defaultName: string): void {
+  private downloadExcelFromResponse(
+    response: HttpResponse<Blob>,
+    defaultName: string
+  ): void {
     const blob = response.body;
     if (!blob) return;
     const contentDisposition = response.headers.get('Content-Disposition');

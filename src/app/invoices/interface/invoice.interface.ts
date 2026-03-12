@@ -48,6 +48,7 @@ export interface Invoice {
   readyTime?: string;
   servedTime?: string;
   stateType?: StateType;
+  organizationalId?: string;
 }
 export interface CreateInvoice {
   invoiceTypeId: number;
@@ -59,6 +60,7 @@ export interface CreateInvoice {
   transfer?: number;
   startDate: string;
   endDate: string;
+  organizationalId?: string;
 }
 export interface EditInvoice {
   invoiceId: number;
@@ -96,6 +98,7 @@ export interface InvoiceComplete {
   readyTime?: string;
   servedTime?: string;
   stateType?: StateType;
+  organizationalId?: string;
 }
 export interface DialogData {
   editMode: boolean;

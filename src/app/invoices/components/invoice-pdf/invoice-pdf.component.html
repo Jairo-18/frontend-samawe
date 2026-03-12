@@ -2,7 +2,12 @@
   <section class="invoice-header">
     <section class="flex flex-col w-[50%]">
       <div class="col">
-        <span>NIT: <span class="value">9013501728</span></span>
+        <span
+          >{{ organizationalData?.identificationType?.code }}:
+          <span class="value">
+            {{ organizationalData?.identificationNumber }}
+          </span></span
+        >
       </div>
       <div class="col">
         <span>
@@ -31,14 +36,15 @@
       </div>
       <div class="col">
         <span>
-          Dirección <span class="value">Vereda Pueblo Viejo - Aut 21</span>
+          Dirección:
+          <span class="value">{{ organizationalData?.address }}</span>
         </span>
       </div>
       <div class="col">
         <span>
           Fecha de impresión:
           <span class="value">
-            {{ printDate | date : 'dd/MM/yyyy HH:mm:ss' }}
+            {{ printDate | date: 'dd/MM/yyyy HH:mm:ss' }}
           </span>
         </span>
       </div>
@@ -89,21 +95,24 @@
   <section class="invoice-totals">
     <div class="separator"></div>
     @if (invoiceData.cash && invoiceData.cash > 0) {
-    <div class="row">
-      <div class="col-left"><span class="label">Efectivo:</span></div>
-      <div class="col-right">
-        <span class="highlight">{{ invoiceData.cash || '' | formatCop }}</span>
+      <div class="row">
+        <div class="col-left"><span class="label">Efectivo:</span></div>
+        <div class="col-right">
+          <span class="highlight">{{
+            invoiceData.cash || '' | formatCop
+          }}</span>
+        </div>
       </div>
-    </div>
-    } @if (invoiceData.transfer && invoiceData.transfer > 0) {
-    <div class="row">
-      <div class="col-left"><span class="label">Transferencia:</span></div>
-      <div class="col-right">
-        <span class="highlight">{{
-          invoiceData.transfer || '' | formatCop
-        }}</span>
+    }
+    @if (invoiceData.transfer && invoiceData.transfer > 0) {
+      <div class="row">
+        <div class="col-left"><span class="label">Transferencia:</span></div>
+        <div class="col-right">
+          <span class="highlight">{{
+            invoiceData.transfer || '' | formatCop
+          }}</span>
+        </div>
       </div>
-    </div>
     }
     <div class="row">
       <div class="col-left"><span class="label">Estado de pago:</span></div>
@@ -151,9 +160,8 @@
   </section>
   <footer>
     <span>
-      "Gracias por su compañía - Factura generada por Samawe Putumayo S A S
-      Zomac"
+      "Gracias por su compañía - Factura generada por
+      {{ organizationalData?.legalName }}"
     </span>
   </footer>
 </article>
-

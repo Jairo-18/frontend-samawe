@@ -11,17 +11,27 @@ import {
   EditInvoice,
   InvoiceComplete
 } from '../interface/invoice.interface';
+import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
-import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import {
+  PaginationInterface,
+  BasePaginationParams
+} from '../../shared/interfaces/pagination.interface';
+import { AuthService } from '../../auth/services/auth.service';
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-  getInvoiceWithPagination(query: object): Observable<{
+  private readonly _authService: AuthService = inject(AuthService);
+  getInvoiceWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
     data: InvoiceComplete[];
   }> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      query.organizationalId = orgId;
+    }
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
@@ -47,6 +57,10 @@ export class InvoiceService {
   createInvoice(
     invoice: CreateInvoice
   ): Observable<ApiResponseCreateInterface> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      invoice.organizationalId = orgId;
+    }
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}invoices`,
       invoice
@@ -60,8 +74,12 @@ export class InvoiceService {
 
   addDetails(
     invoiceId: number,
-    details: any[]
+    details: CreateInvoiceDetaill[]
   ): Observable<ApiResponseCreateInterface> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      details.forEach((d) => (d.organizationalId = orgId));
+    }
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}invoices/invoice/${invoiceId}/details`,
       details

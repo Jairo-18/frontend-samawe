@@ -60,7 +60,8 @@ export class AuthService {
               tokens: raw.tokens,
               user: {
                 userId: raw.user.userId,
-                roleType: raw.user.roleType
+                roleType: raw.user.roleType,
+                organizationalId: raw.user.organizationalId
               },
               session: {
                 accessSessionId: raw.accessSessionId
@@ -181,6 +182,15 @@ export class AuthService {
       return this.getUserLoggedIn();
     } catch (error) {
       console.error('Error getting current user:', error);
+      return null;
+    }
+  }
+  getOrganizationalId(): string | null {
+    try {
+      const userData = this._localStorageService.getAllSessionData();
+      return userData?.user?.organizationalId || null;
+    } catch (error) {
+      console.error('Error getting organizational ID:', error);
       return null;
     }
   }

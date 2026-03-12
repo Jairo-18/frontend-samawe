@@ -20,7 +20,6 @@ import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { CreateUserPanel } from '../../interfaces/create.interface';
-import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
 import {
   IdentificationType,
   PhoneCode,
@@ -59,9 +58,6 @@ export class CreateOrEditUsersComponent implements OnInit {
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
-  private readonly _customValidations: CustomValidationsService = inject(
-    CustomValidationsService
-  );
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);

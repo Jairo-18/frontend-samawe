@@ -11,7 +11,11 @@ import {
   CreateProductPanel,
   ProductComplete
 } from '../interface/product.interface';
-import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import {
+  PaginationInterface,
+  BasePaginationParams
+} from '../../shared/interfaces/pagination.interface';
+import { AuthService } from '../../auth/services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,10 +23,15 @@ export class ProductsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-  getProductWithPagination(query: object): Observable<{
+  private readonly _authService: AuthService = inject(AuthService);
+  getProductWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
     data: ProductComplete[];
   }> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      query.organizationalId = orgId;
+    }
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
@@ -52,6 +61,10 @@ export class ProductsService {
   createProductPanel(
     product: CreateProductPanel
   ): Observable<ApiResponseCreateInterface> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      product.organizationalId = orgId;
+    }
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}product/create`,
       product

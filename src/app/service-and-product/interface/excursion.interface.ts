@@ -13,6 +13,7 @@ export interface CreateExcursionPanel {
   priceSale: number;
   stateTypeId: number;
   categoryTypeId: number;
+  organizationalId?: string;
 }
 export interface ExcursionComplete {
   excursionId: number;
@@ -27,6 +28,7 @@ export interface ExcursionComplete {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;
+  organizationalId?: string;
   images?: ImageItem[];
 }
 export interface ExcursionListResponse {

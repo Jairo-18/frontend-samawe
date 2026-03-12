@@ -19,6 +19,7 @@ export interface CreateAccommodationPanel {
   categoryTypeId: number;
   bedTypeId: number;
   stateTypeId?: number;
+  organizationalId?: string;
 }
 export interface AccommodationComplete {
   accommodationId: number;
@@ -38,6 +39,7 @@ export interface AccommodationComplete {
   updatedAt: Date;
   createdAt: Date;
   deletedAt: Date;
+  organizationalId?: string;
   images?: ImageItem[];
 }
 export interface GetAccommodationPaginatedList {
@@ -54,6 +56,7 @@ export interface GetAccommodationPaginatedList {
   categoryTypeId: number;
   bedTypeId: number;
   stateTypeId?: number;
+  organizationalId?: string;
   images?: ImageItem[];
 }
 export interface CreateAccommodationRelatedData {

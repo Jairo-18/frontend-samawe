@@ -8,7 +8,11 @@ export interface Session {
 }
 export interface RawLoginResponse {
   tokens: Tokens;
-  user: User;
+  user: {
+    userId: string;
+    roleType: RoleType;
+    organizationalId: string | null;
+  };
   accessSessionId: string;
 }
 export interface Login {
@@ -27,6 +31,7 @@ export interface LoginSuccessInterface {
 export interface User {
   userId: string;
   roleType: RoleType;
+  organizationalId: string | null;
 }
 export interface Tokens {
   accessToken: string;

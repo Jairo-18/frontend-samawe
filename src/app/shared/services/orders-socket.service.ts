@@ -24,9 +24,7 @@ export class OrdersSocketService {
       ? environment.apiUrl.slice(0, -1)
       : environment.apiUrl;
 
-    this.socket = io(`${baseUrl}/orders`, {
-      transports: ['websocket']
-    });
+    this.socket = io(`${baseUrl}/orders`);
 
     this.socket.on('connect', () => {
       this.socket.emit('joinOrders');

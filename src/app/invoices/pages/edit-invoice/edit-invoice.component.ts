@@ -22,7 +22,9 @@ import {
   DiscountType,
   PaidType,
   PayType,
-  TaxeType
+  TaxeType,
+  StateType,
+  InvoiceType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { Invoice } from '../../interface/invoice.interface';
 import { InvoiceService } from '../../services/invoice.service';
@@ -88,6 +90,8 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   payTypes: PayType[] = [];
   additionalTypes: AdditionalType[] = [];
   discountTypes: DiscountType[] = [];
+  stateTypes: StateType[] = [];
+  invoiceTypes: InvoiceType[] = [];
   reloadInvoiceDetails: boolean = false;
   invoiceData?: Invoice;
   invoiceId?: number;
@@ -135,6 +139,8 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     this.taxeTypes = data.taxeType || [];
     this.additionalTypes = data.additionalType || [];
     this.discountTypes = data.discountType || [];
+    this.stateTypes = data.stateType || [];
+    this.invoiceTypes = data.invoiceType || [];
   }
   onItemSaved(): void {
     if (this.invoiceId) {
@@ -152,7 +158,9 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
           invoiceId: this.invoiceId,
           relatedData: {
             payType: this.payTypes,
-            paidType: this.paidTypes
+            paidType: this.paidTypes,
+            stateType: this.stateTypes,
+            invoiceType: this.invoiceTypes
           }
         }
       })

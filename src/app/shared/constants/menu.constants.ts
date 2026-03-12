@@ -94,6 +94,12 @@ export const MENU_CONST: MenuInterface[] = [
         route: '/organizational/types/manage',
         icon: 'category',
         order: 1
+      },
+      {
+        name: 'Aplicación',
+        route: '/organizational/application',
+        icon: 'settings',
+        order: 2
       }
     ]
   }
@@ -114,6 +120,7 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Productos y Servicios',
     'Recetas',
     'Gestión',
+    'Aplicación',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio',

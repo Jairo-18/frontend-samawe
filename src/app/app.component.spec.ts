@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [AppComponent]
     }).compileComponents();
   });
   it('should create the app', () => {
@@ -20,7 +20,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, frontend-samawe');
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Hello, frontend-samawe'
+    );
   });
 });
-

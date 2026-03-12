@@ -7,7 +7,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  OnDestroy
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,6 +37,9 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { UsersService } from '../../../organizational/services/users.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { ApplicationService } from '../../../organizational/services/application.service';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-side-bar',
   standalone: true,
@@ -62,14 +66,20 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
     ])
   ]
 })
-export class SideBarComponent implements OnInit, OnChanges {
+export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
   @Input() userRole?: UserInterface;
   @Input() closeSideBar: boolean = false;
   @Output() collapsed: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() logout = new EventEmitter<void>();
+
   private readonly _router: Router = inject(Router);
   private readonly _usersService: UsersService = inject(UsersService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
+
+  organizationalName: string = '';
+  logoUrl: string = '';
   isCollapsed: boolean = true;
   currentRoute: string = '';
   menuWithItems: MenuInterface[] = [];
@@ -79,8 +89,11 @@ export class SideBarComponent implements OnInit, OnChanges {
   openSubMenu: Record<string, boolean> = {};
   userComplete?: UserComplete;
   isLoading: boolean = false;
+  private _subscription: Subscription = new Subscription();
+
   ngOnInit(): void {
     this.currentRoute = this._router.url;
+    this.loadBranding();
     if (this.userRole?.userId) {
       this.isLoading = true;
       this._usersService.getUserEditPanel(this.userRole.userId).subscribe({
@@ -98,11 +111,38 @@ export class SideBarComponent implements OnInit, OnChanges {
       this.menuWithItems = [];
     }
   }
+
+  private loadBranding(): void {
+    this._subscription.add(
+      this._applicationService.currentOrg$.subscribe((organizational) => {
+        if (organizational) {
+          this.organizationalName = organizational.name;
+        }
+      })
+    );
+
+    this._subscription.add(
+      this._applicationService.mediaMap$.subscribe((mediaMap) => {
+        if (mediaMap && mediaMap['LOGO']) {
+          const logos = mediaMap['LOGO'];
+          if (logos && logos.length > 0) {
+            this.logoUrl = logos[0].url;
+          }
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['closeSideBar'] && this.closeSideBar) {
       this.closeSideBarMethod();
     }
   }
+
   private filterMenuByRole(): void {
     const roleName = this.userComplete?.roleType?.name;
     if (!roleName) {
@@ -132,34 +172,41 @@ export class SideBarComponent implements OnInit, OnChanges {
       }))
       .filter((module) => module.items.length > 0);
   }
+
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) this.closeAllSubMenus();
     this.collapsed.emit(this.isCollapsed);
   }
+
   closeSideBarMethod(): void {
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) this.closeAllSubMenus();
   }
+
   closeAllSubMenus(): void {
     this.openSubMenu = {};
   }
+
   toggleSubMenu(item: ItemInterface): void {
     if (!this.isCollapsed) {
       this.openSubMenu[item.name] = !this.openSubMenu[item.name];
     }
   }
+
   closeMenu(): void {
     if (this.menuTrigger) {
       this.menuTrigger.closeMenu();
     }
   }
+
   removeFocus(event: MouseEvent): void {
     const target = event.currentTarget as HTMLElement;
     if (target) {
       target.blur();
     }
   }
+
   onItemClick(event: MouseEvent, item: ItemInterface): void {
     this.removeFocus(event);
     if (!this.isCollapsed) {

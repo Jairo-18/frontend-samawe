@@ -12,7 +12,11 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { HttpClient } from '@angular/common/http';
-import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import {
+  PaginationInterface,
+  BasePaginationParams
+} from '../../shared/interfaces/pagination.interface';
+import { AuthService } from '../../auth/services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,10 +24,15 @@ export class AccommodationsService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
-  getAccommodationWithPagination(query: object): Observable<{
+  private readonly _authService: AuthService = inject(AuthService);
+  getAccommodationWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
     data: GetAccommodationPaginatedList[];
   }> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      query.organizationalId = orgId;
+    }
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       pagination: PaginationInterface;
@@ -40,6 +49,10 @@ export class AccommodationsService {
   createAccommodationPanel(
     accommodation: CreateAccommodationPanel
   ): Observable<ApiResponseCreateInterface> {
+    const orgId = this._authService.getOrganizationalId();
+    if (orgId) {
+      accommodation.organizationalId = orgId;
+    }
     return this._httpClient.post<ApiResponseCreateInterface>(
       `${environment.apiUrl}accommodation/create`,
       accommodation

@@ -11,6 +11,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
+import { ApplicationService } from './organizational/services/application.service';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -18,10 +20,13 @@ import { environment } from '../environments/environment';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnDestroy {
-  private _iconRegistry: MatIconRegistry = inject(MatIconRegistry);
+  private readonly _iconRegistry: MatIconRegistry = inject(MatIconRegistry);
   private readonly _router: Router = inject(Router);
   private readonly _meta: Meta = inject(Meta);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private _routerSubscription!: Subscription;
+
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
     if (environment.production) {
       this._meta.addTag({
@@ -31,16 +36,23 @@ export class AppComponent implements OnDestroy {
     }
     this._setMaterialOutlinedIconsDefault();
     this._listenRouterChanges();
+    this._loadInitialBranding();
+  }
+
+  private _loadInitialBranding(): void {
+    this._applicationService.loadBrandingBySlug('eco-hotel-samawe');
   }
   private _setMaterialOutlinedIconsDefault(): void {
     this._iconRegistry.setDefaultFontSetClass('material-icons');
   }
   private _listenRouterChanges(): void {
-    this._routerSubscription = this._router.events.subscribe((event): void => {
-      if (event instanceof NavigationEnd) {
-        this._setScrollOnTop();
+    this._routerSubscription = this._router.events.subscribe(
+      (event: unknown): void => {
+        if (event instanceof NavigationEnd) {
+          this._setScrollOnTop();
+        }
       }
-    });
+    );
   }
   private _setScrollOnTop(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -51,4 +63,3 @@ export class AppComponent implements OnDestroy {
     this._routerSubscription.unsubscribe();
   }
 }
-

@@ -9,6 +9,8 @@ import {
   AdditionalType,
   CreateType,
   DiscountType,
+  IdentificationType,
+  PhoneCode,
   TypeForEditResponse,
   TypeItem
 } from '../../shared/interfaces/relatedDataGeneral';
@@ -53,15 +55,21 @@ export class TypesService {
     );
   }
 
-  updateType(type: string, id: string, body: any): Observable<any> {
-    return this._httpClient.patch(
+  updateType(
+    type: string,
+    id: string,
+    body: Partial<CreateType>
+  ): Observable<ApiResponseInterface<void>> {
+    return this._httpClient.patch<ApiResponseInterface<void>>(
       `${environment.apiUrl}type/${type}/${id}`,
       body
     );
   }
+
   deleteType(type: string, id: string): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}type/${type}/${id}`);
   }
+
   getAllDiscountTypes(): Observable<ApiResponseInterface<DiscountType[]>> {
     return this._httpClient.get<ApiResponseInterface<DiscountType[]>>(
       `${environment.apiUrl}type/discountType/all`
@@ -72,5 +80,16 @@ export class TypesService {
       `${environment.apiUrl}type/additionalType/all`
     );
   }
-}
 
+  getAllIdentificationTypes(): Observable<ApiResponseInterface<IdentificationType[]>> {
+    return this._httpClient.get<ApiResponseInterface<IdentificationType[]>>(
+      `${environment.apiUrl}type/identificationType/all`
+    );
+  }
+
+  getAllPhoneCodes(): Observable<ApiResponseInterface<PhoneCode[]>> {
+    return this._httpClient.get<ApiResponseInterface<PhoneCode[]>>(
+      `${environment.apiUrl}type/phoneCode/all`
+    );
+  }
+}

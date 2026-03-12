@@ -5,23 +5,23 @@
     >
       <img
         routerLink="/"
-        src="assets/images/Logo Samawe.png"
-        alt="Logo Samawé"
+        [src]="logoUrl"
+        [alt]="organizationalName"
         class="h-11 w-11 md:h-16 md:w-16 cursor-pointer"
       />
       <h1 class="text-base md:text-xl font-medium md:font-semibold">
-        Ecohotel Samawé
+        {{ organizationalName }}
       </h1>
     </section>
     <section class="hidden md:flex justify-between w-[60%] text-white">
       @for (item of navBarItems; track $index) {
-      <button
-        [routerLink]="item.route"
-        class="flex items-center justify-center gap-2 hover:bg-blue-300/55 px-2 rounded min-w-[150px] min-h-[65px]"
-      >
-        <mat-icon>{{ item.icon }}</mat-icon>
-        {{ item.title }}
-      </button>
+        <button
+          [routerLink]="item.route"
+          class="flex items-center justify-center gap-2 hover:bg-blue-300/55 px-2 rounded min-w-[150px] min-h-[65px]"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+          {{ item.title }}
+        </button>
       }
     </section>
     <section class="flex md:hidden justify-end w-[30%] md:w-[60%]">
@@ -34,13 +34,12 @@
       </button>
       <mat-menu #mobileMenu="matMenu">
         @for (item of navBarItems; track $index) {
-        <button mat-menu-item [routerLink]="item.route">
-          <mat-icon>{{ item.icon }}</mat-icon>
-          <span>{{ item.title }}</span>
-        </button>
+          <button mat-menu-item [routerLink]="item.route">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.title }}</span>
+          </button>
         }
       </mat-menu>
     </section>
   </article>
 </nav>
-

@@ -8,7 +8,7 @@
           class="inline-block h-6 w-6 rounded bg-amber-500"
           aria-hidden="true"
         ></span>
-        <span>Eco Hotel Samawé</span>
+        <span>{{ organizationalName }}</span>
       </div>
       <p class="text-sm text-muted-foreground">
         Experiencias únicas en el corazón de la naturaleza. Disfruta de
@@ -46,8 +46,10 @@
     <div
       class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 text-xs text-muted-foreground sm:px-6"
     >
-      <span>© {{ currentYear }} Samawé. Todos los derechos reservados.</span>
+      <span
+        >© {{ currentYear }} {{ organizationalName }}. Todos los derechos
+        reservados.</span
+      >
     </div>
   </div>
 </footer>
-
