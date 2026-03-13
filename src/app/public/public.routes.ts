@@ -9,6 +9,13 @@ export const publicRoutes: Routes = [
           import('./pages/home/home.component').then((m) => m.HomeComponent)
       },
       {
+        path: 'about-us',
+        loadComponent: () =>
+          import('./pages/about-us/about-us.component').then(
+            (m) => m.AboutUsComponent
+          )
+      },
+      {
         path: 'accommodation',
         loadComponent: () =>
           import('./pages/accommodation/accommodation.component').then(
@@ -16,18 +23,23 @@ export const publicRoutes: Routes = [
           )
       },
       {
-        path: 'excursion',
+        path: 'gastronomy',
         loadComponent: () =>
-          import('./pages/excursion/excursion.component').then(
-            (m) => m.ExcursionComponent
+          import('./pages/gastronomy/gastronomy.component').then(
+            (m) => m.GastronomyComponent
           )
       },
       {
-        path: 'about-us',
+        path: 'how-to-arrive',
         loadComponent: () =>
-          import('./pages/about-us/about-us.component').then(
-            (m) => m.AboutUsComponent
+          import('./pages/how-to-arrive/how-to-arrive.component').then(
+            (m) => m.HowToArriveComponent
           )
+      },
+      {
+        path: 'blog',
+        loadComponent: () =>
+          import('./pages/blog/blog.component').then((m) => m.BlogComponent)
       },
       {
         path: 'settings',

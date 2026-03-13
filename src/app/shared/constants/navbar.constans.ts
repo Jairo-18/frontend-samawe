@@ -8,7 +8,7 @@ export const NAVBAR_CONST: NavItem[] = [
   },
   {
     title: 'Alojamiento',
-    route: '/lodging',
+    route: '/accommodation',
     icon: 'hotel'
   },
   {
@@ -18,7 +18,7 @@ export const NAVBAR_CONST: NavItem[] = [
   },
   {
     title: 'Sobre Nosotros',
-    route: '/about',
+    route: '/about-us',
     icon: 'groups'
   },
   {

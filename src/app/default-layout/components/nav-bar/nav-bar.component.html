@@ -25,19 +25,20 @@
 
     <!-- Center: Navigation -->
     <section
-      class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-2 transition-colors duration-300"
+      class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-4 transition-colors duration-300"
       [ngClass]="{ 'text-black': !isScrolled, 'text-gray-800': isScrolled }"
     >
       @for (item of navBarItems; track $index) {
-        <button
+        <a
           [routerLink]="item.route"
-          class="flex items-center justify-center gap-2 hover:bg-black/5 px-2 lg:px-4 rounded-lg transition-all duration-200 py-2 whitespace-nowrap"
+          routerLinkActive="!text-[#06a606]"
+          class="cursor-pointer hover-underline-animation font-medium text-sm lg:text-base px-2 py-1 transition-colors duration-200 whitespace-nowrap flex items-center gap-2"
         >
           <mat-icon class="scale-90" *ngIf="item.icon">{{
             item.icon
           }}</mat-icon>
-          <span class="font-medium text-sm lg:text-base">{{ item.title }}</span>
-        </button>
+          <span>{{ item.title }}</span>
+        </a>
       }
     </section>
 

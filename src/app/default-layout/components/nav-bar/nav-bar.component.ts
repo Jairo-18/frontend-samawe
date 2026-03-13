@@ -35,7 +35,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
   private readonly _authService: AuthService = inject(AuthService);
-  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
   private _subscription: Subscription = new Subscription();
 
