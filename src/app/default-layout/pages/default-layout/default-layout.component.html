@@ -1,44 +1,46 @@
-<article class="flex relative">
-  @if (
-    isLoggedUser &&
-    !isPhone &&
-    (userInfo?.roleType?.name === 'Administrador' ||
-      userInfo?.roleType?.name === 'ADMINISTRADOR' ||
-      userInfo?.roleType?.name === 'Recepcionista' ||
-      userInfo?.roleType?.name === 'RECEPCIONISTA' ||
-      userInfo?.roleType?.name === 'MESERO' ||
-      userInfo?.roleType?.name === 'CHEF')
-  ) {
-    <app-side-bar
-      [userRole]="userInfo"
-      class="brand-side-bar"
-      (collapsed)="listenEvent($event)"
-      [closeSideBar]="closeSideBar"
-      (logout)="logout()"
-    ></app-side-bar>
-  }
-
-  <div class="app-container w-full relative">
-    @if (showNavBar) {
-      <app-nav-bar class="brand-nav-bar"></app-nav-bar>
-    }
-
-    <app-notification-button
-      [showNotificationsIcon]="showNotificationsIcon"
-      [userInfo]="userInfo"
-      class="absolute top-4 right-6 z-50"
-    >
-    </app-notification-button>
-
-    <main
-      class="main w-full"
-      [ngClass]="{ 'has-mobile-menu': isPhone && isLoggedUser }"
-    >
-      <router-outlet></router-outlet>
-    </main>
-
-    @if (isPhone && isLoggedUser) {
-      <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
-    }
+@if (_relatedDataService.isLoading()) {
+  <div class="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
+    <app-loader></app-loader>
   </div>
-</article>
+} @else {
+  <article
+    class="flex relative min-h-dvh"
+    [style.--sidebar-width]="
+      !showSideBar ? '0px' : isCollapsedSideBar ? '64px' : '288px'
+    "
+  >
+    @if (showSideBar) {
+      <app-side-bar
+        [userRole]="userInfo"
+        class="brand-side-bar"
+        (collapsed)="listenEvent($event)"
+        [closeSideBar]="closeSideBar"
+        (logout)="logout()"
+      ></app-side-bar>
+    }
+
+    <div class="app-container flex-1 w-full relative">
+      @if (showNavBar) {
+        <app-nav-bar class="brand-nav-bar"></app-nav-bar>
+      }
+
+      <app-notification-button
+        [showNotificationsIcon]="showNotificationsIcon"
+        [userInfo]="userInfo"
+        class="absolute top-4 right-6 z-50"
+      >
+      </app-notification-button>
+
+      <main
+        class="main w-full"
+        [ngClass]="{ 'has-mobile-menu': isPhone && isLoggedUser }"
+      >
+        <router-outlet></router-outlet>
+      </main>
+
+      @if (isPhone && isLoggedUser) {
+        <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
+      }
+    </div>
+  </article>
+}

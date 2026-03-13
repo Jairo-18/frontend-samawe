@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -10,6 +10,8 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { NotificationButtonComponent } from '../../components/notification-button/notification-button.component';
 import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.component';
+import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
@@ -19,7 +21,8 @@ import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.co
     RouterOutlet,
     CommonModule,
     NotificationButtonComponent,
-    MobileMenuComponent
+    MobileMenuComponent,
+    LoaderComponent
   ],
   templateUrl: './default-layout.component.html',
   styleUrl: './default-layout.component.scss'
@@ -29,6 +32,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   private readonly _router: Router = inject(Router);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  public readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
   private _subscription: Subscription = new Subscription();
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
@@ -38,9 +43,18 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   closeSideBar: boolean = false;
   showNotificationsIcon: boolean = false;
   showNavBar: boolean = false;
+  showSideBar: boolean = false;
 
   constructor() {
     this.isPhone = window.innerWidth <= 768;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent) {
+    const window = event.target as Window;
+    this.isPhone = window.innerWidth <= 768;
+    this.checkSideBarVisibility();
+    this.checkRolesForNavBar();
   }
   ngOnInit(): void {
     this._subscription.add(
@@ -49,12 +63,14 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
         this.checkRolesForNavBar();
+        this.checkSideBarVisibility();
       })
     );
     this.isLoggedUser = this._authService.isAuthenticated();
     this.userInfo = this._localStorage.getUserData();
     this.checkRolesForNotifications();
     this.checkRolesForNavBar();
+    this.checkSideBarVisibility();
 
     this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -63,6 +79,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
         this.checkRolesForNavBar();
+        this.checkSideBarVisibility();
       });
   }
 
@@ -86,6 +103,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   private checkRolesForNavBar() {
+    if (this.isPhone) {
+      this.showNavBar = !this.isLoggedUser;
+      return;
+    }
+
     if (!this.userInfo?.roleType?.name) {
       this.showNavBar = true;
       return;
@@ -93,6 +115,19 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
     const roleName = this.userInfo.roleType.name.toUpperCase();
     this.showNavBar = roleName === 'CLIENTE';
+  }
+
+  private checkSideBarVisibility() {
+    this.showSideBar = !!(
+      this.isLoggedUser &&
+      !this.isPhone &&
+      (this.userInfo?.roleType?.name === 'Administrador' ||
+        this.userInfo?.roleType?.name === 'ADMINISTRADOR' ||
+        this.userInfo?.roleType?.name === 'Recepcionista' ||
+        this.userInfo?.roleType?.name === 'RECEPCIONISTA' ||
+        this.userInfo?.roleType?.name === 'MESERO' ||
+        this.userInfo?.roleType?.name === 'CHEF')
+    );
   }
 
   listenEvent(event: boolean): void {

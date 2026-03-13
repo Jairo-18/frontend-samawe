@@ -84,7 +84,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._authService.cleanRedirectUrl();
       },
       error: (error) => {
-        console.error(error);
+        console.error('Error en el login:', error);
+        this._authService.cleanRedirectUrl();
+        this._router.navigateByUrl('/auth/login');
       }
     });
   }

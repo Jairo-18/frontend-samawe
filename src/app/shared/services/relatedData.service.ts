@@ -24,6 +24,10 @@ export class RelatedDataService {
     null
   );
   readonly relatedData = this._relatedData.asReadonly();
+  
+  private _isLoading = signal<boolean>(true);
+  readonly isLoading = this._isLoading.asReadonly();
+
   private _relatedDataRequest$: Observable<
     ApiResponseInterface<AppRelatedData>
   > | null = null;
@@ -31,15 +35,20 @@ export class RelatedDataService {
     forceRefresh: boolean = false
   ): Observable<ApiResponseInterface<AppRelatedData>> {
     if (!forceRefresh && this._relatedData()) {
+      this._isLoading.set(false);
       return of(this._relatedData()!);
     }
     if (!this._relatedDataRequest$) {
+      this._isLoading.set(true);
       this._relatedDataRequest$ = this._httpClient
         .get<
           ApiResponseInterface<AppRelatedData>
         >(`${environment.apiUrl}app/related-data`)
         .pipe(
-          tap((response) => this._relatedData.set(response)),
+          tap((response) => {
+            this._relatedData.set(response);
+            this._isLoading.set(false);
+          }),
           shareReplay(1)
         );
     }

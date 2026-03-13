@@ -44,14 +44,24 @@
     <!-- Right: Login Action -->
     <section class="flex flex-1 items-center justify-end gap-x-3">
       <div class="hidden md:flex">
-        <button
-          *ngIf="loginItem"
-          [routerLink]="loginItem.route"
-          class="flex items-center justify-center gap-2 px-6 py-2 rounded-full transition-all duration-200 border-2"
-        >
-          <mat-icon>{{ loginItem.icon }}</mat-icon>
-          <span class="font-bold">{{ loginItem.title }}</span>
-        </button>
+        @if (!isLoggedUser) {
+          <button
+            *ngIf="loginItem"
+            [routerLink]="loginItem.route"
+            class="flex items-center justify-center gap-2 px-6 py-2 rounded-full transition-all duration-200 border-2"
+          >
+            <mat-icon>{{ loginItem.icon }}</mat-icon>
+            <span class="font-bold">{{ loginItem.title }}</span>
+          </button>
+        } @else {
+          <button
+            (click)="logout()"
+            class="flex items-center justify-center gap-2 px-6 py-2 rounded-full transition-all duration-200 border-2 border-red-500 text-red-500 hover:bg-red-50"
+          >
+            <mat-icon>logout</mat-icon>
+            <span class="font-bold">Cerrar Sesión</span>
+          </button>
+        }
       </div>
 
       <!-- Mobile Menu Toggle -->

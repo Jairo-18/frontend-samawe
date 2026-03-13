@@ -5,7 +5,7 @@ import {
   OnDestroy,
   HostListener
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { NAVBAR_CONST } from '../../../shared/constants/navbar.constans';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +14,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../auth/services/auth.service';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 
 @Component({
   selector: 'app-nav-bar',
@@ -31,7 +34,12 @@ import { CommonModule } from '@angular/common';
 export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _authService: AuthService = inject(AuthService);
+  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _router: Router = inject(Router);
   private _subscription: Subscription = new Subscription();
+
+  isLoggedUser: boolean = false;
 
   navBarItems: NavItem[] = NAVBAR_CONST.filter(
     (item) => item.route !== '/auth/login'
@@ -64,6 +72,40 @@ export class NavBarComponent implements OnInit, OnDestroy {
         }
       })
     );
+
+    this._subscription.add(
+      this._authService._isLoggedSubject.subscribe((isLogged) => {
+        this.isLoggedUser = isLogged;
+      })
+    );
+    this.isLoggedUser = this._authService.isAuthenticated();
+  }
+
+  logout(): void {
+    const allSessionData = this._localStorage.getAllSessionData();
+    if (
+      !allSessionData?.user?.userId ||
+      !allSessionData?.tokens?.accessToken ||
+      !allSessionData?.session?.accessSessionId
+    ) {
+      this._authService.cleanStorageAndRedirectToLogin();
+      return;
+    }
+
+    const sessionDataToLogout: LogOutInterface = {
+      userId: allSessionData.user.userId,
+      accessToken: allSessionData.tokens.accessToken,
+      accessSessionId: allSessionData.session.accessSessionId
+    };
+
+    this._authService.logout(sessionDataToLogout).subscribe({
+      next: () => {
+        this._authService.cleanStorageAndRedirectToLogin();
+      },
+      error: () => {
+        this._authService.cleanStorageAndRedirectToLogin();
+      }
+    });
   }
 
   ngOnDestroy(): void {

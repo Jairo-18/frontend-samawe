@@ -1,29 +1,41 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { AboutUsComponent } from './pages/about-us/about-us.component';
-import { AccommodationComponent } from './pages/accommodation/accommodation.component';
-import { ExcursionComponent } from './pages/excursion/excursion.component';
 export const publicRoutes: Routes = [
   {
     path: '',
     children: [
       {
         path: 'home',
-        component: HomeComponent
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent)
       },
       {
         path: 'accommodation',
-        component: AccommodationComponent
+        loadComponent: () =>
+          import('./pages/accommodation/accommodation.component').then(
+            (m) => m.AccommodationComponent
+          )
       },
       {
         path: 'excursion',
-        component: ExcursionComponent
+        loadComponent: () =>
+          import('./pages/excursion/excursion.component').then(
+            (m) => m.ExcursionComponent
+          )
       },
       {
         path: 'about-us',
-        component: AboutUsComponent
+        loadComponent: () =>
+          import('./pages/about-us/about-us.component').then(
+            (m) => m.AboutUsComponent
+          )
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./pages/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          )
       }
     ]
   }
 ];
-

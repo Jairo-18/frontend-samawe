@@ -4,6 +4,7 @@ import { organizationalRoutes } from './organizational/organizational.routes';
 import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
 import { invoicesRoutes } from './invoices/invoices.routes';
+import { isLoggedGuard } from './shared/guards/isLogged.guard';
 export const routes: Routes = [
   {
     path: '',
@@ -22,6 +23,7 @@ export const routes: Routes = [
       },
       {
         path: 'auth',
+        canActivate: [isLoggedGuard],
         loadChildren: () =>
           import('./auth/auth.routes').then((m) => m.authRoutes)
       },
