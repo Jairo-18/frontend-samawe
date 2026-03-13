@@ -1,6 +1,6 @@
-<div class="auth-content-center">
+<div class="auth-content-center my-0 md:my-8 2xl:my-0">
   <article
-    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[700px] lg:h-[700px] xl:h-[730px] 2xl:h-[750px] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[700px] lg:h-[700px] xl:h-[670px] 2xl:h-[750px] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto overflow-hidden shadow-2xl"
   >
     <section class="relative h-full w-full hidden md:flex flex-col bg-gray-100">
       <img
@@ -23,10 +23,7 @@
       </div>
       <mat-horizontal-stepper [linear]="false" #stepper class="w-full h-full">
         <mat-step [stepControl]="formStep1">
-          <form
-            [formGroup]="formStep1"
-            class="flex flex-col gap-[25px] md:gap-2 mt-5"
-          >
+          <form [formGroup]="formStep1" class="flex flex-col mt-5">
             <ng-template matStepLabel>Información Personal</ng-template>
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Tipo de Identificación</mat-label>
@@ -95,10 +92,7 @@
           </form>
         </mat-step>
         <mat-step [stepControl]="formStep2">
-          <form
-            [formGroup]="formStep2"
-            class="flex flex-col gap-[25px] md:gap-2 mt-5"
-          >
+          <form [formGroup]="formStep2" class="flex flex-col mt-5">
             <ng-template matStepLabel>Tu cuenta</ng-template>
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Correo Electrónico</mat-label>
@@ -172,7 +166,7 @@
                 y un carácter especial.
               </mat-error>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="w-full mt-3">
+            <mat-form-field appearance="outline" class="w-full mt-4 md:mt-0">
               <mat-label>Confirmar Contraseña</mat-label>
               <input
                 [type]="showConfirmPassword ? 'text' : 'password'"

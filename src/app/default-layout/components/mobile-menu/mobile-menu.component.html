@@ -4,51 +4,59 @@
   <div class="h-full max-w-[500px] mx-auto px-[10px]">
     <div class="grid grid-cols-5 h-full items-center">
       <!-- Left side items (Indices 0, 1) -->
-      @for (item of menuItems.slice(0, 2); track item.name) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="!text-[#06a606]"
-          class="flex flex-col items-center justify-center no-underline text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group"
-        >
-          <mat-icon
-            class="!text-[26px] !w-[26px] !h-[26px] group-[.active]:-translate-y-[2px] transition-transform"
-            >{{ item.icon }}</mat-icon
+      @for (item of menuItems.slice(0, 2); track $index) {
+        @if (item) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="!text-[#06a606]"
+            class="flex flex-col items-center justify-center no-underline text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group"
           >
-          <span>{{ item.name }}</span>
-        </a>
+            <mat-icon
+              class="!text-[26px] !w-[26px] !h-[26px] group-[.active]:-translate-y-[2px] transition-transform"
+              >{{ item.icon }}</mat-icon
+            >
+            <span>{{ item.name }}</span>
+          </a>
+        } @else {
+          <div></div>
+        }
       }
 
       <!-- Center floating item (Index 2 - Inicio) -->
       <div class="flex flex-col items-center justify-center relative h-full">
-        @if (menuItems[2]) {
+        @if (menuItems[2]; as item) {
           <a
-            [routerLink]="menuItems[2].route"
+            [routerLink]="item.route"
             routerLinkActive="shadow-[0_6px_16px_rgba(6,166,6,0.4)]"
             class="w-14 h-14 bg-gradient-to-br from-[#06a606] to-[#047d03] rounded-full flex items-center justify-center text-white no-underline shadow-[0_4px_12px_rgba(6,166,6,0.3)] absolute top-[-24px] transition-all duration-300 border-4 border-white active:scale-90"
           >
             <mat-icon class="!text-[28px] !w-[28px] !h-[28px]">{{
-              menuItems[2].icon
+              item.icon
             }}</mat-icon>
           </a>
           <span class="text-[11px] font-semibold text-[#06a606] mt-8">{{
-            menuItems[2].name
+            item.name
           }}</span>
         }
       </div>
 
       <!-- Right side items (Indices 3, 4) -->
-      @for (item of menuItems.slice(3, 5); track item.name) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="!text-[#06a606]"
-          class="flex flex-col items-center justify-center no-underline text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group"
-        >
-          <mat-icon
-            class="!text-[26px] !w-[26px] !h-[26px] group-[.active]:-translate-y-[2px] transition-transform"
-            >{{ item.icon }}</mat-icon
+      @for (item of menuItems.slice(3, 5); track $index) {
+        @if (item) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="!text-[#06a606]"
+            class="flex flex-col items-center justify-center no-underline text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group"
           >
-          <span>{{ item.name }}</span>
-        </a>
+            <mat-icon
+              class="!text-[26px] !w-[26px] !h-[26px] group-[.active]:-translate-y-[2px] transition-transform"
+              >{{ item.icon }}</mat-icon
+            >
+            <span>{{ item.name }}</span>
+          </a>
+        } @else {
+          <div></div>
+        }
       }
     </div>
   </div>

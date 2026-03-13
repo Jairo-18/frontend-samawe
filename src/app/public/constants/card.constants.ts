@@ -119,11 +119,14 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Configuración y administración del sistema',
     route: '/organizational/types/manage',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: ['Administrador', 'ADMINISTRADOR']
+  },
+  {
+    icon: 'settings',
+    title: 'Aplicación',
+    description: 'Configuración y administración del sistema',
+    route: '/organizational/application',
+    iconNext: 'navigate_next',
+    allowedRoles: ['Administrador', 'ADMINISTRADOR']
   }
 ];
