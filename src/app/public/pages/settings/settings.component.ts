@@ -43,28 +43,18 @@ export class SettingsComponent implements OnInit {
 
     if (roleName === 'cliente' || roleCode === 'cliente') {
       this.settingsItems = [
-        { label: 'Editar Mi Perfil', icon: 'edit', route: '/profile-edit' }
+        { label: 'Ver Perfil', icon: 'person', route: '/profile-edit' },
+        {
+          label: 'Cambiar Contraseña',
+          icon: 'lock',
+          route: `/auth/${this.userInfo?.userId}/change-password`
+        }
       ];
     } else if (
       roleName.includes('administrador') ||
       roleCode.includes('administrador')
     ) {
       this.settingsItems = [
-        {
-          label: 'Ver Mis Recetas',
-          icon: 'menu_book',
-          route: '/recipes/general'
-        },
-        {
-          label: 'Ver Pedidos de Restaurante',
-          icon: 'restaurant',
-          route: '/recipes/restaurant-order'
-        },
-        {
-          label: 'Ver Reportes y Ganancias',
-          icon: 'attach_money',
-          route: '/sales/earnings-sumary'
-        },
         {
           label: 'Gestión',
           icon: 'category',
@@ -76,45 +66,8 @@ export class SettingsComponent implements OnInit {
           route: '/organizational/application'
         }
       ];
-    } else if (
-      roleName.includes('recepcionista') ||
-      roleCode.includes('recepcionista')
-    ) {
-      this.settingsItems = [
-        {
-          label: 'Ver Mis Recetas',
-          icon: 'menu_book',
-          route: '/recipes/general'
-        },
-        {
-          label: 'Ver Pedidos de Restaurante',
-          icon: 'restaurant',
-          route: '/recipes/restaurant-order'
-        },
-        {
-          label: 'Ver Reportes y Ganancias',
-          icon: 'attach_money',
-          route: '/sales/earnings-sumary'
-        }
-      ];
-    } else if (
-      roleName.includes('chef') ||
-      roleCode.includes('chef') ||
-      roleName.includes('mesero') ||
-      roleCode.includes('mesero')
-    ) {
-      this.settingsItems = [
-        {
-          label: 'Ver Mis Recetas',
-          icon: 'menu_book',
-          route: '/recipes/general'
-        },
-        {
-          label: 'Ver Pedidos de Restaurante',
-          icon: 'restaurant',
-          route: '/recipes/restaurant-order'
-        }
-      ];
+    } else {
+      this.settingsItems = [];
     }
   }
 

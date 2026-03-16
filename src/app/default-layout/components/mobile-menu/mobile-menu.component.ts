@@ -1,9 +1,13 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ItemInterface } from '../../../shared/interfaces/menu.interface';
+import { NavItem } from '../../../shared/interfaces/navBar.interface';
+import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.constants';
 import {
   MENU_CONST,
   ROLE_PERMISSIONS,
@@ -13,7 +17,14 @@ import {
 @Component({
   selector: 'app-mobile-menu',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, RouterLinkActive],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    RouterLink,
+    RouterLinkActive,
+    MatMenuModule,
+    MatDividerModule
+  ],
   templateUrl: './mobile-menu.component.html',
   styleUrl: './mobile-menu.component.scss'
 })
@@ -22,6 +33,7 @@ export class MobileMenuComponent implements OnInit {
 
   private readonly _router: Router = inject(Router);
   menuItems: (ItemInterface | null)[] = [null, null, null, null, null];
+  loggedMenuItems: NavItem[] = [];
 
   ngOnInit(): void {
     this.filterMenuByRole();
@@ -43,55 +55,49 @@ export class MobileMenuComponent implements OnInit {
     ).forEach((module) => {
       module.items.forEach((item) => {
         if (allowedItems.includes(item.name) && item.route) {
-          if (!allItems.find((i) => i.name === item.name) && item.name !== 'Inicio') {
+          if (
+            !allItems.find((i) => i.name === item.name) &&
+            item.name !== 'Inicio'
+          ) {
             allItems.push(item);
           }
         }
       });
     });
 
-    // Slots: [0, 1, 2(Inicio), 3, 4(Settings)]
     const finalItems: (ItemInterface | null)[] = [null, null, null, null, null];
 
-    // Fixed Items
-    const homeItem = MENU_CONST.find(m => m.items.some(i => i.name === 'Inicio'))?.items.find(i => i.name === 'Inicio');
+    const homeItem = MENU_CONST.find((m) =>
+      m.items.some((i) => i.name === 'Inicio')
+    )?.items.find((i) => i.name === 'Inicio');
     if (homeItem) {
       finalItems[2] = { ...homeItem };
     }
 
     finalItems[4] = {
       name: 'Ajustes',
-      route: '/settings',
       icon: 'settings',
       order: 99,
       subItems: []
     };
 
-    if (roleName === 'CHEF' || roleName === 'MESERO') {
-      const recetas = allItems.find(i => i.name === 'Recetas');
-      const restaurante = allItems.find(i => i.name === 'Restaurante');
-      if (recetas) finalItems[0] = recetas;
+    if (roleName === 'ADMINISTRADOR' || roleName === 'RECEPCIONISTA') {
+      const usuarios = allItems.find((i) => i.name === 'Clientes');
+      const servicios = allItems.find(
+        (i) => i.name === 'Productos y Servicios'
+      );
+      const facturas = allItems.find((i) => i.name === 'Facturas');
+      if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes' };
+      if (servicios) finalItems[1] = { ...servicios, name: 'Servicios' };
+      if (facturas) finalItems[3] = facturas;
+    } else if (roleName === 'CHEF' || roleName === 'MESERO') {
+      const recetas = allItems.find((i) => i.name === 'Recetas');
+      const restaurante = allItems.find((i) => i.name === 'Restaurante');
+      if (recetas) finalItems[1] = recetas;
       if (restaurante) finalItems[3] = restaurante;
-    } else {
-      const prioritizedKeys = [
-        { key: 'Clientes', label: 'Usuarios' },
-        { key: 'Productos y Servicios', label: 'Servicios' },
-        { key: 'Facturas', label: 'Facturas' }
-      ];
-
-      let dynamicSlotIndex = 0;
-      prioritizedKeys.forEach(p => {
-        const found = allItems.find(i => i.name === p.key);
-        if (found) {
-          const item = { ...found, name: p.label };
-          if (dynamicSlotIndex === 0) finalItems[0] = item;
-          else if (dynamicSlotIndex === 1) finalItems[1] = item;
-          else if (dynamicSlotIndex === 2) finalItems[3] = item;
-          dynamicSlotIndex++;
-        }
-      });
     }
 
+    this.loggedMenuItems = NAVBAR_LOGGED_CONST[roleName] || [];
     this.menuItems = finalItems;
   }
 }

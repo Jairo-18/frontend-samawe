@@ -75,6 +75,7 @@ export class AuthService {
         ),
         tap((res) => {
           this.saveLocalUserData(res.data);
+          this._isLoggedEmit();
         })
       );
   }

@@ -157,9 +157,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         next: () => {
           this._authService.cleanStorageAndRedirectToLogin();
           this.user = undefined;
+          this.isCollapsedSideBar = true;
         },
         error: () => {
           this._authService.cleanStorageAndRedirectToLogin();
+          this.isCollapsedSideBar = true;
         }
       });
     }

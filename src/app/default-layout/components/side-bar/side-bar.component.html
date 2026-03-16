@@ -72,7 +72,7 @@
                 }"
               >
                 <mat-icon
-                  class="!flex items-center justify-center text-base md:text-base lg:text-base xl:text-xl"
+                  class="!flex items-center justify-center text-base md:text-base lg:text-base 3xl:text-xl"
                   [ngClass]="{
                     'mx-[5px]': !isCollapsed,
                     'text-black ': isCollapsed
@@ -83,7 +83,7 @@
                 <div class="flex items-center">
                   <span
                     *ngIf="!isCollapsed"
-                    class="text-xs md:text-xs lg:text-sm xl:text-base"
+                    class="text-xs md:text-xs lg:text-sm 3xl:text-base"
                     >{{ module.module }}</span
                   >
                 </div>
@@ -102,7 +102,7 @@
                     class="flex items-center rounded-lg"
                     [ngClass]="{
                       'bg-none': isCollapsed,
-                      'flex w-full bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] xl:py-[5px]':
+                      'flex w-full bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px]':
                         !isCollapsed,
                       'hover:bg-yellow-300': !isCollapsed,
                       'hover:bg-white/20': isCollapsed
@@ -118,7 +118,7 @@
                   >
                     <div class="flex items-center md:items-start">
                       <mat-icon
-                        class="!flex text-base md:text-base lg:text-base xl:text-2xl justify-center items-center text-[#06a606]"
+                        class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[#06a606]"
                         [ngClass]="{
                           'mx-[5px]': !isCollapsed,
                           ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-300':
@@ -132,7 +132,7 @@
                     <div class="flex items-center">
                       <span
                         *ngIf="!isCollapsed"
-                        class="text-xs md:text-xs lg:text-xs xl:text-base"
+                        class="text-xs md:text-sm lg:text-sm 3xl:text-base"
                         >{{ item.name }}</span
                       >
                     </div>
@@ -185,13 +185,13 @@
         hidden: isCollapsed
       }"
     >
-      <span class="font-bold text-xs md:text-xs xl:text-base"
+      <span class="font-bold text-xs md:text-xs 3xl:text-base"
         >Rol:
-        <span class="font-normal text-xs md:text-xs xl:text-base">{{
+        <span class="font-normal text-xs md:text-xs 3xl:text-base">{{
           userComplete?.roleType?.name
         }}</span>
       </span>
-      <span class="font-normal text-xs md:text-xs xl:text-base"
+      <span class="font-normal text-xs md:text-xs 3xl:text-base"
         >{{ userComplete?.firstName }} {{ userComplete?.lastName }}</span
       >
     </div>
@@ -203,25 +203,26 @@
         (click)="logout.emit(); removeFocus($event)"
         class="flex items-center justify-start"
         [ngClass]="{
-          'flex items-center w-full px-[10px] py-[2px] md:py-[2px] xl:py-[2px] border border-black rounded-lg font-extrabold bg-white hover:bg-yellow-300 gap-x-2':
+          'flex items-center w-full px-[2px] py-[2px] md:py-[2px] xl:py-[2px] border border-black rounded-lg font-extrabold bg-white hover:bg-yellow-300 md:gap-x-1 2xl:gap-x-2':
             !isCollapsed,
           'bg-none': isCollapsed
         }"
       >
         <mat-icon
-          class="!flex text-base md:text-base xl:text-2xl justify-center items-center rounded-lg"
+          class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[#06a606]"
           [ngClass]="{
-            'text-[#06a606]': !isCollapsed,
-            'text-[#06a606] bg-white border border-black p-4 hover:bg-yellow-300':
+            'mx-[5px]': !isCollapsed,
+            ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-300':
               isCollapsed,
             inline: true
           }"
         >
           exit_to_app
         </mat-icon>
+
         <span
           *ngIf="!isCollapsed"
-          class="text-xs md:text-xs lg:text-xs xl:text-base"
+          class="text-xs md:text-sm lg:text-sm 3xl:text-base"
           >Cerrar Sesión</span
         >
       </button>

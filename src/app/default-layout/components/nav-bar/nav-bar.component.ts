@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
+import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.constants';
+import { UserInterface } from '../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-nav-bar',
@@ -51,6 +53,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   organizationalName: string = '';
   logoUrl: string = '';
   isScrolled: boolean = false;
+  userInfo?: UserInterface;
+  loggedMenuItems: NavItem[] = [];
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
@@ -77,9 +81,24 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this._subscription.add(
       this._authService._isLoggedSubject.subscribe((isLogged) => {
         this.isLoggedUser = isLogged;
+        this.updateLoggedMenu();
       })
     );
     this.isLoggedUser = this._authService.isAuthenticated();
+    this.updateLoggedMenu();
+  }
+
+  updateLoggedMenu(): void {
+    if (this.isLoggedUser) {
+      this.userInfo = this._localStorage.getUserData();
+      const roleName = this.userInfo?.roleType?.name?.toUpperCase() || '';
+      const roleCode = this.userInfo?.roleType?.code?.toUpperCase() || '';
+
+      this.loggedMenuItems =
+        NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+    } else {
+      this.loggedMenuItems = [];
+    }
   }
 
   logout(): void {
