@@ -17,10 +17,12 @@
       <div
         class="relative group border-b border-gray-100 last:border-0 transition-colors"
         [ngClass]="{
-          'bg-[#06a606]/10': !notif.read,
+          'bg-[var(--primary-color)]': !notif.read,
           'bg-white hover:bg-gray-50': notif.read
         }"
-        [style.border-left]="!notif.read ? '4px solid #06a606' : 'none'"
+        [style.border-left]="
+          !notif.read ? '4px solid [var(--primary-color)]' : 'none'
+        "
         (click)="$event.stopPropagation()"
       >
         <div class="flex p-3 gap-3">
@@ -43,7 +45,7 @@
             <div class="flex justify-between items-start mb-0.5">
               <span
                 class="font-bold text-sm"
-                [ngClass]="{ 'text-[#06a606]': !notif.read }"
+                [ngClass]="{ 'text-[var(--primary-color)]': !notif.read }"
                 >Factura: {{ notif.metadata?.code }}</span
               >
               <span class="text-[10px] text-gray-400 text-right">{{
@@ -84,7 +86,9 @@
             >
               <mat-icon
                 class="!text-lg"
-                [style.color]="notif.read ? '#9ca3af' : '#06a606'"
+                [style.color]="
+                  notif.read ? '#9ca3af' : '[var(--primary-color)]'
+                "
                 >{{ notif.read ? 'mark_as_unread' : 'drafts' }}</mat-icon
               >
             </button>

@@ -71,6 +71,19 @@ export class ApplicationService {
           if (org) {
             this._currentOrgSubject.next(org);
             this.updateMediaFromOrg(org);
+
+            if (org.primaryColor) {
+              document.documentElement.style.setProperty(
+                '--primary-color',
+                org.primaryColor
+              );
+            }
+            if (org.secondaryColor) {
+              document.documentElement.style.setProperty(
+                '--secondary-color',
+                org.secondaryColor
+              );
+            }
           }
         }
       },

@@ -1,10 +1,10 @@
 <div
   class="settings-container p-6 flex flex-col items-center justify-center min-h-[60vh]"
 >
-  <h1 class="text-3xl font-bold mb-8 text-[#06a606]">Ajustes de Perfil</h1>
+  <h1 class="text-3xl font-bold mb-8 text-[var(--primary-color)]">Ajustes de Perfil</h1>
 
   <div
-    class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 border border-[#06a606]/10"
+    class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 border border-[var(--primary-color)]/10"
   >
     <div class="flex flex-col gap-2">
       @for (item of settingsItems; track item.label) {
@@ -13,7 +13,7 @@
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
         >
           <mat-icon
-            class="text-gray-500 group-hover:text-[#06a606] transition-colors"
+            class="text-gray-500 group-hover:text-[var(--primary-color)] transition-colors"
             >{{ item.icon }}</mat-icon
           >
           <span class="text-[16px] font-medium">{{ item.label }}</span>

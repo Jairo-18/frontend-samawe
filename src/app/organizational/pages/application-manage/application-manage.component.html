@@ -160,12 +160,7 @@
             </mat-form-field>
 
             <div class="flex justify-end gap-3 mt-4">
-              <button
-                mat-flat-button
-                color="primary"
-                class="!px-8 !rounded-xl"
-                (click)="save()"
-              >
+              <button mat-fab extended="true" class="!w-full" (click)="save()">
                 <mat-icon>save</mat-icon>
                 Guardar Cambios
               </button>
@@ -182,32 +177,61 @@
                 <h3 class="text-lg font-bold border-b pb-2">
                   Colores Corporativos
                 </h3>
-                <div class="flex gap-4 items-center">
-                  <div class="flex flex-col gap-1 items-center">
+                <div class="flex gap-8 items-center">
+                  <!-- Primario -->
+                  <div class="flex flex-col gap-2">
                     <label
-                      for="primaryColor"
+                      for="primaryColorText"
                       class="text-xs text-gray-500 uppercase font-bold"
                       >Primario</label
                     >
-                    <input
-                      id="primaryColor"
-                      type="color"
-                      formControlName="primaryColor"
-                      class="w-16 h-16 rounded-full border-4 border-white shadow-md cursor-pointer"
-                    />
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0"
+                      >
+                        <input
+                          type="color"
+                          [value]="form.get('primaryColor')?.value || '#000000'"
+                          (input)="form.get('primaryColor')?.setValue($any($event.target).value)"
+                          class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
+                        />
+                      </div>
+                      <input
+                        id="primaryColorText"
+                        type="text"
+                        formControlName="primaryColor"
+                        class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+                        placeholder="#000000"
+                      />
+                    </div>
                   </div>
-                  <div class="flex flex-col gap-1 items-center">
+
+                  <!-- Secundario -->
+                  <div class="flex flex-col gap-2">
                     <label
-                      for="secondaryColor"
+                      for="secondaryColorText"
                       class="text-xs text-gray-500 uppercase font-bold"
                       >Secundario</label
                     >
-                    <input
-                      id="secondaryColor"
-                      type="color"
-                      formControlName="secondaryColor"
-                      class="w-16 h-16 rounded-full border-4 border-white shadow-md cursor-pointer"
-                    />
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0"
+                      >
+                        <input
+                          type="color"
+                          [value]="form.get('secondaryColor')?.value || '#000000'"
+                          (input)="form.get('secondaryColor')?.setValue($any($event.target).value)"
+                          class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
+                        />
+                      </div>
+                      <input
+                        id="secondaryColorText"
+                        type="text"
+                        formControlName="secondaryColor"
+                        class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+                        placeholder="#000000"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -232,12 +256,7 @@
             </div>
 
             <div class="flex justify-end gap-3 mt-4">
-              <button
-                mat-flat-button
-                color="primary"
-                class="!px-8 !rounded-xl"
-                (click)="save()"
-              >
+              <button mat-fab extended="true" class="!w-full" (click)="save()">
                 <mat-icon>save</mat-icon>
                 Guardar Cambios
               </button>

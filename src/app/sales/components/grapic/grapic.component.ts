@@ -84,4 +84,3 @@ export class GrapicComponent implements OnChanges {
     };
   }
 }
-

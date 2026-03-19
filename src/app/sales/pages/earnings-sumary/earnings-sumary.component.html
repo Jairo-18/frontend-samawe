@@ -44,11 +44,11 @@
     </div>
     <div class="grid gap-6 md:grid-cols-3 sm:grid-cols-1">
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <div class="p-2 bg-[#06a606] rounded-full">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-box text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold">
@@ -69,30 +69,32 @@
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
-          <div class="flex justify-between text-emerald-700 font-semibold">
+          <div class="flex justify-between text-[#06a606] font-semibold">
             <span>Utilidad</span>
             <span>{{ productSummary?.balanceProduct ?? 0 | formatCop }}</span>
           </div>
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <div class="p-2 bg-[#06a606] rounded-full">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-file-invoice text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold"
               >Balance de Facturación</span
             >
           </div>
-          <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded">
+          <span
+            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
+          >
             {{ getSelectedPeriodLabel() }}
           </span>
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-emerald-600">
+          <div class="flex justify-between text-[#06a606] font-semibold">
             <span>Ventas</span>
             <span class="font-semibold">{{
               invoiceBalance?.[selectedPeriod]?.totalInvoiceSale ?? 0
@@ -108,7 +110,7 @@
           <div
             class="flex justify-between font-semibold"
             [ngClass]="{
-              'text-emerald-700':
+              'text-[#06a606]':
                 +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) >= 0,
               'text-red-600':
                 +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) < 0
@@ -122,21 +124,22 @@
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <div class="p-2 bg-[#06a606] rounded-full">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold">Inventario Total</span>
           </div>
-          <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded"
+          <span
+            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
             >Stock</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-emerald-700">
+          <div class="flex justify-between text-[#06a606]">
             <span class="text-slate-600">Valor de inventario</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
@@ -151,19 +154,20 @@
         </div>
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <div class="p-2 bg-[#06a606] rounded-full">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold"
               >Estado de Productos</span
             >
           </div>
-          <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded"
+          <span
+            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
             >Estado</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-emerald-700">
+          <div class="flex justify-between text-[#06a606]">
             <span class="text-slate-600">Activos</span>
             <span class="font-semibold">{{ activeProductsCount }}</span>
           </div>
@@ -174,23 +178,24 @@
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[#06a606] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
-            <div class="p-2 bg-[#06a606] rounded-full">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold">
               Estado de tus Hospedajes
             </span>
           </div>
-          <span class="text-sm bg-[#3ddd3d] text-slate-800 px-2 py-1 rounded"
+          <span
+            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
             >Estado</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-emerald-700">
+          <div class="flex justify-between text-[#06a606]">
             <span class="text-slate-600">Disponibles</span>
             <span class="font-semibold">{{
               availableAccommodationsCount
@@ -232,4 +237,3 @@
     ></app-grapic>
   }
 </app-base-page>
-

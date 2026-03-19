@@ -11,13 +11,13 @@
   </div>
   <section class="flex flex-col md:flex-row">
     <div
-      class="w-[20%] border-r-2 border-[#06a606] hidden md:flex flex-col pr-0 md:pr-4 gap-3"
+      class="w-[20%] border-r-2 border-[var(--primary-color)] hidden md:flex flex-col pr-0 md:pr-4 gap-3"
     >
       @for (button of buttonLabel; track $index) {
       <button
-        class="text-left border border-[#06a606] rounded-lg px-2 py-1 transition-colors duration-200"
+        class="text-left border border-[var(--primary-color)] rounded-lg px-2 py-1 transition-colors duration-200"
         [ngClass]="{
-          'bg-[#06a606] text-white': selectedType === button[0],
+          'bg-[var(--primary-color)] text-white': selectedType === button[0],
           'hover:bg-green-100': selectedType !== button[0]
         }"
         (click)="onButtonSelect(button[0])"
@@ -26,7 +26,7 @@
       </button>
       }
     </div>
-    <div class="flex md:hidden my-4 border-b-2 border-[#06a606]">
+    <div class="flex md:hidden my-4 border-b-2 border-[var(--primary-color)]">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Tipos</mat-label>
         <mat-select [formControl]="buttonsControll">

@@ -33,7 +33,7 @@
     >
       @for (order of orders; track order.invoiceId) {
         <div
-          class="bg-white rounded-2xl border border-[#06a606] shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow duration-200"
+          class="bg-white rounded-2xl border border-[var(--primary-color)] shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow duration-200"
         >
           <!-- Header -->
           <div class="px-4 pt-4 pb-2 flex justify-between items-start">
@@ -81,7 +81,7 @@
           <div class="px-4 pb-4 flex flex-col gap-2 flex-1">
             <!-- Mesa -->
             <div class="flex items-center gap-2">
-              <mat-icon class="!text-base !w-4 !h-4 text-[#06a606]"
+              <mat-icon class="!text-base !w-4 !h-4 text-[var(--primary-color)]"
                 >table_restaurant</mat-icon
               >
               <span class="text-sm font-semibold text-gray-700"
@@ -149,7 +149,7 @@
 
           <!-- Footer: Total -->
           <div
-            class="px-4 py-3 border-t border-[#06a606] flex justify-between items-center bg-[#06a606]/5 rounded-b-2xl"
+            class="px-4 py-3 border-t border-[var(--primary-color)] flex justify-between items-center bg-[var(--primary-color)]/5 rounded-b-2xl"
           >
             <span class="text-xs text-gray-500">Total</span>
             <span

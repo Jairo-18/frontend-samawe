@@ -6,20 +6,20 @@ $dark-primary-text: rgba(black, 0.87);
 $light-primary-text: white;
 
 $brand-palette: (
-  50: $light-green-50,
-  100: $light-green-100,
-  200: $light-green-200,
-  300: $light-green-300,
-  400: $light-green-400,
-  500: $light-green-500,
-  600: $light-green-600,
-  700: $light-green-700,
-  800: $light-green-800,
+  50: $mat-green-50,
+  100: $mat-green-100,
+  200: $mat-green-200,
+  300: $mat-green-300,
+  400: $mat-green-400,
+  500: $mat-green-500,
+  600: $mat-green-600,
+  700: $mat-green-700,
+  800: $mat-green-800,
   900: $error-red,
-  A100: $light-green-A100,
-  A200: $light-green-A200,
-  A400: $light-green-A400,
-  A700: $light-green-A700,
+  A100: $mat-green-A100,
+  A200: $mat-green-A200,
+  A400: $mat-green-A400,
+  A700: $mat-green-A700,
   contrast: (
     50: $dark-primary-text,
     100: $dark-primary-text,
@@ -38,7 +38,7 @@ $brand-palette: (
   )
 );
 
-$brand-primary: mat.m2-define-palette($brand-palette, 700);
+$brand-primary: mat.m2-define-palette($brand-palette, 500);
 $brand-accent: mat.m2-define-palette($brand-palette, 300);
 $brand-warn: mat.m2-define-palette($brand-palette, 900);
 

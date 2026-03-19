@@ -53,4 +53,3 @@ export class InvoiceSummaryComponent {
     this.toggleAllPaymentStatus.emit(!this.allPaid);
   }
 }
-

@@ -61,7 +61,7 @@
                 'text-yellow-700  ':
                   excursion?.stateType?.name === 'Mantenimiento' ||
                   excursion?.stateType?.name === 'MANTENIMIENTO',
-                'text-green-700  ':
+                'text-[#06a606]  ':
                   excursion?.stateType?.name === 'Disponible' ||
                   excursion?.stateType?.name === 'DISPONIBLE',
                 'text-blue-700  ':
@@ -113,7 +113,7 @@
             <td
               mat-cell
               *matCellDef="let excursion"
-              class="right-text text-green-700 font-bold"
+              class="right-text text-[#06a606] font-bold"
             >
               {{ excursion.priceSale | formatCop }}
             </td>
@@ -228,7 +228,7 @@
                   'text-yellow-700 ':
                     excursion?.stateType?.name === 'Mantenimiento' ||
                     excursion?.stateType?.name === 'MANTENIMIENTO',
-                  'text-green-700  ':
+                  'text-[#06a606]  ':
                     excursion?.stateType?.name === 'Disponible' ||
                     excursion?.stateType?.name === 'DISPONIBLE',
                   'text-blue-700  ':
@@ -280,7 +280,7 @@
               <td
                 mat-cell
                 *matCellDef="let excursion"
-                class="right-text text-green-700 font-bold"
+                class="right-text text-[#06a606] font-bold"
               >
                 {{ excursion.priceSale | formatCop }}
               </td>
@@ -336,4 +336,3 @@
   [excursions]="allExcursions"
   #excursionsPrint
 ></app-excursios-print>
-

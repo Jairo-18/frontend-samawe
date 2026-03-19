@@ -9,13 +9,13 @@
       <span class="font-bold text-xs md:text-base">Nombre del Cliente</span>
     }
     <div
-      class="w-full rounded-lg border border-[#06a606] px-2 py-2 text-xs md:text-base mt-1"
+      class="w-full rounded-lg border border-[var(--primary-color)] px-2 py-2 text-xs md:text-base mt-1"
     >
       {{ invoiceData.user.firstName || '' }}
       {{ invoiceData.user.lastName || '' }}
     </div>
   </div>
-  <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+  <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
       <span class="font-bold text-xs md:text-base">Tipo de pago:</span>
@@ -34,7 +34,7 @@
       <span
         class="font-medium text-xs md:text-base"
         [ngClass]="{
-          'text-green-600':
+          'text-[#06a606]':
             invoiceData.paidType?.name === 'Pagado' ||
             invoiceData.paidType?.name === 'PAGADO' ||
             invoiceData.paidType?.name === 'RESERVADO - PAGADO' ||
@@ -71,7 +71,7 @@
       }}</span>
     </div>
   </div>
-  <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+  <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
       <span class="font-bold text-xs md:text-base">Impuesto:</span>
@@ -87,9 +87,10 @@
       <span class="font-bold text-xs md:text-base">Total:</span>
     </div>
     <div class="flex justify-end w-[50%]">
-      <span class="font-medium text-[#06a606] text-xs md:text-base">{{
-        invoiceData.total ?? 0 | formatCop
-      }}</span>
+      <span
+        class="font-medium text-[var(--primary-color)] text-xs md:text-base"
+        >{{ invoiceData.total ?? 0 | formatCop }}</span
+      >
     </div>
   </div>
   <div class="flex content-between">
@@ -123,13 +124,15 @@
     </button>
   </div>
   @if (invoiceData.cash && invoiceData.cash > 0) {
-    <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+    <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
         <span class="font-bold text-xs md:text-base">Efectivo:</span>
       </div>
       <div class="flex justify-end w-[50%]">
-        <span class="text-[#06a606] font-medium text-xs md:text-base">
+        <span
+          class="text-[var(--primary-color)] font-medium text-xs md:text-base"
+        >
           {{ invoiceData.cash || '' | formatCop }}
         </span>
       </div>
@@ -141,23 +144,26 @@
         <span class="font-bold text-xs md:text-base">Transferencia:</span>
       </div>
       <div class="flex justify-end w-[50%]">
-        <span class="text-[#06a606] font-medium text-xs md:text-base">
+        <span
+          class="text-[var(--primary-color)] font-medium text-xs md:text-base"
+        >
           {{ invoiceData.transfer || '' | formatCop }}
         </span>
       </div>
     </div>
   }
-  <div class="border border-[#06a606] w-full h-[1px] my-6"></div>
+  <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
   <div class="flex flex-col">
     <div class="flex justify-start w-full">
       <span class="font-bold text-xs md:text-base">Observaciones</span>
     </div>
     <div
-      class="flex justify-start w-full p-1 border border-[#06a606] rounded-lg px-2 py-2 mt-1"
+      class="flex justify-start w-full p-1 border border-[var(--primary-color)] rounded-lg px-2 py-2 mt-1"
     >
-      <span class="font-medium text-[#06a606] text-xs md:text-base">{{
-        invoiceData.observations || 'NO HAY OBSERVACIONES'
-      }}</span>
+      <span
+        class="font-medium text-[var(--primary-color)] text-xs md:text-base"
+        >{{ invoiceData.observations || 'NO HAY OBSERVACIONES' }}</span
+      >
     </div>
   </div>
   <div class="my-2">
@@ -196,4 +202,3 @@
     </div>
   </section>
 </article>
-

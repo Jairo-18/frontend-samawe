@@ -90,7 +90,7 @@
 /* Toast clases */
 .toast-container {
   overflow: hidden;
-
+  border-radius: 16px !important;
   &.ngx-toastr {
     pointer-events: auto;
     position: fixed;
@@ -99,7 +99,7 @@
     max-width: 400px;
     margin: 10px;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 16px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -118,7 +118,8 @@
     .toast-body {
       display: flex;
       flex-direction: column;
-      margin-left: 40px;
+      // margin-left: 40px;
+      border-radius: 16px;
 
       .toast-title {
         font-weight: bold;
@@ -179,7 +180,7 @@
 }
 
 .brand-text-headline-color {
-  @apply text-transparent bg-gradient-to-r from-green-400 to-[#06a606] bg-clip-text;
+  @apply text-transparent bg-gradient-to-r from-green-400 to-[var(--primary-color)] bg-clip-text;
 }
 
 .right-text {
@@ -205,7 +206,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #06a606 !important;
+  background-color: var(--primary-color) !important;
   border: 2px solid #f1f1f1 !important;
   min-height: 60px !important;
 }
@@ -216,7 +217,7 @@
 
 ::-webkit-scrollbar-button {
   display: block !important;
-  background-color: #06a606 !important;
+  background-color: var(--primary-color) !important;
   height: 16px !important;
   width: 16px !important;
 }
@@ -234,12 +235,12 @@
 }
 
 .main::-webkit-scrollbar-thumb {
-  background-color: #06a606 !important;
+  background-color: var(--primary-color) !important;
   min-height: 60px !important;
   border: 2px solid #f1f1f1 !important;
 }
 
 * {
   scrollbar-width: auto !important;
-  scrollbar-color: #06a606 #f1f1f1 !important;
+  scrollbar-color: var(--primary-color) #f1f1f1 !important;
 }

@@ -114,6 +114,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setupPhoneCodeSearch();
+    this.setupLiveColorPreview();
     this.loadMediaTypes();
     this.subscribeToMedia();
     const id = this._authService.getOrganizationalId();
@@ -141,6 +142,41 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
+
+    if (this.organization) {
+      if (this.organization.primaryColor) {
+        document.documentElement.style.setProperty(
+          '--primary-color',
+          this.organization.primaryColor
+        );
+      }
+      if (this.organization.secondaryColor) {
+        document.documentElement.style.setProperty(
+          '--secondary-color',
+          this.organization.secondaryColor
+        );
+      }
+    }
+  }
+
+  private setupLiveColorPreview(): void {
+    this._subscription.add(
+      this.form.get('primaryColor')?.valueChanges.subscribe((color) => {
+        if (color) {
+          document.documentElement.style.setProperty('--primary-color', color);
+        }
+      })
+    );
+    this._subscription.add(
+      this.form.get('secondaryColor')?.valueChanges.subscribe((color) => {
+        if (color) {
+          document.documentElement.style.setProperty(
+            '--secondary-color',
+            color
+          );
+        }
+      })
+    );
   }
 
   private loadMediaTypes(): void {
@@ -208,7 +244,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     const rawValue = this.form.getRawValue();
 
-    const { identificationTypeId, phoneCodeId, phoneCodeSearch, ...rest } =
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { identificationTypeId, phoneCodeId, phoneCodeSearch: _phoneCodeSearch, ...rest } =
       rawValue;
     const payload: Partial<Organizational> & {
       identificationType?: string;
@@ -223,6 +260,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       .updateOrganization(this.organizationalId, payload)
       .subscribe({
         next: () => {
+          if (this.organization) {
+            if (payload.primaryColor) this.organization.primaryColor = payload.primaryColor;
+            if (payload.secondaryColor) this.organization.secondaryColor = payload.secondaryColor;
+          }
           this.isLoading = false;
         },
         error: (err) => {

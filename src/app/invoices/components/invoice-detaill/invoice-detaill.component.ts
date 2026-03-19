@@ -160,4 +160,3 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     });
   }
 }
-

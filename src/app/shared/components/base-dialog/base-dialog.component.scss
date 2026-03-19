@@ -1,6 +1,6 @@
 .base-dialog {
   background-color: #fff;
-  border: solid 1px #06a606;
+  border: solid 1px var(--primary-color);
   width: 100%;
   padding: 20px;
   display: flex;
@@ -8,7 +8,7 @@
   justify-content: space-between;
 }
 .base-dialog-header {
-  border-bottom: 2px solid #06a606;
+  border-bottom: 2px solid var(--primary-color);
   padding-bottom: 10px;
   margin-bottom: 20px;
   font-weight: 600;
@@ -35,4 +35,3 @@
     }
   }
 }
-

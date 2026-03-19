@@ -1,8 +1,8 @@
 <div
   class="relative p-2 md:p-6 border-2 border-dashed rounded-xl transition-all duration-300 min-h-[200px] flex flex-col"
   [ngClass]="{
-    'border-[#06a606] bg-[#06a606]/5': isDragging,
-    'border-[#06a606]/30 hover:border-[#06a606]': !isDragging
+    'border-[var(--primary-color)] bg-[var(--primary-color)]/5': isDragging,
+    'border-[var(--primary-color)]/30 hover:border-[var(--primary-color)]': !isDragging
   }"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
@@ -55,7 +55,7 @@
     >
       <div
         *ngFor="let preview of pendingPreviews; let i = index"
-        class="relative flex-shrink-0 w-[180px] h-[180px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm group border-2 border-dashed border-[#06a606]/30 bg-[#f8f9fa]"
+        class="relative flex-shrink-0 w-[180px] h-[180px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm group border-2 border-dashed border-[var(--primary-color)]/30 bg-[#f8f9fa]"
       >
         <img
           [src]="preview"
@@ -68,7 +68,7 @@
         >
           <button
             mat-mini-fab
-            class="!bg-[#06a606] !text-white scale-95 hover:scale-110 transition-transform duration-200 shadow-lg"
+            class="!bg-[var(--primary-color)] !text-white scale-95 hover:scale-110 transition-transform duration-200 shadow-lg"
             (click)="$event.stopPropagation(); openPreview(preview)"
             type="button"
           >
@@ -92,7 +92,7 @@
       </div>
       <div
         *ngIf="isUploading"
-        class="flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg border-2 border-dashed border-[#06a606] flex flex-col items-center justify-center bg-[#06a606]/5"
+        class="flex-shrink-0 w-[150px] h-[150px] md:w-[250px] md:h-[250px] rounded-lg border-2 border-dashed border-[var(--primary-color)] flex flex-col items-center justify-center bg-[var(--primary-color)]/5"
       >
         <mat-spinner diameter="30"></mat-spinner>
         <span
@@ -115,7 +115,7 @@
         >
           <button
             mat-mini-fab
-            class="!bg-[#06a606] !text-white scale-95 hover:scale-110 transition-transform duration-200 shadow-lg"
+            class="!bg-[var(--primary-color)] !text-white scale-95 hover:scale-110 transition-transform duration-200 shadow-lg"
             (click)="$event.stopPropagation(); openPreview(image.imageUrl)"
             type="button"
           >

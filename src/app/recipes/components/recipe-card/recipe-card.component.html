@@ -1,5 +1,7 @@
-<div class="flex flex-col h-full bg-white rounded-2xl border border-[#06a606]">
-    <div
+<div
+  class="flex flex-col h-full bg-white rounded-2xl border border-[var(--primary-color)]"
+>
+  <div
     class="w-full aspect-square overflow-hidden relative group rounded-t-2xl bg-gray-100"
   >
     @if (recipe.images && recipe.images.length > 0) {
@@ -7,7 +9,7 @@
         class="absolute inset-0 bg-black/45 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
       >
         <div
-          class="pb-[2px] pt-[7px] px-[9px] rounded-full bg-[#06a606] text-white scale-[0.85] group-hover:scale-100 transition-transform duration-150 shadow-lg cursor-pointer hover:scale-110"
+          class="pb-[2px] pt-[7px] px-[9px] rounded-full bg-[var(--primary-color)] text-white scale-[0.85] group-hover:scale-100 transition-transform duration-150 shadow-lg cursor-pointer hover:scale-110"
           (click)="
             $event.stopPropagation();
             openPreview(recipe.images[currentImageIndex].imageUrl)
@@ -97,7 +99,7 @@
             </button>
           }
           <button mat-menu-item (click)="addToOrder.emit(recipe)">
-            <mat-icon style="color: #06a606">assignment</mat-icon>
+            <mat-icon style="color: var(--primary-color)">assignment</mat-icon>
             <span>Añadir a pedido</span>
           </button>
           @if (!isMesero) {
@@ -148,7 +150,7 @@
     @if (recipe.ingredients.length > 2) {
       <button
         type="button"
-        class="w-full mt-2 text-xs md:text-sm font-semibold text-[#06a606] hover:text-[#048a04] transition-colors py-1"
+        class="w-full mt-2 text-xs md:text-sm font-semibold text-[var(--primary-color)] hover:text-[#048a04] transition-colors py-1"
         (click)="showAllIngredients = !showAllIngredients"
       >
         {{
@@ -161,7 +163,7 @@
   </div>
   @if (!isMesero) {
     <div
-      class="flex flex-col items-start px-5 py-3.5 border-t border-[#06a606] mt-1 flex-1 rounded-b-2xl"
+      class="flex flex-col items-start px-5 py-3.5 border-t border-[var(--primary-color)] mt-1 flex-1 rounded-b-2xl"
     >
       <div class="flex flex-col">
         <span class="text-sm md:text-base font-semibold"

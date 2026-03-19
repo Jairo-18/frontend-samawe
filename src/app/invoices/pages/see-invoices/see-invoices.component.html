@@ -51,7 +51,7 @@
                 *matCellDef="let invoice"
                 class="center-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice.invoiceType?.code === 'FV',
+                  '!text-[#06a606]': invoice.invoiceType?.code === 'FV',
                   '!text-red-700': invoice.invoiceType?.code === 'FC',
                   '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                 }"
@@ -108,7 +108,7 @@
                 *matCellDef="let invoice"
                 class="center-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice?.stateType === 'ENTREGADO',
+                  '!text-[#06a606]': invoice?.stateType === 'ENTREGADO',
                   '!text-red-700': invoice?.stateType === 'EN COCINA'
                 }"
               >
@@ -144,7 +144,7 @@
                 *matCellDef="let invoice"
                 class="right-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice.invoiceType?.code === 'FV',
+                  '!text-[#06a606]': invoice.invoiceType?.code === 'FV',
                   '!text-red-700': invoice.invoiceType?.code === 'FC',
                   '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                 }"
@@ -169,7 +169,7 @@
                 *matCellDef="let invoice"
                 class="font-bold"
                 [ngClass]="{
-                  '!text-green-700':
+                  '!text-[#06a606]':
                     invoice?.paidType?.name === 'Pagado' ||
                     invoice?.paidType?.name === 'PAGADO' ||
                     invoice?.paidType?.name === 'RESERVADO - PAGADO' ||
@@ -306,7 +306,7 @@
                 *matCellDef="let invoice"
                 class="center-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice.invoiceType?.code === 'FV',
+                  '!text-[#06a606]': invoice.invoiceType?.code === 'FV',
                   '!text-red-700': invoice.invoiceType?.code === 'FC',
                   '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                 }"
@@ -375,7 +375,7 @@
                 *matCellDef="let invoice"
                 class="center-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice?.stateType === 'ENTREGADO',
+                  '!text-[#06a606]': invoice?.stateType === 'ENTREGADO',
                   '!text-red-700': invoice?.stateType === 'EN COCINA'
                 }"
               >
@@ -399,7 +399,7 @@
                 *matCellDef="let invoice"
                 class="right-text font-bold"
                 [ngClass]="{
-                  '!text-green-700': invoice.invoiceType?.code === 'FV',
+                  '!text-[#06a606]': invoice.invoiceType?.code === 'FV',
                   '!text-red-700': invoice.invoiceType?.code === 'FC',
                   '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                 }"
@@ -424,7 +424,7 @@
                 *matCellDef="let invoice"
                 class="font-bold"
                 [ngClass]="{
-                  '!text-green-700':
+                  '!text-[#06a606]':
                     invoice?.paidType?.name === 'Pagado' ||
                     invoice?.paidType?.name === 'PAGADO' ||
                     invoice?.paidType?.name === 'RESERVADO - PAGADO' ||

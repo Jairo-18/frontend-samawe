@@ -15,7 +15,9 @@
       </div>
     } @else {
       <div class="flex flex-col w-full gap-3">
-        <section class="flex flex-col p-4 rounded-2xl border border-[#06a606]">
+        <section
+          class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)]"
+        >
           @if (invoiceData) {
             <span class="text-xs md:text-xl font-extrabold">
               {{ invoiceData.invoiceType.name || '' }} Nr°
@@ -133,7 +135,7 @@
           ></app-pending-items-table>
         }
         <section
-          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[#06a606]"
+          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[var(--primary-color)]"
         >
           <div class="w-full text-center">
             <span class="font-bold text-sm md:text-base"
@@ -149,7 +151,7 @@
           ></app-invoice-detaill>
         </section>
         <div
-          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[#06a606]"
+          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[var(--primary-color)]"
         >
           <app-invoice-summary
             *ngIf="invoiceData"
@@ -170,4 +172,3 @@
     #invoiceToPrint
   ></app-invoice-pdf>
 </app-base-page>
-

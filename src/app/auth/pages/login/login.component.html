@@ -1,6 +1,6 @@
 <div class="auth-content-center">
   <article
-    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto md:h-[600px] lg:h-[600px] xl:h-[600px] 2xl:h-[600px] 3xl:h-[750px] flex content-between justify-center items-center border border-[#06a606] rounded-2xl mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto md:h-[600px] lg:h-[600px] xl:h-[600px] 2xl:h-[600px] 3xl:h-[750px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-2xl mx-auto overflow-hidden shadow-2xl"
   >
     <section
       class="h-full w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4"
@@ -52,13 +52,13 @@
             mat-fab
             extended="true"
             (click)="login()"
-            class="!w-full bg-[#06a606] text-white"
+            class="!w-full text-white"
           >
             <span class="text-sm md:text-base">Iniciar Sesión</span>
           </button>
           <div>
             <a
-              class="cursor-pointer text-[#06a606] hover:text-[#06a606] hover-underline-animation font-medium text-sm md:text-base"
+              class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
               routerLink="/auth/recovery-password"
             >
               ¿Olvidaste tu contraseña?
@@ -72,7 +72,7 @@
             >
             <a
               routerLink="/auth/register"
-              class="cursor-pointer text-[#06a606] hover:text-[#06a606] hover-underline-animation font-medium text-sm md:text-base"
+              class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
               >Registrate aquí</a
             >
           </div>
