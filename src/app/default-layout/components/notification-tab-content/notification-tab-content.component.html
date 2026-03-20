@@ -17,7 +17,7 @@
       <div
         class="relative group border-b border-gray-100 last:border-0 transition-colors"
         [ngClass]="{
-          'bg-[var(--primary-color)]': !notif.read,
+          'bg-green-100 hover:bg-green-200': !notif.read,
           'bg-white hover:bg-gray-50': notif.read
         }"
         [style.border-left]="

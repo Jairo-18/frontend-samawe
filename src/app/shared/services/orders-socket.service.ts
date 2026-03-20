@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   InvoiceItemUpdate,
@@ -19,19 +19,43 @@ export class OrdersSocketService {
   private _unreadCount = new BehaviorSubject<number>(0);
   public unreadCount$ = this._unreadCount.asObservable();
 
+  private _orderUpdated$ = new Subject<OrderUpdate>();
+  private _invoiceItemAdded$ = new Subject<InvoiceItemUpdate>();
+
   constructor() {
     const baseUrl = environment.apiUrl.endsWith('/')
       ? environment.apiUrl.slice(0, -1)
       : environment.apiUrl;
 
-    this.socket = io(`${baseUrl}/orders`);
+    this.socket = io(`${baseUrl}/orders`, {
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      transports: ['websocket']
+    });
 
     this.socket.on('connect', () => {
+      console.log('[Socket] Connected, joining orders room...');
       this.socket.emit('joinOrders');
     });
 
+    this.socket.on('reconnect', () => {
+      console.log('[Socket] Reconnected, re-joining orders room...');
+      this.socket.emit('joinOrders');
+    });
+
+    this.socket.on('disconnect', (reason: string) => {
+      console.warn('[Socket] Disconnected:', reason);
+    });
+
     this.socket.on('orderUpdated', (data: OrderUpdate) => {
-      this.addNotification(data);
+      this._orderUpdated$.next(data);
+    });
+
+    this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
+      this._invoiceItemAdded$.next(data);
     });
   }
 
@@ -47,19 +71,11 @@ export class OrdersSocketService {
   }
 
   onOrderUpdated(): Observable<OrderUpdate> {
-    return new Observable<OrderUpdate>((observer) => {
-      this.socket.on('orderUpdated', (data: OrderUpdate) => {
-        observer.next(data);
-      });
-    });
+    return this._orderUpdated$.asObservable();
   }
 
   onInvoiceItemAdded(): Observable<InvoiceItemUpdate> {
-    return new Observable<InvoiceItemUpdate>((observer) => {
-      this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
-        observer.next(data);
-      });
-    });
+    return this._invoiceItemAdded$.asObservable();
   }
 
   joinUserRoom(userId: string) {
