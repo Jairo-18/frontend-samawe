@@ -45,7 +45,7 @@
       >
         Cancelar
       </button>
-      <button class="w-full" mat-fab extended="true" (click)="save()">
+      <button class="w-full" mat-fab extended="true" (click)="save()" [disabled]="isSaving">
         Guardar
       </button>
     </section>

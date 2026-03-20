@@ -30,11 +30,8 @@
               [matMenuTriggerFor]="mobileSettingsMenu"
               class="flex flex-col items-center justify-center text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group active:scale-95"
             >
-              <mat-icon
-                class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
-                >{{ item.icon }}</mat-icon
-              >
-              <span>{{ item.name }}</span>
+              <mat-icon class="transition-transform">{{ item.icon }}</mat-icon>
+              <span class="text-[11px]">{{ item.name }}</span>
             </button>
           } @else {
             <!-- Other items (next to Inicio) -->

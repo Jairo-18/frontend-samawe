@@ -95,6 +95,7 @@ export class CreateOrEditAccommodationComponent
   isEditMode: boolean = false;
   accommodationImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
+  isSaving: boolean = false;
   private pendingAccommodationId: number | null = null;
   private readonly _accommodationService: AccommodationsService = inject(
     AccommodationsService
@@ -262,10 +263,12 @@ export class CreateOrEditAccommodationComponent
       if (this.isEditMode) {
         const updateData = { ...accommodationSave };
         delete updateData.accommodationId;
+        this.isSaving = true;
         this._accommodationService
           .updateAccommodationPanel(this.accommodationId, updateData)
           .subscribe({
             next: async () => {
+              this.isSaving = false;
               if (this.imageUploader) {
                 await this.imageUploader.applyChanges(this.accommodationId);
               }
@@ -273,14 +276,17 @@ export class CreateOrEditAccommodationComponent
               this.resetForm();
             },
             error: (error) => {
+              this.isSaving = false;
               console.error('Error al actualizar el hospedaje', error);
             }
           });
       } else {
+        this.isSaving = true;
         this._accommodationService
           .createAccommodationPanel(accommodationSave)
           .subscribe({
             next: async (res) => {
+              this.isSaving = false;
               const newId = Number(res.data?.rowId);
               if (newId && this.imageUploader) {
                 await this.imageUploader.applyChanges(newId);
@@ -289,6 +295,7 @@ export class CreateOrEditAccommodationComponent
               this.resetForm();
             },
             error: (err) => {
+              this.isSaving = false;
               if (err.error && err.error.message) {
                 console.error(
                   'Error al registrar hospedaje:',

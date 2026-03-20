@@ -1,0 +1,205 @@
+<app-section-header
+  [title]="isEditMode ? 'Editar Menú' : 'Crear Menú'"
+  [subtitle]="
+    isEditMode
+      ? 'Modifica el nombre, descripción o platillos del menú'
+      : 'Define un nuevo menú seleccionando los platillos con receta'
+  "
+></app-section-header>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="mt-4">
+  <!-- Name & Description -->
+  <div class="flex flex-col md:flex-row content-between w-full gap-2">
+    <div class="flex flex-col gap-4 w-full md:w-[50%]">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nombre del menú</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          placeholder="Ej: Menú Gourmet, Menú Infantil..."
+        />
+        @if (
+          form.get('name')?.hasError('required') && form.get('name')?.touched
+        ) {
+          <mat-error>El nombre es requerido</mat-error>
+        }
+        @if (
+          form.get('name')?.hasError('minlength') && form.get('name')?.touched
+        ) {
+          <mat-error>Mínimo 2 caracteres</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Descripción del menú</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          cdkTextareaAutosize
+          cdkAutosizeMinRows="3"
+          cdkAutosizeMaxRows="15"
+          maxlength="500"
+          appUppercase
+        ></textarea>
+        <mat-icon matPrefix>notes</mat-icon>
+        <mat-hint align="end">{{ descriptionLength }}/500 caracteres</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="w-full md:w-[50%] mb-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Buscar platillo</mat-label>
+        <input
+          matInput
+          [(ngModel)]="recipeSearchTerm"
+          [ngModelOptions]="{ standalone: true }"
+          placeholder="Filtrar por nombre del platillo..."
+        />
+        <mat-icon matPrefix>search</mat-icon>
+        @if (recipeSearchTerm) {
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="recipeSearchTerm = ''"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Selected Recipes Chips -->
+  @if (selectedRecipeIds.size > 0) {
+    <div class="mb-4">
+      <span class="text-sm font-semibold text-gray-700 mb-2 block"
+        >Platillos seleccionados para esta receta ({{
+          selectedRecipeIds.size
+        }})</span
+      >
+      <div class="flex flex-wrap gap-2">
+        @for (id of Array.from(selectedRecipeIds); track id) {
+          <mat-chip-row (removed)="removeRecipe(id)">
+            {{ getRecipeName(id) }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Recipe Search -->
+
+  <!-- Recipes Grid -->
+  @if (loadingRecipes) {
+    <div class="flex justify-center py-8">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else if (filteredRecipes.length > 0) {
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6"
+    >
+      @for (recipe of filteredRecipes; track recipe.productId) {
+        <div
+          class="recipe-select-card rounded-xl border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+          [class.border-[var(--primary-color)]]="isRecipeSelected(recipe)"
+          [class.bg-green-50]="isRecipeSelected(recipe)"
+          [class.border-gray-200]="!isRecipeSelected(recipe)"
+          [class.bg-white]="!isRecipeSelected(recipe)"
+          (click)="toggleRecipe(recipe)"
+        >
+          <div class="flex items-center gap-3">
+            <mat-checkbox
+              [checked]="isRecipeSelected(recipe)"
+              (click)="$event.stopPropagation()"
+              (change)="toggleRecipe(recipe)"
+              color="primary"
+            ></mat-checkbox>
+
+            @if (recipe.images && recipe.images.length > 0) {
+              <img
+                [src]="recipe.images[0].imageUrl"
+                [alt]="recipe.productName"
+                class="w-10 h-10 rounded-lg object-cover"
+              />
+            } @else {
+              <div
+                class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center"
+              >
+                <mat-icon class="text-indigo-400 text-lg">restaurant</mat-icon>
+              </div>
+            }
+
+            <div class="flex-1 min-w-0">
+              <span class="font-semibold text-sm text-black truncate block">{{
+                recipe.productName
+              }}</span>
+              <span class="text-xs text-gray-500"
+                >{{ recipe.ingredients.length }} ingrediente(s)</span
+              >
+            </div>
+          </div>
+
+          <!-- Ingredient preview -->
+          @if (isRecipeSelected(recipe)) {
+            <div class="mt-2 pl-12 space-y-0.5">
+              @for (
+                ing of recipe.ingredients.slice(0, 3);
+                track ing.ingredientProductId
+              ) {
+                <span class="text-xs text-gray-500 block truncate"
+                  >• {{ ing.ingredientProductName }}</span
+                >
+              }
+              @if (recipe.ingredients.length > 3) {
+                <span class="text-xs text-gray-400 italic"
+                  >+{{ recipe.ingredients.length - 3 }} más</span
+                >
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="text-center py-8 text-gray-400">
+      <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
+      <p>No se encontraron platillos con receta</p>
+    </div>
+  }
+
+  @if (form.invalid === false && selectedRecipeIds.size === 0 && form.touched) {
+    <p class="text-red-500 text-sm mb-4">
+      Debe seleccionar al menos un platillo
+    </p>
+  }
+
+  <section
+    class="flex w-full justify-end items-center flex-col md:flex-row gap-2"
+  >
+    @if (isEditMode) {
+      <div class="w-full md:w-[24%]">
+        <button
+          class="!w-full"
+          mat-fab
+          extended="true"
+          color="warn"
+          (click)="cancel()"
+        >
+          Cancelar
+        </button>
+      </div>
+    }
+    <div class="w-full md:w-[24%]">
+      <button
+        mat-fab
+        extended="true"
+        class="!w-full"
+        [disabled]="saving || selectedRecipeIds.size === 0"
+      >
+        {{ isEditMode ? 'Guardar cambios' : 'Crear Menú' }}
+      </button>
+    </div>
+  </section>
+</form>

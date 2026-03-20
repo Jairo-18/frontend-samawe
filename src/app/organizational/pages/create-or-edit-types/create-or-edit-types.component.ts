@@ -35,7 +35,8 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 })
 export class CreateOrEditTypesComponent {
   formType!: FormGroup;
-  isEditMode = false;
+  isEditMode: boolean = false;
+  isSaving: boolean = false;
   private _id?: string;
   typeOptions = Object.entries(TYPE_ENTITY_LABELS_ES).map(([key, value]) => ({
     key,
@@ -79,9 +80,14 @@ export class CreateOrEditTypesComponent {
     } else {
       action$ = this._typesService.createType(type, payload);
     }
+    this.isSaving = true;
     action$.subscribe({
-      next: () => this._dialogRef.close(true),
+      next: () => {
+        this.isSaving = false;
+        this._dialogRef.close(true);
+      },
       error: (err) => {
+        this.isSaving = false;
         console.error('Error en guardado:', err);
       }
     });

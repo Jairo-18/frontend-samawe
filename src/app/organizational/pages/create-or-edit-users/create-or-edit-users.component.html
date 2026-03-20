@@ -198,6 +198,7 @@
             type="button"
             class="mt-2 md:mt-0 !w-full"
             (click)="save()"
+            [disabled]="isSaving"
           >
             <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
             {{ isEditMode ? 'Guardar cambios' : 'Crear usuario' }}

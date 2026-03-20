@@ -27,31 +27,38 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
+        name: 'Menú',
+        route: '/menus/general',
+        icon: 'restaurant_menu',
+        order: 4,
+        subItems: []
+      },
+      {
         name: 'Recetas',
         route: '/recipes/general',
         icon: 'menu_book',
-        order: 4,
+        order: 5,
         subItems: []
       },
       {
         name: 'Restaurante',
         route: '/recipes/restaurant-order',
         icon: 'restaurant',
-        order: 5,
+        order: 6,
         subItems: []
       },
       {
         name: 'Facturas',
         route: '/invoice/invoices/list',
         icon: 'notes',
-        order: 6,
+        order: 7,
         subItems: []
       },
       {
         name: 'Reportes / Ganancias',
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
-        order: 7,
+        order: 8,
         subItems: []
       }
     ]
@@ -69,12 +76,20 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
-        name: 'Recetas',
-        route: '/recipes/general',
-        icon: 'menu_book',
+        name: 'Menú',
+        route: '/menus/general',
+        icon: 'restaurant_menu',
         order: 2,
         subItems: []
       },
+      {
+        name: 'Recetas',
+        route: '/recipes/general',
+        icon: 'menu_book',
+        order: 3,
+        subItems: []
+      },
+
       {
         name: 'Restaurante',
         route: '/recipes/restaurant-order',
@@ -110,6 +125,7 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Clientes',
     'Productos y Servicios',
     'Recetas',
+    'Menú',
     'Facturas',
     'Reportes / Ganancias',
     'Inicio',
@@ -119,6 +135,7 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Clientes',
     'Productos y Servicios',
     'Recetas',
+    'Menú',
     'Gestión',
     'Aplicación',
     'Facturas',
@@ -126,8 +143,8 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     'Inicio',
     'Restaurante'
   ],
-  CHEF: ['Recetas', 'Inicio', 'Restaurante'],
-  MESERO: ['Recetas', 'Inicio', 'Restaurante']
+  CHEF: ['Recetas', 'Menú', 'Inicio', 'Restaurante'],
+  MESERO: ['Recetas', 'Menú', 'Inicio', 'Restaurante']
 };
 
 export const ALLOWED_MODULES_BY_ROLE: Record<string, string[]> = {

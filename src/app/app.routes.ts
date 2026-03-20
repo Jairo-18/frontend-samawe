@@ -48,6 +48,12 @@ export const routes: Routes = [
       },
       {
         canActivate: [authGuard, adminGuard],
+        path: 'menus',
+        loadChildren: () =>
+          import('./menus/menus.routes').then((m) => m.menusRoutes)
+      },
+      {
+        canActivate: [authGuard, adminGuard],
         path: 'invoice',
         children: invoicesRoutes
       },

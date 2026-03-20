@@ -95,6 +95,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   isEditMode: boolean = false;
   excursionImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
+  isSaving: boolean = false;
   private pendingExcursionId: number | null = null;
   private readonly _excursionService: ExcursionsService =
     inject(ExcursionsService);
@@ -228,10 +229,12 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       if (this.isEditMode) {
         const updateData = { ...excursionSave };
         delete updateData.excursionId;
+        this.isSaving = true;
         this._excursionService
           .updateExcursionPanel(this.excursionId, updateData)
           .subscribe({
             next: async () => {
+              this.isSaving = false;
               if (this.imageUploader) {
                 await this.imageUploader.applyChanges(this.excursionId);
               }
@@ -239,12 +242,15 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
               this.resetForm();
             },
             error: (error) => {
+              this.isSaving = false;
               console.error('Error al actualizar la pasadía', error);
             }
           });
       } else {
+        this.isSaving = true;
         this._excursionService.createExcursionPanel(excursionSave).subscribe({
           next: async (res) => {
+            this.isSaving = false;
             const newId = Number(res.data?.rowId);
             if (newId && this.imageUploader) {
               await this.imageUploader.applyChanges(newId);
@@ -253,6 +259,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
             this.resetForm();
           },
           error: (err) => {
+            this.isSaving = false;
             if (err.error && err.error.message) {
               console.error(
                 'Error al registrar la pasadía:',

@@ -105,6 +105,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   visibleCategoryTypes: CategoryType[] = [];
   productImages: ImageItem[] = [];
   isLoadingImages: boolean = false;
+  isSaving: boolean = false;
   private pendingProductId: number | null = null;
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
@@ -242,10 +243,12 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       if (this.isEditMode) {
         const updateData = { ...productSave };
         delete updateData.productId;
+        this.isSaving = true;
         this._productsService
           .updateProductPanel(this.productId, updateData)
           .subscribe({
             next: async () => {
+              this.isSaving = false;
               if (this.imageUploader) {
                 await this.imageUploader.applyChanges(this.productId);
               }
@@ -253,12 +256,15 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
               this.resetForm();
             },
             error: (error) => {
+              this.isSaving = false;
               console.error('Error al actualizar el producto', error);
             }
           });
       } else {
+        this.isSaving = true;
         this._productsService.createProductPanel(productSave).subscribe({
           next: async (res) => {
+            this.isSaving = false;
             const newId = Number(res.data?.rowId);
             if (newId && this.imageUploader) {
               await this.imageUploader.applyChanges(newId);
@@ -267,6 +273,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
             this.resetForm();
           },
           error: (err) => {
+            this.isSaving = false;
             if (err.error && err.error.message) {
               console.error('Error al registrar producto:', err.error.message);
             } else {

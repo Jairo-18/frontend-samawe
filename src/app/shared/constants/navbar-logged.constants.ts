@@ -8,6 +8,11 @@ export const NAVBAR_LOGGED_CONST: Record<string, NavItem[]> = {
       icon: 'menu_book'
     },
     {
+      title: 'Menú',
+      route: '/menus/general',
+      icon: 'restaurant_menu'
+    },
+    {
       title: 'Restaurante',
       route: '/recipes/restaurant-order',
       icon: 'restaurant'
@@ -28,6 +33,11 @@ export const NAVBAR_LOGGED_CONST: Record<string, NavItem[]> = {
       title: 'Recetas',
       route: '/recipes/general',
       icon: 'menu_book'
+    },
+    {
+      title: 'Menú',
+      route: '/menus/general',
+      icon: 'restaurant_menu'
     },
     {
       title: 'Restaurante',

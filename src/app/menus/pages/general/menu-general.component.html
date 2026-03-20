@@ -1,0 +1,27 @@
+<app-base-page>
+  <mat-tab-group
+    animationDuration="600ms"
+    (selectedIndexChange)="onTabChange($event)"
+  >
+    <mat-tab label="Ver Menús">
+      <ng-template matTabContent>
+        <app-see-menus (editMenu)="onEditMenu($event)"></app-see-menus>
+      </ng-template>
+    </mat-tab>
+
+    @if (!isMesero) {
+      <mat-tab
+        label="{{ currentMenu ? 'Editar Menú' : 'Crear Menú' }}"
+        class="overflow-hidden"
+      >
+        <ng-template matTabContent>
+          <app-create-or-edit-menu
+            [currentMenu]="currentMenu"
+            (menuSaved)="onMenuSaved()"
+            (menuCanceled)="onMenuCanceled()"
+          ></app-create-or-edit-menu>
+        </ng-template>
+      </mat-tab>
+    }
+  </mat-tab-group>
+</app-base-page>

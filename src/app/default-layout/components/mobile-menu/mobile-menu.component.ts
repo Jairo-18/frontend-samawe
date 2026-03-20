@@ -91,8 +91,10 @@ export class MobileMenuComponent implements OnInit {
       if (servicios) finalItems[1] = { ...servicios, name: 'Servicios' };
       if (facturas) finalItems[3] = facturas;
     } else if (roleName === 'CHEF' || roleName === 'MESERO') {
+      const menu = allItems.find((i) => i.name === 'Menú');
       const recetas = allItems.find((i) => i.name === 'Recetas');
       const restaurante = allItems.find((i) => i.name === 'Restaurante');
+      if (menu) finalItems[0] = { ...menu, name: 'Menú' };
       if (recetas) finalItems[1] = recetas;
       if (restaurante) finalItems[3] = restaurante;
     }

@@ -56,6 +56,21 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     ]
   },
   {
+    icon: 'restaurant_menu',
+    title: 'Menú',
+    description: 'Administra el menú del restaurante',
+    route: '/menus/general',
+    iconNext: 'navigate_next',
+    allowedRoles: [
+      'Recepcionista',
+      'Administrador',
+      'ADMINISTRADOR',
+      'RECEPCIONISTA',
+      'MESERO',
+      'CHEF'
+    ]
+  },
+  {
     icon: 'restaurant',
     title: 'Recetas',
     description: 'Crea tus recetas y administra tus recetas',

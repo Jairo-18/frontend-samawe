@@ -1,0 +1,212 @@
+<app-section-header
+  [title]="'Ver Menús'"
+  [subtitle]="'Consulta los menús con sus platillos e ingredientes'"
+></app-section-header>
+
+<app-search-fields
+  [searchFields]="searchFields"
+  [debounceTime]="300"
+  (searchSubmit)="onSearchSubmit($event)"
+  (searchChange)="onSearchChange($event)"
+></app-search-fields>
+
+<section class="flex w-full justify-end items-center gap-2">
+  <div class="hidden md:flex w-[24%]">
+    <button
+      class="!w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="searchComponent.reset()"
+      [disabled]="!showClearButton"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+
+  <div class="flex md:hidden w-full">
+    <button
+      class="!w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="searchComponent.reset()"
+      [disabled]="!showClearButton"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+</section>
+
+<div class="mt-4 menus-list-container">
+  <div class="overflow-auto mb-3">
+    @if (loading) {
+      <div class="loader-overlay">
+        <app-loader></app-loader>
+      </div>
+    } @else if (menus.length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+        @for (menu of menus; track menu.menuId) {
+          <div
+            class="menu-card bg-white rounded-2xl border border-[var(--primary-color)] overflow-hidden transition-all duration-300"
+          >
+            <!-- Menu Header -->
+            <div
+              class="flex justify-between items-center px-5 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+              (click)="toggleExpanded()"
+            >
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2">
+                  <mat-icon class="text-[var(--primary-color)]"
+                    >restaurant_menu</mat-icon
+                  >
+                  <span class="font-bold text-lg text-black">{{
+                    menu.name
+                  }}</span>
+                </div>
+                @if (menu.description) {
+                  <span class="text-sm text-gray-500 ml-8 transition-all">
+                    @if (menu.description.length > 100 && !expandedDescriptions.has(menu.menuId) && !allMenusExpanded) {
+                      {{ menu.description | slice:0:100 }}...
+                      <span class="text-[var(--primary-color)] font-medium hover:underline ml-1" (click)="toggleDescription($event, menu.menuId)">ver más</span>
+                    } @else if (menu.description.length > 100) {
+                      {{ menu.description }}
+                      @if (!allMenusExpanded) {
+                        <span class="text-[var(--primary-color)] font-medium hover:underline ml-1" (click)="toggleDescription($event, menu.menuId)">ver menos</span>
+                      }
+                    } @else {
+                      {{ menu.description }}
+                    }
+                  </span>
+                }
+                <span class="text-xs text-gray-400 ml-8">
+                  {{ getGroupedRecipes(menu.recipes).length }} platillo(s)
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button
+                  mat-icon-button
+                  [matMenuTriggerFor]="menuActions"
+                  (click)="$event.stopPropagation()"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menuActions="matMenu" xPosition="before">
+                  <button mat-menu-item (click)="editMenu.emit(menu)">
+                    <mat-icon class="blue-color">edit</mat-icon>
+                    <span>Editar menú</span>
+                  </button>
+                  <button mat-menu-item (click)="openDeleteDialog(menu)">
+                    <mat-icon class="red-color">delete</mat-icon>
+                    <span>Eliminar menú</span>
+                  </button>
+                </mat-menu>
+
+                <mat-icon
+                  class="text-gray-400 transition-transform duration-300"
+                  [class.rotate-180]="allMenusExpanded"
+                >
+                  expand_more
+                </mat-icon>
+              </div>
+            </div>
+
+            <!-- Expanded Recipe Details -->
+            @if (allMenusExpanded) {
+              <div class="border-t border-gray-200 px-5 py-4 animate-in">
+                <div class="grid grid-cols-1 gap-4">
+                  @for (
+                    grouped of getGroupedRecipes(menu.recipes);
+                    track grouped.productId
+                  ) {
+                    <div class="relative">
+                      <button
+                        mat-icon-button
+                        class="!absolute !top-1 !right-1 !w-8 !h-8 text-gray-400 hover:!text-red-500 hover:!bg-red-50 transition-colors"
+                        matTooltip="Quitar platillo del menú"
+                        (click)="
+                          openRemoveProductDialog(
+                            menu,
+                            grouped.productId,
+                            grouped.productName
+                          )
+                        "
+                      >
+                        <mat-icon
+                          class="text-lg w-5 h-5 flex items-center justify-center"
+                          >close</mat-icon
+                        >
+                      </button>
+
+                      <div class="flex items-center gap-3 mb-3 pr-6">
+                        @if (grouped.imageUrl) {
+                          <img
+                            [src]="grouped.imageUrl"
+                            [alt]="grouped.productName"
+                            class="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                          />
+                        } @else {
+                          <div
+                            class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0"
+                          >
+                            <mat-icon class="text-indigo-400"
+                              >restaurant</mat-icon
+                            >
+                          </div>
+                        }
+                        <span
+                          class="font-semibold text-sm text-black line-clamp-2"
+                          >{{ grouped.productName }}</span
+                        >
+                      </div>
+
+                      <div class="space-y-1.5">
+                        @for (ing of grouped.ingredients; track ing.name) {
+                          <div
+                            class="flex justify-between items-center text-xs"
+                          >
+                            <span class="text-gray-700 truncate mr-2">{{
+                              ing.name
+                            }}</span>
+                            <span
+                              class="text-gray-500 font-medium whitespace-nowrap"
+                            >
+                              {{ ing.quantity }} {{ ing.unit }}
+                            </span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+
+                @if (getGroupedRecipes(menu.recipes).length === 0) {
+                  <div class="text-center text-gray-400 py-4">
+                    Este menú no tiene platillos asociados
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <mat-paginator
+        [length]="paginationParams.total"
+        [pageSize]="paginationParams.perPage"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageIndex]="(paginationParams.page || 1) - 1"
+        (page)="onChangePagination($event)"
+      ></mat-paginator>
+    } @else {
+      <div class="w-full justify-center items-center flex py-10">
+        <div class="text-center">
+          <mat-icon class="text-5xl w-12 h-12 text-gray-300 mb-2"
+            >restaurant_menu</mat-icon
+          >
+          <p class="text-gray-500">No se encontraron menús</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

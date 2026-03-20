@@ -73,6 +73,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   isEditMode: boolean = false;
   loading: boolean = false;
   loadingPhoneCodes: boolean = false;
+  isSaving: boolean = false;
   userLogged?: UserInterface;
   constructor(private _fb: FormBuilder) {
     this.userForm = this._fb.group({
@@ -285,20 +286,26 @@ export class CreateOrEditUsersComponent implements OnInit {
         delete userSave.userId;
         delete userSave.password;
         delete userSave.confirmPassword;
+        this.isSaving = true;
         this._usersService.updateUser(this.userId, userSave).subscribe({
           next: () => {
+            this.isSaving = false;
             this._router.navigateByUrl('/organizational/users/list');
           },
           error: (error) => {
+            this.isSaving = false;
             console.error('Error al actualizar el usuario', error);
           }
         });
       } else {
+        this.isSaving = true;
         this._usersService.createUser(userSave).subscribe({
           next: () => {
+            this.isSaving = false;
             this._router.navigateByUrl('/organizational/users/list');
           },
           error: (err) => {
+            this.isSaving = false;
             if (err.error && err.error.message) {
               console.error('Error al registrar usuario:', err.error.message);
             } else {
