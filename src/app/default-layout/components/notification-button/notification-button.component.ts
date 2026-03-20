@@ -16,6 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
+import { WebPushService } from '../../../shared/services/web-push.service';
 import { NotificationApiService } from '../../../shared/services/notification-api.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { OrderUpdate } from '../../../shared/interfaces/order-socket.interface';
@@ -49,6 +50,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   private _notificationApi: NotificationApiService = inject(
     NotificationApiService
   );
+  private _webPush: WebPushService = inject(WebPushService);
 
   private _subscription: Subscription = new Subscription();
   private audioReminderInterval: ReturnType<typeof setInterval> | undefined;
@@ -298,6 +300,9 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
       this._ordersSocket.joinUserRoom(this.userInfo.userId);
       this.hasJoinedSocketRoom = true;
     }
+
+    // Solicitar permiso y registrar suscripción push (solo si HTTPS o localhost)
+    this._webPush.requestPermissionAndSubscribe().catch(() => {});
 
     this.loadNotifications();
   }
