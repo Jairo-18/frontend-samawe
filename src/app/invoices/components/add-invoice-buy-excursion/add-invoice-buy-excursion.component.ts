@@ -35,7 +35,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
+import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
+
 @Component({
   selector: 'app-add-invoice-buy-excursion',
   standalone: true,
@@ -50,7 +51,7 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
     CommonModule,
     MatIcon,
     MatProgressSpinnerModule,
-    CurrencyFormatDirective
+    InvoiceCurrencyFormatDirective
   ],
   templateUrl: './add-invoice-buy-excursion.component.html',
   styleUrl: './add-invoice-buy-excursion.component.scss'

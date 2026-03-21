@@ -33,7 +33,8 @@ import { ProductComplete } from '../../../service-and-product/interface/product.
 import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
+import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
+
 @Component({
   selector: 'app-add-invoice-buy',
   standalone: true,
@@ -48,7 +49,7 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
     MatSelectModule,
     MatIcon,
     MatProgressSpinnerModule,
-    CurrencyFormatDirective
+    InvoiceCurrencyFormatDirective
   ],
   templateUrl: './add-invoice-buy.component.html',
   styleUrl: './add-invoice-buy.component.scss'

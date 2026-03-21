@@ -64,7 +64,7 @@
         type="text"
         formControlName="priceSale"
         [readonly]="false"
-        appCurrencyFormat
+        appInvoiceCurrencyFormat
         class="text-right"
         placeholder="0.00"
         step="0.01"
@@ -85,7 +85,7 @@
         formControlName="finalPrice"
         [readonly]="true"
         class="text-right"
-        appCurrencyFormat
+        appInvoiceCurrencyFormat
       />
       <mat-icon matSuffix>monetization_on</mat-icon>
     </mat-form-field>
@@ -95,7 +95,7 @@
         matInput
         type="text"
         formControlName="amount"
-        appCurrencyFormat
+        appInvoiceCurrencyFormat
         class="text-right"
         min="1"
         step="1"
