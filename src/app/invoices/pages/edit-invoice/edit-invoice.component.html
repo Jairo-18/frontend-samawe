@@ -19,11 +19,43 @@
           class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)]"
         >
           @if (invoiceData) {
-            <span class="text-xs md:text-xl font-extrabold">
-              {{ invoiceData.invoiceType.name || '' }} Nr°
-              {{ invoiceData.code || '' }}
-            </span>
-            <section class="flex-row md:flex w-full">
+            <div
+              class="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-2"
+            >
+              <span class="text-xs md:text-xl font-extrabold">
+                {{ invoiceData.invoiceType.name || '' }} Nr°
+                {{ invoiceData.code || '' }}
+              </span>
+              <mat-form-field
+                appearance="outline"
+                class="w-full md:w-56 mt-2 md:mt-0"
+                *ngIf="invoiceData.invoiceType.code === 'FC'"
+              >
+                <mat-label>Fecha de Factura</mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="invoiceDatePicker"
+                  [value]="getInvoiceDate()"
+                  (dateChange)="onInvoiceDateChange($event)"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="invoiceDatePicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #invoiceDatePicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="w-full md:w-56 mt-2 md:mt-0"
+                *ngIf="invoiceData.invoiceType.code === 'FV' || invoiceData.invoiceType.code === 'CO'"
+              >
+                <mat-label>Fecha de Factura</mat-label>
+                <input matInput [value]="getFormattedInvoiceDate()" readonly />
+                <mat-icon matSuffix>event_note</mat-icon>
+              </mat-form-field>
+            </div>
+            <section class="flex-row md:flex w-full mt-2 md:mt-0">
               <div
                 class="flex w-full md:w-[50%] justify-start text-sm md:text-base"
               >
@@ -88,7 +120,13 @@
                   ></app-add-accommodation>
                 </ng-template>
               </mat-tab>
-              <mat-tab label="Pasadías y Servicios">
+              <mat-tab
+                [label]="
+                  invoiceData?.invoiceType?.code === 'FC'
+                    ? 'Servicios'
+                    : 'Pasadías y Servicios'
+                "
+              >
                 <ng-template matTabContent>
                   <app-add-excursion
                     [categoryTypes]="categoryTypes"
@@ -106,17 +144,25 @@
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
                     [saveToBackend]="false"
+                    [invoiceStartDate]="invoiceData?.startDate"
                     (itemSaved)="onItemSaved()"
                     (pendingItem)="onPendingItem($event)"
                   ></app-add-invoice-buy>
                 </ng-template>
               </mat-tab>
-              <mat-tab label="Pasadías y Servicios">
+              <mat-tab
+                [label]="
+                  invoiceData?.invoiceType?.code === 'FC'
+                    ? 'Servicios'
+                    : 'Pasadías y Servicios'
+                "
+              >
                 <ng-template matTabContent>
                   <app-add-invoice-buy-excursion
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
                     [saveToBackend]="false"
+                    [invoiceStartDate]="invoiceData?.startDate"
                     (itemSaved)="onItemSaved()"
                     (pendingItem)="onPendingItem($event)"
                   ></app-add-invoice-buy-excursion>

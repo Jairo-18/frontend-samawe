@@ -46,6 +46,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PendingItemsTableComponent } from '../../components/pending-items-table/pending-items-table';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
+import {
+  MatDatepickerModule,
+  MatDatepickerInputEvent
+} from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -67,8 +74,13 @@ import { OrdersSocketService } from '../../../shared/services/orders-socket.serv
     AddInvoiceBuyExcursionComponent,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    PendingItemsTableComponent
+    PendingItemsTableComponent,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
   templateUrl: './edit-invoice.component.html',
   styleUrls: ['./edit-invoice.component.scss']
 })
@@ -266,6 +278,42 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
         },
         error: (err: unknown) => {
           console.error('Error al actualizar estado masivo', err);
+          this.initialLoading = false;
+        }
+      });
+  }
+
+  getInvoiceDate(): Date | null {
+    if (!this.invoiceData?.startDate) return null;
+    return new Date(this.invoiceData.startDate + 'T00:00:00');
+  }
+
+  getFormattedInvoiceDate(): string {
+    const d = this.getInvoiceDate();
+    if (!d) return '';
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  onInvoiceDateChange(event: MatDatepickerInputEvent<Date>): void {
+    if (!this.invoiceId || !event.value) return;
+    const newDateStr = event.value.toLocaleDateString('en-CA');
+    this.initialLoading = true;
+    this._invoiceService
+      .updateInvoice(this.invoiceId, {
+        invoiceId: this.invoiceId,
+        startDate: newDateStr
+      })
+      .subscribe({
+        next: () => {
+          this.getInvoiceToEdit(this.invoiceId!, true);
+          this.reloadInvoiceDetails = true;
+          setTimeout(() => (this.reloadInvoiceDetails = false), 100);
+        },
+        error: (err) => {
+          console.error('Error al actualizar fecha', err);
           this.initialLoading = false;
         }
       });

@@ -64,11 +64,12 @@ export interface CreateInvoice {
 }
 export interface EditInvoice {
   invoiceId: number;
-  payTypeId: number;
-  paidTypeId: number;
-  invoiceElectronic: boolean;
+  payTypeId?: number;
+  paidTypeId?: number;
+  invoiceElectronic?: boolean;
   cash?: number;
   transfer?: number;
+  startDate?: string;
 }
 export interface InvoiceComplete {
   invoiceId: number;

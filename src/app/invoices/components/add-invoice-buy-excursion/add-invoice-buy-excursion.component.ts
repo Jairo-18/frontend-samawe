@@ -33,14 +33,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
 
 @Component({
   selector: 'app-add-invoice-buy-excursion',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -48,7 +49,6 @@ import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoi
     MatAutocompleteModule,
     MatOptionModule,
     MatButtonModule,
-    CommonModule,
     MatIcon,
     MatProgressSpinnerModule,
     InvoiceCurrencyFormatDirective
@@ -62,6 +62,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
+  @Input() invoiceStartDate?: string;
   private readonly _excursionsService = inject(ExcursionsService);
   private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
   private readonly _activateRouter = inject(ActivatedRoute);
@@ -80,7 +81,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       priceSale: [0, [Validators.required, Validators.min(0)]],
       priceWithoutTax: [0, Validators.required],
       taxeTypeId: [2],
-      amount: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0]
     });
     this.form.get('priceSale')?.valueChanges.subscribe((value) => {
@@ -112,9 +112,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     if (id) this.invoiceId = Number(id);
     this.form
       .get('amount')
-      ?.valueChanges.subscribe(() => this.updateFinalPrice());
-    this.form
-      .get('taxeTypeId')
       ?.valueChanges.subscribe(() => this.updateFinalPrice());
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -198,7 +195,6 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       excursionId: null,
       priceSale: 0,
       priceWithoutTax: 0,
-      taxeTypeId: 2,
       amount: 1,
       finalPrice: 0
     });
@@ -243,18 +239,15 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       return;
     }
     const formValue = this.form.getRawValue();
-    const startDate = new Date();
-    const endDate = new Date(startDate.getTime() + 60000);
     const payload: CreateInvoiceDetaill = {
       productId: 0,
       accommodationId: 0,
       excursionId: formValue.excursionId,
       amount: this.parseNumber(formValue.amount),
-      priceBuy: 0,
       priceWithoutTax: this.parseNumber(formValue.priceWithoutTax),
       taxeTypeId: formValue.taxeTypeId,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString()
+      startDate: this.invoiceStartDate || new Date().toISOString(),
+      endDate: this.invoiceStartDate || new Date().toISOString()
     };
     if (!this.saveToBackend) {
       const pendingItem: PendingInvoiceDetail = {

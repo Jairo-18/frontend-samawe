@@ -60,6 +60,7 @@ export class AddInvoiceBuyComponent implements OnInit {
   @Input() saveToBackend: boolean = true;
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
+  @Input() invoiceStartDate?: string;
   private readonly _producsService: ProductsService = inject(ProductsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
@@ -275,9 +276,6 @@ export class AddInvoiceBuyComponent implements OnInit {
       return;
     }
     const formValue = this.form.value;
-    const now = new Date();
-    const endDate = new Date(now);
-    endDate.setMinutes(endDate.getMinutes() + 5);
     const invoiceDetailPayload: CreateInvoiceDetaill = {
       productId: formValue.productId,
       accommodationId: 0,
@@ -286,8 +284,8 @@ export class AddInvoiceBuyComponent implements OnInit {
       priceBuy: this.parseNumber(formValue.priceBuy),
       priceWithoutTax: this.parseNumber(formValue.priceWithoutTax),
       taxeTypeId: formValue.taxeTypeId,
-      startDate: now.toISOString(),
-      endDate: endDate.toISOString()
+      startDate: this.invoiceStartDate || new Date().toISOString(),
+      endDate: this.invoiceStartDate || new Date().toISOString()
     };
     if (!this.saveToBackend) {
       const pendingItem: PendingInvoiceDetail = {
