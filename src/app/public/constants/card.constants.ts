@@ -137,7 +137,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     allowedRoles: ['Administrador', 'ADMINISTRADOR']
   },
   {
-    icon: 'settings',
+    icon: 'apps',
     title: 'Aplicación',
     description: 'Configuración y administración del sistema',
     route: '/organizational/application',

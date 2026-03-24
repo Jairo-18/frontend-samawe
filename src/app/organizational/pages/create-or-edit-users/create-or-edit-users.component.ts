@@ -61,6 +61,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
+
   userForm: FormGroup;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
@@ -75,6 +76,7 @@ export class CreateOrEditUsersComponent implements OnInit {
   loadingPhoneCodes: boolean = false;
   isSaving: boolean = false;
   userLogged?: UserInterface;
+
   constructor(private _fb: FormBuilder) {
     this.userForm = this._fb.group({
       roleTypeId: ['', Validators.required],
@@ -108,22 +110,21 @@ export class CreateOrEditUsersComponent implements OnInit {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         const allRoles = res.data?.roleType || [];
-        const roleName = this.userLogged?.roleType?.name;
-        if (roleName === 'Recepcionista' || roleName === 'RECEPCIONISTA') {
-          this.roleType = allRoles.filter(
-            (r) => r.name === 'Cliente' || r.name === 'CLIENTE'
-          );
-        } else if (
-          roleName === 'Empleado' ||
-          roleName === 'RECEPCIONISTA' ||
-          roleName === 'recepcionista'
-        ) {
-          this.roleType = allRoles.filter(
-            (r) => r.name === 'Cliente' || r.name === 'CLIENTE'
+        const roleName = this.userLogged?.roleType?.name?.toUpperCase() || '';
+        
+        console.log('--- DEBUG ROLE FILTERING ---');
+        console.log('Role of logged user:', roleName);
+        console.log('All roles from DB:', allRoles.map(r => r.name));
+
+        if (roleName === 'RECEPCIONISTA' || roleName === 'EMP' || roleName === 'EMPLEADO') {
+          const allowedRoles = ['CHEF', 'MESERO', 'CLIENTE', 'RECEPCIONISTA', 'PROVEEDOR'];
+          this.roleType = allRoles.filter((r) => 
+            allowedRoles.includes(r.name?.trim().toUpperCase() || '')
           );
         } else {
           this.roleType = allRoles;
         }
+        console.log('Filtered roles output:', this.roleType.map(r => r.name));
         this.identificationType = res.data?.identificationType || [];
         this.personType = res.data?.personType || [];
         this.loading = false;
@@ -253,6 +254,11 @@ export class CreateOrEditUsersComponent implements OnInit {
           isActive: user.isActive,
           personTypeId: user.personType?.personTypeId?.toString() || ''
         });
+
+        if (this.userLogged?.userId === user.userId) {
+          this.userForm.get('roleTypeId')?.disable();
+        }
+
         this.loading = false;
       },
       error: (err) => {
@@ -265,7 +271,7 @@ export class CreateOrEditUsersComponent implements OnInit {
       this.setPassword();
     }
     if (this.userForm.valid) {
-      const formValue = this.userForm.value;
+      const formValue = this.userForm.getRawValue();
       const userSave: CreateUserPanel = {
         userId: this.isEditMode ? this.userId : uuid.v4(),
         roleType: formValue.roleTypeId,
