@@ -24,7 +24,7 @@
         </th>
         <td mat-cell *matCellDef="let item" class="center-text">
           {{ item.payload.startDate ? (item.payload.startDate | date:
-          'dd/MM/yyyy HH:mm') : 'N/A' }}
+          'dd/MM/yyyy HH:mm' : 'UTC') : 'N/A' }}
         </td>
       </ng-container>
       <ng-container matColumnDef="endDate">
@@ -33,7 +33,7 @@
         </th>
         <td mat-cell *matCellDef="let item" class="center-text">
           {{ item.payload.endDate ? (item.payload.endDate | date: 'dd/MM/yyyy
-          HH:mm') : 'N/A' }}
+          HH:mm' : 'UTC') : 'N/A' }}
         </td>
       </ng-container>
       <ng-container matColumnDef="amount">

@@ -284,8 +284,8 @@ export class AddInvoiceBuyComponent implements OnInit {
       priceBuy: this.parseNumber(formValue.priceBuy),
       priceWithoutTax: this.parseNumber(formValue.priceWithoutTax),
       taxeTypeId: formValue.taxeTypeId,
-      startDate: this.invoiceStartDate || new Date().toISOString(),
-      endDate: this.invoiceStartDate || new Date().toISOString()
+      startDate: this.getDateTimeFromInvoiceDate(),
+      endDate: this.getDateTimeFromInvoiceDate()
     };
     if (!this.saveToBackend) {
       const pendingItem: PendingInvoiceDetail = {
@@ -316,5 +316,16 @@ export class AddInvoiceBuyComponent implements OnInit {
           this.isLoading = false;
         }
       });
+  }
+
+  private getDateTimeFromInvoiceDate(): string {
+    const now = new Date();
+    if (this.invoiceStartDate) {
+      const [year, month, day] = this.invoiceStartDate.split('-').map(Number);
+      const combined = new Date();
+      combined.setFullYear(year, month - 1, day);
+      return combined.toISOString();
+    }
+    return now.toISOString();
   }
 }
