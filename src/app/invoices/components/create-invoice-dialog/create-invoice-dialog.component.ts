@@ -100,8 +100,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
       payTypeId: ['', Validators.required],
       cash: [0],
       transfer: [0],
-      stateTypeId: [null],
-      startDate: [new Date(), Validators.required]
+      stateTypeId: [null]
     });
   }
   ngOnInit(): void {
@@ -146,8 +145,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
       paidTypeId: invoice.paidType?.paidTypeId,
       cash: invoice.cash,
       transfer: invoice.transfer,
-      stateTypeId: invoice.stateType?.stateTypeId,
-      startDate: invoice.startDate ? new Date(invoice.startDate + 'T00:00:00') : new Date()
+      stateTypeId: invoice.stateType?.stateTypeId
     });
     if (invoice.user) {
       const clientForDisplay: Partial<CreateUserPanel> = {
@@ -252,7 +250,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
   private updateInvoice(): void {
     if (!this.data.invoiceId) return;
     const formValue = this.form.getRawValue();
-    const startDateRaw = formValue.startDate;
     const updatePayload = {
       invoiceId: this.data.invoiceId,
       payTypeId: formValue.payTypeId,
@@ -260,10 +257,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
       paidTypeId: formValue.paidTypeId,
       invoiceElectronic: formValue.invoiceElectronic,
       cash: Math.abs(Number(formValue.cash)),
-      transfer: Math.abs(Number(formValue.transfer)),
-      ...(startDateRaw && { 
-        startDate: (startDateRaw instanceof Date ? startDateRaw : new Date(startDateRaw)).toLocaleDateString('en-CA') 
-      })
+      transfer: Math.abs(Number(formValue.transfer))
     };
     if (formValue.stateTypeId && this.invoice?.tableNumber) {
       Object.assign(updatePayload, { stateTypeId: formValue.stateTypeId });
@@ -285,15 +279,9 @@ export class CreateInvoiceDialogComponent implements OnInit {
     return this.form.get('observations')?.value?.length || 0;
   }
   private createInvoice(): void {
-    const startDateRaw = this.form.value.startDate;
-    const formattedDate = startDateRaw instanceof Date 
-      ? startDateRaw.toLocaleDateString('en-CA') 
-      : new Date(startDateRaw).toLocaleDateString('en-CA');
     const payload = {
       ...this.form.value,
-      userId: this.form.get('userId')?.value,
-      startDate: formattedDate,
-      endDate: formattedDate
+      userId: this.form.get('userId')?.value
     };
     this._invoiceService.createInvoice(payload).subscribe({
       next: (res) => {

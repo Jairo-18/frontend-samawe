@@ -95,23 +95,6 @@
         <mat-icon matPrefix>bolt</mat-icon>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Fecha de factura</mat-label>
-        <input
-          matInput
-          [matDatepicker]="startDatePicker"
-          formControlName="startDate"
-        />
-        <mat-datepicker #startDatePicker></mat-datepicker>
-        <mat-datepicker-toggle
-          [for]="startDatePicker"
-          matSuffix
-        ></mat-datepicker-toggle>
-        <mat-icon matPrefix>event</mat-icon>
-        <mat-error *ngIf="form.get('startDate')?.hasError('required')">
-          Fecha requerida
-        </mat-error>
-      </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Tipo de pago</mat-label>

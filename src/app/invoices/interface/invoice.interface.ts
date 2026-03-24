@@ -58,8 +58,8 @@ export interface CreateInvoice {
   invoiceElectronic: boolean;
   cash?: number;
   transfer?: number;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   organizationalId?: string;
 }
 export interface EditInvoice {

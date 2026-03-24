@@ -63,23 +63,28 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
   @Input() invoiceStartDate?: string;
-  private readonly _excursionsService = inject(ExcursionsService);
-  private readonly _invoiceDetaillService = inject(InvoiceDetaillService);
-  private readonly _activateRouter = inject(ActivatedRoute);
-  private readonly _fb = inject(FormBuilder);
-  private readonly _router = inject(Router);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _excursionsService: ExcursionsService =
+    inject(ExcursionsService);
+  private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
+    InvoiceDetaillService
+  );
+  private readonly _activateRouter: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _router: Router = inject(Router);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   form: FormGroup;
   isLoading: boolean = false;
   filteredExcursions: AddedExcursionInvoiceDetaill[] = [];
   isLoadingExcursions: boolean = false;
   invoiceId?: number;
+
   constructor() {
     this.form = this._fb.group({
       name: ['', Validators.required],
       excursionId: [null, Validators.required],
       priceSale: [0, [Validators.required, Validators.min(0)]],
       priceWithoutTax: [0, Validators.required],
+      amount: [1, [Validators.required, Validators.min(1)]],
       taxeTypeId: [2],
       finalPrice: [0]
     });
