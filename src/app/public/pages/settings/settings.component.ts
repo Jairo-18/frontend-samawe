@@ -38,8 +38,7 @@ export class SettingsComponent implements OnInit {
     const roleName = this.userInfo?.roleType?.name?.toLowerCase().trim() || '';
     const roleCode = this.userInfo?.roleType?.code?.toLowerCase().trim() || '';
 
-    console.log('Detected Role Name:', roleName);
-    console.log('Detected Role Code:', roleCode);
+ 
 
     if (roleName === 'cliente' || roleCode === 'cliente') {
       this.settingsItems = [

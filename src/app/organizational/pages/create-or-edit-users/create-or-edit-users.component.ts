@@ -111,20 +111,26 @@ export class CreateOrEditUsersComponent implements OnInit {
       next: (res) => {
         const allRoles = res.data?.roleType || [];
         const roleName = this.userLogged?.roleType?.name?.toUpperCase() || '';
-        
-        console.log('--- DEBUG ROLE FILTERING ---');
-        console.log('Role of logged user:', roleName);
-        console.log('All roles from DB:', allRoles.map(r => r.name));
 
-        if (roleName === 'RECEPCIONISTA' || roleName === 'EMP' || roleName === 'EMPLEADO') {
-          const allowedRoles = ['CHEF', 'MESERO', 'CLIENTE', 'RECEPCIONISTA', 'PROVEEDOR'];
-          this.roleType = allRoles.filter((r) => 
+        if (
+          roleName === 'RECEPCIONISTA' ||
+          roleName === 'EMP' ||
+          roleName === 'EMPLEADO'
+        ) {
+          const allowedRoles = [
+            'CHEF',
+            'MESERO',
+            'CLIENTE',
+            'RECEPCIONISTA',
+            'PROVEEDOR'
+          ];
+          this.roleType = allRoles.filter((r) =>
             allowedRoles.includes(r.name?.trim().toUpperCase() || '')
           );
         } else {
           this.roleType = allRoles;
         }
-        console.log('Filtered roles output:', this.roleType.map(r => r.name));
+
         this.identificationType = res.data?.identificationType || [];
         this.personType = res.data?.personType || [];
         this.loading = false;

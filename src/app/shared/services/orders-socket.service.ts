@@ -37,12 +37,10 @@ export class OrdersSocketService {
     });
 
     this.socket.on('connect', () => {
-      console.log('[Socket] Connected, joining orders room...');
       this.socket.emit('joinOrders');
     });
 
     this.socket.on('reconnect', () => {
-      console.log('[Socket] Reconnected, re-joining orders room...');
       this.socket.emit('joinOrders');
     });
 
