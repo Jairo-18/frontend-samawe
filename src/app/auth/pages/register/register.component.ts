@@ -22,6 +22,7 @@ import { RegisterService } from '../../services/register.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import {
   IdentificationType,
+  PersonType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { ApplicationService } from '../../../organizational/services/application.service';
@@ -55,6 +56,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
+  personType: PersonType[] = [];
   registerBgUrl: string = '';
   private _subscription: Subscription = new Subscription();
   private readonly _applicationService: ApplicationService =
@@ -73,7 +75,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       identificationTypeId: ['', Validators.required],
       identificationNumber: ['', Validators.required],
       firstName: ['', Validators.required],
-      lastName: ['', [Validators.required]]
+      lastName: ['', [Validators.required]],
+      personTypeId: ['']
     });
     this.formStep2 = this._fb.group(
       {
@@ -100,6 +103,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getRelatedData();
     this.loadRegisterBg();
+    this.setupIdentificationTypeListener();
     this.formStep2.get('confirmPassword')?.disable();
     this.formStep2.get('password')?.valueChanges.subscribe((value) => {
       if (!value) {
@@ -114,6 +118,30 @@ export class RegisterComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.identificationType = res.data?.identificationType || [];
         this.phoneCode = res.data?.phoneCode || [];
+        this.personType = res.data?.personType || [];
+      }
+    });
+  }
+
+  private setupIdentificationTypeListener(): void {
+    this.formStep1.get('identificationTypeId')?.valueChanges.subscribe((id: string) => {
+      const selected = this.identificationType.find(
+        (t) => t.identificationTypeId?.toString() === id
+      );
+      if (!selected) return;
+      const isNit = selected.name?.toUpperCase().includes('NIT');
+      const match = isNit
+        ? this.personType.find(
+            (p) =>
+              p.name?.toUpperCase().includes('JUR\u00CDDICA') ||
+              p.name?.toUpperCase().includes('JURIDICA')
+          )
+        : this.personType.find((p) => p.name?.toUpperCase().includes('NATURAL'));
+      if (match) {
+        this.formStep1.patchValue(
+          { personTypeId: match.personTypeId.toString() },
+          { emitEvent: false }
+        );
       }
     });
   }
@@ -149,7 +177,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
         phoneCode: this.formStep2.value.phoneCodeId,
         phone: this.formStep2.value.phone,
         password: this.formStep2.value.password,
-        confirmPassword: this.formStep2.get('confirmPassword')?.value
+        confirmPassword: this.formStep2.get('confirmPassword')?.value,
+        ...(this.formStep1.value.personTypeId && {
+          personType: this.formStep1.value.personTypeId
+        })
       };
       this._registerService.registerUser(userToRegister).subscribe({
         next: () => {

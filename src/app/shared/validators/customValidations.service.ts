@@ -8,8 +8,13 @@ export class CustomValidationsService {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       const pass = formGroup.get(password);
       const confirmPass = formGroup.get(confirmPassword);
-      if (!pass?.value || !confirmPass?.value) {
-
+      if (!pass?.value) {
+        if (confirmPass?.hasError('passwordMismatch')) {
+          confirmPass.setErrors(null);
+        }
+        return null;
+      }
+      if (!confirmPass?.value) {
         return { passwordMismatch: null };
       }
       if (pass.value !== confirmPass.value) {

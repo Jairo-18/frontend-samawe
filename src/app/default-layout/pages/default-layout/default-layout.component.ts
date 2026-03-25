@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -34,6 +34,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     inject(LocalStorageService);
   public readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _subscription: Subscription = new Subscription();
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
@@ -64,6 +65,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         this.checkRolesForNotifications();
         this.checkRolesForNavBar();
         this.checkSideBarVisibility();
+        this._cdRef.detectChanges();
       })
     );
     this.isLoggedUser = this._authService.isAuthenticated();
@@ -72,9 +74,27 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this.checkRolesForNavBar();
     this.checkSideBarVisibility();
 
+    if (
+      this._authService.isAuthenticated() &&
+      localStorage.getItem('_pendingGoogleProfile') &&
+      !this._router.url.includes('/complete-profile')
+    ) {
+      this._router.navigateByUrl('/complete-profile');
+      return;
+    }
+
     this._router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
+      .subscribe((event) => {
+        const navEvent = event as NavigationEnd;
+        if (
+          this._authService.isAuthenticated() &&
+          localStorage.getItem('_pendingGoogleProfile') &&
+          !navEvent.url.includes('/complete-profile')
+        ) {
+          this._router.navigateByUrl('/complete-profile');
+          return;
+        }
         this.isLoggedUser = this._authService.isAuthenticated();
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();

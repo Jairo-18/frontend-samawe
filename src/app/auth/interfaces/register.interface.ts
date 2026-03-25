@@ -15,6 +15,7 @@ export interface RegisterUser {
   password: string;
   confirmPassword: string;
   roleType?: string;
+  personType?: string;
 }
 export interface CreateUserRelatedData {
   identificationType: IdentificationType[];

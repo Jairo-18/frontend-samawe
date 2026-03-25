@@ -1,0 +1,200 @@
+<div class="auth-content-center">
+  <article
+    class="relative w-[90%] md:w-[75%] lg:w-[55%] xl:w-[45%] h-auto flex flex-col border border-[var(--primary-color)] rounded-2xl mx-auto overflow-hidden shadow-2xl p-6 md:p-10 gap-4 my-0 md:my-6"
+  >
+    <div class="flex flex-col gap-1 text-center">
+      <span class="font-extrabold text-xl">Completa tu perfil</span>
+      <span class="font-medium text-sm text-gray-500">
+        Necesitamos algunos datos adicionales para continuar
+      </span>
+    </div>
+
+    <mat-progress-spinner
+      *ngIf="loading"
+      mode="indeterminate"
+      diameter="40"
+      class="mx-auto"
+    ></mat-progress-spinner>
+
+    <form
+      *ngIf="!loading"
+      [formGroup]="form"
+      class="flex flex-col gap-0.5"
+      (ngSubmit)="save()"
+    >
+      <!-- Nombres -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Nombres</mat-label>
+        <input matInput formControlName="firstName" appUppercase />
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="form.get('firstName')?.hasError('required')">
+          Nombre requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Apellidos -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Apellidos</mat-label>
+        <input matInput formControlName="lastName" appUppercase />
+        <mat-icon matPrefix>people</mat-icon>
+        <mat-error *ngIf="form.get('lastName')?.hasError('required')">
+          Apellido requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Tipo de identificación -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tipo de identificación</mat-label>
+        <mat-select formControlName="identificationTypeId">
+          <mat-option
+            *ngFor="let t of identificationType"
+            [value]="t.identificationTypeId.toString()"
+          >
+            {{ t.name }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>table_chart</mat-icon>
+        <mat-error
+          *ngIf="form.get('identificationTypeId')?.hasError('required')"
+        >
+          Tipo de identificación requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Número de identificación -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Número de identificación</mat-label>
+        <input matInput formControlName="identificationNumber" />
+        <mat-icon matPrefix>credit_card</mat-icon>
+        <mat-error
+          *ngIf="form.get('identificationNumber')?.hasError('required')"
+        >
+          Número de identificación requerido
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Código de país (autocomplete) -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>País / Código de teléfono</mat-label>
+        <input
+          matInput
+          formControlName="phoneCodeSearch"
+          [matAutocomplete]="autoPhone"
+          placeholder="Busca tu país..."
+        />
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-autocomplete
+          #autoPhone="matAutocomplete"
+          [displayWith]="displayPhoneCode"
+          (optionSelected)="onPhoneCodeSelected($event.option.value)"
+        >
+          <mat-option *ngIf="loadingPhoneCodes" disabled>
+            Cargando...
+          </mat-option>
+          <mat-option *ngFor="let pc of filteredPhoneCodes" [value]="pc">
+            {{ pc.code }} {{ pc.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <span
+        class="text-[var(--mat-sys-error,#f44336)] text-[0.75em] -mt-3 mb-1 ml-4 block"
+        *ngIf="form.get('phoneCodeId')?.invalid && (form.get('phoneCodeId')?.touched || form.get('phoneCodeSearch')?.touched)"
+      >
+        País / Código requerido
+      </span>
+
+      <!-- Teléfono -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="phone" inputmode="numeric" />
+        <mat-icon matPrefix>phone_iphone</mat-icon>
+        <mat-error *ngIf="form.get('phone')?.hasError('required')">
+          Teléfono requerido
+        </mat-error>
+        <mat-error *ngIf="form.get('phone')?.hasError('pattern')">
+          Solo números, máximo 15 dígitos
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Contraseña (opcional) -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label
+          >Contraseña
+          <span class="text-xs font-normal text-gray-400"
+            >(opcional)</span
+          ></mat-label
+        >
+        <input
+          matInput
+          formControlName="password"
+          [type]="showPassword ? 'text' : 'password'"
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          type="button"
+          matSuffix
+          mat-icon-button
+          (click)="showPassword = !showPassword"
+        >
+          <mat-icon>{{
+            showPassword ? 'visibility' : 'visibility_off'
+          }}</mat-icon>
+        </button>
+        <mat-hint *ngIf="!form.get('password')?.value">
+          Si no ingresas contraseña, solo podrás entrar con Google
+        </mat-hint>
+        <mat-error *ngIf="form.get('password')?.hasError('passwordStrength')">
+          La contraseña debe tener 6 caracteres, con mayúscula, minúscula y un
+          carácter especial
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Confirmar contraseña -->
+      <mat-form-field
+        appearance="outline"
+        class="w-full"
+        *ngIf="form.get('password')?.value"
+      >
+        <mat-label>Confirmar contraseña</mat-label>
+        <input
+          matInput
+          formControlName="confirmPassword"
+          [type]="showConfirmPassword ? 'text' : 'password'"
+        />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button
+          type="button"
+          matSuffix
+          mat-icon-button
+          (click)="showConfirmPassword = !showConfirmPassword"
+        >
+          <mat-icon>{{
+            showConfirmPassword ? 'visibility' : 'visibility_off'
+          }}</mat-icon>
+        </button>
+        <mat-error
+          *ngIf="form.get('confirmPassword')?.hasError('passwordMismatch')"
+        >
+          Las contraseñas no coinciden
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-fab
+        extended="true"
+        type="submit"
+        class="!w-full text-white mt-2"
+        [disabled]="isSaving"
+      >
+        <mat-icon *ngIf="isSaving">
+          <mat-progress-spinner
+            diameter="20"
+            mode="indeterminate"
+          ></mat-progress-spinner>
+        </mat-icon>
+        <span>{{ isSaving ? 'Guardando...' : 'Continuar' }}</span>
+      </button>
+
+    </form>
+  </article>
+</div>

@@ -12,6 +12,10 @@ export const authGuard: CanActivateFn = (route, state) => {
         router.navigate(['/auth/login']);
         return false;
       }
+      if (localStorage.getItem('_pendingGoogleProfile')) {
+        router.navigate(['/complete-profile']);
+        return false;
+      }
       return true;
     })
   );

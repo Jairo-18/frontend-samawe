@@ -90,4 +90,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  loginWithGoogle(): void {
+    this._authService.loginWithGoogle();
+  }
 }

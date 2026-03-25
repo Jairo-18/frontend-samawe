@@ -21,7 +21,14 @@ export const authRoutes: Routes = [
           import('./pages/recovery-password/recovery-password.component').then(
             (m) => m.RecoveryPasswordComponent
           )
-      }
+      },
+      {
+        path: 'google/callback',
+        loadComponent: () =>
+          import('./pages/google-callback/google-callback.component').then(
+            (m) => m.GoogleCallbackComponent
+          )
+      },
     ]
   }
 ];

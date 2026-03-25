@@ -5,6 +5,7 @@ import { adminGuard } from './shared/guards/admin.guard';
 import { authGuard } from './shared/guards/auth.guard';
 import { invoicesRoutes } from './invoices/invoices.routes';
 import { isLoggedGuard } from './shared/guards/isLogged.guard';
+import { pendingProfileGuard } from './shared/guards/pending-profile.guard';
 export const routes: Routes = [
   {
     path: '',
@@ -68,6 +69,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./auth/pages/change-password/change-password.component').then(
             (m) => m.ChangePasswordComponent
+          )
+      },
+      {
+        path: 'complete-profile',
+        canActivate: [pendingProfileGuard],
+        loadComponent: () =>
+          import('./auth/pages/complete-profile/complete-profile.component').then(
+            (m) => m.CompleteProfileComponent
           )
       }
     ]

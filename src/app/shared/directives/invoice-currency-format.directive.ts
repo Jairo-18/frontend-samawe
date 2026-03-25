@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
   standalone: true
 })
 export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
-  @Input() appInvoiceCurrencyFormat: string | number = 2; // Default to 2 decimals
+  @Input() appInvoiceCurrencyFormat: string | number = 2;
 
   private elInput: HTMLInputElement;
   private sub?: Subscription;
@@ -46,7 +46,10 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
   }
 
   get decimals(): number {
-    const parsed = typeof this.appInvoiceCurrencyFormat === 'string' ? parseInt(this.appInvoiceCurrencyFormat, 10) : this.appInvoiceCurrencyFormat;
+    const parsed =
+      typeof this.appInvoiceCurrencyFormat === 'string'
+        ? parseInt(this.appInvoiceCurrencyFormat, 10)
+        : this.appInvoiceCurrencyFormat;
     return isNaN(parsed) ? 2 : parsed;
   }
 
@@ -64,11 +67,8 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
         this.lastValue = '';
         return;
       }
-      
-      // Wait, let's always use the specified decimals for consistency, or dynamically?
-      // Standard app uses .toFixed(2)
+
       numStr = val.toFixed(this.decimals);
-      
     } else if (typeof val === 'string') {
       let cleanStr = val.trim();
       if (cleanStr.includes(',')) {
@@ -89,11 +89,10 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
     const decimal = parts[1] || '00';
 
     const formattedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    
-    // Only append decimal part if decimals > 0
+
     let finalFormatted = formattedInteger;
     if (this.decimals > 0) {
-       finalFormatted = `${formattedInteger},${decimal}`;
+      finalFormatted = `${formattedInteger},${decimal}`;
     }
 
     this.elInput.value = finalFormatted;
@@ -142,7 +141,7 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
       if (integerPart === '') integerPart = '0';
     }
     if (integerPart === '') {
-      integerPart = '0'; // Handle empty input nicely
+      integerPart = '0';
     }
 
     const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -178,8 +177,6 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
   private updateControl(num: number | null): void {
     if (this.control && this.control.control) {
       setTimeout(() => {
-        // Emit event true so form correctly updates!
-        // We'll emitModelToViewChange false so it won't overwrite current cursor typing
         this.control.control?.setValue(num, {
           emitEvent: true,
           emitModelToViewChange: false

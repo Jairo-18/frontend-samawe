@@ -195,4 +195,8 @@ export class AuthService {
       return null;
     }
   }
+
+  loginWithGoogle(): void {
+    window.location.href = `${environment.apiUrl}auth/google`;
+  }
 }

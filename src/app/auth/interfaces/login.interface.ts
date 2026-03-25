@@ -1,4 +1,8 @@
-import { RoleType } from '../../shared/interfaces/relatedDataGeneral';
+export interface RoleType {
+  roleTypeId: string;
+  code?: string;
+  name?: string;
+}
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -32,9 +36,9 @@ export interface User {
   userId: string;
   roleType: RoleType;
   organizationalId: string | null;
+  avatarUrl?: string | null;
 }
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
 }
-
