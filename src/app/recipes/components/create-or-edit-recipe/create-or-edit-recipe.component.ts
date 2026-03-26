@@ -85,6 +85,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
   filteredDishes: ProductComplete[] = [];
   filteredIngredients: ProductComplete[][] = [];
   ingredientPriceMap: Record<number, number> = {};
+  ingredientUnitMap: Record<number, string> = {};
   existingRecipeProductIds: Set<number> = new Set();
 
   get dishSearchControl(): FormControl {
@@ -161,6 +162,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       this.filteredIngredients = [];
       for (const ing of this.currentRecipe.ingredients) {
         this.ingredientPriceMap[ing.ingredientProductId] = ing.cost;
+        this.ingredientUnitMap[ing.ingredientProductId] = ing.unit ?? '';
         this._addIngredientRow({
           ingredientProductId: ing.ingredientProductId,
           quantity: ing.quantity,
@@ -260,6 +262,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       ingSearch: product.name
     });
     this.ingredientPriceMap[product.productId] = Number(product.priceBuy) || 0;
+    this.ingredientUnitMap[product.productId] = product.unitOfMeasure?.code ?? '';
     this._cdr.markForCheck();
   }
 
@@ -339,10 +342,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     const ingId = Number(
       this.ingredientsArray.at(index).get('ingredientProductId')?.value
     );
-    const found = this.filteredIngredients
-      .flat()
-      .find((p) => p.productId === ingId);
-    return found?.unitOfMeasure?.code ?? '';
+    return this.ingredientUnitMap[ingId] ?? '';
   }
 
   getIngredientCost(index: number): number {
@@ -404,6 +404,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     this.dishSearchControl.setValue('', { emitEvent: false });
     this.filteredDishes = [];
     this.ingredientPriceMap = {};
+    this.ingredientUnitMap = {};
     this.form.get('productId')?.enable({ emitEvent: false });
     this._cdr.detectChanges();
   }

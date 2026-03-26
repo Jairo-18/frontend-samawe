@@ -66,13 +66,25 @@
                 </div>
                 @if (menu.description) {
                   <span class="text-sm text-gray-500 ml-8 transition-all">
-                    @if (menu.description.length > 100 && !expandedDescriptions.has(menu.menuId) && !allMenusExpanded) {
-                      {{ menu.description | slice:0:100 }}...
-                      <span class="text-[var(--primary-color)] font-medium hover:underline ml-1" (click)="toggleDescription($event, menu.menuId)">ver más</span>
+                    @if (
+                      menu.description.length > 100 &&
+                      !expandedDescriptions.has(menu.menuId) &&
+                      !allMenusExpanded
+                    ) {
+                      {{ menu.description | slice: 0 : 100 }}...
+                      <span
+                        class="text-[var(--primary-color)] font-medium hover:underline ml-1"
+                        (click)="toggleDescription($event, menu.menuId)"
+                        >ver más</span
+                      >
                     } @else if (menu.description.length > 100) {
                       {{ menu.description }}
                       @if (!allMenusExpanded) {
-                        <span class="text-[var(--primary-color)] font-medium hover:underline ml-1" (click)="toggleDescription($event, menu.menuId)">ver menos</span>
+                        <span
+                          class="text-[var(--primary-color)] font-medium hover:underline ml-1"
+                          (click)="toggleDescription($event, menu.menuId)"
+                          >ver menos</span
+                        >
                       }
                     } @else {
                       {{ menu.description }}
@@ -85,23 +97,25 @@
               </div>
 
               <div class="flex items-center gap-1">
-                <button
-                  mat-icon-button
-                  [matMenuTriggerFor]="menuActions"
-                  (click)="$event.stopPropagation()"
-                >
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menuActions="matMenu" xPosition="before">
-                  <button mat-menu-item (click)="editMenu.emit(menu)">
-                    <mat-icon class="blue-color">edit</mat-icon>
-                    <span>Editar menú</span>
+                @if (!isMesero) {
+                  <button
+                    mat-icon-button
+                    [matMenuTriggerFor]="menuActions"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <mat-icon>more_vert</mat-icon>
                   </button>
-                  <button mat-menu-item (click)="openDeleteDialog(menu)">
-                    <mat-icon class="red-color">delete</mat-icon>
-                    <span>Eliminar menú</span>
-                  </button>
-                </mat-menu>
+                  <mat-menu #menuActions="matMenu" xPosition="before" yPosition="above">
+                    <button mat-menu-item (click)="editMenu.emit(menu)">
+                      <mat-icon class="blue-color">edit</mat-icon>
+                      <span>Editar menú</span>
+                    </button>
+                    <button mat-menu-item (click)="openDeleteDialog(menu)">
+                      <mat-icon class="red-color">delete</mat-icon>
+                      <span>Eliminar menú</span>
+                    </button>
+                  </mat-menu>
+                }
 
                 <mat-icon
                   class="text-gray-400 transition-transform duration-300"
@@ -121,23 +135,24 @@
                     track grouped.productId
                   ) {
                     <div class="relative">
-                      <button
-                        mat-icon-button
-                        class="!absolute !top-1 !right-1 !w-8 !h-8 text-gray-400 hover:!text-red-500 hover:!bg-red-50 transition-colors"
-                        matTooltip="Quitar platillo del menú"
-                        (click)="
-                          openRemoveProductDialog(
-                            menu,
-                            grouped.productId,
-                            grouped.productName
-                          )
-                        "
-                      >
-                        <mat-icon
-                          class="text-lg w-5 h-5 flex items-center justify-center"
-                          >close</mat-icon
+                      @if (!isMesero) {
+                        <button
+                          mat-icon-button
+                          class="!absolute !top-1 !right-1 text-gray-400 hover:!text-red-500 hover:!bg-red-50 transition-colors"
+                          (click)="
+                            openRemoveProductDialog(
+                              menu,
+                              grouped.productId,
+                              grouped.productName
+                            )
+                          "
                         >
-                      </button>
+                          <mat-icon
+                            class="text-lg w-5 h-5 flex items-center justify-center"
+                            >close</mat-icon
+                          >
+                        </button>
+                      }
 
                       <div class="flex items-center gap-3 mb-3 pr-6">
                         @if (grouped.imageUrl) {
@@ -199,13 +214,10 @@
         (page)="onChangePagination($event)"
       ></mat-paginator>
     } @else {
-      <div class="w-full justify-center items-center flex py-10">
-        <div class="text-center">
-          <mat-icon class="text-5xl w-12 h-12 text-gray-300 mb-2"
-            >restaurant_menu</mat-icon
-          >
-          <p class="text-gray-500">No se encontraron menús</p>
-        </div>
+      <div
+        class="w-full flex justify-center items-center min-h-[200px] text-center"
+      >
+        <p class="text-gray-400">No se encontraron menús.</p>
       </div>
     }
   </div>

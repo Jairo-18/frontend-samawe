@@ -6,6 +6,7 @@ import {
   Component,
   EventEmitter,
   inject,
+  Input,
   OnInit,
   Output,
   ViewChild
@@ -51,6 +52,7 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SeeMenusComponent implements OnInit {
+  @Input() isMesero: boolean = false;
   @Output() editMenu = new EventEmitter<MenuResponse>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;

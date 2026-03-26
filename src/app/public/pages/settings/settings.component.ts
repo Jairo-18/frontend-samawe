@@ -6,6 +6,7 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
+import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 
 interface SettingsItem {
   label: string;
@@ -16,7 +17,7 @@ interface SettingsItem {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, BasePageComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })
@@ -37,8 +38,6 @@ export class SettingsComponent implements OnInit {
   private generateSettingsItems(): void {
     const roleName = this.userInfo?.roleType?.name?.toLowerCase().trim() || '';
     const roleCode = this.userInfo?.roleType?.code?.toLowerCase().trim() || '';
-
- 
 
     if (roleName === 'cliente' || roleCode === 'cliente') {
       this.settingsItems = [

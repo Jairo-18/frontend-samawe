@@ -8,7 +8,7 @@
     <mat-tab-group>
       <mat-tab label="Información General">
         <ng-template matTabContent
-          ><form [formGroup]="form" class="p-6 flex flex-col gap-6">
+          ><form [formGroup]="form" class="py-6 flex flex-col gap-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Nombre del hotel</mat-label>
@@ -171,13 +171,13 @@
 
       <mat-tab label="Apariencia y SEO">
         <ng-template matTabContent>
-          <form [formGroup]="form" class="p-6 flex flex-col gap-6">
+          <form [formGroup]="form" class="py-6 flex flex-col gap-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="flex flex-col gap-4">
-                <h3 class="text-lg font-bold border-b pb-2">
+                <span class="text-lg font-bold border-b pb-2">
                   Colores Corporativos
-                </h3>
-                <div class="flex gap-8 items-center">
+                </span>
+                <div class="flex flex-col md:flex-row gap-8 items-center">
                   <!-- Primario -->
                   <div class="flex flex-col gap-2">
                     <label
@@ -192,7 +192,11 @@
                         <input
                           type="color"
                           [value]="form.get('primaryColor')?.value || '#000000'"
-                          (input)="form.get('primaryColor')?.setValue($any($event.target).value)"
+                          (input)="
+                            form
+                              .get('primaryColor')
+                              ?.setValue($any($event.target).value)
+                          "
                           class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
                         />
                       </div>
@@ -219,8 +223,14 @@
                       >
                         <input
                           type="color"
-                          [value]="form.get('secondaryColor')?.value || '#000000'"
-                          (input)="form.get('secondaryColor')?.setValue($any($event.target).value)"
+                          [value]="
+                            form.get('secondaryColor')?.value || '#000000'
+                          "
+                          (input)="
+                            form
+                              .get('secondaryColor')
+                              ?.setValue($any($event.target).value)
+                          "
                           class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
                         />
                       </div>
@@ -237,9 +247,9 @@
               </div>
 
               <div class="flex flex-col gap-4">
-                <h3 class="text-lg font-bold border-b pb-2">
+                <span class="text-lg font-bold border-b pb-2">
                   Optimización SEO
-                </h3>
+                </span>
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Meta Título</mat-label>
                   <input matInput formControlName="metaTitle" />
@@ -267,7 +277,7 @@
 
       <mat-tab label="Multimedia">
         <ng-template matTabContent>
-          <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- LOGO SECTION -->
             <div
               class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
@@ -283,7 +293,7 @@
               </div>
 
               <div class="flex justify-between w-full items-center">
-                <h3 class="font-bold text-gray-800">Logo del Sistema</h3>
+                <span class="font-bold text-gray-800">Logo del Sistema</span>
                 <mat-icon
                   class="text-gray-400"
                   [matTooltip]="'Imagen principal de la marca'"
@@ -366,7 +376,7 @@
               </div>
 
               <div class="flex justify-between w-full items-center">
-                <h3 class="font-bold text-gray-800">Fondo de Login</h3>
+                <span class="font-bold text-gray-800">Fondo de Login</span>
                 <mat-icon
                   class="text-gray-400"
                   [matTooltip]="'Imagen de fondo para la pantalla de acceso'"
@@ -452,7 +462,7 @@
               </div>
 
               <div class="flex justify-between w-full items-center">
-                <h3 class="font-bold text-gray-800">Fondo de Registro</h3>
+                <span class="font-bold text-gray-800">Fondo de Registro</span>
                 <mat-icon
                   class="text-gray-400"
                   [matTooltip]="'Imagen de fondo para la pantalla de registro'"

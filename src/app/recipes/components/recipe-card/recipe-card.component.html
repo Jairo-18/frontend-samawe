@@ -57,35 +57,15 @@
       <div
         class="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-indigo-50"
       >
-        <mat-icon class="text-5xl w-12 h-12 opacity-50 mb-2"
-          >restaurant</mat-icon
-        >
         <span class="text-sm font-medium">Sin imagen</span>
       </div>
     }
   </div>
   <div
-    class="flex justify-between items-center px-3 md:px-5 py-2 md:py-4 text-black"
+    class="flex flex-col md:flex-row md:justify-between md:items-center px-3 md:px-5 py-2 md:py-4 text-black"
   >
-    <div class="flex flex-col items-start gap-1">
-      <span
-        class="font-bold text-black text-sm md:text-sm flex items-center gap-1"
-      >
-        {{ recipe.productName }}
-      </span>
-      <span
-        class="inline-flex items-center text-xs md:text-xs font-semibold rounded-full"
-      >
-        {{ recipe.availablePortions ?? 0 }} porciones disponibles
-      </span>
-      @if (hasCriticalIngredients) {
-        <span class="text-[0.7rem] md:text-xs text-red-900 leading-tight">
-          Solo hay un poco de: <strong>{{ criticalIngredientsNames }}</strong>
-        </span>
-      }
-    </div>
     <div
-      class="flex gap-1 [&>button]:!text-white/[0.85] hover:[&>button]:!text-white hover:[&>button]:!bg-white/15"
+      class="flex gap-1 order-first md:order-last md:self-start [&>button]:!text-white/[0.85] hover:[&>button]:!text-white hover:[&>button]:!bg-white/15 self-end"
     >
       @if (canEdit) {
         <button mat-icon-button [matMenuTriggerFor]="actionMenu">
@@ -111,6 +91,19 @@
         </mat-menu>
       }
     </div>
+    <div class="flex flex-col items-start gap-1">
+      <span class="font-bold text-black text-[10px] md:text-sm flex items-center gap-1">
+        {{ recipe.productName }}
+      </span>
+      <span class="inline-flex items-center text-[9px] md:text-xs font-semibold rounded-full">
+        {{ recipe.availablePortions ?? 0 }} porciones disponibles
+      </span>
+      @if (hasCriticalIngredients) {
+        <span class="text-[9px] md:text-xs text-red-900 leading-tight">
+          Solo hay un poco de: <strong>{{ criticalIngredientsNames }}</strong>
+        </span>
+      }
+    </div>
   </div>
   <div class="px-4 py-3">
     <div class="grid grid-cols-1 gap-2">
@@ -122,7 +115,7 @@
       ) {
         <div class="flex flex-col gap-0.5">
           <span
-            class="text-[0.78rem] md:text-[0.85rem] font-semibold truncate flex items-center gap-1"
+            class="text-[9px] md:text-[0.85rem] font-semibold truncate flex items-center gap-1"
             [ngClass]="{
               'text-red-900 font-bold':
                 getPortionColor(getIngPortions(ing)) === 'critical',
@@ -135,12 +128,12 @@
           >
             {{ ing.ingredientProductName }}
           </span>
-          <span class="text-[0.72rem] md:text-xs text-gray-500">
+          <span class="text-[9px] md:text-xs text-gray-500">
             {{ ing.quantity | unitFormat: ing.unit : 'qty' | number: '1.0-3' }}
             {{ ing.quantity | unitFormat: ing.unit : 'unit' }}
           </span>
           @if (!isMesero) {
-            <span class="text-[0.72rem] md:text-xs font-bold text-[#43a047]">
+            <span class="text-[9px] md:text-xs font-bold text-[#43a047]">
               {{ ing.totalCost | formatCop }}
             </span>
           }
@@ -150,14 +143,18 @@
     @if (recipe.ingredients.length > 2) {
       <button
         type="button"
-        class="w-full mt-2 text-xs md:text-sm font-semibold text-[var(--primary-color)] hover:text-[#048a04] transition-colors py-1"
+        class="w-full mt-1 py-1"
         (click)="showAllIngredients = !showAllIngredients"
       >
-        {{
-          showAllIngredients
-            ? 'Ver menos'
-            : 'Ver más (' + (recipe.ingredients.length - 2) + ' ingredientes)'
-        }}
+        <span
+          class="text-center w-full text-[9px] md:text-sm font-semibold text-[var(--primary-color)] hover:text-[#048a04] transition-colors"
+        >
+          {{
+            showAllIngredients
+              ? 'Ver menos'
+              : 'Ver más (' + (recipe.ingredients.length - 2) + ' ingredientes)'
+          }}</span
+        >
       </button>
     }
   </div>
@@ -166,10 +163,10 @@
       class="flex flex-col items-start px-5 py-3.5 border-t border-[var(--primary-color)] mt-1 flex-1 rounded-b-2xl"
     >
       <div class="flex flex-col">
-        <span class="text-sm md:text-base font-semibold"
+        <span class="text-[9px] md:text-base font-semibold"
           >Costo total de la receta</span
         >
-        <span class="text-sm md:text-base font-extrabold text-[#43a047]">
+        <span class="text-[9px] md:text-base font-extrabold text-[#43a047]">
           {{ recipe.totalRecipeCost | formatCop }}
         </span>
       </div>

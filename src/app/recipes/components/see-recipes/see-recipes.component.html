@@ -47,7 +47,7 @@
       </div>
     } @else if (recipes.length > 0) {
       <div
-        class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-5 mb-3"
+        class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-5 mb-3"
       >
         @for (recipe of recipes; track recipe.productId) {
           <app-recipe-card
@@ -67,8 +67,10 @@
         (page)="onChangePagination($event)"
       ></mat-paginator>
     } @else {
-      <div class="w-full justify-center items-center flex">
-        <p>No se encontraron recetas</p>
+      <div
+        class="w-full flex justify-center items-center min-h-[200px] text-center"
+      >
+        <p class="text-gray-400">No se encontraron recetas.</p>
       </div>
     }
   </div>

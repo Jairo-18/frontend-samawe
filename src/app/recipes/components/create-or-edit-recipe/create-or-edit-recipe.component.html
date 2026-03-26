@@ -90,9 +90,10 @@
                   [formGroup]="ctrl"
                   class="!py-2"
                 >
+                  <div class="flex items-center gap-2 w-full">
                   <mat-form-field
                     appearance="outline"
-                    class="w-full mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
+                    class="flex-1 mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
                   >
                     <input
                       matInput
@@ -117,6 +118,15 @@
                       }
                     </mat-autocomplete>
                   </mat-form-field>
+                  @if (getIngredientUnit(i)) {
+                    <mat-form-field
+                      appearance="outline"
+                      class="w-20 mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
+                    >
+                      <input matInput [value]="getIngredientUnit(i)" [readonly]="true" class="text-center font-semibold text-emerald-600" />
+                    </mat-form-field>
+                  }
+                  </div>
                 </td>
               </ng-container>
               <ng-container matColumnDef="quantity">

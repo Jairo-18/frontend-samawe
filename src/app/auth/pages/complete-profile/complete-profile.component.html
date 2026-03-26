@@ -92,13 +92,17 @@
             Cargando...
           </mat-option>
           <mat-option *ngFor="let pc of filteredPhoneCodes" [value]="pc">
-            {{ pc.code }} {{ pc.name }}
+            {{ pc.name }}{{ pc.code }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
       <span
         class="text-[var(--mat-sys-error,#f44336)] text-[0.75em] -mt-3 mb-1 ml-4 block"
-        *ngIf="form.get('phoneCodeId')?.invalid && (form.get('phoneCodeId')?.touched || form.get('phoneCodeSearch')?.touched)"
+        *ngIf="
+          form.get('phoneCodeId')?.invalid &&
+          (form.get('phoneCodeId')?.touched ||
+            form.get('phoneCodeSearch')?.touched)
+        "
       >
         País / Código requerido
       </span>
@@ -194,7 +198,6 @@
         </mat-icon>
         <span>{{ isSaving ? 'Guardando...' : 'Continuar' }}</span>
       </button>
-
     </form>
   </article>
 </div>

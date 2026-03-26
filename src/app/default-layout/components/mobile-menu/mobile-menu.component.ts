@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ItemInterface } from '../../../shared/interfaces/menu.interface';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
@@ -31,12 +31,16 @@ import {
 export class MobileMenuComponent implements OnInit {
   @Input() userInfo?: UserInterface;
 
-  private readonly _router: Router = inject(Router);
   menuItems: (ItemInterface | null)[] = [null, null, null, null, null];
   loggedMenuItems: NavItem[] = [];
+  settingsMenuOpen: boolean = false;
 
   ngOnInit(): void {
     this.filterMenuByRole();
+  }
+
+  toggleSettingsMenu(): void {
+    this.settingsMenuOpen = !this.settingsMenuOpen;
   }
 
   private filterMenuByRole(): void {

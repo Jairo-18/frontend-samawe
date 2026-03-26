@@ -1,13 +1,10 @@
-<div
-  class="settings-container p-6 flex flex-col items-center justify-center min-h-[60vh]"
+<app-base-page
+  contentTitle="Ajustes del Perfil"
+  [showContentTitle]="true"
+  [showBorder]="false"
+  [pxMobile]="false"
 >
-  <h1 class="text-3xl font-bold mb-8 text-[var(--primary-color)]">
-    Ajustes de Perfil
-  </h1>
-
-  <div
-    class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 border border-[var(--primary-color)]/10"
-  >
+  <div class="w-full">
     <div class="flex flex-col gap-2">
       @for (item of settingsItems; track item.label) {
         <div
@@ -38,4 +35,4 @@
       </button>
     </div>
   </div>
-</div>
+</app-base-page>

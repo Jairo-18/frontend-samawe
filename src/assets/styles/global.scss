@@ -29,7 +29,7 @@
 
   &.has-mobile-menu {
     @media (max-width: 768px) {
-      padding-bottom: 75px !important;
+      padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
     }
   }
 }
@@ -244,6 +244,7 @@
   scrollbar-width: auto !important;
   scrollbar-color: var(--primary-color) #f1f1f1 !important;
 }
+
 
 .red-color {
   color: rgb(255, 27, 27) !important;

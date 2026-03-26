@@ -5,7 +5,7 @@
   >
     <mat-tab label="Ver Menús">
       <ng-template matTabContent>
-        <app-see-menus (editMenu)="onEditMenu($event)"></app-see-menus>
+        <app-see-menus [isMesero]="isMesero" (editMenu)="onEditMenu($event)"></app-see-menus>
       </ng-template>
     </mat-tab>
 

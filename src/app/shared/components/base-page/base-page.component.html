@@ -1,9 +1,9 @@
 <article class="brand-content-center">
   <article
-    class="w-[95%] xl:w-[95%] lg:w-[90%] h-max md:h-full rounded-2xl py-5 md:py-7 my-8 md:my-10"
+    class="w-[95%] xl:w-[95%] lg:w-[90%] h-max md:h-full rounded-2xl px-2 md:px-7 py-4 md:py-7 my-8 md:my-10"
     [ngClass]="{
       'border border-[var(--primary-color)]': showBorder,
-      'px-5': pxMobile
+      'px-3 md:px-7': pxMobile
     }"
   >
     @if (showBackButton) {
@@ -43,14 +43,19 @@
     }
     @if (showContentTitle) {
       <section
-        class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4 border-b-[2px] border-b-[var(--primary-color)]"
+        class="w-full flex row pb-2 mb-3 md:mb-5 justify-content-between mx-0 mt-4"
+        [ngClass]="{
+          'border-b-[2px] border-b-[var(--primary-color)]': showContentBorder
+        }"
       >
-        <span class="text-2xl md:text-3xl">{{ contentTitle }}</span>
+        <span class="text-xl md:text-3xl">{{ contentTitle }}</span>
       </section>
     }
     @if (showContentInfo && contentInfo) {
       <div class="mb-4">
-        <span class="brand-text-body-m text-black-50 fw-semibold">
+        <span
+          class="text-sm md:text-base brand-text-body-m text-black-50 fw-semibold"
+        >
           {{ contentInfo }}
         </span>
       </div>

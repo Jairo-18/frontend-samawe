@@ -232,7 +232,7 @@ export class SeeUsersComponent implements OnInit {
   }
   getPhoneCodeDisplay(id: string): string {
     const phoneCode = this.phoneCode.find((p) => p.phoneCodeId === id);
-    return phoneCode ? `${phoneCode.code} - ${phoneCode.name}` : '';
+    return phoneCode ? `${phoneCode.name} - ${phoneCode.code}` : '';
   }
   getPersonTypeName(id: number): string {
     return this.personType.find((pt) => pt.personTypeId === id)?.name || '';
