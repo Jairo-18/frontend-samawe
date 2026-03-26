@@ -89,7 +89,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     icon: 'restaurant_menu',
     title: 'Restaurante',
     description: 'Crea, edita y consulta órdenes de mesa',
-    route: '/recipes/see-orders',
+    route: '/recipes/restaurant-order',
     iconNext: 'navigate_next',
     allowedRoles: [
       'Recepcionista',

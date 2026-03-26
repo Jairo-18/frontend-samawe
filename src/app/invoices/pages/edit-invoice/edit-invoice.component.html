@@ -48,7 +48,10 @@
               <mat-form-field
                 appearance="outline"
                 class="w-full md:w-56 mt-2 md:mt-0"
-                *ngIf="invoiceData.invoiceType.code === 'FV' || invoiceData.invoiceType.code === 'CO'"
+                *ngIf="
+                  invoiceData.invoiceType.code === 'FV' ||
+                  invoiceData.invoiceType.code === 'CO'
+                "
               >
                 <mat-label>Fecha de Factura</mat-label>
                 <input matInput [value]="getFormattedInvoiceDate()" readonly />

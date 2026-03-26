@@ -251,7 +251,9 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     const newNotif: OrderNotification = {
       notificationId: liveUpdate.notificationId || Math.random().toString(),
       title: 'Actualización de Orden',
-      message: `La orden de la mesa ${liveUpdate.tableNumber || 'N/A'} cambió a ${liveUpdate.state}.`,
+      message:
+        liveUpdate.message ??
+        `Mesa ${liveUpdate.tableNumber || 'N/A'} · ${liveUpdate.state}.`,
       read: false,
       type: 'ORDER_STATE_CHANGED',
       metadata: {

@@ -48,20 +48,51 @@
     >
       @for (order of orders; track order.invoiceId) {
         <div
-          class="bg-white rounded-2xl border border-[var(--primary-color)] shadow-sm flex flex-col overflow-hidden hover:shadow-md transition-shadow duration-200"
+          class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden border border-gray-100"
         >
+          <!-- Estado strip superior -->
+          <div
+            class="h-1.5 w-full"
+            [ngClass]="{
+              'bg-amber-400': order.stateType?.code === 'ENC',
+              'bg-green-500': order.stateType?.code === 'ENT',
+              'bg-gray-300': !['ENC', 'ENT'].includes(
+                order.stateType?.code ?? ''
+              )
+            }"
+          ></div>
+
           <!-- Header -->
-          <div class="px-4 pt-4 pb-2 flex justify-between items-start">
+          <div class="px-4 pt-3 pb-2 flex justify-between items-start">
             <div class="flex flex-col gap-0.5">
-              <span class="font-extrabold text-base text-gray-800">{{
-                order.code || '---'
-              }}</span>
-              <span class="text-xs text-gray-400">{{
-                order.startDate | relativeTime
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-base text-gray-800">{{
+                  order.code || '---'
+                }}</span>
+                <span
+                  class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide"
+                  [ngClass]="{
+                    'bg-amber-100 text-amber-700':
+                      order.stateType?.code === 'ENC',
+                    'bg-green-100 text-green-700':
+                      order.stateType?.code === 'ENT',
+                    'bg-gray-100 text-gray-500': !['ENC', 'ENT'].includes(
+                      order.stateType?.code ?? ''
+                    )
+                  }"
+                  >{{ order.stateType?.name || '---' }}</span
+                >
+              </div>
+              <span class="text-[11px] text-gray-400">{{
+                (order.orderTime || order.createdAt) | relativeTime
               }}</span>
             </div>
-            <button mat-icon-button [matMenuTriggerFor]="menu" class="!-mt-1">
-              <mat-icon class="text-gray-500">more_vert</mat-icon>
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              class="!-mt-1 !-mr-2"
+            >
+              <mat-icon class="text-gray-400">more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
               <button
@@ -92,81 +123,95 @@
             </mat-menu>
           </div>
 
+          <div class="mx-4 border-t border-gray-100"></div>
+
           <!-- Body -->
-          <div class="px-4 pb-4 flex flex-col gap-2 flex-1">
-            <!-- Mesa -->
-            <div class="flex items-center gap-2">
-              <mat-icon class="!text-base !w-4 !h-4 text-[var(--primary-color)]"
-                >table_restaurant</mat-icon
-              >
-              <span class="text-sm font-semibold text-gray-700"
-                >Mesa {{ order.tableNumber || '---' }}</span
-              >
-            </div>
-
-            <!-- Estado orden -->
-            <div class="flex items-center gap-2">
-              <mat-icon class="!text-base !w-4 !h-4 text-gray-400"
-                >info</mat-icon
-              >
+          <div class="px-4 py-3 flex flex-col gap-3 flex-1">
+            <!-- Mesa + Estado pago -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <mat-icon class="!text-lg text-[var(--primary-color)]"
+                  >table_restaurant</mat-icon
+                >
+                <span class="text-sm font-bold text-gray-800"
+                  >Mesa {{ order.tableNumber || '---' }}</span
+                >
+              </div>
               <span
-                class="text-xs font-bold px-2 py-0.5 rounded-full"
+                class="text-[10px] font-semibold px-2 py-0.5 rounded-full"
                 [ngClass]="{
-                  'bg-green-100 text-green-700':
-                    order.stateType?.name === 'ENTREGADO',
-                  'bg-yellow-100 text-yellow-700':
-                    order.stateType?.name === 'EN COCINA'
-                }"
-                >{{ order.stateType?.name || '---' }}</span
-              >
-            </div>
-
-            <!-- Estado pago -->
-            <div class="flex items-center gap-2">
-              <mat-icon class="!text-base !w-4 !h-4 text-gray-400"
-                >payments</mat-icon
-              >
-              <span
-                class="text-xs font-semibold"
-                [ngClass]="{
-                  'text-green-600': (order.paidType.name || '')
+                  'bg-green-100 text-green-700': (order.paidType.name || '')
                     .toLowerCase()
                     .includes('pagado'),
-                  'text-red-500': (order.paidType.name || '')
+                  'bg-red-100 text-red-600': (order.paidType.name || '')
                     .toLowerCase()
-                    .includes('pendiente')
+                    .includes('pendiente'),
+                  'bg-gray-100 text-gray-500':
+                    !(order.paidType.name || '')
+                      .toLowerCase()
+                      .includes('pagado') &&
+                    !(order.paidType.name || '')
+                      .toLowerCase()
+                      .includes('pendiente')
                 }"
                 >{{ order.paidType.name || '---' }}</span
               >
-              @if (order.payType.name) {
-                <span class="text-[10px] text-gray-400"
-                  >· {{ order.payType.name }}</span
-                >
-              }
             </div>
 
+            <!-- Método de pago -->
+            @if (order.payType.name) {
+              <div class="flex items-center gap-1.5">
+                <mat-icon class="!text-sm !w-4 !h-4 text-gray-400"
+                  >credit_card</mat-icon
+                >
+                <span class="text-xs text-gray-500">{{
+                  order.payType.name
+                }}</span>
+              </div>
+            }
+
             <!-- Horarios -->
-            <div class="grid grid-cols-2 gap-1 text-center mt-1">
-              <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400">Orden</span>
-                <span class="text-xs font-semibold text-gray-600">{{
+            <div
+              class="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2"
+            >
+              <div class="flex flex-col items-center gap-0.5">
+                <span class="text-[10px] text-gray-400 uppercase tracking-wide"
+                  >Orden</span
+                >
+                <span class="text-xs font-bold text-gray-600">{{
                   order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
                 }}</span>
               </div>
-              <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400">Listo</span>
-                <span class="text-xs font-semibold text-gray-600">{{
-                  order.readyTime ? (order.readyTime | date: 'hh:mm a') : '---'
-                }}</span>
+              <mat-icon class="!text-base text-gray-300"
+                >arrow_forward</mat-icon
+              >
+              <div class="flex flex-col items-center gap-0.5">
+                <span class="text-[10px] text-gray-400 uppercase tracking-wide"
+                  >Listo</span
+                >
+                <span
+                  class="text-xs font-bold"
+                  [ngClass]="
+                    order.readyTime ? 'text-green-600' : 'text-gray-400'
+                  "
+                  >{{
+                    order.readyTime
+                      ? (order.readyTime | date: 'hh:mm a')
+                      : '---'
+                  }}</span
+                >
               </div>
             </div>
           </div>
 
           <!-- Footer: Total -->
           <div
-            class="px-4 py-3 border-t border-[var(--primary-color)] flex justify-between items-center bg-[var(--primary-color)]/5 rounded-b-2xl"
+            class="px-4 py-3 border-t border-gray-100 flex justify-between items-center"
           >
-            <span class="text-xs text-gray-500">Total</span>
+            <div class="flex items-center gap-1">
+              <mat-icon class="!text-sm text-gray-400">receipt</mat-icon>
+              <span class="text-xs text-gray-400">Total</span>
+            </div>
             <span
               class="text-base font-extrabold"
               [ngClass]="{
