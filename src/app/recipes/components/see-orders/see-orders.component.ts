@@ -3,9 +3,11 @@ import {
   Component,
   inject,
   OnInit,
+  OnDestroy,
   ViewChild,
   ElementRef
 } from '@angular/core';
+import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -34,6 +36,7 @@ import { InvoicePdfComponent } from '../../../invoices/components/invoice-pdf/in
 import { CreateInvoiceDialogComponent } from '../../../invoices/components/create-invoice-dialog/create-invoice-dialog.component';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
+import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 
 @Component({
   selector: 'app-see-orders',
@@ -55,7 +58,7 @@ import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
   templateUrl: './see-orders.component.html',
   styleUrls: ['./see-orders.component.scss']
 })
-export class SeeOrdersComponent implements OnInit {
+export class SeeOrdersComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
   @ViewChild('invoiceToPrintRef') invoiceToPrintRef!: ElementRef;
@@ -69,6 +72,11 @@ export class SeeOrdersComponent implements OnInit {
     inject(InvoicePrintService);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  private readonly _ordersSocket: OrdersSocketService =
+    inject(OrdersSocketService);
+
+  private readonly _destroy$ = new Subject<void>();
+  private readonly _reload$ = new Subject<void>();
 
   form!: FormGroup;
   invoiceToPrintData?: any;
@@ -132,6 +140,28 @@ export class SeeOrdersComponent implements OnInit {
   ngOnInit(): void {
     this.loadOrders();
     this.loadRelatedData();
+    this.setupRealtimeUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
+  private setupRealtimeUpdates(): void {
+    this._reload$
+      .pipe(debounceTime(600), takeUntil(this._destroy$))
+      .subscribe(() => this.loadOrders());
+
+    this._ordersSocket
+      .onOrderUpdated()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(() => this._reload$.next());
+
+    this._ordersSocket
+      .onInvoiceItemAdded()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe(() => this._reload$.next());
   }
 
   loadRelatedData(): void {
