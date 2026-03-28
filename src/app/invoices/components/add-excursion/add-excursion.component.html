@@ -48,6 +48,9 @@
         </span>
       </mat-option>
     </mat-autocomplete>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">
+      Debe seleccionar un servicio o pasadía
+    </mat-error>
   </mat-form-field>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">

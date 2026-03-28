@@ -225,7 +225,9 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   addExcursion(): void {
     if (!this.form.value.excursionId) {
       this.form.get('name')?.setErrors({ required: true });
+      this.form.get('name')?.markAsDirty();
       this.form.markAllAsTouched();
+      this._cdr.detectChanges();
       return;
     }
     if (this.form.invalid) {

@@ -170,8 +170,11 @@ export class AddAccommodationComponent implements OnInit {
     const now = new Date();
     this.form.reset(
       {
+        name: '',
+        accommodationId: null,
         taxeTypeId: 2,
         amount: 1,
+        priceWithoutTax: 0,
         startDate: now,
         startTime: now,
         endDate: now,
@@ -190,6 +193,9 @@ export class AddAccommodationComponent implements OnInit {
     this.taxAmount = 0;
     this.unitPrice = 0;
     this.finalPrice = 0;
+    Object.keys(this.form.controls).forEach((key) => {
+      this.form.get(key)?.setErrors(null);
+    });
     this._router.navigate([], {
       queryParams: {},
       queryParamsHandling: '',
@@ -366,7 +372,9 @@ export class AddAccommodationComponent implements OnInit {
   addAccommodation(): void {
     if (!this.form.value.accommodationId) {
       this.form.get('name')?.setErrors({ required: true });
+      this.form.get('name')?.markAsDirty();
       this.form.markAllAsTouched();
+      this._cdr.detectChanges();
       return;
     }
     if (this.form.valid) {
@@ -418,4 +426,3 @@ export class AddAccommodationComponent implements OnInit {
     }
   }
 }
-

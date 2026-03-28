@@ -8,13 +8,13 @@
     <table mat-table [dataSource]="pendingItems" class="w-full bg-transparent">
       <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef class="center-text">Tipo</th>
-        <td mat-cell *matCellDef="let item" class="center-text font-medium">
+        <td mat-cell *matCellDef="let item" class="right-text font-medium">
           {{ item.type }}
         </td>
       </ng-container>
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef class="center-text">Item</th>
-        <td mat-cell *matCellDef="let item" class="center-text">
+        <td mat-cell *matCellDef="let item" class="left-text">
           {{ item.name }}
         </td>
       </ng-container>
@@ -22,7 +22,7 @@
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Entrada
         </th>
-        <td mat-cell *matCellDef="let item" class="center-text">
+        <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.startDate ? (item.payload.startDate | date:
           'dd/MM/yyyy HH:mm' : 'UTC') : 'N/A' }}
         </td>
@@ -31,14 +31,14 @@
         <th mat-header-cell *matHeaderCellDef class="center-text">
           Fecha Salida
         </th>
-        <td mat-cell *matCellDef="let item" class="center-text">
+        <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.endDate ? (item.payload.endDate | date: 'dd/MM/yyyy
           HH:mm' : 'UTC') : 'N/A' }}
         </td>
       </ng-container>
       <ng-container matColumnDef="amount">
         <th mat-header-cell *matHeaderCellDef class="center-text">Und</th>
-        <td mat-cell *matCellDef="let item" class="center-text">
+        <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.amount }}
         </td>
       </ng-container>

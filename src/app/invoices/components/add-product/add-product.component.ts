@@ -139,7 +139,10 @@ export class AddProductComponent implements OnInit {
           if (!name || name.trim().length < 2) {
             return of({ data: [] });
           }
-          return this._producsService.getProductWithPagination({ name });
+          return this._producsService.getProductWithPagination({
+            name,
+            excludeCategoryTypeCode: 'ING'
+          });
         })
       )
       .subscribe((res) => {
@@ -154,9 +157,11 @@ export class AddProductComponent implements OnInit {
   }
   onProductFocus(): void {
     if (!this.filteredProducts.length) {
-      this._producsService.getProductWithPagination({}).subscribe((res) => {
-        this.filteredProducts = res.data ?? [];
-      });
+      this._producsService
+        .getProductWithPagination({ excludeCategoryTypeCode: 'ING' })
+        .subscribe((res) => {
+          this.filteredProducts = res.data ?? [];
+        });
     }
   }
   onProductSelected(name: string): void {
@@ -181,7 +186,7 @@ export class AddProductComponent implements OnInit {
       productId: null,
       priceSale: { value: '', disabled: true },
       priceBuy: 0,
-      priceWithoutTax: null,
+      priceWithoutTax: 0,
       taxeTypeId: 2,
       amountSale: 1,
       amount: 0,
@@ -240,7 +245,9 @@ export class AddProductComponent implements OnInit {
   addProduct(): void {
     if (!this.form.value.productId) {
       this.form.get('name')?.setErrors({ required: true });
+      this.form.get('name')?.markAsDirty();
       this.form.markAllAsTouched();
+      this._cdr.detectChanges();
       return;
     }
     if (this.form.invalid) {
@@ -301,4 +308,3 @@ export class AddProductComponent implements OnInit {
       });
   }
 }
-

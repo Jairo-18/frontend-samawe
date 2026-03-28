@@ -239,8 +239,12 @@ export class AddExcursionComponent implements OnInit {
     const now = new Date();
     const defaultEnd = new Date(now.getTime() + 60 * 60 * 1000);
     this.form.reset({
+      name: '',
+      excursionId: null,
       taxeTypeId: 2,
       amount: 1,
+      priceBuy: 0,
+      priceWithoutTax: 0,
       finalPrice: 0,
       startDate: now,
       startTime: now,
@@ -248,6 +252,9 @@ export class AddExcursionComponent implements OnInit {
       endTime: defaultEnd,
       startDateTime: null,
       endDateTime: null
+    });
+    Object.keys(this.form.controls).forEach((key) => {
+      this.form.get(key)?.setErrors(null);
     });
     this._router.navigate([], {
       queryParams: {},
@@ -263,7 +270,9 @@ export class AddExcursionComponent implements OnInit {
   addExcursion(): void {
     if (!this.form.value.excursionId) {
       this.form.get('name')?.setErrors({ required: true });
+      this.form.get('name')?.markAsDirty();
       this.form.markAllAsTouched();
+      this._cdr.detectChanges();
       return;
     }
     if (!this.invoiceId) {

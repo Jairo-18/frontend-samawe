@@ -257,7 +257,9 @@ export class AddInvoiceBuyComponent implements OnInit {
   addProduct(): void {
     if (!this.form.value.productId) {
       this.form.get('name')?.setErrors({ required: true });
+      this.form.get('name')?.markAsDirty();
       this.form.markAllAsTouched();
+      this._cdr.detectChanges();
       return;
     }
     if (this.form.invalid) {
