@@ -190,6 +190,7 @@ export class CreateOrEditUsersComponent implements OnInit {
       this.userForm.patchValue({
         phoneCodeId: phoneCode.phoneCodeId.toString()
       });
+      this.userForm.get('phoneCodeSearch')?.setErrors(null);
     }
   }
   setPassword() {
@@ -327,7 +328,9 @@ export class CreateOrEditUsersComponent implements OnInit {
         });
       }
     } else {
-      console.error('Formulario no válido', this.userForm);
+      if (!this.userForm.get('phoneCodeId')?.value) {
+        this.userForm.get('phoneCodeSearch')?.setErrors({ required: true });
+      }
       this.userForm.markAllAsTouched();
     }
   }
