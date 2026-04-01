@@ -21,7 +21,7 @@
           >Crea una nueva cuenta</span
         >
       </div>
-      <mat-horizontal-stepper [linear]="false" #stepper class="w-full h-full">
+      <mat-horizontal-stepper [linear]="true" #stepper class="w-full h-full">
         <mat-step [stepControl]="formStep1">
           <form [formGroup]="formStep1" class="flex flex-col mt-5">
             <ng-template matStepLabel>Información Personal</ng-template>
