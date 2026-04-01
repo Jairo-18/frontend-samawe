@@ -1,6 +1,6 @@
 <div class="auth-content-center my-4 md:my-8 2xl:my-8 3xl:my-0">
   <article
-    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[680px] lg:h-[680px] xl:h-[680px] 2xl:h-[680px] 3xl:h-[750px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-2xl mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[680px] lg:h-[680px] xl:h-[680px] 2xl:h-[680px] 3xl:h-[750px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
   >
     <section class="relative h-full w-full hidden md:flex flex-col bg-gray-100">
       <img
@@ -16,7 +16,7 @@
       class="h-full w-full flex flex-col text-center py-5 gap-0 md:gap-1"
     >
       <div class="flex flex-col gap-1.5">
-        <span class="font-extrabold text-xl">Registrarse</span>
+        <span class="font-extrabold text-lg 2xl:text-xl">Registrarse</span>
         <span class="font-medium text-sm md:text-base"
           >Crea una nueva cuenta</span
         >
@@ -80,14 +80,12 @@
               </mat-error>
             </mat-form-field>
             <div actions class="w-full flex justify-end text-sm md:text-base">
-              <button
-                mat-fab
-                extended="true"
-                class="flex !w-full"
-                matStepperNext
-              >
-                Siguiente
-              </button>
+              <app-button-landing
+                label="Siguiente"
+                variant="solid"
+                (clicked)="nextStep()"
+                class="w-full"
+              />
             </div>
           </form>
         </mat-step>
@@ -198,24 +196,20 @@
               class="w full content-between md:flex gap-x-2 text-sm md:text-base"
             >
               <div class="w-full md:w-[50%]">
-                <button
-                  mat-stroked-button
-                  extended="true"
-                  class="!w-full mb-2 md:mb-0"
-                  matStepperPrevious
-                >
-                  Anterior
-                </button>
+                <app-button-landing
+                  label="Anterior"
+                  variant="transparent"
+                  (clicked)="prevStep()"
+                  class="w-full"
+                />
               </div>
               <div class="w-full md:w-[50%]">
-                <button
-                  mat-fab
-                  extended="true"
-                  class="!w-full"
-                  (click)="save()"
-                >
-                  Registrarse
-                </button>
+                <app-button-landing
+                  label="Registrarse"
+                  variant="solid"
+                  (clicked)="save()"
+                  class="w-full"
+                />
               </div>
             </section>
           </form>

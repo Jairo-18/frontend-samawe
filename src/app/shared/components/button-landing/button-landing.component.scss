@@ -1,0 +1,32 @@
+.btn-solid {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+}
+
+.btn-warning {
+  background-color: var(--warning-color, #d82323);
+  border-color: var(--warning-color, #d82323);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+
+  &:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+}

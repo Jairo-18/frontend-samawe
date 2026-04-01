@@ -17,6 +17,7 @@ import { AuthService } from '../../services/auth.service';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { OnDestroy } from '@angular/core';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ import { OnDestroy } from '@angular/core';
     RouterLink,
     CommonModule,
     MatIconModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    ButtonLandingComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

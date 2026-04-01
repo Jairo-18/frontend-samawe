@@ -3,7 +3,7 @@ import { NavItem } from '../interfaces/navBar.interface';
 export const NAVBAR_CONST: NavItem[] = [
   {
     title: 'INICIO',
-    route: '/',
+    route: '/home',
     icon: 'home'
   },
   {

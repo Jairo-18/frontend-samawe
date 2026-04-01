@@ -1,0 +1,71 @@
+<div class="py-6 flex flex-col gap-8">
+
+  <!-- LOGO (diseño especial circular) -->
+  <div>
+    <span class="text-lg font-bold border-b pb-2 mb-4 flex items-center gap-2">
+      <mat-icon class="text-[var(--primary-color)]">branding_watermark</mat-icon>
+      Identidad de Marca
+    </span>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      <div class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+        <div *ngIf="mediaLoading['LOGO']" class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span class="text-xs font-bold animate-pulse">PROCESANDO...</span>
+        </div>
+        <div class="flex justify-between w-full items-center">
+          <span class="font-bold text-gray-800">Logo del Sistema</span>
+          <mat-icon class="text-gray-400" matTooltip="Imagen principal de la marca">info</mat-icon>
+        </div>
+        <div class="w-40 h-40 rounded-full border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative">
+          <img *ngIf="getMediaUrl('LOGO')" [src]="getMediaUrl('LOGO')" alt="Logo" class="w-full h-full object-contain p-2" />
+          <mat-icon *ngIf="!getMediaUrl('LOGO')" class="text-gray-300 !text-6xl">add_photo_alternate</mat-icon>
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all duration-300">
+            <button mat-mini-fab color="primary" (click)="logoInput.click()" matTooltip="Subir nuevo"><mat-icon>upload</mat-icon></button>
+            <button *ngIf="getMediaUrl('LOGO')" mat-mini-fab color="accent" (click)="previewMedia.emit('LOGO')" matTooltip="Ver"><mat-icon>visibility</mat-icon></button>
+            <button *ngIf="getMediaUrl('LOGO')" mat-mini-fab color="warn" (click)="deleteMedia.emit('LOGO')" matTooltip="Eliminar"><mat-icon>delete</mat-icon></button>
+          </div>
+        </div>
+        <input #logoInput type="file" class="hidden" (change)="fileSelected.emit({ event: $event, code: 'LOGO' })" accept="image/*" />
+        <p class="text-[10px] text-gray-400 text-center leading-tight">PNG/WEBP TRANSPARENTE · 512×512 PX</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESTO DE MEDIAS (dinámico por sección) -->
+  @for (section of mediaSections; track section.label) {
+    @if (getSectionTypes(section.codes).length > 0) {
+      <div>
+        <span class="text-lg font-bold border-b pb-2 mb-4 flex items-center gap-2">
+          <mat-icon class="text-[var(--primary-color)]">{{ section.icon }}</mat-icon>
+          {{ section.label }}
+        </span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+          @for (type of getSectionTypes(section.codes); track type.code) {
+            <div class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div *ngIf="mediaLoading[type.code]" class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3">
+                <mat-spinner diameter="40"></mat-spinner>
+                <span class="text-xs font-bold animate-pulse">SUBIENDO...</span>
+              </div>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-bold text-gray-800">{{ type.name }}</span>
+                <mat-icon class="text-gray-400" [matTooltip]="'Imagen para: ' + type.name">info</mat-icon>
+              </div>
+              <div class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative">
+                <img *ngIf="getMediaUrl(type.code)" [src]="getMediaUrl(type.code)" [alt]="type.name" class="w-full h-full object-cover" />
+                <mat-icon *ngIf="!getMediaUrl(type.code)" class="text-gray-300 !text-6xl">wallpaper</mat-icon>
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-300">
+                  <button mat-fab color="primary" class="!w-12 !h-12" (click)="triggerInput(type.code)" matTooltip="Subir imagen"><mat-icon>upload</mat-icon></button>
+                  <button *ngIf="getMediaUrl(type.code)" mat-fab color="accent" class="!w-12 !h-12" (click)="previewMedia.emit(type.code)" matTooltip="Ver"><mat-icon>visibility</mat-icon></button>
+                  <button *ngIf="getMediaUrl(type.code)" mat-fab color="warn" class="!w-12 !h-12" (click)="deleteMedia.emit(type.code)" matTooltip="Eliminar"><mat-icon>delete</mat-icon></button>
+                </div>
+              </div>
+              <input [id]="'input-' + type.code" type="file" class="hidden" (change)="fileSelected.emit({ event: $event, code: type.code })" accept="image/*" />
+              <p class="text-[10px] text-gray-400 text-center leading-tight">JPG/WEBP · 1920×1080 PX</p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+
+</div>

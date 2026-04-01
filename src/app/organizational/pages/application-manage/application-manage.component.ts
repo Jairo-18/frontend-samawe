@@ -6,26 +6,22 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { OrganizationalGeneralInfoComponent } from '../../components/organizational-general-info/organizational-general-info.component';
+import { OrganizationalAppearanceComponent } from '../../components/organizational-appearance/organizational-appearance.component';
+import { OrganizationalWebContentComponent } from '../../components/organizational-web-content/organizational-web-content.component';
+import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
+import { OrganizationalMultimediaComponent } from '../../components/organizational-multimedia/organizational-multimedia.component';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
-import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import {
   Organizational,
   OrganizationalMedia,
-  MediaType
+  MediaType,
+  CorporateValue
 } from '../../../shared/interfaces/organizational.interface';
 import {
   IdentificationType,
@@ -45,19 +41,14 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
     MatTabsModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatAutocompleteModule,
     BasePageComponent,
-    LoaderComponent
+    LoaderComponent,
+    OrganizationalGeneralInfoComponent,
+    OrganizationalAppearanceComponent,
+    OrganizationalWebContentComponent,
+    OrganizationalHomeContentComponent,
+    OrganizationalMultimediaComponent
   ],
   templateUrl: './application-manage.component.html',
   styleUrls: ['./application-manage.component.scss']
@@ -69,7 +60,6 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
-  private readonly _snackBar: MatSnackBar = inject(MatSnackBar);
 
   form: FormGroup;
   isLoading: boolean = true;
@@ -77,6 +67,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   mediaTypes: MediaType[] = [];
   organizationalId: string | null = null;
   organization?: Organizational;
+  corporateValues: CorporateValue[] = [];
+  editingValue: CorporateValue | null = null;
+  corporateValueForm: FormGroup;
+  corporateValueImageLoading: Record<string, boolean> = {};
   private _subscription: Subscription = new Subscription();
 
   identificationTypes: IdentificationType[] = [];
@@ -107,8 +101,44 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       description: [''],
       primaryColor: [''],
       secondaryColor: [''],
+      tertiaryColor: [''],
+      homeTitle: [''],
+      homeDescription: [''],
+      experienceTitle: [''],
+      experienceDescription: [''],
+      reservationTitle: [''],
+      reservationDescription: [''],
+      aboutUsTitle: [''],
+      aboutUsDescription: [''],
+      missionTitle: [''],
+      missionDescription: [''],
+      visionTitle: [''],
+      visionDescription: [''],
+      historyTitle: [''],
+      historyDescription: [''],
+      gastronomyTitle: [''],
+      gastronomyDescription: [''],
+      gastronomyHistoryTitle: [''],
+      gastronomyHistoryDescription: [''],
+      gastronomyKitchenTitle: [''],
+      gastronomyKitchenDescription: [''],
+      gastronomyIngredientsTitle: [''],
+      gastronomyIngredientsDescription: [''],
+      accommodationsTitle: [''],
+      accommodationsDescription: [''],
+      howToArrivePublicTransportDescription: [''],
+      howToArrivePrivateTransportDescription: [''],
+      accessibilityDescription: [''],
+      mapsUrl: [''],
+      videoUrl: [''],
       metaTitle: [''],
       metaDescription: ['']
+    });
+
+    this.corporateValueForm = this._fb.group({
+      title: ['', Validators.required],
+      description: [''],
+      order: [0]
     });
   }
 
@@ -120,12 +150,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     const id = this._authService.getOrganizationalId();
     this.organizationalId = id;
     if (id) {
-      this.loadOrganization(id);
+      this.loadOrganization();
       this._applicationService.loadMedia(id);
+      this.loadCorporateValues(id);
     } else {
-      this._snackBar.open('No se pudo identificar la organización.', 'Cerrar', {
-        duration: 3000
-      });
       this.isLoading = false;
     }
   }
@@ -133,9 +161,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private subscribeToMedia(): void {
     this._subscription.add(
       this._applicationService.mediaMap$.subscribe((media) => {
-        if (media) {
-          this.mediaMap = media;
-        }
+        if (media) this.mediaMap = media;
       })
     );
   }
@@ -156,25 +182,35 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
           this.organization.secondaryColor
         );
       }
+      if (this.organization.tertiaryColor) {
+        document.documentElement.style.setProperty(
+          '--tertiary-color',
+          this.organization.tertiaryColor
+        );
+      }
     }
   }
 
   private setupLiveColorPreview(): void {
     this._subscription.add(
       this.form.get('primaryColor')?.valueChanges.subscribe((color) => {
-        if (color) {
+        if (color)
           document.documentElement.style.setProperty('--primary-color', color);
-        }
       })
     );
     this._subscription.add(
       this.form.get('secondaryColor')?.valueChanges.subscribe((color) => {
-        if (color) {
+        if (color)
           document.documentElement.style.setProperty(
             '--secondary-color',
             color
           );
-        }
+      })
+    );
+    this._subscription.add(
+      this.form.get('tertiaryColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--tertiary-color', color);
       })
     );
   }
@@ -189,26 +225,19 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     this._applicationService.loadMedia(id);
   }
 
-  private loadOrganization(id: string): void {
+  private loadOrganization(): void {
     this.isLoading = true;
-
-    this._relatedDataService.getRelatedData().subscribe((res) => {
-      this.identificationTypes = res.data.identificationType;
-    });
-
-    this._applicationService.getOrganization(id).subscribe({
+    this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
-        this.organization = res.data;
-        this.patchForm(res.data);
+        this.identificationTypes = res.data.identificationType;
+        const org = res.data.organizational?.[0];
+        if (org) {
+          this.organization = org;
+          this.patchForm(org);
+        }
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error loading organization:', err);
-        this._snackBar.open('Error al cargar la información.', 'Cerrar', {
-          duration: 3000
-        });
-        this.isLoading = false;
-      }
+      error: () => (this.isLoading = false)
     });
   }
 
@@ -230,6 +259,38 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       description: org.description,
       primaryColor: org.primaryColor,
       secondaryColor: org.secondaryColor,
+      tertiaryColor: org.tertiaryColor,
+      homeTitle: org.homeTitle,
+      homeDescription: org.homeDescription,
+      experienceTitle: org.experienceTitle,
+      experienceDescription: org.experienceDescription,
+      reservationTitle: org.reservationTitle,
+      reservationDescription: org.reservationDescription,
+      aboutUsTitle: org.aboutUsTitle,
+      aboutUsDescription: org.aboutUsDescription,
+      missionTitle: org.missionTitle,
+      missionDescription: org.missionDescription,
+      visionTitle: org.visionTitle,
+      visionDescription: org.visionDescription,
+      historyTitle: org.historyTitle,
+      historyDescription: org.historyDescription,
+      gastronomyTitle: org.gastronomyTitle,
+      gastronomyDescription: org.gastronomyDescription,
+      gastronomyHistoryTitle: org.gastronomyHistoryTitle,
+      gastronomyHistoryDescription: org.gastronomyHistoryDescription,
+      gastronomyKitchenTitle: org.gastronomyKitchenTitle,
+      gastronomyKitchenDescription: org.gastronomyKitchenDescription,
+      gastronomyIngredientsTitle: org.gastronomyIngredientsTitle,
+      gastronomyIngredientsDescription: org.gastronomyIngredientsDescription,
+      accommodationsTitle: org.accommodationsTitle,
+      accommodationsDescription: org.accommodationsDescription,
+      howToArrivePublicTransportDescription:
+        org.howToArrivePublicTransportDescription,
+      howToArrivePrivateTransportDescription:
+        org.howToArrivePrivateTransportDescription,
+      accessibilityDescription: org.accessibilityDescription,
+      mapsUrl: org.mapsUrl,
+      videoUrl: org.videoUrl,
       metaTitle: org.metaTitle,
       metaDescription: org.metaDescription
     });
@@ -245,8 +306,13 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     const rawValue = this.form.getRawValue();
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { identificationTypeId, phoneCodeId, phoneCodeSearch: _phoneCodeSearch, ...rest } =
-      rawValue;
+    const {
+      identificationTypeId,
+      phoneCodeId,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      phoneCodeSearch: _phoneCodeSearch,
+      ...rest
+    } = rawValue;
     const payload: Partial<Organizational> & {
       identificationType?: string;
       phoneCode?: string;
@@ -261,15 +327,16 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           if (this.organization) {
-            if (payload.primaryColor) this.organization.primaryColor = payload.primaryColor;
-            if (payload.secondaryColor) this.organization.secondaryColor = payload.secondaryColor;
+            if (payload.primaryColor)
+              this.organization.primaryColor = payload.primaryColor;
+            if (payload.secondaryColor)
+              this.organization.secondaryColor = payload.secondaryColor;
+            if (payload.tertiaryColor)
+              this.organization.tertiaryColor = payload.tertiaryColor;
           }
           this.isLoading = false;
         },
-        error: (err) => {
-          console.error('Error updating organization:', err);
-          this.isLoading = false;
-        }
+        error: () => (this.isLoading = false)
       });
   }
 
@@ -293,8 +360,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
           this.filteredPhoneCodes = response.data || [];
           this.loadingPhoneCodes = false;
         },
-        error: (error) => {
-          console.error('Error buscando códigos de país:', error);
+        error: () => {
           this.filteredPhoneCodes = [];
           this.loadingPhoneCodes = false;
         }
@@ -308,8 +374,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
         this.filteredPhoneCodes = response.data || [];
         this.loadingPhoneCodes = false;
       },
-      error: (error) => {
-        console.error('Error cargando códigos de país:', error);
+      error: () => {
         this.filteredPhoneCodes = [];
         this.loadingPhoneCodes = false;
       }
@@ -322,9 +387,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   onPhoneCodeSelected(phoneCode: PhoneCode): void {
     if (phoneCode && phoneCode.phoneCodeId) {
-      this.form.patchValue({
-        phoneCodeId: phoneCode.phoneCodeId
-      });
+      this.form.patchValue({ phoneCodeId: phoneCode.phoneCodeId });
     }
   }
 
@@ -342,18 +405,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.loadMedia(this.organizationalId!);
-          this._snackBar.open('Imagen subida correctamente.', 'Cerrar', {
-            duration: 3000
-          });
           this.mediaLoading[mediaTypeCode] = false;
         },
-        error: (err) => {
-          console.error('Error uploading file:', err);
-          this._snackBar.open('Error al subir la imagen.', 'Cerrar', {
-            duration: 3000
-          });
-          this.mediaLoading[mediaTypeCode] = false;
-        }
+        error: () => (this.mediaLoading[mediaTypeCode] = false)
       });
   }
 
@@ -372,31 +426,92 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.loadMedia(this.organizationalId!);
-          this._snackBar.open('Imagen eliminada correctamente.', 'Cerrar', {
-            duration: 3000
-          });
           this.mediaLoading[mediaTypeCode] = false;
         },
-        error: (err) => {
-          console.error('Error deleting media:', err);
-          this._snackBar.open('Error al eliminar la imagen.', 'Cerrar', {
-            duration: 3000
-          });
-          this.mediaLoading[mediaTypeCode] = false;
-        }
+        error: () => (this.mediaLoading[mediaTypeCode] = false)
       });
   }
 
   previewMedia(mediaTypeCode: string): void {
     const url = this.getMediaUrl(mediaTypeCode);
-    if (url) {
-      window.open(url, '_blank');
-    }
+    if (url) window.open(url, '_blank');
   }
 
   getMediaUrl(code: string): string | null {
     const media = this.mediaMap[code];
     if (!media) return null;
     return Array.isArray(media) ? media[0]?.url : media.url;
+  }
+
+  loadCorporateValues(id: string): void {
+    this._applicationService.getCorporateValues(id).subscribe({
+      next: (res) => (this.corporateValues = res.data)
+    });
+  }
+
+  startEditValue(value: CorporateValue): void {
+    this.editingValue = value;
+    this.corporateValueForm.patchValue({
+      title: value.title,
+      description: value.description,
+      order: value.order
+    });
+  }
+
+  cancelEditValue(): void {
+    this.editingValue = null;
+    this.corporateValueForm.reset({ order: 0 });
+  }
+
+  saveCorporateValue(): void {
+    if (this.corporateValueForm.invalid || !this.organizationalId) return;
+    const data = this.corporateValueForm.getRawValue();
+
+    if (this.editingValue) {
+      this._applicationService
+        .updateCorporateValue(this.editingValue.corporateValueId, data)
+        .subscribe({
+          next: () => {
+            this.loadCorporateValues(this.organizationalId!);
+            this.cancelEditValue();
+          }
+        });
+    } else {
+      this._applicationService
+        .createCorporateValue(this.organizationalId, data)
+        .subscribe({
+          next: () => {
+            this.loadCorporateValues(this.organizationalId!);
+            this.cancelEditValue();
+          }
+        });
+    }
+  }
+
+  deleteCorporateValue(valueId: string): void {
+    if (!confirm('¿Eliminar este valor corporativo?')) return;
+    this._applicationService.deleteCorporateValue(valueId).subscribe({
+      next: () => this.loadCorporateValues(this.organizationalId!)
+    });
+  }
+
+  uploadCorporateValueImage(event: { valueId: string; file: File }): void {
+    this.corporateValueImageLoading[event.valueId] = true;
+    this._applicationService.uploadCorporateValueImage(event.valueId, event.file).subscribe({
+      next: () => {
+        this.loadCorporateValues(this.organizationalId!);
+        this.corporateValueImageLoading[event.valueId] = false;
+      },
+      error: () => {
+        this.corporateValueImageLoading[event.valueId] = false;
+      }
+    });
+  }
+
+  deleteCorporateValueImage(valueId: string): void {
+    if (!confirm('¿Eliminar la imagen de este valor corporativo?')) return;
+    this._applicationService.deleteCorporateValueImage(valueId).subscribe({
+      next: () => this.loadCorporateValues(this.organizationalId!)
+    });
   }
 }

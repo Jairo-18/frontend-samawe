@@ -45,6 +45,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   showNotificationsIcon: boolean = false;
   showNavBar: boolean = false;
   showSideBar: boolean = false;
+  showMobileMenu: boolean = false;
 
   constructor() {
     this.isPhone = window.innerWidth <= 768;
@@ -123,18 +124,23 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   private checkRolesForNavBar() {
-    if (this.isPhone) {
-      this.showNavBar = !this.isLoggedUser;
-      return;
-    }
-
     if (!this.userInfo?.roleType?.name) {
       this.showNavBar = true;
+      this.showMobileMenu = false;
       return;
     }
 
     const roleName = this.userInfo.roleType.name.toUpperCase();
-    this.showNavBar = roleName === 'CLIENTE';
+    const isCliente = roleName === 'CLIENTE';
+
+    if (this.isPhone) {
+      this.showNavBar = !this.isLoggedUser || isCliente;
+      this.showMobileMenu = this.isLoggedUser && !isCliente;
+      return;
+    }
+
+    this.showNavBar = isCliente;
+    this.showMobileMenu = false;
   }
 
   private checkSideBarVisibility() {

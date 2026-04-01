@@ -1,0 +1,21 @@
+<button
+  [type]="type"
+  [disabled]="disabled"
+  (click)="onClick()"
+  [ngClass]="{
+    'btn-solid': variant === 'solid',
+    'btn-transparent': variant === 'transparent',
+    'btn-warning': variant === 'warning',
+    'opacity-50 cursor-not-allowed': disabled
+  }"
+  class="inline-flex items-center gap-2 px-6 py-2.5 rounded border-2 font-medium text-sm uppercase tracking-widest cursor-pointer transition-all duration-300 w-full justify-center"
+>
+  <ng-content select="[slot=icon]" />
+  @if (icon) {
+    <mat-icon
+      class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px] flex items-center justify-center"
+      >{{ icon }}</mat-icon
+    >
+  }
+  <span>{{ label }}</span>
+</button>

@@ -12,7 +12,6 @@
             >
               <a
                 [routerLink]="item.route"
-                routerLinkActive="shadow-[0_6px_16_rgba(6,166,6,0.4)]"
                 class="w-14 h-14 bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-color)] rounded-full flex items-center justify-center text-white no-underline shadow-[0_4px_12px_rgba(6,166,6,0.3)] absolute top-[-24px] transition-all duration-300 border-4 border-white active:scale-90"
               >
                 <mat-icon class="!text-[28px] !w-[28px] !h-[28px]">{{
@@ -20,7 +19,12 @@
                 }}</mat-icon>
               </a>
               <span
-                class="text-[11px] font-semibold text-[var(--primary-color)] mt-8"
+                class="text-[11px] font-semibold mt-8"
+                [ngClass]="
+                  isItemActive(item.route)
+                    ? 'text-[var(--primary-color)]'
+                    : 'text-[#797979]'
+                "
                 >{{ item.name }}</span
               >
             </div>
@@ -28,7 +32,12 @@
             <!-- Ajustes with custom dropdown -->
             <button
               (click)="toggleSettingsMenu()"
-              class="flex flex-col items-center justify-center text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group active:scale-95"
+              class="flex flex-col items-center justify-center text-[11px] font-medium transition-all duration-300 gap-1 group active:scale-95"
+              [ngClass]="
+                isAjustesActive
+                  ? 'text-[var(--primary-color)]'
+                  : 'text-[#797979]'
+              "
             >
               <mat-icon class="transition-transform">{{ item.icon }}</mat-icon>
               <span class="text-[11px]">{{ item.name }}</span>
@@ -37,11 +46,15 @@
             <!-- Other items (next to Inicio) -->
             <a
               [routerLink]="item.route"
-              routerLinkActive="!text-[var(--primary-color)]"
-              class="flex flex-col items-center justify-center no-underline text-[#797979] text-[11px] font-medium transition-all duration-300 gap-1 group"
+              class="flex flex-col items-center justify-center no-underline text-[11px] font-medium transition-all duration-300 gap-1 group"
+              [ngClass]="
+                isItemActive(item.route)
+                  ? 'text-[var(--primary-color)]'
+                  : 'text-[#797979]'
+              "
             >
               <mat-icon
-                class="!text-[26px] !w-[26px] !h-[26px] group-[.active]:-translate-y-[2px] transition-transform"
+                class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
                 >{{ item.icon }}</mat-icon
               >
               <span>{{ item.name }}</span>

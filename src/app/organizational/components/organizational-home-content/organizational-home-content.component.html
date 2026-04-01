@@ -1,0 +1,70 @@
+<form [formGroup]="form" class="py-6 flex flex-col gap-6">
+
+  <!-- Inicio -->
+  <div class="flex flex-col gap-4">
+    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--primary-color)]">home</mat-icon>
+      Sección Principal
+    </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Título principal</mat-label>
+        <input matInput formControlName="homeTitle" placeholder="Bienvenidos a..." />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Descripción principal</mat-label>
+        <textarea matInput formControlName="homeDescription" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>URL del Video Principal</mat-label>
+      <input matInput formControlName="videoUrl" placeholder="https://www.youtube.com/embed/..." />
+      <mat-icon matPrefix>videocam</mat-icon>
+      <mat-hint>Pega el enlace embed de YouTube o Vimeo</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <!-- Experiencias -->
+  <div class="flex flex-col gap-4">
+    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--primary-color)]">explore</mat-icon>
+      Experiencias
+    </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Título de Experiencias</mat-label>
+        <input matInput formControlName="experienceTitle" placeholder="Experiencias" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Descripción de Experiencias</mat-label>
+        <textarea matInput formControlName="experienceDescription" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Reservas -->
+  <div class="flex flex-col gap-4">
+    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--primary-color)]">book_online</mat-icon>
+      Reservas
+    </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Título de Reservas</mat-label>
+        <input matInput formControlName="reservationTitle" placeholder="Reserva tu escapada" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Descripción de Reservas</mat-label>
+        <textarea matInput formControlName="reservationDescription" rows="2"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex justify-end mt-2">
+    <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
+      <mat-icon>save</mat-icon>
+      Guardar Experiencia de Inicio
+    </button>
+  </div>
+
+</form>

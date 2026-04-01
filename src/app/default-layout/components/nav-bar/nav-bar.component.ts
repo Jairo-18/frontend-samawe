@@ -5,30 +5,24 @@ import {
   OnDestroy,
   HostListener
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { NAVBAR_CONST } from '../../../shared/constants/navbar.constans';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
-import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.constants';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
+import { NavbarDesktopComponent } from '../navbar-desktop/navbar-desktop.component';
+import { NavbarMobileComponent } from '../navbar-mobile/navbar-mobile.component';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
   imports: [
-    RouterLink,
-    MatIconModule,
-    MatMenuModule,
-    MatDividerModule,
-    CommonModule
+    NavbarDesktopComponent,
+    NavbarMobileComponent,
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss'
@@ -39,10 +33,13 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
-  private readonly _router: Router = inject(Router);
   private _subscription: Subscription = new Subscription();
 
+  readonly exactOptions = { exact: false };
+  readonly exactOptionsStrict = { exact: true };
+
   isLoggedUser: boolean = false;
+  isMobileMenuOpen: boolean = false;
 
   navBarItems: NavItem[] = NAVBAR_CONST.filter(
     (item) => item.route !== '/auth/login'
@@ -99,6 +96,14 @@ export class NavBarComponent implements OnInit, OnDestroy {
     } else {
       this.loggedMenuItems = [];
     }
+  }
+
+  openMobileMenu(): void {
+    this.isMobileMenuOpen = true;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 
   logout(): void {

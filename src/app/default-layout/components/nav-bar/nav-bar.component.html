@@ -1,155 +1,26 @@
-<nav
-  class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 ease-in-out py-2"
-  [ngClass]="{
-    'bg-[var(--primary-color)] md:bg-transparent': !isScrolled,
-    'bg-white shadow-lg': isScrolled
-  }"
->
-  <article class="flex px-6 items-center w-full">
-    <!-- Left: Branding -->
-    <section
-      class="flex flex-1 items-center gap-x-3 transition-colors duration-300"
-    >
-      <img
-        routerLink="/"
-        [src]="logoUrl"
-        [alt]="organizationalName"
-        class="h-14 w-14 md:h-[70px] md:w-[70px] cursor-pointer transition-all duration-300"
-      />
-      <h1
-        class="hidden lg:block text-base md:text-base 2xl:text-xl font-medium md:font-semibold uppercase"
-      >
-        {{ organizationalName }}
-      </h1>
-    </section>
+<app-navbar-desktop
+  [navBarItems]="navBarItems"
+  [loginItem]="loginItem"
+  [isLoggedUser]="isLoggedUser"
+  [userInfo]="userInfo"
+  [loggedMenuItems]="loggedMenuItems"
+  [isScrolled]="isScrolled"
+  [organizationalName]="organizationalName"
+  [logoUrl]="logoUrl"
+  (openMenu)="openMobileMenu()"
+  (logoutEvent)="logout()"
+/>
 
-    <!-- Center: Navigation -->
-    <section
-      class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-4 transition-colors duration-300"
-      [ngClass]="{ 'text-black': !isScrolled, 'text-gray-800': isScrolled }"
-    >
-      @for (item of navBarItems; track $index) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="!text-[var(--primary-color)]"
-          class="cursor-pointer hover-underline-animation font-medium text-sm lg:text-base px-2 py-1 transition-colors duration-200 whitespace-nowrap flex items-center gap-2"
-        >
-          <mat-icon class="scale-90" *ngIf="item.icon">{{
-            item.icon
-          }}</mat-icon>
-          <span>{{ item.title }}</span>
-        </a>
-      }
-    </section>
-
-    <!-- Right: Login Action -->
-    <section class="flex flex-1 items-center justify-end gap-x-3">
-      <div class="hidden md:flex">
-        @if (!isLoggedUser) {
-          <button
-            *ngIf="loginItem"
-            [routerLink]="loginItem.route"
-            class="flex items-center justify-center gap-2 px-6 py-2 rounded-full transition-all duration-200 border-2"
-          >
-            <mat-icon>{{ loginItem.icon }}</mat-icon>
-            <span class="font-bold">{{ loginItem.title }}</span>
-          </button>
-        } @else {
-          <!-- User Menu Desktop -->
-          <button
-            [matMenuTriggerFor]="userMenu"
-            class="flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200 border-2 border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-green-50"
-          >
-            <mat-icon>account_circle</mat-icon>
-            <span class="font-bold">{{ userInfo?.firstName }}</span>
-            <mat-icon class="scale-75">keyboard_arrow_down</mat-icon>
-          </button>
-
-          <mat-menu #userMenu="matMenu" xPosition="before">
-            <!-- Dynamic Menu Items -->
-            <ng-container *ngFor="let item of loggedMenuItems">
-              <!-- If has children (sub-menu) -->
-              <ng-container
-                *ngIf="
-                  item.children && item.children.length > 0;
-                  else regularItem
-                "
-              >
-                <button mat-menu-item [matMenuTriggerFor]="subMenu">
-                  <mat-icon class="text-[var(--primary-color)]">{{
-                    item.icon
-                  }}</mat-icon>
-                  <span>{{ item.title }}</span>
-                </button>
-                <mat-menu #subMenu="matMenu">
-                  <button
-                    mat-menu-item
-                    *ngFor="let child of item.children"
-                    [routerLink]="child.route"
-                  >
-                    <mat-icon class="text-[var(--primary-color)]">{{
-                      child.icon
-                    }}</mat-icon>
-                    <span>{{ child.title }}</span>
-                  </button>
-                </mat-menu>
-              </ng-container>
-
-              <!-- Regular Item -->
-              <ng-template #regularItem>
-                <button mat-menu-item [routerLink]="item.route">
-                  <mat-icon class="text-[var(--primary-color)]">{{
-                    item.icon
-                  }}</mat-icon>
-                  <span>{{ item.title }}</span>
-                </button>
-              </ng-template>
-            </ng-container>
-
-            <mat-divider></mat-divider>
-
-            <button mat-menu-item (click)="logout()" class="text-red-600">
-              <mat-icon class="text-red-600">logout</mat-icon>
-              <span class="font-bold">Cerrar Sesión</span>
-            </button>
-          </mat-menu>
-        }
-      </div>
-
-      <!-- Mobile Menu Toggle -->
-      <div class="flex md:hidden">
-        <button
-          mat-icon-button
-          [matMenuTriggerFor]="mobileMenu"
-          aria-label="Menú"
-          [ngClass]="{
-            'text-black': !isScrolled
-          }"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-        <mat-menu #mobileMenu="matMenu">
-          @for (item of navBarItems; track $index) {
-            <button mat-menu-item [routerLink]="item.route">
-              <mat-icon class="text-[var(--primary-color)]">{{
-                item.icon
-              }}</mat-icon>
-              <span>{{ item.title }}</span>
-            </button>
-          }
-          <mat-divider></mat-divider>
-          <button
-            mat-menu-item
-            *ngIf="loginItem"
-            [routerLink]="loginItem.route"
-          >
-            <mat-icon class="text-[var(--primary-color)]">{{
-              loginItem.icon
-            }}</mat-icon>
-            <span>{{ loginItem.title }}</span>
-          </button>
-        </mat-menu>
-      </div>
-    </section>
-  </article>
-</nav>
+@if (isMobileMenuOpen) {
+  <app-navbar-mobile
+    [navBarItems]="navBarItems"
+    [loginItem]="loginItem"
+    [isLoggedUser]="isLoggedUser"
+    [userInfo]="userInfo"
+    [loggedMenuItems]="loggedMenuItems"
+    [organizationalName]="organizationalName"
+    [logoUrl]="logoUrl"
+    (closeMenu)="closeMobileMenu()"
+    (logoutEvent)="logout()"
+  />
+}

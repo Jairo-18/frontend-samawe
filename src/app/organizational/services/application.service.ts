@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 import {
   Organizational,
   OrganizationalMedia,
-  MediaType
+  MediaType,
+  CorporateValue
 } from '../../shared/interfaces/organizational.interface';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { BehaviorSubject, tap } from 'rxjs';
@@ -84,6 +85,12 @@ export class ApplicationService {
                 org.secondaryColor
               );
             }
+            if (org.tertiaryColor) {
+              document.documentElement.style.setProperty(
+                '--tertiary-color',
+                org.tertiaryColor
+              );
+            }
           }
         }
       },
@@ -131,6 +138,56 @@ export class ApplicationService {
   deleteMedia(mediaId: string): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
       `${this.apiUrl}/media/${mediaId}`
+    );
+  }
+
+  getCorporateValues(id: string): Observable<ApiResponseInterface<CorporateValue[]>> {
+    return this._http.get<ApiResponseInterface<CorporateValue[]>>(
+      `${this.apiUrl}/${id}/corporate-values`
+    );
+  }
+
+  createCorporateValue(
+    id: string,
+    data: Omit<CorporateValue, 'corporateValueId'>
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${this.apiUrl}/${id}/corporate-values`,
+      data
+    );
+  }
+
+  updateCorporateValue(
+    valueId: string,
+    data: Partial<CorporateValue>
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${this.apiUrl}/corporate-values/${valueId}`,
+      data
+    );
+  }
+
+  deleteCorporateValue(valueId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${this.apiUrl}/corporate-values/${valueId}`
+    );
+  }
+
+  uploadCorporateValueImage(
+    valueId: string,
+    file: File
+  ): Observable<ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this._http.post<ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>>(
+      `${this.apiUrl}/corporate-values/${valueId}/upload-image`,
+      formData
+    );
+  }
+
+  deleteCorporateValueImage(valueId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${this.apiUrl}/corporate-values/${valueId}/image`
     );
   }
 

@@ -1,4 +1,8 @@
-import { IdentificationType, PersonType, PhoneCode } from './relatedDataGeneral';
+import {
+  IdentificationType,
+  PersonType,
+  PhoneCode
+} from './relatedDataGeneral';
 
 export interface MediaType {
   mediaTypeId: number;
@@ -14,6 +18,14 @@ export interface OrganizationalMedia {
   priority: number;
   isActive: boolean;
   mediaType: MediaType;
+}
+
+export interface CorporateValue {
+  corporateValueId: string;
+  title: string;
+  description?: string;
+  order: number;
+  imageUrl?: string;
 }
 
 export interface Organizational {
@@ -33,6 +45,36 @@ export interface Organizational {
   description?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  tertiaryColor?: string;
+  homeTitle?: string;
+  homeDescription?: string;
+  experienceTitle?: string;
+  experienceDescription?: string;
+  reservationTitle?: string;
+  reservationDescription?: string;
+  aboutUsTitle?: string;
+  aboutUsDescription?: string;
+  missionTitle?: string;
+  missionDescription?: string;
+  visionTitle?: string;
+  visionDescription?: string;
+  historyTitle?: string;
+  historyDescription?: string;
+  gastronomyTitle?: string;
+  gastronomyDescription?: string;
+  gastronomyHistoryTitle?: string;
+  gastronomyHistoryDescription?: string;
+  gastronomyKitchenTitle?: string;
+  gastronomyKitchenDescription?: string;
+  gastronomyIngredientsTitle?: string;
+  gastronomyIngredientsDescription?: string;
+  accommodationsTitle?: string;
+  accommodationsDescription?: string;
+  howToArrivePublicTransportDescription?: string;
+  howToArrivePrivateTransportDescription?: string;
+  accessibilityDescription?: string;
+  mapsUrl?: string;
+  videoUrl?: string;
   metaTitle?: string;
   metaDescription?: string;
   paymentEnabled: boolean;
@@ -41,4 +83,5 @@ export interface Organizational {
   personType?: PersonType;
   phoneCode?: PhoneCode;
   medias: OrganizationalMedia[];
+  corporateValues?: CorporateValue[];
 }

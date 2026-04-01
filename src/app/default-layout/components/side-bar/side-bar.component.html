@@ -24,7 +24,7 @@
     >
       <button
         (click)="toggleSidebar()"
-        class="flex text-xl bg-white hover:bg-yellow-300 rounded-full shadow-md justify-center items-center border border-black"
+        class="flex text-xl bg-white hover:bg-yellow-100 rounded-full shadow-md justify-center items-center border border-black"
         [ngClass]="{
           'w-[35px] h-[35px]   md:w-[35px] md:h-[35px] lg:w-[30px] lg:h-[30px] xl:w-[35px] xl:h-[35px] transition-all duration-[600ms] ease-in-out':
             isCollapsed,
@@ -104,7 +104,7 @@
                       'bg-none': isCollapsed,
                       'flex w-full bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px]':
                         !isCollapsed,
-                      'hover:bg-yellow-300': !isCollapsed,
+                      'hover:bg-yellow-100': !isCollapsed,
                       'hover:bg-white/20': isCollapsed
                     }"
                     [routerLink]="
@@ -121,7 +121,7 @@
                         class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)]"
                         [ngClass]="{
                           'mx-[5px]': !isCollapsed,
-                          ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-300':
+                          ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-100':
                             isCollapsed,
                           inline: true
                         }"
@@ -160,7 +160,7 @@
                   <ul class="pl-5">
                     <li *ngFor="let subItem of item.subItems" class="my-1">
                       <button
-                        class="flex w-full items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[5px] hover:bg-yellow-300"
+                        class="flex w-full items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[5px] hover:bg-yellow-100"
                         [routerLink]="subItem.route"
                         (click)="removeFocus($event)"
                       >
@@ -203,7 +203,7 @@
         (click)="logout.emit(); removeFocus($event)"
         class="flex items-center justify-start"
         [ngClass]="{
-          'flex items-center w-full px-[2px] py-[2px] md:py-[2px] xl:py-[2px] border border-black rounded-lg font-extrabold bg-white hover:bg-yellow-300 md:gap-x-1 2xl:gap-x-2':
+          'flex items-center w-full px-[2px] py-[2px] md:py-[2px] xl:py-[2px] border border-black rounded-lg font-extrabold bg-white hover:bg-yellow-100 md:gap-x-1 2xl:gap-x-2':
             !isCollapsed,
           'bg-none': isCollapsed
         }"
@@ -212,7 +212,7 @@
           class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)]"
           [ngClass]="{
             'mx-[5px]': !isCollapsed,
-            ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-300':
+            ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-100':
               isCollapsed,
             inline: true
           }"

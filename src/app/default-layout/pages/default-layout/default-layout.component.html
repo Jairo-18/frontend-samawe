@@ -33,12 +33,12 @@
 
       <main
         class="main w-full"
-        [ngClass]="{ 'has-mobile-menu': isPhone && isLoggedUser }"
+        [ngClass]="{ 'has-mobile-menu': showMobileMenu }"
       >
         <router-outlet></router-outlet>
       </main>
 
-      @if (isPhone && isLoggedUser) {
+      @if (showMobileMenu) {
         <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
       }
     </div>

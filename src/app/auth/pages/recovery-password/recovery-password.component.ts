@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 @Component({
   selector: 'app-recovery-password',
   standalone: true,
@@ -20,7 +21,8 @@ import { Router, RouterLink } from '@angular/router';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    RouterLink
+    RouterLink,
+    ButtonLandingComponent
   ],
   templateUrl: './recovery-password.component.html',
   styleUrl: './recovery-password.component.scss'
@@ -44,4 +46,3 @@ export class RecoveryPasswordComponent {
     });
   }
 }
-

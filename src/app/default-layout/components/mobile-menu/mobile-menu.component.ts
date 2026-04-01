@@ -1,9 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ItemInterface } from '../../../shared/interfaces/menu.interface';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
@@ -21,22 +30,54 @@ import {
     CommonModule,
     MatIconModule,
     RouterLink,
-    RouterLinkActive,
     MatMenuModule,
     MatDividerModule
   ],
   templateUrl: './mobile-menu.component.html',
   styleUrl: './mobile-menu.component.scss'
 })
-export class MobileMenuComponent implements OnInit {
+export class MobileMenuComponent implements OnInit, OnDestroy {
+  private readonly _router = inject(Router);
+  private readonly _cdr = inject(ChangeDetectorRef);
+  private _routerSub = new Subscription();
+
   @Input() userInfo?: UserInterface;
 
+  currentUrl: string = '';
   menuItems: (ItemInterface | null)[] = [null, null, null, null, null];
   loggedMenuItems: NavItem[] = [];
   settingsMenuOpen: boolean = false;
 
+  isItemActive(route: string | undefined): boolean {
+    if (!route) return false;
+    return this._router.isActive(route, {
+      paths: 'subset',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored'
+    });
+  }
+
+  get isAjustesActive(): boolean {
+    return this.loggedMenuItems.some((item) => {
+      const route = item.route ?? item.children?.[0]?.route;
+      return route ? this.isItemActive(route) : false;
+    });
+  }
+
   ngOnInit(): void {
+    this.currentUrl = this._router.url;
+    this._routerSub = this._router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        this.currentUrl = e.urlAfterRedirects;
+        this._cdr.detectChanges();
+      });
     this.filterMenuByRole();
+  }
+
+  ngOnDestroy(): void {
+    this._routerSub.unsubscribe();
   }
 
   toggleSettingsMenu(): void {

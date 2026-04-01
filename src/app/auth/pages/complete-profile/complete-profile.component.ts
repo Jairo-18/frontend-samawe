@@ -26,6 +26,7 @@ import {
   PersonType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 
 @Component({
   selector: 'app-complete-profile',
@@ -40,7 +41,8 @@ import {
     MatAutocompleteModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    UppercaseDirective
+    UppercaseDirective,
+    ButtonLandingComponent
   ],
   templateUrl: './complete-profile.component.html'
 })

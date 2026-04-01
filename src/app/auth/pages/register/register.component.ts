@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,7 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import * as uuid from 'uuid';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
@@ -27,6 +27,7 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -41,12 +42,14 @@ import { Subscription } from 'rxjs';
     RouterModule,
     MatStepperModule,
     MatSelectModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    ButtonLandingComponent
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
+  @ViewChild('stepper') stepper!: MatStepper;
   formStep1: FormGroup;
   formStep2: FormGroup;
   currentStep: string = 'one';
@@ -124,26 +127,30 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   private setupIdentificationTypeListener(): void {
-    this.formStep1.get('identificationTypeId')?.valueChanges.subscribe((id: string) => {
-      const selected = this.identificationType.find(
-        (t) => t.identificationTypeId?.toString() === id
-      );
-      if (!selected) return;
-      const isNit = selected.name?.toUpperCase().includes('NIT');
-      const match = isNit
-        ? this.personType.find(
-            (p) =>
-              p.name?.toUpperCase().includes('JUR\u00CDDICA') ||
-              p.name?.toUpperCase().includes('JURIDICA')
-          )
-        : this.personType.find((p) => p.name?.toUpperCase().includes('NATURAL'));
-      if (match) {
-        this.formStep1.patchValue(
-          { personTypeId: match.personTypeId.toString() },
-          { emitEvent: false }
+    this.formStep1
+      .get('identificationTypeId')
+      ?.valueChanges.subscribe((id: string) => {
+        const selected = this.identificationType.find(
+          (t) => t.identificationTypeId?.toString() === id
         );
-      }
-    });
+        if (!selected) return;
+        const isNit = selected.name?.toUpperCase().includes('NIT');
+        const match = isNit
+          ? this.personType.find(
+              (p) =>
+                p.name?.toUpperCase().includes('JUR\u00CDDICA') ||
+                p.name?.toUpperCase().includes('JURIDICA')
+            )
+          : this.personType.find((p) =>
+              p.name?.toUpperCase().includes('NATURAL')
+            );
+        if (match) {
+          this.formStep1.patchValue(
+            { personTypeId: match.personTypeId.toString() },
+            { emitEvent: false }
+          );
+        }
+      });
   }
   loadRegisterBg(): void {
     this._subscription.add(
@@ -161,9 +168,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
   nextStep() {
+    this.formStep1.markAllAsTouched();
     if (this.formStep1.valid) {
       this.currentStep = 'two';
+      this.stepper.next();
     }
+  }
+
+  prevStep() {
+    this.currentStep = 'one';
+    this.stepper.previous();
   }
   save() {
     if (this.formStep2.valid && this.formStep1.valid) {

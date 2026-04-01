@@ -1,0 +1,77 @@
+<form [formGroup]="form" class="py-6 flex flex-col gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="flex flex-col gap-4">
+      <span class="text-lg font-bold border-b pb-2">Colores Corporativos</span>
+      <div class="flex flex-col md:flex-row gap-8 items-center">
+
+        <!-- Primario -->
+        <div class="flex flex-col gap-2">
+          <label for="primaryColorText" class="text-xs text-gray-500 uppercase font-bold">Primario</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('primaryColor')?.value || '#000000'"
+                (input)="form.get('primaryColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="primaryColorText" type="text" formControlName="primaryColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Secundario -->
+        <div class="flex flex-col gap-2">
+          <label for="secondaryColorText" class="text-xs text-gray-500 uppercase font-bold">Secundario</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('secondaryColor')?.value || '#000000'"
+                (input)="form.get('secondaryColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="secondaryColorText" type="text" formControlName="secondaryColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Terciario -->
+        <div class="flex flex-col gap-2">
+          <label for="tertiaryColorText" class="text-xs text-gray-500 uppercase font-bold">Terciario</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('tertiaryColor')?.value || '#000000'"
+                (input)="form.get('tertiaryColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="tertiaryColorText" type="text" formControlName="tertiaryColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <span class="text-lg font-bold border-b pb-2">Optimización SEO</span>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Meta Título</mat-label>
+        <input matInput formControlName="metaTitle" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Meta Descripción</mat-label>
+        <textarea matInput formControlName="metaDescription" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="flex justify-end gap-3 mt-4">
+    <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
+      <mat-icon>save</mat-icon>
+      Guardar Cambios
+    </button>
+  </div>
+</form>

@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { CustomValidationsService } from '../../../shared/services/customValidations.service';
 import { UsersService } from '../../../organizational/services/users.service';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 @Component({
   selector: 'app-change-password',
   standalone: true,
@@ -23,7 +24,8 @@ import { UsersService } from '../../../organizational/services/users.service';
     ReactiveFormsModule,
     MatInputModule,
     MatIcon,
-    CommonModule
+    CommonModule,
+    ButtonLandingComponent
   ],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss'

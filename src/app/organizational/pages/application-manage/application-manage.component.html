@@ -6,539 +6,73 @@
 >
   @if (!isLoading) {
     <mat-tab-group>
+
       <mat-tab label="Información General">
-        <ng-template matTabContent
-          ><form [formGroup]="form" class="py-6 flex flex-col gap-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Nombre del hotel</mat-label>
-                <input
-                  matInput
-                  formControlName="name"
-                  placeholder="Ej. Hotel Colombia"
-                />
-                <mat-icon matPrefix>business</mat-icon>
-                <mat-error *ngIf="form.get('name')?.hasError('required')"
-                  >El nombre es requerido</mat-error
-                >
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Slug (URL identificador)</mat-label>
-                <input
-                  matInput
-                  formControlName="slug"
-                  placeholder="ej-eco-hotel-samawe"
-                />
-                <mat-icon matPrefix>link</mat-icon>
-                <mat-error *ngIf="form.get('slug')?.hasError('required')"
-                  >El slug es requerido</mat-error
-                >
-              </mat-form-field>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Nombre Legal (Razón Social)</mat-label>
-                <input
-                  matInput
-                  formControlName="legalName"
-                  placeholder="Ej. Samawé S.A.S."
-                />
-                <mat-icon matPrefix>gavel</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Tipo Identificación</mat-label>
-                <mat-select formControlName="identificationTypeId">
-                  <mat-option
-                    *ngFor="let type of identificationTypes"
-                    [value]="type.identificationTypeId"
-                  >
-                    {{ type.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="w-full md:col-span-2">
-                <mat-label>Número de Identificación</mat-label>
-                <input
-                  matInput
-                  formControlName="identificationNumber"
-                  placeholder="Ej. 900.123.456-1"
-                />
-                <mat-icon matPrefix>badge</mat-icon>
-              </mat-form-field>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Correo Electrónico de Contacto</mat-label>
-                <input
-                  matInput
-                  formControlName="email"
-                  placeholder="contacto@ejemplo.com"
-                />
-                <mat-icon matPrefix>email</mat-icon>
-              </mat-form-field>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Buscar país</mat-label>
-                  <mat-icon matPrefix>flag</mat-icon>
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="phoneCodeSearch"
-                    [matAutocomplete]="autoPhoneCode"
-                    placeholder="Escribe para buscar..."
-                  />
-                  <mat-autocomplete
-                    #autoPhoneCode="matAutocomplete"
-                    [displayWith]="displayPhoneCode"
-                    (optionSelected)="onPhoneCodeSelected($event.option.value)"
-                  >
-                    @if (loadingPhoneCodes) {
-                      <mat-option disabled>
-                        <span>Buscando...</span>
-                      </mat-option>
-                    } @else if (filteredPhoneCodes.length === 0) {
-                      <mat-option disabled>
-                        <span>No se encontraron resultados</span>
-                      </mat-option>
-                    } @else {
-                      @for (
-                        phoneCode of filteredPhoneCodes;
-                        track phoneCode.phoneCodeId
-                      ) {
-                        <mat-option [value]="phoneCode">
-                          {{ phoneCode.name }} {{ phoneCode.code }}
-                        </mat-option>
-                      }
-                    }
-                  </mat-autocomplete>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Teléfono de Contacto</mat-label>
-                  <input
-                    matInput
-                    formControlName="phone"
-                    placeholder="321..."
-                  />
-                  <mat-icon matPrefix>phone</mat-icon>
-                </mat-form-field>
-              </div>
-            </div>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Dirección</mat-label>
-              <input matInput formControlName="address" />
-              <mat-icon matPrefix>location_on</mat-icon>
-            </mat-form-field>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Ciudad</mat-label>
-                <input matInput formControlName="city" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Departamento / Provincia</mat-label>
-                <input matInput formControlName="department" />
-              </mat-form-field>
-            </div>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Descripción / Bio</mat-label>
-              <textarea
-                matInput
-                formControlName="description"
-                rows="4"
-              ></textarea>
-            </mat-form-field>
-
-            <div class="flex justify-end gap-3 mt-4">
-              <button mat-fab extended="true" class="!w-full" (click)="save()">
-                <mat-icon>save</mat-icon>
-                Guardar Cambios
-              </button>
-            </div>
-          </form>
+        <ng-template matTabContent>
+          <app-organizational-general-info
+            [form]="form"
+            [identificationTypes]="identificationTypes"
+            [filteredPhoneCodes]="filteredPhoneCodes"
+            [loadingPhoneCodes]="loadingPhoneCodes"
+            (phoneCodeSelected)="onPhoneCodeSelected($event)"
+            (save)="save()"
+          ></app-organizational-general-info>
         </ng-template>
       </mat-tab>
 
       <mat-tab label="Apariencia y SEO">
         <ng-template matTabContent>
-          <form [formGroup]="form" class="py-6 flex flex-col gap-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="flex flex-col gap-4">
-                <span class="text-lg font-bold border-b pb-2">
-                  Colores Corporativos
-                </span>
-                <div class="flex flex-col md:flex-row gap-8 items-center">
-                  <!-- Primario -->
-                  <div class="flex flex-col gap-2">
-                    <label
-                      for="primaryColorText"
-                      class="text-xs text-gray-500 uppercase font-bold"
-                      >Primario</label
-                    >
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0"
-                      >
-                        <input
-                          type="color"
-                          [value]="form.get('primaryColor')?.value || '#000000'"
-                          (input)="
-                            form
-                              .get('primaryColor')
-                              ?.setValue($any($event.target).value)
-                          "
-                          class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
-                        />
-                      </div>
-                      <input
-                        id="primaryColorText"
-                        type="text"
-                        formControlName="primaryColor"
-                        class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-                        placeholder="#000000"
-                      />
-                    </div>
-                  </div>
+          <app-organizational-appearance
+            [form]="form"
+            (save)="save()"
+          ></app-organizational-appearance>
+        </ng-template>
+      </mat-tab>
 
-                  <!-- Secundario -->
-                  <div class="flex flex-col gap-2">
-                    <label
-                      for="secondaryColorText"
-                      class="text-xs text-gray-500 uppercase font-bold"
-                      >Secundario</label
-                    >
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0"
-                      >
-                        <input
-                          type="color"
-                          [value]="
-                            form.get('secondaryColor')?.value || '#000000'
-                          "
-                          (input)="
-                            form
-                              .get('secondaryColor')
-                              ?.setValue($any($event.target).value)
-                          "
-                          class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
-                        />
-                      </div>
-                      <input
-                        id="secondaryColorText"
-                        type="text"
-                        formControlName="secondaryColor"
-                        class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-                        placeholder="#000000"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <mat-tab label="Experiencia de Inicio">
+        <ng-template matTabContent>
+          <app-organizational-home-content
+            [form]="form"
+            (save)="save()"
+          ></app-organizational-home-content>
+        </ng-template>
+      </mat-tab>
 
-              <div class="flex flex-col gap-4">
-                <span class="text-lg font-bold border-b pb-2">
-                  Optimización SEO
-                </span>
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Meta Título</mat-label>
-                  <input matInput formControlName="metaTitle" />
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Meta Descripción</mat-label>
-                  <textarea
-                    matInput
-                    formControlName="metaDescription"
-                    rows="3"
-                  ></textarea>
-                </mat-form-field>
-              </div>
-            </div>
-
-            <div class="flex justify-end gap-3 mt-4">
-              <button mat-fab extended="true" class="!w-full" (click)="save()">
-                <mat-icon>save</mat-icon>
-                Guardar Cambios
-              </button>
-            </div>
-          </form></ng-template
-        >
+      <mat-tab label="Contenido Web">
+        <ng-template matTabContent>
+          <app-organizational-web-content
+            [form]="form"
+            [corporateValues]="corporateValues"
+            [corporateValueForm]="corporateValueForm"
+            [editingValue]="editingValue"
+            [corporateValueImageLoading]="corporateValueImageLoading"
+            (save)="save()"
+            (saveValue)="saveCorporateValue()"
+            (deleteValue)="deleteCorporateValue($event)"
+            (editValue)="startEditValue($event)"
+            (cancelEdit)="cancelEditValue()"
+            (uploadValueImage)="uploadCorporateValueImage($event)"
+            (deleteValueImage)="deleteCorporateValueImage($event)"
+          ></app-organizational-web-content>
+        </ng-template>
       </mat-tab>
 
       <mat-tab label="Multimedia">
         <ng-template matTabContent>
-          <div class="py-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- LOGO SECTION -->
-            <div
-              class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
-            >
-              <div
-                *ngIf="mediaLoading['LOGO']"
-                class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
-              >
-                <mat-spinner diameter="40"></mat-spinner>
-                <span class="text-xs font-bold text-primary animate-pulse"
-                  >PROCESANDO...</span
-                >
-              </div>
-
-              <div class="flex justify-between w-full items-center">
-                <span class="font-bold text-gray-800">Logo del Sistema</span>
-                <mat-icon
-                  class="text-gray-400"
-                  [matTooltip]="'Imagen principal de la marca'"
-                  >info</mat-icon
-                >
-              </div>
-
-              <div
-                class="w-40 h-40 rounded-full border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
-              >
-                <img
-                  *ngIf="getMediaUrl('LOGO')"
-                  [src]="getMediaUrl('LOGO')"
-                  alt="Logo Organizacional"
-                  class="w-full h-full object-contain p-2"
-                />
-                <mat-icon
-                  *ngIf="!getMediaUrl('LOGO')"
-                  class="text-gray-300 text-6xl"
-                  >add_photo_alternate</mat-icon
-                >
-
-                <!-- HOVER ACTIONS -->
-                <div
-                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all duration-300"
-                >
-                  <button
-                    mat-mini-fab
-                    color="primary"
-                    (click)="logoInput.click()"
-                    matTooltip="Subir nuevo"
-                  >
-                    <mat-icon>upload</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('LOGO')"
-                    mat-mini-fab
-                    color="accent"
-                    (click)="previewMedia('LOGO')"
-                    matTooltip="Ver original"
-                  >
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('LOGO')"
-                    mat-mini-fab
-                    color="warn"
-                    (click)="deleteMedia('LOGO')"
-                    matTooltip="Eliminar"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-              <input
-                #logoInput
-                type="file"
-                class="hidden"
-                (change)="onFileSelected($event, 'LOGO')"
-                accept="image/*"
-              />
-              <p class="text-[10px] text-gray-400 text-center leading-tight">
-                FORMATO RECOMENDADO: PNG/WEBP TRANSPARENTE. <br />
-                TAMAÑO IDEAL: 512x512 PX.
-              </p>
-            </div>
-
-            <!-- LOGIN BG SECTION -->
-            <div
-              class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
-            >
-              <div
-                *ngIf="mediaLoading['LOGIN_BG']"
-                class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
-              >
-                <mat-spinner diameter="40"></mat-spinner>
-                <span class="text-xs font-bold text-primary animate-pulse"
-                  >OPTMIZANDO...</span
-                >
-              </div>
-
-              <div class="flex justify-between w-full items-center">
-                <span class="font-bold text-gray-800">Fondo de Login</span>
-                <mat-icon
-                  class="text-gray-400"
-                  [matTooltip]="'Imagen de fondo para la pantalla de acceso'"
-                  >info</mat-icon
-                >
-              </div>
-
-              <div
-                class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
-              >
-                <img
-                  *ngIf="getMediaUrl('LOGIN_BG')"
-                  [src]="getMediaUrl('LOGIN_BG')"
-                  alt="Fondo Login"
-                  class="w-full h-full object-cover"
-                />
-                <mat-icon
-                  *ngIf="!getMediaUrl('LOGIN_BG')"
-                  class="text-gray-300 text-6xl"
-                  >wallpaper</mat-icon
-                >
-
-                <!-- HOVER ACTIONS -->
-                <div
-                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-300"
-                >
-                  <button
-                    mat-fab
-                    color="primary"
-                    class="!w-12 !h-12"
-                    (click)="loginInput.click()"
-                    matTooltip="Cambiar fondo"
-                  >
-                    <mat-icon>upload</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('LOGIN_BG')"
-                    mat-fab
-                    color="accent"
-                    class="!w-12 !h-12"
-                    (click)="previewMedia('LOGIN_BG')"
-                    matTooltip="Previsualizar"
-                  >
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('LOGIN_BG')"
-                    mat-fab
-                    color="warn"
-                    class="!w-12 !h-12"
-                    (click)="deleteMedia('LOGIN_BG')"
-                    matTooltip="Eliminar"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-              <input
-                #loginInput
-                type="file"
-                class="hidden"
-                (change)="onFileSelected($event, 'LOGIN_BG')"
-                accept="image/*"
-              />
-              <p class="text-[10px] text-gray-400 text-center leading-tight">
-                FORMATO RECOMENDADO: JPG/WEBP. <br />
-                TAMAÑO IDEAL: 1920x1080 PX.
-              </p>
-            </div>
-
-            <!-- REGISTER BG SECTION -->
-            <div
-              class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
-            >
-              <div
-                *ngIf="mediaLoading['REGISTER_BG']"
-                class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
-              >
-                <mat-spinner diameter="40"></mat-spinner>
-                <span class="text-xs font-bold text-primary animate-pulse"
-                  >SUBIENDO...</span
-                >
-              </div>
-
-              <div class="flex justify-between w-full items-center">
-                <span class="font-bold text-gray-800">Fondo de Registro</span>
-                <mat-icon
-                  class="text-gray-400"
-                  [matTooltip]="'Imagen de fondo para la pantalla de registro'"
-                  >info</mat-icon
-                >
-              </div>
-
-              <div
-                class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
-              >
-                <img
-                  *ngIf="getMediaUrl('REGISTER_BG')"
-                  [src]="getMediaUrl('REGISTER_BG')"
-                  alt="Fondo Registro"
-                  class="w-full h-full object-cover"
-                />
-                <mat-icon
-                  *ngIf="!getMediaUrl('REGISTER_BG')"
-                  class="text-gray-300 text-6xl"
-                  >person_add</mat-icon
-                >
-
-                <!-- HOVER ACTIONS -->
-                <div
-                  class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-300"
-                >
-                  <button
-                    mat-fab
-                    color="primary"
-                    class="!w-12 !h-12"
-                    (click)="registerInput.click()"
-                    matTooltip="Cambiar imagen"
-                  >
-                    <mat-icon>upload</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('REGISTER_BG')"
-                    mat-fab
-                    color="accent"
-                    class="!w-12 !h-12"
-                    (click)="previewMedia('REGISTER_BG')"
-                    matTooltip="Previsualizar"
-                  >
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="getMediaUrl('REGISTER_BG')"
-                    mat-fab
-                    color="warn"
-                    class="!w-12 !h-12"
-                    (click)="deleteMedia('REGISTER_BG')"
-                    matTooltip="Eliminar"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-              <input
-                #registerInput
-                type="file"
-                class="hidden"
-                (change)="onFileSelected($event, 'REGISTER_BG')"
-                accept="image/*"
-              />
-              <p class="text-[10px] text-gray-400 text-center leading-tight">
-                FORMATO RECOMENDADO: JPG/WEBP. <br />
-                TAMAÑO IDEAL: 1920x1080 PX.
-              </p>
-            </div>
-          </div>
+          <app-organizational-multimedia
+            [mediaMap]="mediaMap"
+            [mediaTypes]="mediaTypes"
+            [mediaLoading]="mediaLoading"
+            [organizationalId]="organizationalId"
+            (fileSelected)="onFileSelected($event.event, $event.code)"
+            (deleteMedia)="deleteMedia($event)"
+            (previewMedia)="previewMedia($event)"
+          ></app-organizational-multimedia>
         </ng-template>
       </mat-tab>
+
     </mat-tab-group>
   } @else {
-    <div class="flex justify-center items-center h-64">
-      <app-loader></app-loader>
-    </div>
+    <app-loader></app-loader>
   }
 </app-base-page>
