@@ -131,6 +131,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       accessibilityDescription: [''],
       mapsUrl: [''],
       videoUrl: [''],
+      facebookUrl: [''],
+      instagramUrl: [''],
       metaTitle: [''],
       metaDescription: ['']
     });
@@ -291,6 +293,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       accessibilityDescription: org.accessibilityDescription,
       mapsUrl: org.mapsUrl,
       videoUrl: org.videoUrl,
+      facebookUrl: org.facebookUrl,
+      instagramUrl: org.instagramUrl,
       metaTitle: org.metaTitle,
       metaDescription: org.metaDescription
     });

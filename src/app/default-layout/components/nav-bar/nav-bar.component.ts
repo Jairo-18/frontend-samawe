@@ -16,14 +16,13 @@ import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.con
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { NavbarDesktopComponent } from '../navbar-desktop/navbar-desktop.component';
 import { NavbarMobileComponent } from '../navbar-mobile/navbar-mobile.component';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [
-    NavbarDesktopComponent,
-    NavbarMobileComponent,
-  ],
+  imports: [NavbarDesktopComponent, NavbarMobileComponent],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss'
 })
@@ -33,6 +32,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  private readonly _router: Router = inject(Router);
   private _subscription: Subscription = new Subscription();
 
   readonly exactOptions = { exact: false };
@@ -50,15 +50,31 @@ export class NavBarComponent implements OnInit, OnDestroy {
   organizationalName: string = '';
   logoUrl: string = '';
   isScrolled: boolean = false;
+  isScrollingDown: boolean = false;
+  isPastHero: boolean = false;
+  isHomePage: boolean = false;
   userInfo?: UserInterface;
   loggedMenuItems: NavItem[] = [];
+  private _lastScrollY: number = 0;
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isScrolled = window.scrollY > 0;
+    const current = window.scrollY;
+    this.isScrolled = current > 0;
+    this.isScrollingDown = current > this._lastScrollY && current > 80;
+    this.isPastHero = current > window.innerHeight;
+    this._lastScrollY = current;
   }
 
   ngOnInit(): void {
+    this.isHomePage = this._router.url === '/home' || this._router.url === '/';
+    this._subscription.add(
+      this._router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e) => {
+        const url = (e as NavigationEnd).urlAfterRedirects;
+        this.isHomePage = url === '/home' || url === '/';
+      })
+    );
+
     this._subscription.add(
       this._applicationService.currentOrg$.subscribe((organizational) => {
         if (organizational) {

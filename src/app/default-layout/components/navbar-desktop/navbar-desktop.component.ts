@@ -18,9 +18,10 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatIconModule,
     MatMenuModule,
     MatDividerModule,
-    ButtonLandingComponent,
+    ButtonLandingComponent
   ],
   templateUrl: './navbar-desktop.component.html',
+  styleUrls: ['./navbar-desktop.component.scss']
 })
 export class NavbarDesktopComponent {
   @Input() navBarItems: NavItem[] = [];
@@ -29,6 +30,9 @@ export class NavbarDesktopComponent {
   @Input() userInfo?: UserInterface;
   @Input() loggedMenuItems: NavItem[] = [];
   @Input() isScrolled = false;
+  @Input() isScrollingDown = false;
+  @Input() isPastHero = false;
+  @Input() isHomePage = false;
   @Input() organizationalName = '';
   @Input() logoUrl = '';
   @Output() openMenu = new EventEmitter<void>();

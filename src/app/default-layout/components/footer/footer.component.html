@@ -1,55 +1,89 @@
-<footer class="brand-footer">
-  <div
-    class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4"
-  >
-    <div>
-      <div class="mb-3 flex items-center gap-2 font-semibold">
-        <span
-          class="inline-block h-6 w-6 rounded bg-amber-500"
-          aria-hidden="true"
-        ></span>
-        <span>{{ organizationalName }}</span>
+<footer class="bg-[var(--primary-color)] text-white">
+
+  <!-- Main content -->
+  <div class="max-w-6xl 3xl:max-w-[1600px] mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+
+    <!-- Col 1: Branding + descripción + redes -->
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        @if (logoUrl) {
+          <img [src]="logoUrl" [alt]="org?.name" class="h-12 w-12 object-contain rounded-full bg-white/10 p-1" />
+        }
+        <span class="font-bold text-lg uppercase tracking-wide text-white">
+          {{ org?.name }}
+        </span>
       </div>
-      <p class="text-sm text-muted-foreground">
-        Experiencias únicas en el corazón de la naturaleza. Disfruta de
-        habitaciones confortables y pasadías inolvidables en un entorno natural.
+      <p class="text-sm leading-relaxed text-white/70">
+        {{ org?.description || 'Un santuario de paz en el corazón del Putumayo. Descubre una experiencia única rodeada de naturaleza y cultura amazónica.' }}
       </p>
+      <!-- Redes sociales -->
+      <div class="flex items-center gap-3 mt-1">
+        @if (org?.facebookUrl) {
+          <a [href]="org?.facebookUrl" target="_blank" rel="noopener"
+             class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white">
+            <fa-icon [icon]="faFacebook" class="text-base"></fa-icon>
+          </a>
+        }
+        @if (org?.instagramUrl) {
+          <a [href]="org?.instagramUrl" target="_blank" rel="noopener"
+             class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white">
+            <fa-icon [icon]="faInstagram" class="text-base"></fa-icon>
+          </a>
+        }
+        <a [href]="whatsappHref" target="_blank" rel="noopener"
+           class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white">
+          <fa-icon [icon]="faWhatsapp" class="text-base"></fa-icon>
+        </a>
+      </div>
     </div>
-    <div>
-      <span class="mb-2 text-sm font-semibold">Explora</span>
-      <ul class="space-y-2 text-sm text-muted-foreground">
-        <li><a href="#" class="hover:text-foreground">Habitaciones</a></li>
-        <li><a href="#" class="hover:text-foreground">Pasadías</a></li>
-        <li><a href="#" class="hover:text-foreground">Sobre Nosotros</a></li>
-      </ul>
+
+    <!-- Col 2: Navegación -->
+    <div class="flex flex-col gap-3">
+      <span class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1">
+        Explora
+      </span>
+      <a routerLink="/home" class="text-sm text-white/70 hover:text-white transition-colors">Inicio</a>
+      <a routerLink="/accommodation" class="text-sm text-white/70 hover:text-white transition-colors">Alojamientos</a>
+      <a routerLink="/gastronomy" class="text-sm text-white/70 hover:text-white transition-colors">Gastronomía</a>
+      <a routerLink="/about-us" class="text-sm text-white/70 hover:text-white transition-colors">Sobre Nosotros</a>
+      <a routerLink="/how-to-arrive" class="text-sm text-white/70 hover:text-white transition-colors">Cómo llegar</a>
     </div>
-    <div>
-      <span class="mb-2 text-sm font-semibold">Ayuda</span>
-      <ul class="space-y-2 text-sm text-muted-foreground">
-        <li>
-          <a href="#" class="hover:text-foreground">Preguntas frecuentes</a>
-        </li>
-        <li><a href="#" class="hover:text-foreground">Políticas</a></li>
-        <li><a href="#" class="hover:text-foreground">Soporte</a></li>
-      </ul>
+
+    <!-- Col 3: Contacto -->
+    <div class="flex flex-col gap-3">
+      <span class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1">
+        Contacto
+      </span>
+      @if (org?.phone) {
+        <a [href]="whatsappHref" target="_blank"
+           class="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
+          <fa-icon [icon]="faWhatsapp" class="text-base text-white"></fa-icon>
+          {{ org?.phone }}
+        </a>
+      }
+      @if (org?.email) {
+        <a [href]="'mailto:' + org?.email"
+           class="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
+          <span class="material-icons text-base leading-none text-white">email</span>
+          {{ org?.email }}
+        </a>
+      }
+      @if (org?.address) {
+        <p class="flex items-start gap-2 text-sm text-white/70">
+          <span class="material-icons text-base leading-tight mt-0.5 text-white">location_on</span>
+          {{ org?.address }}@if (org?.city) {, {{ org?.city }}}
+        </p>
+      }
     </div>
-    <div>
-      <span class="mb-2 text-sm font-semibold">Contacto</span>
-      <ul class="space-y-2 text-sm text-muted-foreground">
-        <li>+57 (310) 325-6473</li>
-        <li></li>
-        <li>Vereda Pueblo Viejo - Mocoa, Putumayo</li>
-      </ul>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-white/20">
+    <div class="max-w-6xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-white/50">
+      <span>© {{ currentYear }} {{ org?.name }}. Todos los derechos reservados.</span>
+      <span>Desarrollado por <span class="text-white font-medium">Jhon Legarda</span></span>
     </div>
   </div>
-  <div class="border-t">
-    <div
-      class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 text-xs text-muted-foreground sm:px-6"
-    >
-      <span
-        >© {{ currentYear }} {{ organizationalName }}. Todos los derechos
-        reservados.</span
-      >
-    </div>
-  </div>
+
 </footer>

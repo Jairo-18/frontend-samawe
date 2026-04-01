@@ -12,6 +12,7 @@ import { NotificationButtonComponent } from '../../components/notification-butto
 import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.component';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
@@ -22,7 +23,8 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
     CommonModule,
     NotificationButtonComponent,
     MobileMenuComponent,
-    LoaderComponent
+    LoaderComponent,
+    FooterComponent
   ],
   templateUrl: './default-layout.component.html',
   styleUrl: './default-layout.component.scss'

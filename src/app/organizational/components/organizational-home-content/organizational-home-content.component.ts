@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
   ],
   templateUrl: './organizational-home-content.component.html',
+  styleUrls: ['./organizational-home-content.component.scss']
 })
 export class OrganizationalHomeContentComponent {
   @Input() form!: FormGroup;

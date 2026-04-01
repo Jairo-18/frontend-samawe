@@ -114,7 +114,7 @@ export class CreateOrEditAccommodationComponent
       bedTypeId: [null, Validators.required],
       code: ['', Validators.required],
       name: ['', Validators.required],
-      description: ['', Validators.maxLength(250)],
+      description: ['', Validators.maxLength(500)],
       amountPerson: [
         1,
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(1)]

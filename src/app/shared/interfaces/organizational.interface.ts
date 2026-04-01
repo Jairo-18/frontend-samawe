@@ -75,6 +75,8 @@ export interface Organizational {
   accessibilityDescription?: string;
   mapsUrl?: string;
   videoUrl?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
   metaTitle?: string;
   metaDescription?: string;
   paymentEnabled: boolean;

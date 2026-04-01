@@ -23,6 +23,7 @@ interface MediaSection {
     MatTooltipModule,
   ],
   templateUrl: './organizational-multimedia.component.html',
+  styleUrls: ['./organizational-multimedia.component.scss']
 })
 export class OrganizationalMultimediaComponent {
   @Input() mediaMap: Record<string, OrganizationalMedia | OrganizationalMedia[]> = {};

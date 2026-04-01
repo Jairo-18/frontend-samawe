@@ -20,7 +20,8 @@ import { CorporateValue } from '../../../shared/interfaces/organizational.interf
     MatIconModule,
     MatTooltipModule
   ],
-  templateUrl: './organizational-web-content.component.html'
+  templateUrl: './organizational-web-content.component.html',
+  styleUrls: ['./organizational-web-content.component.scss']
 })
 export class OrganizationalWebContentComponent {
   @Input() form!: FormGroup;

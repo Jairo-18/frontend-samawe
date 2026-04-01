@@ -22,7 +22,8 @@ import { IdentificationType, PhoneCode } from '../../../shared/interfaces/relate
     MatSelectModule,
     MatAutocompleteModule
   ],
-  templateUrl: './organizational-general-info.component.html'
+  templateUrl: './organizational-general-info.component.html',
+  styleUrls: ['./organizational-general-info.component.scss']
 })
 export class OrganizationalGeneralInfoComponent {
   @Input() form!: FormGroup;

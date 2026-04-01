@@ -44,7 +44,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     UppercaseDirective,
     ButtonLandingComponent
   ],
-  templateUrl: './complete-profile.component.html'
+  templateUrl: './complete-profile.component.html',
+  styleUrls: ['./complete-profile.component.scss']
 })
 export class CompleteProfileComponent implements OnInit, OnDestroy {
   private readonly _fb: FormBuilder = inject(FormBuilder);

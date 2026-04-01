@@ -18,7 +18,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatButtonModule,
     ButtonLandingComponent
   ],
-  templateUrl: './navbar-mobile.component.html'
+  templateUrl: './navbar-mobile.component.html',
+  styleUrls: ['./navbar-mobile.component.scss']
 })
 export class NavbarMobileComponent {
   @Input() navBarItems: NavItem[] = [];

@@ -41,6 +41,10 @@
       @if (showMobileMenu) {
         <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
       }
+
+      @if (showNavBar) {
+        <app-footer></app-footer>
+      }
     </div>
   </article>
 }

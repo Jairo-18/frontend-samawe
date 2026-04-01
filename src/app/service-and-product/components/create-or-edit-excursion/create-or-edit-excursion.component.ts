@@ -112,7 +112,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       categoryTypeId: [null, Validators.required],
       code: ['', Validators.required],
       name: ['', Validators.required],
-      description: ['', Validators.maxLength(250)],
+      description: ['', Validators.maxLength(500)],
       priceBuy: [
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]

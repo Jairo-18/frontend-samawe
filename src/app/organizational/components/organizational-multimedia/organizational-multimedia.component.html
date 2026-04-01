@@ -17,8 +17,7 @@
           <mat-icon class="text-gray-400" matTooltip="Imagen principal de la marca">info</mat-icon>
         </div>
         <div class="w-40 h-40 rounded-full border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative">
-          <img *ngIf="getMediaUrl('LOGO')" [src]="getMediaUrl('LOGO')" alt="Logo" class="w-full h-full object-contain p-2" />
-          <mat-icon *ngIf="!getMediaUrl('LOGO')" class="text-gray-300 !text-6xl">add_photo_alternate</mat-icon>
+          <img [src]="getMediaUrl('LOGO') || 'assets/images/notFound.avif'" alt="Logo" class="w-full h-full object-contain p-2" />
           <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all duration-300">
             <button mat-mini-fab color="primary" (click)="logoInput.click()" matTooltip="Subir nuevo"><mat-icon>upload</mat-icon></button>
             <button *ngIf="getMediaUrl('LOGO')" mat-mini-fab color="accent" (click)="previewMedia.emit('LOGO')" matTooltip="Ver"><mat-icon>visibility</mat-icon></button>
@@ -51,8 +50,7 @@
                 <mat-icon class="text-gray-400" [matTooltip]="'Imagen para: ' + type.name">info</mat-icon>
               </div>
               <div class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative">
-                <img *ngIf="getMediaUrl(type.code)" [src]="getMediaUrl(type.code)" [alt]="type.name" class="w-full h-full object-cover" />
-                <mat-icon *ngIf="!getMediaUrl(type.code)" class="text-gray-300 !text-6xl">wallpaper</mat-icon>
+                <img [src]="getMediaUrl(type.code) || 'assets/images/notFound.avif'" [alt]="type.name" class="w-full h-full object-cover" />
                 <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-300">
                   <button mat-fab color="primary" class="!w-12 !h-12" (click)="triggerInput(type.code)" matTooltip="Subir imagen"><mat-icon>upload</mat-icon></button>
                   <button *ngIf="getMediaUrl(type.code)" mat-fab color="accent" class="!w-12 !h-12" (click)="previewMedia.emit(type.code)" matTooltip="Ver"><mat-icon>visibility</mat-icon></button>

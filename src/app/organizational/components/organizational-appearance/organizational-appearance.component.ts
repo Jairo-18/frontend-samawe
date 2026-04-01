@@ -17,7 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatIconModule
   ],
-  templateUrl: './organizational-appearance.component.html'
+  templateUrl: './organizational-appearance.component.html',
+  styleUrls: ['./organizational-appearance.component.scss']
 })
 export class OrganizationalAppearanceComponent {
   @Input() form!: FormGroup;

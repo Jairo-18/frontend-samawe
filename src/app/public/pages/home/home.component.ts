@@ -1,32 +1,28 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CardHomeComponent } from '../../components/card-home/card-home.component';
-import { GetAccommodationPaginatedList } from '../../../service-and-product/interface/accommodation.interface';
-import { FormsModule } from '@angular/forms';
-import { NgOptimizedImage } from '@angular/common';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { ApplicationService } from '../../../organizational/services/application.service';
+import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import { HeroSectionComponent } from './components/hero-section/hero-section.component';
+import { ExperienceSectionComponent } from './components/experience-section/experience-section.component';
+import { AboutUsSectionComponent } from './components/about-us-section/about-us-section.component';
+import { ReservationSectionComponent } from './components/reservation-section/reservation-section.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    CommonModule,
-    MatButtonModule,
-    FormsModule,
     BasePageComponent,
     CardHomeComponent,
-    RouterLink,
-    NgOptimizedImage,
-    FontAwesomeModule
+    HeroSectionComponent,
+    ExperienceSectionComponent,
+    AboutUsSectionComponent,
+    ReservationSectionComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -34,21 +30,13 @@ import { ApplicationService } from '../../../organizational/services/application
 export class HomeComponent implements OnInit, OnDestroy {
   private readonly _subscription: Subscription = new Subscription();
   private readonly _authService: AuthService = inject(AuthService);
-  private readonly _localStorage: LocalStorageService =
-    inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
 
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
-  organizationalName: string = '';
-  accommodations: GetAccommodationPaginatedList[] = [];
-  tipo: string = 'hospedaje';
-  huespedes: string = '2';
-  dateRange: { from?: Date; to?: Date } = {};
-  faWhatsapp = faWhatsapp;
-  testScrollArray: number[] = Array(50).fill(0);
+  org: Organizational | null = null;
 
   ngOnInit(): void {
     this._subscription.add(
@@ -71,7 +59,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._subscription.add(
       this._applicationService.currentOrg$.subscribe((org) => {
         if (org) {
-          this.organizationalName = org.name;
+          this.org = org;
         }
       })
     );
@@ -79,24 +67,5 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
-  }
-
-  formatRangeEs(): string {
-    const { from, to } = this.dateRange;
-    if (!from && !to) return 'Selecciona fechas';
-    if (from && !to) return from.toLocaleDateString('es-ES');
-    if (from && to)
-      return `${from.toLocaleDateString('es-ES')} – ${to.toLocaleDateString(
-        'es-ES'
-      )}`;
-    return 'Selecciona fechas';
-  }
-
-  onSearch() {
-    alert(
-      `Buscando ${this.tipo} para ${
-        this.huespedes
-      } huésped(es) en fechas: ${this.formatRangeEs()}. ¡Conectar con backend!`
-    );
   }
 }
