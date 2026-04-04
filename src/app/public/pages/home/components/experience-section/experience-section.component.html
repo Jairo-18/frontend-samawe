@@ -1,12 +1,16 @@
 <section class="w-full py-16 px-6 md:px-16 bg-white">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+  <div
+    class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
+  >
     <!-- Text -->
     <div class="flex flex-col gap-4">
-      <span class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold">
+      <span
+        class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold"
+      >
         Lo que ofrecemos
       </span>
       <h2 class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug">
-        {{ org?.experienceTitle || 'Nuestras Experiencias' }}
+        {{ org?.experienceTitle || '' }}
       </h2>
       @if (org?.experienceDescription) {
         <p class="text-gray-600 text-sm md:text-base leading-relaxed">
@@ -23,7 +27,11 @@
     </div>
     <!-- Image -->
     <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg">
-      <img [src]="imageUrl" alt="Experiencias Samawé" class="w-full h-full object-cover" />
+      <img
+        [src]="imageUrl"
+        alt="Experiencias Samawé"
+        class="w-full h-full object-cover"
+      />
     </div>
   </div>
 </section>

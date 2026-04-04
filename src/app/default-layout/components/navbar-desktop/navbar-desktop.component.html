@@ -4,7 +4,8 @@
   [ngClass]="{
     'bg-white': !isScrolled || isPastHero || !isHomePage,
     'shadow-lg': isScrolled,
-    'md:bg-transparent md:shadow-none md:backdrop-blur-sm': isScrolled && !isPastHero && isHomePage
+    'md:bg-transparent md:shadow-none md:backdrop-blur-sm':
+      isScrolled && !isPastHero && isHomePage
   }"
 >
   <article class="flex px-6 items-center w-full">
@@ -18,18 +19,24 @@
         [alt]="organizationalName"
         class="h-14 w-14 md:h-[70px] md:w-[70px] cursor-pointer transition-all duration-300"
       />
-      <h1
+      <span
         class="hidden lg:block text-base 2xl:text-base 3xl:text-lg font-semibold uppercase transition-colors duration-300"
-        [ngClass]="isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-800'"
+        [ngClass]="
+          isScrolled && !isPastHero && isHomePage
+            ? 'text-white'
+            : 'text-gray-800'
+        "
       >
         {{ organizationalName }}
-      </h1>
+      </span>
     </section>
 
     <!-- Links de navegación -->
     <section
       class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-1 2xl:gap-x-1 3xl:gap-x-4 transition-colors duration-300"
-      [ngClass]="isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-800'"
+      [ngClass]="
+        isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-800'
+      "
     >
       @for (item of navBarItems; track $index) {
         <a

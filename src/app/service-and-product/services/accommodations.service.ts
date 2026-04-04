@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import {
   AccommodationComplete,
   CreateAccommodationPanel,
-  GetAccommodationPaginatedList
+  GetAccommodationPaginatedList,
+  MostRequestedAccommodation
 } from '../interface/accommodation.interface';
 import {
   ApiResponseCreateInterface,
@@ -70,6 +71,12 @@ export class AccommodationsService {
   deleteAccommodationPanel(accommodationId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}accommodation/${accommodationId}`
+    );
+  }
+
+  getMostRequested(): Observable<{ statusCode: number; data: MostRequestedAccommodation[] }> {
+    return this._httpClient.get<{ statusCode: number; data: MostRequestedAccommodation[] }>(
+      `${environment.apiUrl}accommodation/public/most-requested`
     );
   }
 }

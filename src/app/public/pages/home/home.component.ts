@@ -12,6 +12,7 @@ import { HeroSectionComponent } from './components/hero-section/hero-section.com
 import { ExperienceSectionComponent } from './components/experience-section/experience-section.component';
 import { AboutUsSectionComponent } from './components/about-us-section/about-us-section.component';
 import { ReservationSectionComponent } from './components/reservation-section/reservation-section.component';
+import { MostRequestedSectionComponent } from './components/most-requested-section/most-requested-section.component';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ import { ReservationSectionComponent } from './components/reservation-section/re
     BasePageComponent,
     CardHomeComponent,
     HeroSectionComponent,
+    MostRequestedSectionComponent,
     ExperienceSectionComponent,
     AboutUsSectionComponent,
     ReservationSectionComponent
