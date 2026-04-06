@@ -64,6 +64,10 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this._subscription.add(
       this._authService._isLoggedSubject.subscribe((isLogged) => {
         this.isLoggedUser = isLogged;
+        if (!isLogged) {
+          this.isCollapsedSideBar = true;
+          this.closeSideBar = false;
+        }
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
         this.checkRolesForNavBar();

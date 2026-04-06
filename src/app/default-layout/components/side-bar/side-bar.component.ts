@@ -182,8 +182,8 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   closeSideBarMethod(): void {
-    this.isCollapsed = !this.isCollapsed;
-    if (this.isCollapsed) this.closeAllSubMenus();
+    this.isCollapsed = true;
+    this.closeAllSubMenus();
   }
 
   closeAllSubMenus(): void {
