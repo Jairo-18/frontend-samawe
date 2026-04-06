@@ -28,6 +28,16 @@
         </ng-template>
       </mat-tab>
 
+      <mat-tab label="Contenido de inicio">
+        <ng-template matTabContent>
+          <app-organizational-home-content
+            [form]="form"
+            [benefitSections]="benefitSections"
+            (save)="save()"
+          ></app-organizational-home-content>
+        </ng-template>
+      </mat-tab>
+
       <mat-tab label="Contenido Web">
         <ng-template matTabContent>
           <app-organizational-web-content

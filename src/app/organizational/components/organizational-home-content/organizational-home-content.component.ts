@@ -16,7 +16,7 @@ import { BenefitSection } from '../../../shared/interfaces/organizational.interf
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule,
+    MatIconModule
   ],
   templateUrl: './organizational-home-content.component.html',
   styleUrls: ['./organizational-home-content.component.scss']

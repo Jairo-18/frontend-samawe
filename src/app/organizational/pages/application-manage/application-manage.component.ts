@@ -13,6 +13,7 @@ import { OrganizationalGeneralInfoComponent } from '../../components/organizatio
 import { OrganizationalAppearanceComponent } from '../../components/organizational-appearance/organizational-appearance.component';
 import { OrganizationalWebContentComponent } from '../../components/organizational-web-content/organizational-web-content.component';
 import { OrganizationalMultimediaComponent } from '../../components/organizational-multimedia/organizational-multimedia.component';
+import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -47,7 +48,7 @@ import {
     OrganizationalGeneralInfoComponent,
     OrganizationalAppearanceComponent,
     OrganizationalWebContentComponent,
-
+    OrganizationalHomeContentComponent,
     OrganizationalMultimediaComponent
   ],
   templateUrl: './application-manage.component.html',
