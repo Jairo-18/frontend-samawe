@@ -81,7 +81,9 @@ export class TypesService {
     );
   }
 
-  getAllIdentificationTypes(): Observable<ApiResponseInterface<IdentificationType[]>> {
+  getAllIdentificationTypes(): Observable<
+    ApiResponseInterface<IdentificationType[]>
+  > {
     return this._httpClient.get<ApiResponseInterface<IdentificationType[]>>(
       `${environment.apiUrl}type/identificationType/all`
     );

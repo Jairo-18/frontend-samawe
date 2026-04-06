@@ -28,6 +28,20 @@ export interface CorporateValue {
   imageUrl?: string;
 }
 
+export interface BenefitItem {
+  benefitItemId: string;
+  name: string;
+  icon: string;
+  order: number;
+}
+
+export interface BenefitSection {
+  benefitSectionId: string;
+  title: string;
+  order: number;
+  items: BenefitItem[];
+}
+
 export interface Organizational {
   organizationalId: string;
   name: string;
@@ -86,4 +100,5 @@ export interface Organizational {
   phoneCode?: PhoneCode;
   medias: OrganizationalMedia[];
   corporateValues?: CorporateValue[];
+  benefitSections?: BenefitSection[];
 }

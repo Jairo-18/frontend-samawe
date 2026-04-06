@@ -20,14 +20,14 @@
         class="h-14 w-14 md:h-[70px] md:w-[70px] cursor-pointer transition-all duration-300"
       />
       <span
-        class="hidden lg:block text-base 2xl:text-base 3xl:text-lg font-semibold uppercase transition-colors duration-300"
+        class="hidden lg:block text-base 2xl:text-base 3xl:text-lg font-semibold transition-colors duration-300"
         [ngClass]="
           isScrolled && !isPastHero && isHomePage
             ? 'text-white'
             : 'text-gray-800'
         "
       >
-        {{ organizationalName }}
+        {{ organizationalName | capitalize }}
       </span>
     </section>
 

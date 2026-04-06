@@ -40,6 +40,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-side-bar',
@@ -56,7 +57,8 @@ import { NgOptimizedImage } from '@angular/common';
     MatTooltipModule,
     CommonModule,
     LoaderComponent,
-    NgOptimizedImage
+    NgOptimizedImage,
+    CapitalizePipe
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',

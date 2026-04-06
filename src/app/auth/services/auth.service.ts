@@ -25,6 +25,7 @@ export class AuthService {
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private _refreshingToken: boolean = false;
+  private _refreshTimer: ReturnType<typeof setTimeout> | null = null;
   _isLoggedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private readonly _router: Router = inject(Router);
   private _currentUserSubject: BehaviorSubject<UserInterface | null> =
@@ -76,6 +77,7 @@ export class AuthService {
         tap((res) => {
           this.saveLocalUserData(res.data);
           this._isLoggedEmit();
+          this.scheduleTokenRefresh();
         })
       );
   }
@@ -88,6 +90,7 @@ export class AuthService {
       .post<unknown>(`${environment.apiUrl}auth/sign-out`, params)
       .pipe(
         tap(() => {
+          this._clearRefreshTimer();
           this._localStorageService.cleanLocalStorage();
           this._isLoggedSubject.next(false);
           this._router.navigateByUrl('/auth/login');
@@ -152,7 +155,60 @@ export class AuthService {
       localStorage.setItem(this._tokensStorageKey, JSON.stringify(user));
     }
   }
+
+  private _decodeTokenPayload(token: string): { exp?: number } | null {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
+      return null;
+    }
+  }
+
+  scheduleTokenRefresh(): void {
+    this._clearRefreshTimer();
+
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return;
+
+    const decoded = this._decodeTokenPayload(refreshToken);
+    if (!decoded?.exp) return;
+
+    const refreshAtMs = decoded.exp * 1000 - 2 * 60 * 60 * 1000;
+    const delayMs = refreshAtMs - Date.now();
+
+    if (delayMs <= 0) {
+      this._proactiveRefresh();
+      return;
+    }
+
+    this._refreshTimer = setTimeout(() => this._proactiveRefresh(), delayMs);
+  }
+
+  private _proactiveRefresh(): void {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) return;
+
+    const decoded = this._decodeTokenPayload(refreshToken);
+    if (!decoded?.exp || decoded.exp * 1000 < Date.now()) {
+      this.cleanStorageAndRedirectToLogin();
+      return;
+    }
+
+    this.refreshToken(refreshToken).subscribe({
+      next: () => this.scheduleTokenRefresh(),
+      error: () => this.cleanStorageAndRedirectToLogin()
+    });
+  }
+
+  private _clearRefreshTimer(): void {
+    if (this._refreshTimer !== null) {
+      clearTimeout(this._refreshTimer);
+      this._refreshTimer = null;
+    }
+  }
+
   cleanStorageAndRedirectToLogin(): void {
+    this._clearRefreshTimer();
     this._localStorageService.cleanLocalStorage();
     this._isLoggedEmit();
     this._router.navigate([`home`]);

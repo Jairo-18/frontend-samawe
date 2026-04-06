@@ -4,6 +4,8 @@ import {
   LOCALE_ID,
   provideZoneChangeDetection
 } from '@angular/core';
+import { RouteReuseStrategy } from '@angular/router';
+import { CacheRouteReuseStrategy } from './shared/strategies/cache-route-reuse.strategy';
 import { provideRouter } from '@angular/router';
 import {
   ErrorStateMatcher,
@@ -52,6 +54,7 @@ export const appConfig: ApplicationConfig = {
         notificationsInterceptorInterceptor
       ])
     ),
-    TransformDateService
+    TransformDateService,
+    { provide: RouteReuseStrategy, useClass: CacheRouteReuseStrategy }
   ]
 };

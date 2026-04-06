@@ -13,6 +13,8 @@ import { ExperienceSectionComponent } from './components/experience-section/expe
 import { AboutUsSectionComponent } from './components/about-us-section/about-us-section.component';
 import { ReservationSectionComponent } from './components/reservation-section/reservation-section.component';
 import { MostRequestedSectionComponent } from './components/most-requested-section/most-requested-section.component';
+import { HowToArriveSectionComponent } from './components/how-to-arrive-section/how-to-arrive-section.component';
+import { BenefitsSectionComponent } from './components/benefits-section/benefits-section.component';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +26,9 @@ import { MostRequestedSectionComponent } from './components/most-requested-secti
     MostRequestedSectionComponent,
     ExperienceSectionComponent,
     AboutUsSectionComponent,
-    ReservationSectionComponent
+    ReservationSectionComponent,
+    HowToArriveSectionComponent,
+    BenefitsSectionComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -32,9 +36,11 @@ import { MostRequestedSectionComponent } from './components/most-requested-secti
 export class HomeComponent implements OnInit, OnDestroy {
   private readonly _subscription: Subscription = new Subscription();
   private readonly _authService: AuthService = inject(AuthService);
-  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
-  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
 
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;

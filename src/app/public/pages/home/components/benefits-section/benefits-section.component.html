@@ -1,0 +1,70 @@
+@if (org?.benefitSections && org!.benefitSections!.length > 0) {
+  <section class="w-full py-16 px-6 md:px-16 bg-stone-50">
+    <div class="max-w-7xl mx-auto flex flex-col gap-10">
+      <!-- Title with decorative lines -->
+      <div class="flex flex-col items-center text-center gap-2">
+        <span
+          class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold"
+        >
+          Servicios
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <hr class="flex-1 border-t border-gray-700" />
+
+        <h2
+          class="text-2xl md:text-4xl font-bold text-gray-900 whitespace-nowrap tracking-tight"
+        >
+          Beneficios y servicios
+        </h2>
+        <hr class="flex-1 border-t border-gray-700" />
+      </div>
+
+      @for (section of org!.benefitSections!; track section.benefitSectionId) {
+        @if (section.items.length > 0) {
+          <div>
+            @if (org!.benefitSections!.length > 1) {
+              <h3
+                class="text-sm uppercase tracking-widest font-semibold mb-4"
+                style="color: var(--primary-color, #5c7a4e)"
+              >
+                {{ section.title }}
+              </h3>
+            }
+            <div class="grid grid-cols-2">
+              @for (
+                item of section.items;
+                track item.benefitItemId;
+                let i = $index
+              ) {
+                <div
+                  class="flex items-center gap-3 py-3"
+                  [ngClass]="{
+                    'pr-4 md:pr-8': i % 2 === 0,
+                    'pl-4 md:pl-8 border-l border-gray-400': i % 2 !== 0
+                  }"
+                >
+                  <span
+                    class="material-icons text-2xl shrink-0"
+                    style="color: var(--primary-color, #5c7a4e)"
+                  >
+                    {{ item.icon }}
+                  </span>
+                  <span
+                    class="text-sm md:text-base"
+                    [ngClass]="i % 2 === 0 ? 'text-gray-800' : 'font-medium'"
+                    [style.color]="
+                      i % 2 !== 0 ? 'var(--primary-color, #5c7a4e)' : null
+                    "
+                  >
+                    {{ item.name }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </section>
+}

@@ -28,6 +28,7 @@ import {
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -43,7 +44,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatStepperModule,
     MatSelectModule,
     NgOptimizedImage,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    CapitalizePipe
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']

@@ -35,7 +35,7 @@
                   *ngFor="let type of identificationType"
                   [value]="type.identificationTypeId.toString()"
                 >
-                  {{ type.name }}
+                  {{ type.name | capitalize }}
                 </mat-option>
               </mat-select>
               <mat-icon matPrefix>table_chart</mat-icon>
@@ -113,7 +113,7 @@
                   *ngFor="let type of phoneCode"
                   [value]="type.phoneCodeId.toString()"
                 >
-                  {{ type.name }} {{ type.code }}
+                  {{ type.name | capitalize }} {{ type.code }}
                 </mat-option>
               </mat-select>
               <mat-icon matPrefix>flag</mat-icon>

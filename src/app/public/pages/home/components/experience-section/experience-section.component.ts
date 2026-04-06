@@ -17,8 +17,8 @@ export class ExperienceSectionComponent {
   get imageUrl(): string {
     const excluded = ['LOGO', 'LOGIN_BG', 'REGISTER_BG'];
     return (
-      this.org?.medias?.find((m) => !excluded.includes(m.mediaType?.code))?.url ??
-      'assets/images/notFound.avif'
+      this.org?.medias?.find((m) => !excluded.includes(m.mediaType?.code))
+        ?.url ?? 'assets/images/notFound.avif'
     );
   }
 

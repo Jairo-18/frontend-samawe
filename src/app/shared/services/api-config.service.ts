@@ -20,9 +20,6 @@ export class ApiConfigService {
       try {
         const parsed: ApiConfig = JSON.parse(savedConfig);
         if (this.isSiteSecure() && parsed.apiUrl?.startsWith('http://')) {
-          console.warn(
-            '⚠️ Se ignoró configuración guardada con http:// porque el sitio usa HTTPS. Limpiando...'
-          );
           localStorage.removeItem('api-config');
         } else {
           this.config = parsed;
@@ -45,7 +42,6 @@ export class ApiConfigService {
     let url = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`;
     if (this.isSiteSecure() && url.startsWith('http://')) {
       url = url.replace('http://', 'https://');
-      console.warn('⚠️ URL convertida a HTTPS automáticamente:', url);
     }
     this.config.apiUrl = url;
     localStorage.setItem('api-config', JSON.stringify(this.config));

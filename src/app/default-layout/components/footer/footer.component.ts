@@ -2,20 +2,26 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWhatsapp, faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faWhatsapp,
+  faFacebook,
+  faInstagram
+} from '@fortawesome/free-brands-svg-icons';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
 import { Subscription } from 'rxjs';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule],
+  imports: [CommonModule, RouterLink, FontAwesomeModule, CapitalizePipe],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  private readonly _applicationService = inject(ApplicationService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private _subscription = new Subscription();
 
   currentYear = new Date().getFullYear();

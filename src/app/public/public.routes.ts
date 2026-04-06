@@ -5,6 +5,7 @@ export const publicRoutes: Routes = [
     children: [
       {
         path: 'home',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/home/home.component').then((m) => m.HomeComponent)
       },

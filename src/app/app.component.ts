@@ -12,6 +12,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 import { ApplicationService } from './organizational/services/application.service';
+import { AuthService } from './auth/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class AppComponent implements OnDestroy {
   private readonly _meta: Meta = inject(Meta);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _authService: AuthService = inject(AuthService);
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
@@ -37,6 +39,7 @@ export class AppComponent implements OnDestroy {
     this._setMaterialOutlinedIconsDefault();
     this._listenRouterChanges();
     this._loadInitialBranding();
+    this._authService.scheduleTokenRefresh();
   }
 
   private _loadInitialBranding(): void {

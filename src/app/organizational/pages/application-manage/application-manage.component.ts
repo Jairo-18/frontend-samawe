@@ -12,7 +12,6 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { OrganizationalGeneralInfoComponent } from '../../components/organizational-general-info/organizational-general-info.component';
 import { OrganizationalAppearanceComponent } from '../../components/organizational-appearance/organizational-appearance.component';
 import { OrganizationalWebContentComponent } from '../../components/organizational-web-content/organizational-web-content.component';
-import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
 import { OrganizationalMultimediaComponent } from '../../components/organizational-multimedia/organizational-multimedia.component';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
@@ -21,7 +20,8 @@ import {
   Organizational,
   OrganizationalMedia,
   MediaType,
-  CorporateValue
+  CorporateValue,
+  BenefitSection
 } from '../../../shared/interfaces/organizational.interface';
 import {
   IdentificationType,
@@ -47,7 +47,7 @@ import {
     OrganizationalGeneralInfoComponent,
     OrganizationalAppearanceComponent,
     OrganizationalWebContentComponent,
-    OrganizationalHomeContentComponent,
+
     OrganizationalMultimediaComponent
   ],
   templateUrl: './application-manage.component.html',
@@ -71,6 +71,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   editingValue: CorporateValue | null = null;
   corporateValueForm: FormGroup;
   corporateValueImageLoading: Record<string, boolean> = {};
+
+  benefitSections: BenefitSection[] = [];
+  editingSection: BenefitSection | null = null;
+  benefitSectionForm: FormGroup;
   private _subscription: Subscription = new Subscription();
 
   identificationTypes: IdentificationType[] = [];
@@ -142,6 +146,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       description: [''],
       order: [0]
     });
+
+    this.benefitSectionForm = this._fb.group({
+      title: ['', Validators.required],
+      order: [0]
+    });
   }
 
   ngOnInit(): void {
@@ -155,6 +164,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       this.loadOrganization();
       this._applicationService.loadMedia(id);
       this.loadCorporateValues(id);
+      this.loadBenefitSections(id);
     } else {
       this.isLoading = false;
     }
@@ -309,7 +319,6 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     const rawValue = this.form.getRawValue();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {
       identificationTypeId,
       phoneCodeId,
@@ -501,21 +510,111 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   uploadCorporateValueImage(event: { valueId: string; file: File }): void {
     this.corporateValueImageLoading[event.valueId] = true;
-    this._applicationService.uploadCorporateValueImage(event.valueId, event.file).subscribe({
-      next: () => {
-        this.loadCorporateValues(this.organizationalId!);
-        this.corporateValueImageLoading[event.valueId] = false;
-      },
-      error: () => {
-        this.corporateValueImageLoading[event.valueId] = false;
-      }
-    });
+    this._applicationService
+      .uploadCorporateValueImage(event.valueId, event.file)
+      .subscribe({
+        next: () => {
+          this.loadCorporateValues(this.organizationalId!);
+          this.corporateValueImageLoading[event.valueId] = false;
+        },
+        error: () => {
+          this.corporateValueImageLoading[event.valueId] = false;
+        }
+      });
   }
 
   deleteCorporateValueImage(valueId: string): void {
     if (!confirm('¿Eliminar la imagen de este valor corporativo?')) return;
     this._applicationService.deleteCorporateValueImage(valueId).subscribe({
       next: () => this.loadCorporateValues(this.organizationalId!)
+    });
+  }
+
+  loadBenefitSections(id: string): void {
+    this._applicationService.getBenefitSections(id).subscribe({
+      next: (res) => (this.benefitSections = res.data)
+    });
+  }
+
+  saveBenefitSection(): void {
+    if (this.benefitSectionForm.invalid || !this.organizationalId) return;
+    const data = this.benefitSectionForm.getRawValue();
+
+    if (this.editingSection) {
+      this._applicationService
+        .updateBenefitSection(this.editingSection.benefitSectionId, data)
+        .subscribe({
+          next: () => {
+            this.loadBenefitSections(this.organizationalId!);
+            this.cancelSectionEdit();
+          }
+        });
+    } else {
+      this._applicationService
+        .createBenefitSection(this.organizationalId, data)
+        .subscribe({
+          next: () => {
+            this.loadBenefitSections(this.organizationalId!);
+            this.cancelSectionEdit();
+          }
+        });
+    }
+  }
+
+  startEditSection(section: BenefitSection): void {
+    this.editingSection = section;
+    this.benefitSectionForm.patchValue({
+      title: section.title,
+      order: section.order
+    });
+  }
+
+  cancelSectionEdit(): void {
+    this.editingSection = null;
+    this.benefitSectionForm.reset({ order: 0 });
+  }
+
+  deleteBenefitSection(sectionId: string): void {
+    if (!confirm('¿Eliminar esta sección y todos sus items?')) return;
+    this._applicationService.deleteBenefitSection(sectionId).subscribe({
+      next: () => this.loadBenefitSections(this.organizationalId!)
+    });
+  }
+
+  addBenefitItem(payload: {
+    sectionId: string;
+    name: string;
+    icon: string;
+  }): void {
+    this._applicationService
+      .addBenefitItem(payload.sectionId, {
+        name: payload.name,
+        icon: payload.icon
+      })
+      .subscribe({
+        next: () => this.loadBenefitSections(this.organizationalId!)
+      });
+  }
+
+  updateBenefitItem(payload: {
+    itemId: string;
+    name: string;
+    icon: string;
+  }): void {
+    this._applicationService
+      .updateBenefitItem(payload.itemId, {
+        name: payload.name,
+        icon: payload.icon
+      })
+      .subscribe({
+        next: () => this.loadBenefitSections(this.organizationalId!)
+      });
+  }
+
+  deleteBenefitItem(itemId: string): void {
+    if (!confirm('¿Eliminar este item?')) return;
+    this._applicationService.deleteBenefitItem(itemId).subscribe({
+      next: () => this.loadBenefitSections(this.organizationalId!)
     });
   }
 }

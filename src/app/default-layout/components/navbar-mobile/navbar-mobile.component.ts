@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-navbar-mobile',
@@ -16,7 +17,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    CapitalizePipe
   ],
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss']
@@ -36,6 +38,8 @@ export class NavbarMobileComponent {
   readonly exactOptionsStrict = { exact: true };
 
   getInitials(userInfo: UserInterface): string {
-    return ((userInfo.firstName?.[0] ?? '') + (userInfo.lastName?.[0] ?? '')).toUpperCase();
+    return (
+      (userInfo.firstName?.[0] ?? '') + (userInfo.lastName?.[0] ?? '')
+    ).toUpperCase();
   }
 }

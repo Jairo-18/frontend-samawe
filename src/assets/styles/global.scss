@@ -1,7 +1,5 @@
 @use 'variables' as *;
 
-@use '@fontsource-variable/noto-serif';
-
 .app-container {
   transition:
     margin-left 0.3s ease,
@@ -39,7 +37,7 @@
 }
 
 .brand-content-center {
-  min-height: 100dvh;
+  min-height: 100vh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -244,7 +242,6 @@
   scrollbar-width: auto !important;
   scrollbar-color: var(--primary-color) #f1f1f1 !important;
 }
-
 
 .red-color {
   color: rgb(255, 27, 27) !important;

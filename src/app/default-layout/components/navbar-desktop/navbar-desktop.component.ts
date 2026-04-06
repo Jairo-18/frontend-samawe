@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-navbar-desktop',
@@ -18,7 +19,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatIconModule,
     MatMenuModule,
     MatDividerModule,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    CapitalizePipe
   ],
   templateUrl: './navbar-desktop.component.html',
   styleUrls: ['./navbar-desktop.component.scss']

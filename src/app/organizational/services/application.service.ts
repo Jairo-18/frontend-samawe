@@ -6,7 +6,8 @@ import {
   Organizational,
   OrganizationalMedia,
   MediaType,
-  CorporateValue
+  CorporateValue,
+  BenefitSection
 } from '../../shared/interfaces/organizational.interface';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { BehaviorSubject, tap } from 'rxjs';
@@ -19,8 +20,6 @@ export class ApplicationService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
-  private readonly apiUrl = `${environment.apiUrl}organizational`;
-
   private _mediaMapSubject = new BehaviorSubject<Record<
     string,
     OrganizationalMedia[]
@@ -34,7 +33,7 @@ export class ApplicationService {
     id: string
   ): Observable<ApiResponseInterface<Organizational>> {
     return this._http.get<ApiResponseInterface<Organizational>>(
-      `${this.apiUrl}/${id}`
+      `${environment.apiUrl}organizational/${id}`
     );
   }
 
@@ -43,7 +42,7 @@ export class ApplicationService {
     data: Partial<Organizational>
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
-      `${this.apiUrl}/${id}`,
+      `${environment.apiUrl}organizational/${id}`,
       data
     );
   }
@@ -54,7 +53,7 @@ export class ApplicationService {
     return this._http
       .get<
         ApiResponseInterface<Record<string, OrganizationalMedia[]>>
-      >(`${this.apiUrl}/${id}/media`)
+      >(`${environment.apiUrl}organizational/${id}/media`)
       .pipe(
         tap((res) => {
           if (res.data) {
@@ -120,7 +119,7 @@ export class ApplicationService {
     media: Partial<OrganizationalMedia>
   ): Observable<ApiResponseInterface<OrganizationalMedia>> {
     return this._http.post<ApiResponseInterface<OrganizationalMedia>>(
-      `${this.apiUrl}/${id}/media`,
+      `${environment.apiUrl}organizational/${id}/media`,
       media
     );
   }
@@ -130,20 +129,22 @@ export class ApplicationService {
     data: Partial<OrganizationalMedia>
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
-      `${this.apiUrl}/media/${mediaId}`,
+      `${environment.apiUrl}organizational/media/${mediaId}`,
       data
     );
   }
 
   deleteMedia(mediaId: string): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
-      `${this.apiUrl}/media/${mediaId}`
+      `${environment.apiUrl}organizational/media/${mediaId}`
     );
   }
 
-  getCorporateValues(id: string): Observable<ApiResponseInterface<CorporateValue[]>> {
+  getCorporateValues(
+    id: string
+  ): Observable<ApiResponseInterface<CorporateValue[]>> {
     return this._http.get<ApiResponseInterface<CorporateValue[]>>(
-      `${this.apiUrl}/${id}/corporate-values`
+      `${environment.apiUrl}organizational/${id}/corporate-values`
     );
   }
 
@@ -152,7 +153,7 @@ export class ApplicationService {
     data: Omit<CorporateValue, 'corporateValueId'>
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
-      `${this.apiUrl}/${id}/corporate-values`,
+      `${environment.apiUrl}organizational/${id}/corporate-values`,
       data
     );
   }
@@ -162,38 +163,108 @@ export class ApplicationService {
     data: Partial<CorporateValue>
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
-      `${this.apiUrl}/corporate-values/${valueId}`,
+      `${environment.apiUrl}organizational/corporate-values/${valueId}`,
       data
     );
   }
 
-  deleteCorporateValue(valueId: string): Observable<ApiResponseInterface<void>> {
+  deleteCorporateValue(
+    valueId: string
+  ): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
-      `${this.apiUrl}/corporate-values/${valueId}`
+      `${environment.apiUrl}organizational/corporate-values/${valueId}`
     );
   }
 
   uploadCorporateValueImage(
     valueId: string,
     file: File
-  ): Observable<ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>> {
+  ): Observable<
+    ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>
+  > {
     const formData = new FormData();
     formData.append('file', file);
-    return this._http.post<ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>>(
-      `${this.apiUrl}/corporate-values/${valueId}/upload-image`,
+    return this._http.post<
+      ApiResponseInterface<{ imageUrl: string; imagePublicId: string }>
+    >(
+      `${environment.apiUrl}organizational/corporate-values/${valueId}/upload-image`,
       formData
     );
   }
 
-  deleteCorporateValueImage(valueId: string): Observable<ApiResponseInterface<void>> {
+  deleteCorporateValueImage(
+    valueId: string
+  ): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
-      `${this.apiUrl}/corporate-values/${valueId}/image`
+      `${environment.apiUrl}organizational/corporate-values/${valueId}/image`
+    );
+  }
+
+  getBenefitSections(
+    organizationalId: string
+  ): Observable<ApiResponseInterface<BenefitSection[]>> {
+    return this._http.get<ApiResponseInterface<BenefitSection[]>>(
+      `${environment.apiUrl}benefit-section/organizational/${organizationalId}`
+    );
+  }
+
+  createBenefitSection(
+    organizationalId: string,
+    data: { title: string; order?: number }
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${environment.apiUrl}benefit-section/organizational/${organizationalId}`,
+      data
+    );
+  }
+
+  updateBenefitSection(
+    sectionId: string,
+    data: { title?: string; order?: number }
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}benefit-section/${sectionId}`,
+      data
+    );
+  }
+
+  deleteBenefitSection(
+    sectionId: string
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}benefit-section/${sectionId}`
+    );
+  }
+
+  addBenefitItem(
+    sectionId: string,
+    data: { name: string; icon: string; order?: number }
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${environment.apiUrl}benefit-section/${sectionId}/items`,
+      data
+    );
+  }
+
+  updateBenefitItem(
+    itemId: string,
+    data: { name?: string; icon?: string; order?: number }
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}benefit-section/items/${itemId}`,
+      data
+    );
+  }
+
+  deleteBenefitItem(itemId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}benefit-section/items/${itemId}`
     );
   }
 
   getMediaTypes(): Observable<ApiResponseInterface<MediaType[]>> {
     return this._http.get<ApiResponseInterface<MediaType[]>>(
-      `${this.apiUrl}/media-types`
+      `${environment.apiUrl}organizational/media-types`
     );
   }
 
@@ -206,7 +277,7 @@ export class ApplicationService {
     formData.append('file', file);
     formData.append('mediaTypeId', mediaTypeId.toString());
     return this._http.post<ApiResponseInterface<OrganizationalMedia>>(
-      `${this.apiUrl}/${id}/upload-media`,
+      `${environment.apiUrl}organizational/${id}/upload-media`,
       formData
     );
   }

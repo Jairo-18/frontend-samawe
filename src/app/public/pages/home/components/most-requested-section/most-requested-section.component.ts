@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { AccommodationsService } from '../../../../../service-and-product/services/accommodations.service';
 import { MostRequestedAccommodation } from '../../../../../service-and-product/interface/accommodation.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
+import { CapitalizePipe } from '../../../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-most-requested-section',
   standalone: true,
-  imports: [CommonModule, ButtonLandingComponent],
+  imports: [CommonModule, ButtonLandingComponent, CapitalizePipe],
   templateUrl: './most-requested-section.component.html',
   styleUrls: ['./most-requested-section.component.scss']
 })

@@ -6,7 +6,6 @@
 >
   @if (!isLoading) {
     <mat-tab-group>
-
       <mat-tab label="Información General">
         <ng-template matTabContent>
           <app-organizational-general-info
@@ -29,15 +28,6 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Experiencia de Inicio">
-        <ng-template matTabContent>
-          <app-organizational-home-content
-            [form]="form"
-            (save)="save()"
-          ></app-organizational-home-content>
-        </ng-template>
-      </mat-tab>
-
       <mat-tab label="Contenido Web">
         <ng-template matTabContent>
           <app-organizational-web-content
@@ -46,6 +36,9 @@
             [corporateValueForm]="corporateValueForm"
             [editingValue]="editingValue"
             [corporateValueImageLoading]="corporateValueImageLoading"
+            [benefitSections]="benefitSections"
+            [benefitSectionForm]="benefitSectionForm"
+            [editingSection]="editingSection"
             (save)="save()"
             (saveValue)="saveCorporateValue()"
             (deleteValue)="deleteCorporateValue($event)"
@@ -53,6 +46,13 @@
             (cancelEdit)="cancelEditValue()"
             (uploadValueImage)="uploadCorporateValueImage($event)"
             (deleteValueImage)="deleteCorporateValueImage($event)"
+            (saveSectionEvt)="saveBenefitSection()"
+            (deleteSectionEvt)="deleteBenefitSection($event)"
+            (editSectionEvt)="startEditSection($event)"
+            (cancelSectionEditEvt)="cancelSectionEdit()"
+            (addItemEvt)="addBenefitItem($event)"
+            (updateItemEvt)="updateBenefitItem($event)"
+            (deleteItemEvt)="deleteBenefitItem($event)"
           ></app-organizational-web-content>
         </ng-template>
       </mat-tab>
@@ -70,7 +70,6 @@
           ></app-organizational-multimedia>
         </ng-template>
       </mat-tab>
-
     </mat-tab-group>
   } @else {
     <app-loader></app-loader>

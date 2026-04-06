@@ -1,158 +1,148 @@
 @if (accommodations.length > 0) {
-  <section class="w-full py-16 px-6 md:px-16 bg-white">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-10">
-        <span
-          class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold"
+  <section class="w-full py-16 px-6 md:px-16 bg-stone-50">
+    <div class="flex flex-col items-center mb-5 text-center">
+      <span
+        class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold"
+      >
+        Hospedajes
+      </span>
+      <h2
+        class="text-2xl md:text-4xl font-bold text-gray-900 whitespace-nowrap tracking-tight"
+      >
+        Nuestros hospedajes más solicitados
+      </h2>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-col gap-10">
+      @for (acc of accommodations; track acc.accommodationId) {
+        <div
+          class="flex flex-col md:flex-row gap-10 items-center"
+          [class.md:flex-row-reverse]="$index % 2 !== 0"
         >
-          Destacados
-        </span>
-        <h2
-          class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug mt-1"
-        >
-          Hospedajes más solicitados
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        @for (acc of accommodations; track acc.accommodationId) {
-          <div
-            class="rounded-2xl overflow-hidden shadow-lg bg-white flex flex-col"
-          >
-            <!-- Carousel -->
-            <div
-              [class.cursor-grabbing]="isDragging"
-              [class.cursor-grab]="!isDragging"
-              class="relative w-full h-56 overflow-hidden group select-none"
-              (mousedown)="onMouseDown($event, acc)"
-              (touchstart)="onTouchStart($event)"
-              (touchend)="onTouchEnd($event, acc)"
+          <!-- Text -->
+          <div class="flex flex-col gap-4 flex-1">
+            <h3
+              class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug"
             >
-              <img
-                [src]="getImage(acc)"
-                [alt]="acc.name"
-                [class.opacity-0]="!isVisible(acc)"
-                class="w-full h-full object-cover transition-opacity duration-300 pointer-events-none"
-              />
+              {{ acc.name | capitalize }}
+            </h3>
+            @if (acc.description) {
+              <p class="text-gray-600 text-sm md:text-base leading-relaxed">
+                {{ acc.description }}
+              </p>
+            }
 
-              <!-- Preview icon -->
-              <button
-                (click)="openLightbox(getImage(acc))"
-                aria-label="Ver imagen completa"
-                class="absolute top-2 right-2 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <span class="material-icons text-base">zoom_in</span>
-              </button>
-
-              @if (acc.images.length > 1) {
-                <!-- Dots -->
-                <div
-                  class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"
+            <div class="flex flex-wrap gap-3 text-xs text-gray-600">
+              <span class="flex items-center gap-1">
+                <span
+                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  >person</span
                 >
-                  @for (img of acc.images; track $index) {
-                    <button
-                      (click)="goTo(acc, $index)"
-                      [attr.aria-label]="'Ir a foto ' + ($index + 1)"
-                      [class]="
-                        getIndex(acc) === $index
-                          ? 'w-2 h-2 rounded-full bg-white'
-                          : 'w-2 h-2 rounded-full bg-white/50'
-                      "
-                    >
-                      <span class="sr-only">Foto {{ $index + 1 }}</span>
-                    </button>
-                  }
-                </div>
+                Mín. {{ acc.amountPerson }} persona{{
+                  acc.amountPerson !== 1 ? 's' : ''
+                }}
+              </span>
+              <span class="flex items-center gap-1">
+                <span
+                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  >group</span
+                >
+                Máx. {{ acc.amountBathroom }} persona{{
+                  acc.amountBathroom !== 1 ? 's' : ''
+                }}
+              </span>
+              <span class="flex items-center gap-1">
+                <span
+                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  >bed</span
+                >
+                {{ acc.amountRoom }} habitación{{
+                  acc.amountRoom !== 1 ? 'es' : ''
+                }}
+              </span>
+              @if (acc.bedType) {
+                <span class="flex items-center gap-1">
+                  <span
+                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                    >king_bed</span
+                  >
+                  {{ acc.bedType.name }}
+                </span>
+              }
+              @if (acc.jacuzzi) {
+                <span class="flex items-center gap-1">
+                  <span
+                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                    >hot_tub</span
+                  >
+                  Jacuzzi
+                </span>
               }
             </div>
 
-            <div class="p-6 flex flex-col gap-3 flex-1">
-              <div class="flex items-start justify-between gap-2">
-                <h3 class="text-lg font-bold text-gray-800">{{ acc.name }}</h3>
-                <!-- @if (acc.categoryType) {
-                  <span
-                    class="text-xs bg-[var(--primary-color,#5c7a4e)] text-white px-2 py-1 rounded-full whitespace-nowrap"
-                  >
-                    {{ acc.categoryType.name }}
-                  </span>
-                } -->
-              </div>
-
-              @if (acc.description) {
-                <p class="text-gray-500 text-sm leading-relaxed line-clamp-2">
-                  {{ acc.description }}
+            <div class="flex flex-col items-start gap-4 mt-1">
+              <div>
+                <span class="text-xs text-gray-400">Precio por noche</span>
+                <p
+                  class="text-xl font-bold text-[var(--primary-color,#5c7a4e)]"
+                >
+                  COP {{ acc.priceSale | number: '1.0-0' }}
                 </p>
-              }
-
-              <div class="flex flex-wrap gap-3 text-xs text-gray-600 mt-1">
-                <span class="flex items-center gap-1">
-                  <span
-                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
-                    >person</span
-                  >
-                  Mín. {{ acc.amountPerson }} persona{{
-                    acc.amountPerson !== 1 ? 's' : ''
-                  }}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span
-                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
-                    >group</span
-                  >
-                  Máx. {{ acc.amountBathroom }} persona{{
-                    acc.amountBathroom !== 1 ? 's' : ''
-                  }}
-                </span>
-                <span class="flex items-center gap-1">
-                  <span
-                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
-                    >bed</span
-                  >
-                  {{ acc.amountRoom }} habitación{{
-                    acc.amountRoom !== 1 ? 'es' : ''
-                  }}
-                </span>
-                @if (acc.bedType) {
-                  <span class="flex items-center gap-1">
-                    <span
-                      class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
-                      >king_bed</span
-                    >
-                    {{ acc.bedType.name }}
-                  </span>
-                }
-                @if (acc.jacuzzi) {
-                  <span class="flex items-center gap-1">
-                    <span
-                      class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
-                      >hot_tub</span
-                    >
-                    Jacuzzi
-                  </span>
-                }
               </div>
-
-              <div
-                class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100"
-              >
-                <div>
-                  <span class="text-xs text-gray-400">Precio por noche</span>
-                  <p
-                    class="text-xl font-bold text-[var(--primary-color,#5c7a4e)]"
-                  >
-                    COP {{ acc.priceSale | number: '1.0-0' }}
-                  </p>
-                </div>
-                <app-button-landing
-                  label="Reservar"
-                  variant="solid"
-                  (clicked)="navigate()"
-                />
-              </div>
+              <app-button-landing
+                label="Reservar"
+                variant="solid"
+                (clicked)="navigate()"
+                class="w-full"
+              />
             </div>
           </div>
-        }
-      </div>
+
+          <!-- Image / Carousel -->
+          <div
+            class="w-full md:w-1/2 shrink-0 h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg relative group select-none"
+            [class.cursor-grabbing]="isDragging"
+            [class.cursor-grab]="!isDragging"
+            (mousedown)="onMouseDown($event, acc)"
+            (touchstart)="onTouchStart($event)"
+            (touchend)="onTouchEnd($event, acc)"
+          >
+            <img
+              [src]="getImage(acc)"
+              [alt]="acc.name"
+              [class.opacity-0]="!isVisible(acc)"
+              class="w-full h-full object-cover transition-opacity duration-300 pointer-events-none"
+            />
+
+            <button
+              (click)="openLightbox(getImage(acc))"
+              aria-label="Ver imagen completa"
+              class="absolute top-2 right-2 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <span class="material-icons text-base">zoom_in</span>
+            </button>
+
+            @if (acc.images.length > 1) {
+              <div
+                class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"
+              >
+                @for (img of acc.images; track $index) {
+                  <button
+                    (click)="goTo(acc, $index)"
+                    [attr.aria-label]="'Ir a foto ' + ($index + 1)"
+                    [class]="
+                      getIndex(acc) === $index
+                        ? 'w-2 h-2 rounded-full bg-white'
+                        : 'w-2 h-2 rounded-full bg-white/50'
+                    "
+                  >
+                    <span class="sr-only">Foto {{ $index + 1 }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
   </section>
 }
