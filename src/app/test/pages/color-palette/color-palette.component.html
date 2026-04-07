@@ -1,0 +1,78 @@
+<section class="palette-page" [style]="cssVars">
+  <header class="palette-header">
+    <h1 class="palette-title">Paleta de colores — Samawe</h1>
+    <span class="palette-badge palette-badge--color">{{ palette.name }}</span>
+    <span class="palette-badge palette-badge--font">
+      {{ palette.fontTitle }} / {{ palette.fontBody }}
+    </span>
+  </header>
+  <p class="palette-subtitle">
+    Haz clic en cualquier ficha para copiar el valor hex o la variable CSS. La
+    tipografía activa se configura en <code>index.html</code>.
+  </p>
+
+  <div class="swatches-grid">
+    @for (color of colors; track color.variable) {
+      <div class="swatch-card">
+        <!-- Color block -->
+        <div
+          class="swatch-block"
+          [style.background]="color.hex"
+          (click)="copy(color.hex)"
+          title="Copiar hex"
+        >
+          @if (copied === color.hex) {
+            <span class="copied-badge">¡Copiado!</span>
+          }
+        </div>
+
+        <!-- Info -->
+        <div class="swatch-info">
+          <p class="swatch-name">{{ color.name }}</p>
+
+          <button class="swatch-chip hex-chip" (click)="copy(color.hex)">
+            {{ color.hex }}
+          </button>
+
+          <button
+            class="swatch-chip var-chip"
+            (click)="copy('var(' + color.variable + ')')"
+          >
+            var({{ color.variable }})
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- UI preview -->
+  <div class="preview-section">
+    <!-- <h2 class="preview-heading">Vista previa de UI</h2> -->
+
+    <div class="preview-card">
+      <span class="preview-card-subtitle">Subtitulo</span>
+      <h3 class="preview-card-title">Título</h3>
+      <p class="preview-card-body">
+        "Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+        accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
+        illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+        explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
+        odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
+        voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+        quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
+        eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
+        voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam
+        corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?
+        Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse
+        quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo
+        voluptas nulla pariatur?"
+      </p>
+      <div class="preview-actions">
+        <button class="btn-primary">Primer botón</button>
+        <button class="btn-secondary">Primer botón</button>
+        <button class="btn-tertiary">Tercer botón</button>
+        <button class="btn-cta">Botón Cancelar</button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,245 @@
+/* Las variables CSS las inyecta el componente dinámicamente vía [style] */
+.palette-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  background: white;
+  min-height: 100vh;
+}
+
+.palette-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
+.palette-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--title);
+  margin: 0;
+}
+
+.palette-badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  white-space: nowrap;
+
+  &--color {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  &--font {
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    font-family: var(--font-title);
+    font-size: 0.82rem;
+  }
+}
+
+.palette-subtitle {
+  color: var(--text);
+  opacity: 0.65;
+  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+}
+
+/* ── Grid de fichas ── */
+.swatches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.swatch-card {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.swatch-block {
+  height: 110px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+}
+
+.copied-badge {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.swatch-info {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.swatch-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.swatch-chip {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.78rem;
+  text-align: left;
+  width: 100%;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.hex-chip {
+  background: var(--primary);
+  color: #fff;
+  font-family: monospace;
+}
+
+.var-chip {
+  background: var(--tertiary);
+  color: #fff;
+  font-family: monospace;
+}
+
+/* ── Vista previa ── */
+.preview-section {
+  border-top: 2px solid var(--primary);
+  padding-top: 2rem;
+}
+
+.preview-heading {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--title);
+  margin-bottom: 1.25rem;
+}
+
+.preview-card {
+  background: #fff;
+  border-radius: 4px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-width: 640px;
+}
+
+.preview-card-subtitle {
+  display: block;
+  color: var(--subtitle);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.preview-card-title {
+  color: var(--title);
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.preview-card-body {
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-tertiary,
+.btn-cta {
+  font-family: var(--font-title);
+  font-weight: 400;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0.55rem 1.2rem;
+  text-transform: uppercase;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: var(--tertiary);
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 0.5rem 1.2rem;
+
+  &:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+}
+
+.btn-tertiary {
+  background: var(--tertiary);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: var(--primary);
+  }
+}
+
+.btn-cta {
+  background: var(--cta);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: var(--cta-hover);
+  }
+}

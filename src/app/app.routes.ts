@@ -65,6 +65,11 @@ export const routes: Routes = [
           import('./sales/sales.routes').then((m) => m.salesRoutes)
       },
       {
+        path: 'test',
+        loadChildren: () =>
+          import('./test/test.routes').then((m) => m.testRoutes)
+      },
+      {
         path: 'auth/:userId/change-password',
         loadComponent: () =>
           import('./auth/pages/change-password/change-password.component').then(
