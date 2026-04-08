@@ -60,6 +60,11 @@ export interface Organizational {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  textColor?: string;
+  titleColor?: string;
+  subtitleColor?: string;
+  bgPrimaryColor?: string;
+  bgSecondaryColor?: string;
   homeTitle?: string;
   homeDescription?: string;
   experienceTitle?: string;

@@ -53,6 +53,90 @@
         </div>
 
       </div>
+
+      <div class="flex flex-col md:flex-row gap-8 items-center flex-wrap">
+
+        <!-- Texto -->
+        <div class="flex flex-col gap-2">
+          <label for="textColorText" class="text-xs text-gray-500 uppercase font-bold">Texto</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('textColor')?.value || '#000000'"
+                (input)="form.get('textColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="textColorText" type="text" formControlName="textColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Título -->
+        <div class="flex flex-col gap-2">
+          <label for="titleColorText" class="text-xs text-gray-500 uppercase font-bold">Título</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('titleColor')?.value || '#000000'"
+                (input)="form.get('titleColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="titleColorText" type="text" formControlName="titleColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Subtítulo -->
+        <div class="flex flex-col gap-2">
+          <label for="subtitleColorText" class="text-xs text-gray-500 uppercase font-bold">Subtítulo</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('subtitleColor')?.value || '#000000'"
+                (input)="form.get('subtitleColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="subtitleColorText" type="text" formControlName="subtitleColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Fondo Principal -->
+        <div class="flex flex-col gap-2">
+          <label for="bgPrimaryColorText" class="text-xs text-gray-500 uppercase font-bold">Fondo Principal</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('bgPrimaryColor')?.value || '#000000'"
+                (input)="form.get('bgPrimaryColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="bgPrimaryColorText" type="text" formControlName="bgPrimaryColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+        <!-- Fondo Secundario -->
+        <div class="flex flex-col gap-2">
+          <label for="bgSecondaryColorText" class="text-xs text-gray-500 uppercase font-bold">Fondo Secundario</label>
+          <div class="flex items-center gap-3">
+            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
+              <input type="color"
+                [value]="form.get('bgSecondaryColor')?.value || '#000000'"
+                (input)="form.get('bgSecondaryColor')?.setValue($any($event.target).value)"
+                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
+            </div>
+            <input id="bgSecondaryColorText" type="text" formControlName="bgSecondaryColor"
+              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
+              placeholder="#000000" />
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <div class="flex flex-col gap-4">

@@ -107,6 +107,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       primaryColor: [''],
       secondaryColor: [''],
       tertiaryColor: [''],
+      textColor: [''],
+      titleColor: [''],
+      subtitleColor: [''],
+      bgPrimaryColor: [''],
+      bgSecondaryColor: [''],
       homeTitle: [''],
       homeDescription: [''],
       experienceTitle: [''],
@@ -201,6 +206,21 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
           this.organization.tertiaryColor
         );
       }
+      if (this.organization.textColor) {
+        document.documentElement.style.setProperty('--text', this.organization.textColor);
+      }
+      if (this.organization.titleColor) {
+        document.documentElement.style.setProperty('--title', this.organization.titleColor);
+      }
+      if (this.organization.subtitleColor) {
+        document.documentElement.style.setProperty('--subtitle', this.organization.subtitleColor);
+      }
+      if (this.organization.bgPrimaryColor) {
+        document.documentElement.style.setProperty('--bg-principal', this.organization.bgPrimaryColor);
+      }
+      if (this.organization.bgSecondaryColor) {
+        document.documentElement.style.setProperty('--bg-secondary', this.organization.bgSecondaryColor);
+      }
     }
   }
 
@@ -224,6 +244,36 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       this.form.get('tertiaryColor')?.valueChanges.subscribe((color) => {
         if (color)
           document.documentElement.style.setProperty('--tertiary-color', color);
+      })
+    );
+    this._subscription.add(
+      this.form.get('textColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--text', color);
+      })
+    );
+    this._subscription.add(
+      this.form.get('titleColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--title', color);
+      })
+    );
+    this._subscription.add(
+      this.form.get('subtitleColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--subtitle', color);
+      })
+    );
+    this._subscription.add(
+      this.form.get('bgPrimaryColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--bg-principal', color);
+      })
+    );
+    this._subscription.add(
+      this.form.get('bgSecondaryColor')?.valueChanges.subscribe((color) => {
+        if (color)
+          document.documentElement.style.setProperty('--bg-secondary', color);
       })
     );
   }
@@ -273,6 +323,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       primaryColor: org.primaryColor,
       secondaryColor: org.secondaryColor,
       tertiaryColor: org.tertiaryColor,
+      textColor: org.textColor,
+      titleColor: org.titleColor,
+      subtitleColor: org.subtitleColor,
+      bgPrimaryColor: org.bgPrimaryColor,
+      bgSecondaryColor: org.bgSecondaryColor,
       homeTitle: org.homeTitle,
       homeDescription: org.homeDescription,
       experienceTitle: org.experienceTitle,
