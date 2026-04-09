@@ -211,7 +211,7 @@ export class AuthService {
     this._clearRefreshTimer();
     this._localStorageService.cleanLocalStorage();
     this._isLoggedEmit();
-    this._router.navigate([`home`]);
+    this._router.navigate(['/auth/login']);
   }
   getUserLoggedIn(): UserInterface {
     return this._localStorageService.getUserData();

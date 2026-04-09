@@ -83,6 +83,7 @@
               <app-button-landing
                 label="Siguiente"
                 variant="solid"
+                [disabled]="formStep1.invalid"
                 (clicked)="nextStep()"
                 class="w-full"
               />
@@ -207,6 +208,7 @@
                 <app-button-landing
                   label="Registrarse"
                   variant="solid"
+                  [disabled]="formStep2.invalid"
                   (clicked)="save()"
                   class="w-full"
                 />

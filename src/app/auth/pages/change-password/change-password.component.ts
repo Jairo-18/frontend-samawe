@@ -32,7 +32,7 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
 })
 export class ChangePasswordComponent implements OnInit {
   changePasswordForm: FormGroup;
-  passwordMismatch = false;
+  passwordMismatch: boolean = false;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
   showOldPassword: boolean = false;
@@ -110,4 +110,3 @@ export class ChangePasswordComponent implements OnInit {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 }
-

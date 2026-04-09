@@ -1,7 +1,15 @@
 // Colores base
 :root {
-  --secondary-color: #9e0000;
-  --tertiary-color: #ffb74d;
+  --primary-color: #486e2b;
+  --font-title: 'Alegreya SC', serif;
+  --font-body: 'Poppins', sans-serif;
+  --secondary-color: #187b18;
+  --tertiary-color: #11382e;
+  --title-color: #11382e;
+  --subtitle-color: #486e2b;
+  --text-color: #486e2b;
+  --bg-primary-color: #ffffff;
+  --bg-secondary-color: #f7f7f7;
 
   --mdc-theme-primary: var(--primary-color);
   --mdc-theme-secondary: var(--secondary-color);

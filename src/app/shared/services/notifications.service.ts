@@ -36,14 +36,14 @@ export class NotificationsService {
       </div>
     `;
     this._toastrService.show(template, '', {
-      timeOut: 4000,
+      timeOut: 5000,
       tapToDismiss: true,
       enableHtml: true,
       progressBar: true,
       progressAnimation: 'increasing',
       toastClass: `toast-container ngx-toastr brand-toast-${notification.type}`,
       positionClass: 'toast-top-right',
-      extendedTimeOut: 4000
+      extendedTimeOut: 5000
     });
   }
 }

@@ -1,19 +1,27 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AccommodationsService } from '../../../../../service-and-product/services/accommodations.service';
 import { MostRequestedAccommodation } from '../../../../../service-and-product/interface/accommodation.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../../../shared/pipes/capitalize.pipe';
+import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
+import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 
 @Component({
   selector: 'app-most-requested-section',
   standalone: true,
-  imports: [CommonModule, ButtonLandingComponent, CapitalizePipe],
+  imports: [
+    CommonModule,
+    ButtonLandingComponent,
+    CapitalizePipe,
+    SectionHeaderComponent
+  ],
   templateUrl: './most-requested-section.component.html',
   styleUrls: ['./most-requested-section.component.scss']
 })
 export class MostRequestedSectionComponent implements OnInit, OnDestroy {
+  @Input() org: Organizational | null = null;
   private readonly _accommodationsService: AccommodationsService = inject(
     AccommodationsService
   );

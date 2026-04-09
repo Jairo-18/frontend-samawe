@@ -1,29 +1,117 @@
-<mat-card *ngIf="accommodation" class="accommodation-card">
-  <img
-    mat-card-image
-    [src]="mainImage"
-    [alt]="accommodation.name"
-    class="w-[300px] h-[150px] md:w-max[270px] md:h-max[160px] rounded-[8px]"
-  />
-  <mat-card-header>
-    <mat-card-title>{{ accommodation.name }}</mat-card-title>
-    <mat-card-subtitle
-      >Precio: ${{ accommodation.priceSale | number }}</mat-card-subtitle
-    >
-  </mat-card-header>
-  <mat-card-content>
-    <p>{{ accommodation.description || 'Sin descripción' }}</p>
-    <ul class="accommodation-details">
-      <li>Tipo de cama: {{ accommodation.bedTypeId }}</li>
-      <li>Categoría: {{ accommodation.categoryTypeId }}</li>
-      <li>Personas: {{ accommodation.amountPerson }}</li>
-      <li>Habitaciones: {{ accommodation.amountRoom }}</li>
-      <li>Baños: {{ accommodation.amountBathroom }}</li>
-      <li>Jacuzzi: {{ accommodation.jacuzzi ? 'Sí' : 'No' }}</li>
-    </ul>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="primary">Reservar</button>
-  </mat-card-actions>
-</mat-card>
+@if (accommodation) {
+  <article
+    class="relative rounded-[4px] shadow-md overflow-hidden select-none min-h-[500px] xl:min-h-[450px] 3xl:min-h-[600px] border-[1px] border-[var(--primary-color)]"
+    [class.cursor-grabbing]="isDragging"
+    [class.cursor-grab]="!isDragging && validImages.length > 1"
+    (mousedown)="onMouseDown($event)"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)"
+  >
+    <!-- Background image (full card) -->
+    <img
+      [src]="mainImage"
+      [alt]="accommodation.name"
+      [class.opacity-0]="!visible"
+      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-200 pointer-events-none"
+    />
 
+    <!-- Dark gradient overlay -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="
+        background: linear-gradient(
+          to top,
+          color-mix(in srgb, var(--primary-color) 100%, transparent),
+          color-mix(in srgb, var(--secondary-color) 10%, transparent),
+          transparent
+        );
+      "
+    ></div>
+
+    <!-- Carousel dots -->
+    @if (validImages.length > 1) {
+      <div
+        class="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1.5 pointer-events-auto"
+      >
+        @for (img of validImages; track $index) {
+          <button
+            (click)="changeSlide($index)"
+            [attr.aria-label]="'Foto ' + ($index + 1)"
+            class="w-2 h-2 rounded-full transition-colors"
+            [class]="currentImageIndex === $index ? 'bg-white' : 'bg-white/40'"
+          ></button>
+        }
+      </div>
+    }
+
+    <!-- Info overlay (bottom) -->
+    <div
+      class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2 pointer-events-auto"
+    >
+      <h3 class="text-base font-bold text-white leading-snug drop-shadow">
+        {{ accommodation.name | capitalize }}
+      </h3>
+
+      @if (shortDescription) {
+        <p class="text-xs text-white/80 leading-relaxed">
+          {{ shortDescription }}
+        </p>
+      }
+
+      <!-- Detail chips -->
+      <ul class="flex flex-wrap gap-1.5 text-xs text-white/90">
+        <li
+          class="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-[4px] px-2 py-0.5"
+        >
+          <span class="material-icons text-sm">person</span>
+          {{ accommodation.amountPerson }} persona{{
+            accommodation.amountPerson !== 1 ? 's' : ''
+          }}
+        </li>
+        <li
+          class="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-[4px] px-2 py-0.5"
+        >
+          <span class="material-icons text-sm">bed</span>
+          {{ accommodation.amountRoom }} hab.
+        </li>
+        <li
+          class="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-[4px] px-2 py-0.5"
+        >
+          <span class="material-icons text-sm">bathroom</span>
+          {{ accommodation.amountBathroom }} baño{{
+            accommodation.amountBathroom !== 1 ? 's' : ''
+          }}
+        </li>
+        @if (accommodation.bedType) {
+          <li
+            class="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-[4px] px-2 py-0.5"
+          >
+            <span class="material-icons text-sm">king_bed</span>
+            {{ accommodation.bedType.name | capitalize }}
+          </li>
+        }
+        @if (accommodation.jacuzzi) {
+          <li
+            class="flex items-center gap-0.5 bg-white/20 backdrop-blur-sm rounded-[4px] px-2 py-0.5"
+          >
+            <span class="material-icons text-sm">hot_tub</span>
+            Jacuzzi
+          </li>
+        }
+      </ul>
+
+      <!-- Price + CTA -->
+      <div
+        class="flex items-end justify-between gap-2 pt-2 border-t border-white/20"
+      >
+        <div>
+          <span class="text-xs text-white/60">Por noche</span>
+          <p class="text-lg font-bold text-white">
+            COP {{ accommodation.priceSale | number: '1.0-0' }}
+          </p>
+        </div>
+        <app-button-landing label="Reservar" variant="solid" />
+      </div>
+    </div>
+  </article>
+}

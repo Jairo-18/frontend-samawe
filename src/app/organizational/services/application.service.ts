@@ -12,6 +12,7 @@ import {
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { BehaviorSubject, tap } from 'rxjs';
 import { RelatedDataService } from '../../shared/services/relatedData.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class ApplicationService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _seoService: SeoService = inject(SeoService);
   private _mediaMapSubject = new BehaviorSubject<Record<
     string,
     OrganizationalMedia[]
@@ -71,6 +73,7 @@ export class ApplicationService {
           if (org) {
             this._currentOrgSubject.next(org);
             this.updateMediaFromOrg(org);
+            this._seoService.applyFromOrg(org);
 
             if (org.primaryColor) {
               document.documentElement.style.setProperty(
@@ -88,6 +91,36 @@ export class ApplicationService {
               document.documentElement.style.setProperty(
                 '--tertiary-color',
                 org.tertiaryColor
+              );
+            }
+            if (org.titleColor) {
+              document.documentElement.style.setProperty(
+                '--title-color',
+                org.titleColor
+              );
+            }
+            if (org.subtitleColor) {
+              document.documentElement.style.setProperty(
+                '--subtitle-color',
+                org.subtitleColor
+              );
+            }
+            if (org.textColor) {
+              document.documentElement.style.setProperty(
+                '--text-color',
+                org.textColor
+              );
+            }
+            if (org.bgPrimaryColor) {
+              document.documentElement.style.setProperty(
+                '--bg-primary-color',
+                org.bgPrimaryColor
+              );
+            }
+            if (org.bgSecondaryColor) {
+              document.documentElement.style.setProperty(
+                '--bg-secondary-color',
+                org.bgSecondaryColor
               );
             }
           }

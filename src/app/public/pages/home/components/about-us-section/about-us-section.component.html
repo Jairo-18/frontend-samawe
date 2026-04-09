@@ -1,10 +1,10 @@
-<section class="w-full py-16 px-6 md:px-16 bg-stone-50">
+<section class="w-full py-16 px-6 md:px-16 bg-[var(--bg-secondary-color)]">
   <div
     class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
   >
     <!-- Image (alternated — image left on desktop) -->
     <div
-      class="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-lg order-2 md:order-1"
+      class="w-full h-64 md:h-80 rounded-[4px] overflow-hidden shadow-lg order-2 md:order-1 border-[1px] border-[var(--primary-color)]"
     >
       <img
         [src]="imageUrl"
@@ -14,19 +14,13 @@
     </div>
     <!-- Text -->
     <div class="flex flex-col gap-4 order-1 md:order-2">
-      <span
-        class="text-xs uppercase tracking-widest text-[var(--primary-color,#5c7a4e)] font-semibold"
-      >
-        Quiénes somos
-      </span>
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug">
-        {{ org?.aboutUsTitle || '' }}
-      </h2>
-      @if (org?.aboutUsDescription) {
-        <p class="text-gray-600 text-sm md:text-base leading-relaxed">
-          {{ org?.aboutUsDescription }}
-        </p>
-      }
+      <app-section-header
+        variant="left"
+        label="Quiénes somos"
+        [title]="org?.aboutUsTitle ?? ''"
+        [description]="org?.aboutUsDescription"
+      />
+
       <div>
         <app-button-landing
           label="Conocer más"

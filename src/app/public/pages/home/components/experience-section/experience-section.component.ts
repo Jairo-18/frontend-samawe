@@ -2,11 +2,12 @@ import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
+import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-experience-section',
   standalone: true,
-  imports: [ButtonLandingComponent],
+  imports: [ButtonLandingComponent, SectionHeaderComponent],
   templateUrl: './experience-section.component.html',
   styleUrls: ['./experience-section.component.scss']
 })

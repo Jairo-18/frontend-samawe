@@ -3,7 +3,8 @@ import {
   AccommodationComplete,
   CreateAccommodationPanel,
   GetAccommodationPaginatedList,
-  MostRequestedAccommodation
+  MostRequestedAccommodation,
+  PublicAccommodationListItem
 } from '../interface/accommodation.interface';
 import {
   ApiResponseCreateInterface,
@@ -78,6 +79,17 @@ export class AccommodationsService {
     return this._httpClient.get<{ statusCode: number; data: MostRequestedAccommodation[] }>(
       `${environment.apiUrl}accommodation/public/most-requested`
     );
+  }
+
+  getPublicAccommodationList(query: BasePaginationParams): Observable<{
+    pagination: PaginationInterface;
+    data: PublicAccommodationListItem[];
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      pagination: PaginationInterface;
+      data: PublicAccommodationListItem[];
+    }>(`${environment.apiUrl}accommodation/public/list`, { params });
   }
 }
 

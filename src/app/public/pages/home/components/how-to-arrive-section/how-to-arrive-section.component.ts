@@ -9,13 +9,19 @@ import { GoogleMap, MapAdvancedMarker } from '@angular/google-maps';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { GoogleMapsStateService } from '../../../../../shared/services/google-maps-state.service';
+import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
 
 const FALLBACK: google.maps.LatLngLiteral = { lat: 1.2143926, lng: -76.663683 };
 
 @Component({
   selector: 'app-how-to-arrive-section',
   standalone: true,
-  imports: [GoogleMap, MapAdvancedMarker, ButtonLandingComponent],
+  imports: [
+    GoogleMap,
+    MapAdvancedMarker,
+    ButtonLandingComponent,
+    SectionHeaderComponent
+  ],
   templateUrl: './how-to-arrive-section.component.html',
   styleUrls: ['./how-to-arrive-section.component.scss']
 })

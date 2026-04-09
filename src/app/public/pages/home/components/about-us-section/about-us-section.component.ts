@@ -2,11 +2,12 @@ import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
+import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-about-us-section',
   standalone: true,
-  imports: [ButtonLandingComponent],
+  imports: [ButtonLandingComponent, SectionHeaderComponent],
   templateUrl: './about-us-section.component.html',
   styleUrls: ['./about-us-section.component.scss']
 })
@@ -15,7 +16,9 @@ export class AboutUsSectionComponent {
   private readonly _router = inject(Router);
 
   get imageUrl(): string {
-    return this.org?.corporateValues?.[0]?.imageUrl ?? 'assets/images/notFound.avif';
+    return (
+      this.org?.corporateValues?.[0]?.imageUrl ?? 'assets/images/notFound.avif'
+    );
   }
 
   navigate(): void {

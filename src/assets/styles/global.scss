@@ -106,11 +106,23 @@
     position: relative;
     animation: slideInRight 0.2s ease-in forwards;
 
+    @media (max-width: 768px) {
+      max-width: 280px;
+      padding: 7px 8px;
+      margin: 6px;
+    }
+
     .toast-icon {
       font-size: 1.5rem;
       position: absolute;
       top: 8px;
       left: 10px;
+
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+        top: 6px;
+        left: 8px;
+      }
     }
 
     .toast-body {
@@ -123,10 +135,19 @@
         font-weight: bold;
         font-size: 1.1rem;
         margin-bottom: 5px;
+
+        @media (max-width: 768px) {
+          font-size: 0.85rem;
+          margin-bottom: 2px;
+        }
       }
 
       .toast-message {
         font-size: 0.95rem;
+
+        @media (max-width: 768px) {
+          font-size: 0.78rem;
+        }
       }
     }
 
@@ -241,6 +262,36 @@
 * {
   scrollbar-width: auto !important;
   scrollbar-color: var(--primary-color) #f1f1f1 !important;
+}
+
+/* ── Tipografía global dinámica ──────────────────────────────
+   Cambia --font-title / --font-body en index.html y se aplica
+   automáticamente en toda la app, incluyendo Angular Material.
+   ──────────────────────────────────────────────────────────── */
+:root {
+  /* Override Angular Material MDC typography tokens */
+  --mdc-typography-font-family: var(--font-body);
+  --mdc-typography-button-font-family: var(--font-body);
+  --mdc-typography-body1-font-family: var(--font-body);
+  --mdc-typography-body2-font-family: var(--font-body);
+  --mdc-typography-subtitle1-font-family: var(--font-body);
+  --mdc-typography-subtitle2-font-family: var(--font-body);
+  --mdc-typography-caption-font-family: var(--font-body);
+  --mdc-typography-overline-font-family: var(--font-body);
+  --mdc-typography-headline1-font-family: var(--font-title);
+  --mdc-typography-headline2-font-family: var(--font-title);
+  --mdc-typography-headline3-font-family: var(--font-title);
+  --mdc-typography-headline4-font-family: var(--font-title);
+  --mdc-typography-headline5-font-family: var(--font-title);
+  --mdc-typography-headline6-font-family: var(--font-title);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+}
+
+body, p, span, li, a, button, input, textarea, select, label {
+  font-family: var(--font-body);
 }
 
 .red-color {

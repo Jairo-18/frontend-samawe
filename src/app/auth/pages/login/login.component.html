@@ -47,10 +47,25 @@
             Contraseña requerida
           </mat-error>
         </mat-form-field>
-        <div class="flex flex-col w-full items-center justify-center gap-2">
+        @if (loginError) {
+          <div
+            class="w-full flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm"
+          >
+            <span class="material-icons text-base">error_outline</span>
+            <span>Revisa tu correo y contraseña e inténtalo de nuevo.</span>
+          </div>
+        }
+        <div
+          class="flex flex-col w-full items-center justify-center gap-2 mt-2 md:mt-0"
+        >
           <app-button-landing
-            label="Iniciar Sesión"
+            [label]="
+              cooldownRemaining > 0
+                ? 'Espera ' + cooldownRemaining + 's'
+                : 'Iniciar Sesión'
+            "
             variant="solid"
+            [disabled]="form.invalid || cooldownRemaining > 0"
             (clicked)="login()"
             class="w-full"
           />

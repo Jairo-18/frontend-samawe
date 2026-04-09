@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
@@ -16,7 +16,6 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
-import { OnDestroy } from '@angular/core';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 
 @Component({
@@ -48,6 +47,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
   showPassword: boolean = false;
+  cooldownRemaining: number = 0;
+  loginError: boolean = false;
+  private _failedAttempts: number = 0;
+  private _cooldownInterval: ReturnType<typeof setInterval> | null = null;
   private _subscription: Subscription = new Subscription();
 
   constructor(private _fb: FormBuilder) {
@@ -59,6 +62,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadLoginBg();
+    this.form.valueChanges.subscribe(() => {
+      if (this.cooldownRemaining > 0) {
+        clearInterval(this._cooldownInterval!);
+        this._cooldownInterval = null;
+        this.cooldownRemaining = 0;
+      }
+      this.loginError = false;
+    });
   }
 
   private loadLoginBg(): void {
@@ -76,10 +87,25 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
+    if (this._cooldownInterval) clearInterval(this._cooldownInterval);
+  }
+
+  private _startCooldown(): void {
+    const cooldowns = [30, 60, 120];
+    const seconds =
+      cooldowns[Math.min(this._failedAttempts - 1, cooldowns.length - 1)];
+    this.cooldownRemaining = seconds;
+    this._cooldownInterval = setInterval(() => {
+      this.cooldownRemaining--;
+      if (this.cooldownRemaining <= 0) {
+        clearInterval(this._cooldownInterval!);
+        this._cooldownInterval = null;
+      }
+    }, 1000);
   }
 
   login(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.cooldownRemaining > 0) return;
     this._authService.login(this.form.value).subscribe({
       next: () => {
         this._router.navigateByUrl('/home');
@@ -87,8 +113,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error en el login:', error);
+        this.loginError = true;
+        this._failedAttempts++;
+        this._startCooldown();
         this._authService.cleanRedirectUrl();
-        this._router.navigateByUrl('/auth/login');
       }
     });
   }

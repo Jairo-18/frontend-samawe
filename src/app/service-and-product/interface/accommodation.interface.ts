@@ -76,6 +76,21 @@ export interface MostRequestedAccommodation {
   organizationalId: string | null;
 }
 
+export interface PublicAccommodationListItem {
+  accommodationId: number;
+  name: string;
+  description?: string;
+  amountPerson: number;
+  amountRoom: number;
+  amountBathroom: number;
+  jacuzzi: boolean;
+  priceSale: number;
+  categoryType: { categoryTypeId: number; code: string; name: string } | null;
+  bedType: { bedTypeId: number; code: string; name: string } | null;
+  stateType: { stateTypeId: number; code: string; name: string } | null;
+  images: { accommodationImageId: number; imageUrl: string; publicId: string }[];
+}
+
 export interface CreateAccommodationRelatedData {
   categoryType: CategoryType[];
   bedType: BedType[];

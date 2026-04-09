@@ -13,7 +13,7 @@ import { ButtonLandingComponent } from '../../../../../shared/components/button-
 })
 export class HeroSectionComponent {
   @Input() org: Organizational | null = null;
-  private readonly _router = inject(Router);
+  private readonly _router: Router = inject(Router);
 
   openWhatsapp(): void {
     const phone = this.org?.phone ?? '';
