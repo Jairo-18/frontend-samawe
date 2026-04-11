@@ -15,6 +15,7 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApplicationService } from '../../../organizational/services/application.service';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 import { Subscription } from 'rxjs';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 
@@ -41,6 +42,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _notificationsService: NotificationsService =
+    inject(NotificationsService);
 
   loginBgUrl: string = '';
   form: FormGroup;
@@ -112,10 +115,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._authService.cleanRedirectUrl();
       },
       error: (error) => {
-        console.error('Error en el login:', error);
-        this.loginError = true;
-        this._failedAttempts++;
-        this._startCooldown();
+        this.loginError = false;
+        const msg: string = error?.error?.message || error?.message || '';
+        if (msg.includes('suspendida') || msg.includes('expiró') || msg.includes('verificar')) {
+          this._notificationsService.showNotification('error', msg);
+        } else {
+          this.loginError = true;
+          this._failedAttempts++;
+          this._startCooldown();
+        }
         this._authService.cleanRedirectUrl();
       }
     });

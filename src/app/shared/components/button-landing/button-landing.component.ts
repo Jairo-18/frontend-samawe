@@ -17,9 +17,10 @@ export class ButtonLandingComponent {
   @Input() variant: ButtonLandingVariant = 'solid';
   @Input() type: 'button' | 'submit' = 'button';
   @Input() disabled: boolean = false;
+  @Input() loading: boolean = false;
   @Output() clicked = new EventEmitter<void>();
 
   onClick(): void {
-    if (!this.disabled) this.clicked.emit();
+    if (!this.disabled && !this.loading) this.clicked.emit();
   }
 }

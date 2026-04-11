@@ -15,6 +15,8 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import * as uuid from 'uuid';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
 import { RegisterUser } from '../../interfaces/register.interface';
@@ -43,6 +45,7 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
     RouterModule,
     MatStepperModule,
     MatSelectModule,
+    MatAutocompleteModule,
     NgOptimizedImage,
     ButtonLandingComponent,
     CapitalizePipe
@@ -55,12 +58,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
   formStep1: FormGroup;
   formStep2: FormGroup;
   currentStep: string = 'one';
+  registered: boolean = false;
+  isSaving: boolean = false;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   identificationType: IdentificationType[] = [];
   phoneCode: PhoneCode[] = [];
+  filteredPhoneCodes: PhoneCode[] = [];
+  loadingPhoneCodes: boolean = false;
   personType: PersonType[] = [];
   registerBgUrl: string = '';
   private _subscription: Subscription = new Subscription();
@@ -87,6 +94,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       {
         email: ['', [Validators.required, Validators.email]],
         phoneCodeId: ['', Validators.required],
+        phoneCodeSearch: [''],
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
         password: [
           '',
@@ -109,6 +117,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.getRelatedData();
     this.loadRegisterBg();
     this.setupIdentificationTypeListener();
+    this.setupPhoneCodeSearch();
     this.formStep2.get('confirmPassword')?.disable();
     this.formStep2.get('password')?.valueChanges.subscribe((value) => {
       if (!value) {
@@ -118,6 +127,48 @@ export class RegisterComponent implements OnInit, OnDestroy {
       }
     });
   }
+  setupPhoneCodeSearch(): void {
+    this._relatedDataService.searchPhoneCodes('', 1, 20).subscribe({
+      next: (res) => {
+        this.filteredPhoneCodes = res.data || [];
+      }
+    });
+    this.formStep2
+      .get('phoneCodeSearch')
+      ?.valueChanges.pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((term: string) => {
+          if (typeof term !== 'string')
+            return of({ data: this.filteredPhoneCodes });
+          this.loadingPhoneCodes = true;
+          return this._relatedDataService.searchPhoneCodes(term, 1, 20);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.filteredPhoneCodes = res.data || [];
+          this.loadingPhoneCodes = false;
+        },
+        error: () => {
+          this.loadingPhoneCodes = false;
+        }
+      });
+  }
+
+  displayPhoneCode(phoneCode: PhoneCode): string {
+    return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
+  }
+
+  onPhoneCodeSelected(phoneCode: PhoneCode): void {
+    if (phoneCode?.phoneCodeId) {
+      this.formStep2.patchValue({
+        phoneCodeId: phoneCode.phoneCodeId.toString()
+      });
+      this.formStep2.get('phoneCodeSearch')?.setErrors(null);
+    }
+  }
+
   getRelatedData(): void {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
@@ -182,6 +233,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.stepper.previous();
   }
   save() {
+    if (!this.formStep2.get('phoneCodeId')?.value) {
+      this.formStep2.get('phoneCodeSearch')?.setErrors({ required: true });
+    }
     if (this.formStep2.valid && this.formStep1.valid) {
       const userToRegister: RegisterUser = {
         userId: uuid.v4(),
@@ -198,13 +252,22 @@ export class RegisterComponent implements OnInit, OnDestroy {
           personType: this.formStep1.value.personTypeId
         })
       };
+      this.isSaving = true;
       this._registerService.registerUser(userToRegister).subscribe({
         next: () => {
-          this._router.navigate(['/auth/login']);
+          this.registered = true;
+          this.isSaving = false;
+        },
+        error: () => {
+          this.isSaving = false;
         }
       });
     }
   }
+  goToLogin(): void {
+    this._router.navigate(['/auth/login']);
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }

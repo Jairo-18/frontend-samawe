@@ -23,6 +23,13 @@ export const authRoutes: Routes = [
           )
       },
       {
+        path: 'verify-email',
+        loadComponent: () =>
+          import('./pages/verify-email/verify-email.component').then(
+            (m) => m.VerifyEmailComponent
+          )
+      },
+      {
         path: 'google/callback',
         loadComponent: () =>
           import('./pages/google-callback/google-callback.component').then(

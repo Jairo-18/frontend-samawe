@@ -78,25 +78,25 @@ export const PALETTE_2: Palette = {
     {
       name: 'Primary',
       variable: '--primary',
-      hex: '#4fae30', // Verde oliva profundo
+      hex: '#4fae30',
       textColor: '#fff'
     },
     {
       name: 'Secondary',
       variable: '--secondary',
-      hex: '#2f6c1f', // Sage / Verde salvia
+      hex: '#2f6c1f',
       textColor: '#2B2B2B'
     },
     {
       name: 'Tertiary',
       variable: '--tertiary',
-      hex: '#29561e', // Verde bosque oscuro
+      hex: '#29561e',
       textColor: '#fff'
     },
     {
       name: 'Background',
       variable: '--background',
-      hex: '#FAFAF9', // Crema orgánico (hueso)
+      hex: '#FAFAF9',
       textColor: '#2B2B2B'
     },
     {
@@ -147,25 +147,25 @@ export const PALETTE_3: Palette = {
     {
       name: 'Primary',
       variable: '--primary',
-      hex: '#386641', // Verde helecho
+      hex: '#386641',
       textColor: '#fff'
     },
     {
       name: 'Secondary',
       variable: '--secondary',
-      hex: '#6A994E', // Verde hoja
+      hex: '#6A994E',
       textColor: '#fff'
     },
     {
       name: 'Tertiary',
       variable: '--tertiary',
-      hex: '#132A13', // Verde sombra nocturna
+      hex: '#132A13',
       textColor: '#fff'
     },
     {
       name: 'Background',
       variable: '--background',
-      hex: '#FAFAF9', // Blanco mineral frío
+      hex: '#FAFAF9',
       textColor: '#2B2B2B'
     },
     {

@@ -15,5 +15,12 @@ export class RegisterService {
       user
     );
   }
+
+  verifyEmail(token: string, userId: string): Observable<{ message: string; statusCode: number }> {
+    return this._httpClient.get<{ message: string; statusCode: number }>(
+      `${environment.apiUrl}user/verify-email`,
+      { params: { token, userId } }
+    );
+  }
 }
 

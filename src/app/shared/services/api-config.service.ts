@@ -15,6 +15,10 @@ export class ApiConfigService {
     this.loadConfig();
   }
   private loadConfig(): void {
+    if (!environment.production) {
+      this.config = { apiUrl: environment.apiUrl };
+      return;
+    }
     const savedConfig = localStorage.getItem('api-config');
     if (savedConfig) {
       try {
@@ -23,7 +27,6 @@ export class ApiConfigService {
           localStorage.removeItem('api-config');
         } else {
           this.config = parsed;
-
           return;
         }
       } catch (e) {

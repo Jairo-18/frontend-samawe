@@ -1,0 +1,34 @@
+<div class="auth-content-center">
+  <div class="flex flex-col items-center justify-center text-center gap-5 px-8 py-12 max-w-sm mx-auto">
+
+    @if (state === 'loading') {
+      <app-loader />
+      <p class="text-sm text-gray-500">Verificando tu cuenta...</p>
+    }
+
+    @if (state === 'success') {
+      <span class="material-icons text-6xl text-[var(--primary-color)]">verified</span>
+      <h2 class="font-extrabold text-xl">¡Cuenta verificada!</h2>
+      <p class="text-sm text-gray-500">Tu correo fue verificado correctamente. Ya puedes iniciar sesión.</p>
+      <app-button-landing
+        label="Iniciar sesión"
+        variant="solid"
+        (clicked)="goToLogin()"
+        class="w-full"
+      />
+    }
+
+    @if (state === 'error') {
+      <span class="material-icons text-6xl text-red-400">error_outline</span>
+      <h2 class="font-extrabold text-xl">Enlace inválido</h2>
+      <p class="text-sm text-gray-500">{{ errorMessage }}</p>
+      <app-button-landing
+        label="Volver al inicio"
+        variant="transparent"
+        (clicked)="goToLogin()"
+        class="w-full"
+      />
+    }
+
+  </div>
+</div>

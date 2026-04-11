@@ -73,15 +73,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               })
             );
           }
-          const isSessionExpired = err?.error?.message === 'Tu sesión caducó';
-          notificationsService.showNotification(
-            'error',
-            isSessionExpired
-              ? 'Inicia sesión de nuevo'
-              : err?.error?.message || 'Error de autenticación',
-            isSessionExpired ? 'Sesión caducada' : undefined
-          );
-          authService.cleanStorageAndRedirectToLogin();
+          const hadSession = !!authService.getAuthToken() || !!refreshToken;
+          if (hadSession) {
+            const isSessionExpired = err?.error?.message === 'Tu sesión caducó';
+            notificationsService.showNotification(
+              'error',
+              isSessionExpired
+                ? 'Inicia sesión de nuevo'
+                : err?.error?.message || 'Error de autenticación',
+              isSessionExpired ? 'Sesión caducada' : undefined
+            );
+            authService.cleanStorageAndRedirectToLogin();
+          }
           return throwError(() => err);
         }
         case 403:
