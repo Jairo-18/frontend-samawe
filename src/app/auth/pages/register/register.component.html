@@ -4,16 +4,13 @@
   >
     @if (registered) {
       <section
-        class="h-full w-full flex flex-col items-center justify-center text-center gap-5 px-8"
+        class="h-full w-full flex flex-col items-center justify-center text-center gap-5 p-8"
       >
         <span class="material-icons text-6xl text-[var(--primary-color)]"
           >mark_email_read</span
         >
-        <h2 class="font-extrabold text-xl">¡Revisa tu correo!</h2>
-        <p class="text-sm text-gray-500 max-w-sm">
-          Te enviamos un enlace de verificación. Haz clic en él para activar tu
-          cuenta.
-        </p>
+        <span class="font-extrabold text-xl">{{ registeredTitle }}</span>
+        <p class="text-sm text-gray-500 max-w-sm">{{ registeredSubtitle }}</p>
         <app-button-landing
           label="Ir a iniciar sesión"
           variant="solid"
@@ -76,6 +73,7 @@
                   matInput
                   formControlName="identificationNumber"
                   required
+                  appNoSpaces
                 />
                 <mat-icon matPrefix>credit_card</mat-icon>
                 <mat-error
@@ -85,10 +83,22 @@
                 >
                   Número de identificación requerido
                 </mat-error>
+                <mat-error
+                  *ngIf="
+                    formStep1.get('identificationNumber')?.hasError('pattern')
+                  "
+                >
+                  Solo letras, números y guiones (sin espacios)
+                </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Nombres Completos</mat-label>
-                <input matInput formControlName="firstName" required />
+                <input
+                  matInput
+                  formControlName="firstName"
+                  required
+                  appNormalizeName
+                />
                 <mat-icon matPrefix>person</mat-icon>
                 <mat-error
                   *ngIf="formStep1.get('firstName')?.hasError('required')"
@@ -98,7 +108,12 @@
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Apellidos Completos</mat-label>
-                <input matInput formControlName="lastName" required />
+                <input
+                  matInput
+                  formControlName="lastName"
+                  required
+                  appNormalizeName
+                />
                 <mat-icon matPrefix>people</mat-icon>
                 <mat-error
                   *ngIf="formStep1.get('lastName')?.hasError('required')"
@@ -122,7 +137,12 @@
               <ng-template matStepLabel>Tu cuenta</ng-template>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Correo Electrónico</mat-label>
-                <input matInput formControlName="email" required />
+                <input
+                  matInput
+                  formControlName="email"
+                  required
+                  (input)="onEmailInput($event)"
+                />
                 <mat-icon matPrefix>email</mat-icon>
                 <mat-error *ngIf="formStep2.get('email')?.hasError('required')">
                   Correo electrónico requerido
@@ -140,7 +160,19 @@
                   formControlName="phoneCodeSearch"
                   [matAutocomplete]="autoPhoneCode"
                   placeholder="Escribe para buscar..."
+                  [readonly]="isPhoneCodeSelected"
+                  (blur)="onPhoneCodeBlur()"
                 />
+                <button
+                  *ngIf="isPhoneCodeSelected"
+                  matSuffix
+                  mat-icon-button
+                  type="button"
+                  (click)="clearPhoneCodeSelection()"
+                  matTooltip="Limpiar selección"
+                >
+                  <mat-icon>clear</mat-icon>
+                </button>
                 <mat-autocomplete
                   #autoPhoneCode="matAutocomplete"
                   [displayWith]="displayPhoneCode"
@@ -161,14 +193,14 @@
                   }
                 </mat-autocomplete>
                 <mat-error
-                  *ngIf="formStep2.get('phoneCodeId')?.hasError('required')"
+                  *ngIf="formStep2.get('phoneCodeSearch')?.hasError('required')"
                 >
-                  País requerido
+                  No has seleccionado un país
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Teléfono</mat-label>
-                <input matInput formControlName="phone" />
+                <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
                 <mat-icon matPrefix>phone_iphone</mat-icon>
                 <mat-error *ngIf="formStep2.get('phone')?.hasError('required')">
                   Teléfono requerido
@@ -252,7 +284,6 @@
                   <app-button-landing
                     label="Registrarse"
                     variant="solid"
-                    [disabled]="formStep2.invalid"
                     [loading]="isSaving"
                     (clicked)="save()"
                     class="w-full"

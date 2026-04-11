@@ -31,6 +31,7 @@
           [matAutocomplete]="clientAuto"
           [formControl]="clientFilterControl"
           placeholder="Nombre del cliente..."
+          [readonly]="isClientSelected"
           (focus)="onClientFocus()"
         />
         <mat-icon matPrefix>person</mat-icon>

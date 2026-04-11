@@ -220,6 +220,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
     this.form.patchValue({ userId: '' });
     this.clientFilterControl.setValue('');
   }
+  get isClientSelected(): boolean {
+    return typeof this.clientFilterControl.value === 'object' && this.clientFilterControl.value !== null;
+  }
+
   get showNoResultsMessage(): boolean {
     const value = this.clientFilterControl.value;
     const searchText = typeof value === 'string' ? value : '';

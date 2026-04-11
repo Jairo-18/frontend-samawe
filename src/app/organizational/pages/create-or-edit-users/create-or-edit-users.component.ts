@@ -29,7 +29,8 @@ import {
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
-import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
+import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
 import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 @Component({
   selector: 'app-create-or-edit-users',
@@ -48,7 +49,8 @@ import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
     MatIcon,
     BasePageComponent,
     LoaderComponent,
-    UppercaseDirective,
+    NormalizeNameDirective,
+    NoSpacesDirective,
     RouterLink
   ],
   templateUrl: './create-or-edit-users.component.html',
@@ -81,10 +83,19 @@ export class CreateOrEditUsersComponent implements OnInit {
     this.userForm = this._fb.group({
       roleTypeId: ['', Validators.required],
       identificationTypeId: ['', [Validators.required]],
-      identificationNumber: ['', [Validators.required]],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.email]],
+      identificationNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9-]+$/)]
+      ],
+      firstName: [
+        '',
+        [Validators.required, Validators.pattern(/^\S.*\S$|^\S$/)]
+      ],
+      lastName: [
+        '',
+        [Validators.required, Validators.pattern(/^\S.*\S$|^\S$/)]
+      ],
+      email: ['', [Validators.email, Validators.pattern(/^\S+$/)]],
       phoneCodeId: ['', Validators.required],
       phoneCodeSearch: [''],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
@@ -185,6 +196,11 @@ export class CreateOrEditUsersComponent implements OnInit {
   displayPhoneCode(phoneCode: PhoneCode): string {
     return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
   }
+  get isPhoneCodeSelected(): boolean {
+    const val = this.userForm.get('phoneCodeSearch')?.value;
+    return typeof val === 'object' && val !== null;
+  }
+
   onPhoneCodeSelected(phoneCode: PhoneCode): void {
     if (phoneCode && phoneCode.phoneCodeId) {
       this.userForm.patchValue({
@@ -192,6 +208,17 @@ export class CreateOrEditUsersComponent implements OnInit {
       });
       this.userForm.get('phoneCodeSearch')?.setErrors(null);
     }
+  }
+
+  clearPhoneCodeSelection(): void {
+    this.userForm.patchValue({ phoneCodeId: '', phoneCodeSearch: '' });
+    this.userForm.get('phoneCodeSearch')?.setErrors(null);
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/\s/g, '');
+    this.userForm.get('phone')?.setValue(cleaned, { emitEvent: false });
   }
   setPassword() {
     const identificationValue = this.userForm.get(
@@ -251,13 +278,13 @@ export class CreateOrEditUsersComponent implements OnInit {
           roleTypeId: user.roleType?.roleTypeId,
           identificationTypeId:
             user.identificationType?.identificationTypeId.toString(),
-          identificationNumber: user.identificationNumber,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
+          identificationNumber: user.identificationNumber?.replace(/\s/g, '') ?? '',
+          firstName: user.firstName?.replace(/\s+/g, ' ').trim() ?? '',
+          lastName: user.lastName?.replace(/\s+/g, ' ').trim() ?? '',
+          email: user.email?.replace(/\s/g, '').toLowerCase() ?? '',
           phoneCodeId: user.phoneCode?.phoneCodeId.toString(),
           phoneCodeSearch: user.phoneCode,
-          phone: user.phone,
+          phone: user.phone?.replace(/\s/g, '') ?? '',
           isActive: user.isActive,
           personTypeId: user.personType?.personTypeId?.toString() || ''
         });
@@ -286,7 +313,7 @@ export class CreateOrEditUsersComponent implements OnInit {
         identificationNumber: formValue.identificationNumber,
         firstName: formValue.firstName,
         lastName: formValue.lastName,
-        email: formValue.email,
+        email: formValue.email || undefined,
         phoneCode: formValue.phoneCodeId,
         phone: formValue.phone,
         password: formValue.identificationNumber,
@@ -338,6 +365,6 @@ export class CreateOrEditUsersComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     this.userForm
       .get('email')
-      ?.setValue(input.value.toLowerCase(), { emitEvent: false });
+      ?.setValue(input.value.toLowerCase().replace(/\s/g, ''), { emitEvent: false });
   }
 }

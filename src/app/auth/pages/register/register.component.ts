@@ -31,6 +31,8 @@ import { ApplicationService } from '../../../organizational/services/application
 import { Subscription } from 'rxjs';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
+import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -48,7 +50,9 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
     MatAutocompleteModule,
     NgOptimizedImage,
     ButtonLandingComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    NormalizeNameDirective,
+    NoSpacesDirective
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
@@ -59,6 +63,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   formStep2: FormGroup;
   currentStep: string = 'one';
   registered: boolean = false;
+  registeredTitle: string = '¡Revisa tu correo!';
+  registeredSubtitle: string =
+    'Te enviamos un enlace de verificación. Haz clic en él para activar tu cuenta.';
   isSaving: boolean = false;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
@@ -85,14 +92,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
   constructor(private _fb: FormBuilder) {
     this.formStep1 = this._fb.group({
       identificationTypeId: ['', Validators.required],
-      identificationNumber: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', [Validators.required]],
+      identificationNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9-]+$/)]
+      ],
+      firstName: [
+        '',
+        [Validators.required, Validators.pattern(/^\S.*\S$|^\S$/)]
+      ],
+      lastName: [
+        '',
+        [Validators.required, Validators.pattern(/^\S.*\S$|^\S$/)]
+      ],
       personTypeId: ['']
     });
     this.formStep2 = this._fb.group(
       {
-        email: ['', [Validators.required, Validators.email]],
+        email: ['', [Validators.required, Validators.email, Validators.pattern(/^\S+$/)]],
         phoneCodeId: ['', Validators.required],
         phoneCodeSearch: [''],
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
@@ -160,6 +176,25 @@ export class RegisterComponent implements OnInit, OnDestroy {
     return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
   }
 
+  onEmailInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.formStep2
+      .get('email')
+      ?.setValue(input.value.toLowerCase().replace(/\s/g, ''), { emitEvent: false });
+  }
+
+  onPhoneCodeBlur(): void {
+    if (!this.formStep2.get('phoneCodeId')?.value) {
+      this.formStep2.get('phoneCodeSearch')?.setErrors({ required: true });
+      this.formStep2.get('phoneCodeSearch')?.markAsTouched();
+    }
+  }
+
+  get isPhoneCodeSelected(): boolean {
+    const val = this.formStep2.get('phoneCodeSearch')?.value;
+    return typeof val === 'object' && val !== null;
+  }
+
   onPhoneCodeSelected(phoneCode: PhoneCode): void {
     if (phoneCode?.phoneCodeId) {
       this.formStep2.patchValue({
@@ -167,6 +202,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
       });
       this.formStep2.get('phoneCodeSearch')?.setErrors(null);
     }
+  }
+
+  clearPhoneCodeSelection(): void {
+    this.formStep2.patchValue({ phoneCodeId: '', phoneCodeSearch: '' });
+    this.formStep2.get('phoneCodeSearch')?.setErrors(null);
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const cleaned = input.value.replace(/\s/g, '');
+    this.formStep2.get('phone')?.setValue(cleaned, { emitEvent: false });
   }
 
   getRelatedData(): void {
@@ -236,6 +282,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (!this.formStep2.get('phoneCodeId')?.value) {
       this.formStep2.get('phoneCodeSearch')?.setErrors({ required: true });
     }
+    this.formStep2.markAllAsTouched();
     if (this.formStep2.valid && this.formStep1.valid) {
       const userToRegister: RegisterUser = {
         userId: uuid.v4(),
@@ -258,8 +305,20 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.registered = true;
           this.isSaving = false;
         },
-        error: () => {
+        error: (err) => {
           this.isSaving = false;
+          const code = err?.error?.code;
+          if (code === 'PENDING_VERIFICATION') {
+            this.registeredTitle = '¡Ya tienes un registro pendiente!';
+            this.registeredSubtitle =
+              'Ya te enviamos un correo de verificación. Revísalo y haz clic en el enlace para activar tu cuenta.';
+            this.registered = true;
+          } else if (code === 'VERIFICATION_RESENT') {
+            this.registeredTitle = '¡Te reenviamos el correo!';
+            this.registeredSubtitle =
+              'Tu enlace anterior había expirado. Te enviamos uno nuevo, revisa tu correo y haz clic en el enlace.';
+            this.registered = true;
+          }
         }
       });
     }

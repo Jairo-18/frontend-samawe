@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private _fb: FormBuilder) {
     this.form = this._fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^\S+$/)]],
       password: ['', [Validators.required]]
     });
   }
@@ -105,6 +105,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         this._cooldownInterval = null;
       }
     }, 1000);
+  }
+
+  onEmailInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.form
+      .get('email')
+      ?.setValue(input.value.toLowerCase().replace(/\s/g, ''), { emitEvent: false });
   }
 
   login(): void {

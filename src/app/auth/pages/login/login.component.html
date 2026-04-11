@@ -17,7 +17,7 @@
       >
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Correo electrónico</mat-label>
-          <input matInput formControlName="email" />
+          <input matInput formControlName="email" (input)="onEmailInput($event)" />
           <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="form.get('email')?.hasError('required')">
             Correo electrónico requerido

@@ -77,27 +77,46 @@
               matInput
               formControlName="identificationNumber"
               required
-              appUppercase
+              appNoSpaces
             />
             <mat-error
               *ngIf="userForm.get('identificationNumber')?.hasError('required')"
             >
               Número de identificación requerido
             </mat-error>
+            <mat-error
+              *ngIf="userForm.get('identificationNumber')?.hasError('pattern')"
+            >
+              Solo letras, números y guiones (sin espacios)
+            </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nombres completos</mat-label>
-            <input matInput formControlName="firstName" required appUppercase />
+            <input
+              matInput
+              formControlName="firstName"
+              required
+              appNormalizeName
+            />
             <mat-icon matPrefix>person</mat-icon>
-            <mat-error *ngIf="userForm.get('firstName')">
+            <mat-error
+              *ngIf="userForm.get('firstName')?.hasError('required')"
+            >
               Nombres completos requeridos
             </mat-error>
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Apellidos completos</mat-label>
-            <input matInput formControlName="lastName" required appUppercase />
+            <input
+              matInput
+              formControlName="lastName"
+              required
+              appNormalizeName
+            />
             <mat-icon matPrefix>people</mat-icon>
-            <mat-error *ngIf="userForm.get('lastName')">
+            <mat-error
+              *ngIf="userForm.get('lastName')?.hasError('required')"
+            >
               Apellidos completos requeridos
             </mat-error>
           </mat-form-field>
@@ -121,8 +140,19 @@
               formControlName="phoneCodeSearch"
               [matAutocomplete]="autoPhoneCode"
               placeholder="Escribe para buscar..."
+              [readonly]="isPhoneCodeSelected"
               required
             />
+            <button
+              *ngIf="isPhoneCodeSelected"
+              matSuffix
+              mat-icon-button
+              type="button"
+              (click)="clearPhoneCodeSelection()"
+              matTooltip="Limpiar selección"
+            >
+              <mat-icon>clear</mat-icon>
+            </button>
             <mat-autocomplete
               #autoPhoneCode="matAutocomplete"
               [displayWith]="displayPhoneCode"
@@ -155,7 +185,7 @@
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Teléfono</mat-label>
-            <input matInput formControlName="phone" />
+            <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
             <mat-icon matPrefix>phone_iphone</mat-icon>
             <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
               Teléfono requerido
