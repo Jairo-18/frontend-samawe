@@ -70,7 +70,7 @@ export class UsersService {
       user.organizationalId = orgId;
     }
     return this._httpClient.post<ApiResponseCreateInterface>(
-      `${environment.apiUrl}user/register`,
+      `${environment.apiUrl}user`,
       user
     );
   }
