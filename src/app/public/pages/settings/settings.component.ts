@@ -39,20 +39,21 @@ export class SettingsComponent implements OnInit {
     const roleName = this.userInfo?.roleType?.name?.toLowerCase().trim() || '';
     const roleCode = this.userInfo?.roleType?.code?.toLowerCase().trim() || '';
 
-    if (roleName === 'cliente' || roleCode === 'cliente') {
-      this.settingsItems = [
-        { label: 'Ver Perfil', icon: 'person', route: '/profile-edit' },
-        {
-          label: 'Cambiar Contraseña',
-          icon: 'lock',
-          route: `/auth/${this.userInfo?.userId}/change-password`
-        }
-      ];
-    } else if (
+    const profileItems: SettingsItem[] = [
+      { label: 'Ver Perfil', icon: 'person', route: '/user/profile' },
+      {
+        label: 'Cambiar Contraseña',
+        icon: 'lock',
+        route: `/auth/${this.userInfo?.userId}/change-password`
+      }
+    ];
+
+    if (
       roleName.includes('administrador') ||
       roleCode.includes('administrador')
     ) {
       this.settingsItems = [
+        ...profileItems,
         {
           label: 'Gestión',
           icon: 'category',
@@ -65,7 +66,7 @@ export class SettingsComponent implements OnInit {
         }
       ];
     } else {
-      this.settingsItems = [];
+      this.settingsItems = profileItems;
     }
   }
 

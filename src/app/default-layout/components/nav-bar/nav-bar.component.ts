@@ -18,6 +18,7 @@ import { NavbarDesktopComponent } from '../navbar-desktop/navbar-desktop.compone
 import { NavbarMobileComponent } from '../navbar-mobile/navbar-mobile.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { UsersService } from '../../../organizational/services/users.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -32,6 +33,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  private readonly _usersService: UsersService = inject(UsersService);
   private readonly _router: Router = inject(Router);
   private _subscription: Subscription = new Subscription();
 
@@ -103,13 +105,24 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   updateLoggedMenu(): void {
     if (this.isLoggedUser) {
-      this.userInfo = this._localStorage.getUserData();
-      const roleName = this.userInfo?.roleType?.name?.toUpperCase() || '';
-      const roleCode = this.userInfo?.roleType?.code?.toUpperCase() || '';
-
+      const sessionUser = this._localStorage.getUserData();
+      const roleName = sessionUser?.roleType?.name?.toUpperCase() || '';
+      const roleCode = sessionUser?.roleType?.code?.toUpperCase() || '';
       this.loggedMenuItems =
         NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+
+      const userId = sessionUser?.userId;
+      if (userId) {
+        this._subscription.add(
+          this._usersService.getUserEditPanel(userId).subscribe({
+            next: (res) => {
+              this.userInfo = res.data as unknown as UserInterface;
+            }
+          })
+        );
+      }
     } else {
+      this.userInfo = undefined;
       this.loggedMenuItems = [];
     }
   }

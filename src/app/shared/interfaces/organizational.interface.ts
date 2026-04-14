@@ -42,6 +42,28 @@ export interface BenefitSection {
   items: BenefitItem[];
 }
 
+export type LegalType = 'terms' | 'privacy';
+
+export interface LegalItemChild {
+  legalItemChildId: string;
+  content: string;
+  order: number;
+}
+
+export interface LegalItem {
+  legalItemId: string;
+  title?: string;
+  description?: string;
+  order: number;
+  children: LegalItemChild[];
+}
+
+export interface LegalSection {
+  legalSectionId: string;
+  type: LegalType;
+  items: LegalItem[];
+}
+
 export interface Organizational {
   organizationalId: string;
   name: string;
@@ -106,4 +128,5 @@ export interface Organizational {
   medias: OrganizationalMedia[];
   corporateValues?: CorporateValue[];
   benefitSections?: BenefitSection[];
+  legalSections?: LegalSection[];
 }

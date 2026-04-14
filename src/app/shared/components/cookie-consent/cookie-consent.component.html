@@ -1,0 +1,44 @@
+@if (visible()) {
+  <div
+    class="fixed bottom-0 left-0 right-0 z-[9998] bg-white border-t border-gray-200 shadow-[0_-4px_24px_rgba(0,0,0,0.10)] px-4 py-4 md:px-8 md:py-5"
+    role="dialog"
+    aria-live="polite"
+    aria-label="Aviso de cookies"
+  >
+    <div
+      class="max-w-6xl mx-auto flex flex-col gap-3 md:flex-row md:items-center md:gap-6"
+    >
+      <div class="flex items-start gap-3 flex-1">
+        <mat-icon class="text-[var(--primary-color)] shrink-0 mt-0.5"
+          >cookie</mat-icon
+        >
+        <div>
+          <p class="text-sm text-gray-700 leading-relaxed">
+            Utilizamos cookies propias y de terceros para mejorar tu
+            experiencia, analizar el tráfico y personalizar el contenido. Al
+            continuar navegando aceptas nuestra
+            <a
+              routerLink="/legal/privacity"
+              class="text-[var(--primary-color)] underline hover:opacity-80 transition-opacity"
+              >Política de Privacidad</a
+            >
+            y el uso de cookies.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0 justify-end">
+        <app-button-landing
+          label="Rechazar"
+          variant="transparent"
+          (clicked)="reject()"
+        />
+        <app-button-landing
+          label="Aceptar"
+          variant="solid"
+          (clicked)="accept()"
+        />
+      </div>
+    </div>
+  </div>
+}

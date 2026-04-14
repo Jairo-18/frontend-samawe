@@ -48,6 +48,20 @@ export const publicRoutes: Routes = [
           import('./pages/settings/settings.component').then(
             (m) => m.SettingsComponent
           )
+      },
+      {
+        path: 'legal/privacity',
+        loadComponent: () =>
+          import('./pages/legal/privacity/privacity.component').then(
+            (m) => m.PrivacityComponent
+          )
+      },
+      {
+        path: 'legal/terms',
+        loadComponent: () =>
+          import('./pages/legal/terms/terms.component').then(
+            (m) => m.TermsComponent
+          )
       }
     ]
   }

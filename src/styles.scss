@@ -25,3 +25,27 @@ input.mat-input-element,
 textarea.mat-input-element {
   text-transform: uppercase;
 }
+
+.cdk-drag-preview {
+  opacity: 1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  background: white;
+  pointer-events: none;
+}
+
+.cdk-drag-placeholder {
+  opacity: 1 !important;
+  background: #eff6ff;
+  border: 2px dashed #93c5fd;
+  border-radius: 6px;
+  min-height: 48px;
+}
+
+.cdk-drag-animating {
+  transition: transform 200ms ease;
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 200ms ease;
+}

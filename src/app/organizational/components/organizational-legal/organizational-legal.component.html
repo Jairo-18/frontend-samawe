@@ -1,0 +1,404 @@
+<div class="flex flex-col gap-6 py-4">
+  @for (legalType of legalTypes; track legalType.value) {
+    <div class="rounded-xl overflow-hidden shadow-sm">
+      <!-- Header tipo -->
+      <div class="flex items-center justify-between px-0 py-0 md:px-6 md:py-4">
+        <span
+          class="text-sm font-bold text-[var(--title-color)] uppercase tracking-wide"
+        >
+          {{ legalType.label }}
+        </span>
+        @if (!hasSection(legalType.value)) {
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="createSectionEvt.emit(legalType.value)"
+          >
+            <mat-icon>add</mat-icon> Activar
+          </button>
+        }
+      </div>
+
+      @if (getSectionByType(legalType.value); as section) {
+        <!-- Lista items drag & drop -->
+        <div
+          cdkDropList
+          [cdkDropListData]="section.items"
+          (cdkDropListDropped)="dropItem($event, section)"
+          class="flex flex-col gap-3 p-0 md:p-4"
+        >
+          @for (item of section.items; track item.legalItemId) {
+            <div
+              cdkDrag
+              class="rounded-lg border border-[var(--bg-secondary-color)] bg-[var(--bg-primary-color)] overflow-hidden"
+            >
+              <div *cdkDragPlaceholder></div>
+
+              <!-- Item header -->
+              <div
+                class="flex items-center gap-2 px-4 py-3 bg-[var(--bg-secondary-color)] border-b border-[var(--bg-secondary-color)]"
+              >
+                <mat-icon
+                  cdkDragHandle
+                  class="text-[var(--primary-color)] hover:text-[var(--text-color)] cursor-grab shrink-0 select-none"
+                >
+                  drag_indicator
+                </mat-icon>
+                <div class="flex-1 min-w-0">
+                  @if (item.title) {
+                    <p
+                      class="text-sm font-semibold text-[var(--title-color)] m-0 truncate"
+                    >
+                      {{ item.title }}
+                    </p>
+                  }
+                  @if (!item.title && !item.description) {
+                    <p class="text-xs text-[var(--title-color)] m-0">
+                      Sin título
+                    </p>
+                  }
+                </div>
+                <div class="flex gap-0.5 shrink-0">
+                  <button
+                    mat-icon-button
+                    matTooltip="Editar"
+                    (click)="startEditItem(item, section.legalSectionId)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    matTooltip="Eliminar"
+                    (click)="deleteItemEvt.emit(item.legalItemId)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Item body -->
+              <div class="px-4 pt-3 pb-2">
+                @if (item.description) {
+                  <p
+                    class="text-sm text-[var(--text-color)] m-0 mb-3 leading-relaxed"
+                    [innerHTML]="item.description | boldText"
+                  ></p>
+                }
+
+                <!-- Children drag & drop -->
+                @if (item.children.length > 0) {
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="item.children"
+                    (cdkDropListDropped)="dropChild($event, item)"
+                    class="flex flex-col gap-1 border-l-2 border-[var(--bg-secondary-color)] pl-3 mb-2"
+                  >
+                    @for (
+                      child of item.children;
+                      track child.legalItemChildId
+                    ) {
+                      <div
+                        cdkDrag
+                        class="flex flex-col md:flex-row items-center gap-2 group py-1 px-3"
+                      >
+                        <div *cdkDragPlaceholder></div>
+
+                        <div class="flex items-center">
+                          <mat-icon
+                            cdkDragHandle
+                            class="!text-sm text-[var(--primary-color)] group-hover:text-[var(--text-color)] cursor-grab shrink-0 select-none"
+                          >
+                            drag_indicator
+                          </mat-icon>
+                        </div>
+
+                        <div class="flex w-full items-center gap-2">
+                          <span
+                            class="w-1.5 h-1.5 rounded-full bg-[var(--primary-color)] shrink-0 self-center"
+                          ></span>
+
+                          <span
+                            class="flex-1 text-sm text-[var(--text-color)] leading-relaxed"
+                            [innerHTML]="child.content | boldText"
+                          ></span>
+                        </div>
+
+                        <div class="flex gap-0.5 shrink-0">
+                          <button
+                            mat-icon-button
+                            (click)="startEditChild(child, item.legalItemId)"
+                          >
+                            <mat-icon class="!text-base">edit</mat-icon>
+                          </button>
+                          <button
+                            mat-icon-button
+                            color="warn"
+                            (click)="
+                              deleteChildEvt.emit(child.legalItemChildId)
+                            "
+                          >
+                            <mat-icon class="!text-base">delete</mat-icon>
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- Formulario child -->
+                @if (activeChildFormItemId === item.legalItemId) {
+                  <div
+                    class="mt-2 p-3 bg-[var(--bg-primary-color)] rounded-lg border border-[var(--bg-secondary-color)]"
+                    [formGroup]="childForm"
+                  >
+                    <div class="flex items-center gap-2 mb-2">
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="!min-w-0 !px-2 !h-7 !text-xs font-bold !leading-none"
+                        (click)="applyBold()"
+                      >
+                        <strong>N</strong>
+                      </button>
+                      <span
+                        >Selecciona texto → <strong>N</strong> para
+                        negrilla</span
+                      >
+                    </div>
+
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Sub-item</mat-label>
+                      <textarea
+                        #childTextarea
+                        matInput
+                        formControlName="content"
+                        rows="2"
+                      ></textarea>
+                      @if (
+                        childForm.get('content')?.hasError('required') &&
+                        childForm.get('content')?.touched
+                      ) {
+                        <mat-error>Requerido</mat-error>
+                      }
+                    </mat-form-field>
+
+                    @if (childForm.get('content')?.value) {
+                      <div
+                        class="mb-2 px-3 py-2 bg-[var(--bg-primary-color)] border border-[var(--bg-secondary-color)] rounded text-sm text-[var(--text-color)]"
+                      >
+                        <p class="text-xs text-[var(--text-color)] mb-1 m-0">
+                          Vista previa:
+                        </p>
+                        <span
+                          [innerHTML]="
+                            childForm.get('content')?.value | boldText
+                          "
+                        ></span>
+                      </div>
+                    }
+
+                    <div
+                      class="flex flex-col md:flex-row w-full justify-between gap-2 mt-1"
+                    >
+                      <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                        <button
+                          mat-fab
+                          extended="true"
+                          color="warn"
+                          type="button"
+                          class="!w-full"
+                          (click)="closeChildForm()"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                      <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                        <button
+                          class="!w-full"
+                          mat-fab
+                          extended="true"
+                          (click)="submitChild(item)"
+                        >
+                          {{ editingChildId ? 'Actualizar' : 'Agregar' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="w-full">
+                    <button
+                      mat-fab
+                      extended="true"
+                      class="!w-full"
+                      (click)="openChildForm(item.legalItemId)"
+                    >
+                      <mat-icon>add</mat-icon> sub-item
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Formulario edición item -->
+            @if (
+              activeItemFormSectionId === section.legalSectionId &&
+              editingItemId === item.legalItemId
+            ) {
+              <div
+                class="rounded-lg border border-[var(--primary-color)] bg-[var(--bg-primary-color)] p-4"
+                [formGroup]="itemForm"
+              >
+                <p
+                  class="text-xs font-semibold text-[var(--primary-color)] mb-3 m-0"
+                >
+                  Editando item
+                </p>
+                <div class="flex flex-col gap-3">
+                  <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Título (opcional)</mat-label>
+                    <input matInput formControlName="title" />
+                  </mat-form-field>
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="!min-w-0 !px-2 !h-7 !text-xs font-bold !leading-none"
+                        matTooltip="Selecciona texto y pulsa para negrilla"
+                        (click)="applyBoldDescription()"
+                      >
+                        <strong>N</strong>
+                      </button>
+                      <span class="text-xs text-[var(--text-color)]"
+                        >Selecciona texto → <strong>N</strong> para
+                        negrilla</span
+                      >
+                    </div>
+                    <mat-form-field appearance="outline" class="w-full">
+                      <mat-label>Descripción (opcional)</mat-label>
+                      <textarea
+                        #descriptionTextarea
+                        matInput
+                        formControlName="description"
+                        rows="2"
+                      ></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div
+                    class="flex flex-col md:flex-row w-full justify-between gap-2"
+                  >
+                    <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                      <button
+                        mat-fab
+                        extended="true"
+                        color="warn"
+                        type="button"
+                        class="!w-full"
+                        (click)="cancelItemForm()"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                    <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                      <button
+                        mat-fab
+                        class="!w-full"
+                        extended="true"
+                        (click)="submitItem(section)"
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Formulario nuevo item -->
+        @if (
+          activeItemFormSectionId === section.legalSectionId && !editingItemId
+        ) {
+          <div
+            class="mx-4 mb-4 rounded-lg border border-[var(--primary-color)] bg-[var(--bg-primary-color)] p-4"
+            [formGroup]="itemForm"
+          >
+            <p class="text-xs font-semibold text-[var(--title-color)] mb-3 m-0">
+              Nuevo item
+            </p>
+            <div class="flex flex-col gap-3">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Título (opcional)</mat-label>
+                <input matInput formControlName="title" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Descripción (opcional)</mat-label>
+                <textarea
+                  matInput
+                  formControlName="description"
+                  rows="2"
+                ></textarea>
+              </mat-form-field>
+              <div
+                class="flex flex-col md:flex-row w-full justify-between gap-2"
+              >
+                <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                  <button
+                    mat-fab
+                    extended="true"
+                    color="warn"
+                    type="button"
+                    class="!w-full"
+                    (click)="cancelItemForm()"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+                <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                  <button
+                    mat-fab
+                    extended="true"
+                    class="!w-full"
+                    (click)="submitItem(section)"
+                  >
+                    Agregar item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Acciones sección -->
+        <div
+          class="flex flex-col md:flex-row w-full justify-between items-center px-4 py-3 border-t border-[var(--bg-secondary-color)] bg-[var(--bg-secondary-color)] gap-2"
+        >
+          <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+            <button
+              mat-fab
+              extended="true"
+              class="!w-full"
+              (click)="openItemForm(section.legalSectionId)"
+            >
+              <mat-icon>add</mat-icon> Agregar item
+            </button>
+          </div>
+          <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+            <button
+              mat-fab
+              extended="true"
+              color="warn"
+              type="button"
+              class="!w-full"
+              (click)="deleteSectionEvt.emit(section.legalSectionId)"
+            >
+              <mat-icon>delete_sweep</mat-icon> Eliminar sección
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

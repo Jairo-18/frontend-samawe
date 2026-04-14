@@ -24,12 +24,14 @@
         variant="solid"
         (clicked)="openWhatsapp()"
       />
-      <app-button-landing
-        label="Iniciar Sesión"
-        icon="login"
-        variant="transparent"
-        (clicked)="goToLogin()"
-      />
+      @if (!isLoggedUser) {
+        <app-button-landing
+          label="Iniciar Sesión"
+          icon="login"
+          variant="transparent"
+          (clicked)="goToLogin()"
+        />
+      }
     </section>
   </div>
 </article>

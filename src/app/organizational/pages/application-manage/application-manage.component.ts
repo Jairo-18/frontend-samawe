@@ -1,5 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import {
   FormBuilder,
   FormGroup,
@@ -14,6 +16,7 @@ import { OrganizationalAppearanceComponent } from '../../components/organization
 import { OrganizationalWebContentComponent } from '../../components/organizational-web-content/organizational-web-content.component';
 import { OrganizationalMultimediaComponent } from '../../components/organizational-multimedia/organizational-multimedia.component';
 import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
+import { OrganizationalLegalComponent } from '../../components/organizational-legal/organizational-legal.component';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -22,19 +25,15 @@ import {
   OrganizationalMedia,
   MediaType,
   CorporateValue,
-  BenefitSection
+  BenefitSection,
+  LegalSection,
+  LegalType
 } from '../../../shared/interfaces/organizational.interface';
 import {
   IdentificationType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
-import {
-  Subscription,
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  of
-} from 'rxjs';
+import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-application-manage',
@@ -49,7 +48,8 @@ import {
     OrganizationalAppearanceComponent,
     OrganizationalWebContentComponent,
     OrganizationalHomeContentComponent,
-    OrganizationalMultimediaComponent
+    OrganizationalMultimediaComponent,
+    OrganizationalLegalComponent
   ],
   templateUrl: './application-manage.component.html',
   styleUrls: ['./application-manage.component.scss']
@@ -61,6 +61,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _dialog: MatDialog = inject(MatDialog);
 
   form: FormGroup;
   isLoading: boolean = true;
@@ -76,6 +77,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   benefitSections: BenefitSection[] = [];
   editingSection: BenefitSection | null = null;
   benefitSectionForm: FormGroup;
+
+  legalSections: LegalSection[] = [];
   private _subscription: Subscription = new Subscription();
 
   identificationTypes: IdentificationType[] = [];
@@ -160,28 +163,24 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.setupPhoneCodeSearch();
     this.setupLiveColorPreview();
-    this.loadMediaTypes();
-    this.subscribeToMedia();
     const id = this._authService.getOrganizationalId();
     this.organizationalId = id;
     if (id) {
       this.loadOrganization();
-      this._applicationService.loadMedia(id);
-      this.loadCorporateValues(id);
-      this.loadBenefitSections(id);
     } else {
       this.isLoading = false;
     }
   }
 
-  private subscribeToMedia(): void {
-    this._subscription.add(
-      this._applicationService.mediaMap$.subscribe((media) => {
-        if (media) this.mediaMap = media;
-      })
-    );
+  private buildMediaMap(medias: OrganizationalMedia[]): void {
+    const map: Record<string, OrganizationalMedia[]> = {};
+    medias.forEach((m) => {
+      const code = m.mediaType.code;
+      if (!map[code]) map[code] = [];
+      map[code].push(m);
+    });
+    this.mediaMap = map;
   }
 
   ngOnDestroy(): void {
@@ -207,19 +206,34 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
         );
       }
       if (this.organization.textColor) {
-        document.documentElement.style.setProperty('--text', this.organization.textColor);
+        document.documentElement.style.setProperty(
+          '--text',
+          this.organization.textColor
+        );
       }
       if (this.organization.titleColor) {
-        document.documentElement.style.setProperty('--title', this.organization.titleColor);
+        document.documentElement.style.setProperty(
+          '--title',
+          this.organization.titleColor
+        );
       }
       if (this.organization.subtitleColor) {
-        document.documentElement.style.setProperty('--subtitle', this.organization.subtitleColor);
+        document.documentElement.style.setProperty(
+          '--subtitle',
+          this.organization.subtitleColor
+        );
       }
       if (this.organization.bgPrimaryColor) {
-        document.documentElement.style.setProperty('--bg-principal', this.organization.bgPrimaryColor);
+        document.documentElement.style.setProperty(
+          '--bg-principal',
+          this.organization.bgPrimaryColor
+        );
       }
       if (this.organization.bgSecondaryColor) {
-        document.documentElement.style.setProperty('--bg-secondary', this.organization.bgSecondaryColor);
+        document.documentElement.style.setProperty(
+          '--bg-secondary',
+          this.organization.bgSecondaryColor
+        );
       }
     }
   }
@@ -248,14 +262,12 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     );
     this._subscription.add(
       this.form.get('textColor')?.valueChanges.subscribe((color) => {
-        if (color)
-          document.documentElement.style.setProperty('--text', color);
+        if (color) document.documentElement.style.setProperty('--text', color);
       })
     );
     this._subscription.add(
       this.form.get('titleColor')?.valueChanges.subscribe((color) => {
-        if (color)
-          document.documentElement.style.setProperty('--title', color);
+        if (color) document.documentElement.style.setProperty('--title', color);
       })
     );
     this._subscription.add(
@@ -278,14 +290,13 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private loadMediaTypes(): void {
-    this._applicationService.getMediaTypes().subscribe({
-      next: (res) => (this.mediaTypes = res.data)
-    });
-  }
-
   private loadMedia(id: string): void {
-    this._applicationService.loadMedia(id);
+    this._applicationService.getMedia(id).subscribe({
+      next: (res) => {
+        const flat = Object.values(res.data).flat();
+        this.buildMediaMap(flat);
+      }
+    });
   }
 
   private loadOrganization(): void {
@@ -293,10 +304,17 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         this.identificationTypes = res.data.identificationType;
+        this.filteredPhoneCodes = res.data.phoneCode;
+        this.mediaTypes = res.data.mediaType ?? [];
+        this.setupPhoneCodeSearch(res.data.phoneCode);
         const org = res.data.organizational?.[0];
         if (org) {
           this.organization = org;
           this.patchForm(org);
+          this.buildMediaMap(org.medias ?? []);
+          this.benefitSections = org.benefitSections ?? [];
+          this.corporateValues = org.corporateValues ?? [];
+          this.legalSections = org.legalSections ?? [];
         }
         this.isLoading = false;
       },
@@ -409,45 +427,23 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       });
   }
 
-  setupPhoneCodeSearch(): void {
-    this.loadPhoneCodes('');
-    this.form
-      .get('phoneCodeSearch')
-      ?.valueChanges.pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((searchTerm: string) => {
-          if (typeof searchTerm !== 'string') {
-            return of({ data: this.filteredPhoneCodes, meta: {} });
-          }
-          this.loadingPhoneCodes = true;
-          return this._relatedDataService.searchPhoneCodes(searchTerm, 1, 20);
+  setupPhoneCodeSearch(allPhoneCodes: PhoneCode[]): void {
+    this._subscription.add(
+      this.form
+        .get('phoneCodeSearch')
+        ?.valueChanges.pipe(debounceTime(200), distinctUntilChanged())
+        .subscribe((searchTerm: string) => {
+          if (typeof searchTerm !== 'string') return;
+          const q = searchTerm.toLowerCase().trim();
+          this.filteredPhoneCodes = q
+            ? allPhoneCodes.filter(
+                (p) =>
+                  p.name.toLowerCase().includes(q) ||
+                  p.code?.toLowerCase().includes(q)
+              )
+            : allPhoneCodes;
         })
-      )
-      .subscribe({
-        next: (response) => {
-          this.filteredPhoneCodes = response.data || [];
-          this.loadingPhoneCodes = false;
-        },
-        error: () => {
-          this.filteredPhoneCodes = [];
-          this.loadingPhoneCodes = false;
-        }
-      });
-  }
-
-  loadPhoneCodes(search: string = ''): void {
-    this.loadingPhoneCodes = true;
-    this._relatedDataService.searchPhoneCodes(search, 1, 20).subscribe({
-      next: (response) => {
-        this.filteredPhoneCodes = response.data || [];
-        this.loadingPhoneCodes = false;
-      },
-      error: () => {
-        this.filteredPhoneCodes = [];
-        this.loadingPhoneCodes = false;
-      }
-    });
+    );
   }
 
   displayPhoneCode(phoneCode: PhoneCode): string {
@@ -487,18 +483,25 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     const mediaItem = Array.isArray(media) ? media[0] : media;
     if (!mediaItem.organizationalMediaId) return;
 
-    if (!confirm('¿Estás seguro de que deseas eliminar esta imagen?')) return;
-
-    this.mediaLoading[mediaTypeCode] = true;
-    this._applicationService
-      .deleteMedia(mediaItem.organizationalMediaId)
-      .subscribe({
-        next: () => {
-          this.loadMedia(this.organizationalId!);
-          this.mediaLoading[mediaTypeCode] = false;
-        },
-        error: () => (this.mediaLoading[mediaTypeCode] = false)
-      });
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar imagen',
+        message: '¿Estás seguro de que deseas eliminar esta imagen?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this.mediaLoading[mediaTypeCode] = true;
+      this._applicationService
+        .deleteMedia(mediaItem.organizationalMediaId)
+        .subscribe({
+          next: () => {
+            this.loadMedia(this.organizationalId!);
+            this.mediaLoading[mediaTypeCode] = false;
+          },
+          error: () => (this.mediaLoading[mediaTypeCode] = false)
+        });
+    });
   }
 
   previewMedia(mediaTypeCode: string): void {
@@ -558,9 +561,17 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   deleteCorporateValue(valueId: string): void {
-    if (!confirm('¿Eliminar este valor corporativo?')) return;
-    this._applicationService.deleteCorporateValue(valueId).subscribe({
-      next: () => this.loadCorporateValues(this.organizationalId!)
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar valor corporativo',
+        message: '¿Deseas eliminar este valor corporativo?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteCorporateValue(valueId).subscribe({
+        next: () => this.loadCorporateValues(this.organizationalId!)
+      });
     });
   }
 
@@ -580,9 +591,17 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   deleteCorporateValueImage(valueId: string): void {
-    if (!confirm('¿Eliminar la imagen de este valor corporativo?')) return;
-    this._applicationService.deleteCorporateValueImage(valueId).subscribe({
-      next: () => this.loadCorporateValues(this.organizationalId!)
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar imagen',
+        message: '¿Deseas eliminar la imagen de este valor corporativo?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteCorporateValueImage(valueId).subscribe({
+        next: () => this.loadCorporateValues(this.organizationalId!)
+      });
     });
   }
 
@@ -631,9 +650,17 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   deleteBenefitSection(sectionId: string): void {
-    if (!confirm('¿Eliminar esta sección y todos sus items?')) return;
-    this._applicationService.deleteBenefitSection(sectionId).subscribe({
-      next: () => this.loadBenefitSections(this.organizationalId!)
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar sección',
+        message: '¿Deseas eliminar esta sección y todos sus items?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteBenefitSection(sectionId).subscribe({
+        next: () => this.loadBenefitSections(this.organizationalId!)
+      });
     });
   }
 
@@ -668,9 +695,155 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   deleteBenefitItem(itemId: string): void {
-    if (!confirm('¿Eliminar este item?')) return;
-    this._applicationService.deleteBenefitItem(itemId).subscribe({
-      next: () => this.loadBenefitSections(this.organizationalId!)
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: { title: 'Eliminar item', message: '¿Deseas eliminar este item?' }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteBenefitItem(itemId).subscribe({
+        next: () => this.loadBenefitSections(this.organizationalId!)
+      });
+    });
+  }
+
+  loadLegalSections(): void {
+    this._applicationService
+      .getLegalSections(this.organizationalId!)
+      .subscribe({
+        next: (res) => (this.legalSections = res.data)
+      });
+  }
+
+  createLegalSection(type: LegalType): void {
+    if (!this.organizationalId) return;
+    this._applicationService
+      .createLegalSection(this.organizationalId, { type })
+      .subscribe({
+        next: () => this.loadLegalSections()
+      });
+  }
+
+  deleteLegalSection(sectionId: string): void {
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar sección',
+        message: '¿Deseas eliminar esta sección y todos sus items?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteLegalSection(sectionId).subscribe({
+        next: () => this.loadLegalSections()
+      });
+    });
+  }
+
+  addLegalItem(payload: {
+    sectionId: string;
+    title?: string;
+    description?: string;
+    order?: number;
+  }): void {
+    this._applicationService
+      .addLegalItem(payload.sectionId, {
+        title: payload.title,
+        description: payload.description,
+        order: payload.order
+      })
+      .subscribe({
+        next: () => this.loadLegalSections()
+      });
+  }
+
+  updateLegalItem(payload: {
+    itemId: string;
+    title?: string;
+    description?: string;
+    order?: number;
+  }): void {
+    this._applicationService
+      .updateLegalItem(payload.itemId, {
+        title: payload.title,
+        description: payload.description,
+        order: payload.order
+      })
+      .subscribe({
+        next: () => this.loadLegalSections()
+      });
+  }
+
+  addLegalChild(payload: {
+    itemId: string;
+    content: string;
+    order?: number;
+  }): void {
+    this._applicationService
+      .addLegalChild(payload.itemId, {
+        content: payload.content,
+        order: payload.order
+      })
+      .subscribe({
+        next: () => this.loadLegalSections()
+      });
+  }
+
+  updateLegalChild(payload: {
+    childId: string;
+    content: string;
+    order?: number;
+  }): void {
+    this._applicationService
+      .updateLegalChild(payload.childId, {
+        content: payload.content,
+        order: payload.order
+      })
+      .subscribe({
+        next: () => this.loadLegalSections()
+      });
+  }
+
+  deleteLegalItem(itemId: string): void {
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: { title: 'Eliminar item', message: '¿Deseas eliminar este item?' }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteLegalItem(itemId).subscribe({
+        next: () => this.loadLegalSections()
+      });
+    });
+  }
+
+  reorderLegalItems(payload: {
+    sectionId: string;
+    items: { id: string; order: number }[];
+  }): void {
+    this._applicationService
+      .reorderLegalItems(payload.sectionId, payload.items)
+      .subscribe();
+  }
+
+  reorderLegalChildren(payload: {
+    itemId: string;
+    items: { id: string; order: number }[];
+  }): void {
+    this._applicationService
+      .reorderLegalChildren(payload.itemId, payload.items)
+      .subscribe();
+  }
+
+  deleteLegalChild(childId: string): void {
+    const ref = this._dialog.open(YesNoDialogComponent, {
+      data: {
+        title: 'Eliminar sub-item',
+        message: '¿Deseas eliminar este sub-item?'
+      }
+    });
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this._applicationService.deleteLegalChild(childId).subscribe({
+        next: () => this.loadLegalSections()
+      });
     });
   }
 }

@@ -67,6 +67,24 @@
         </ng-template>
       </mat-tab>
 
+      <mat-tab label="Términos y Privacidad">
+        <ng-template matTabContent>
+          <app-organizational-legal
+            [legalSections]="legalSections"
+            (createSectionEvt)="createLegalSection($event)"
+            (deleteSectionEvt)="deleteLegalSection($event)"
+            (addItemEvt)="addLegalItem($event)"
+            (updateItemEvt)="updateLegalItem($event)"
+            (deleteItemEvt)="deleteLegalItem($event)"
+            (addChildEvt)="addLegalChild($event)"
+            (updateChildEvt)="updateLegalChild($event)"
+            (deleteChildEvt)="deleteLegalChild($event)"
+            (reorderItemsEvt)="reorderLegalItems($event)"
+            (reorderChildrenEvt)="reorderLegalChildren($event)"
+          ></app-organizational-legal>
+        </ng-template>
+      </mat-tab>
+
       <mat-tab label="Multimedia">
         <ng-template matTabContent>
           <app-organizational-multimedia

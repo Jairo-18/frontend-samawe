@@ -135,12 +135,25 @@
   <!-- Bottom bar -->
   <div class="border-t border-white/20">
     <div
-      class="max-w-7xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-white/50"
+      class="max-w-7xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-row flex-wrap items-center justify-between gap-2 text-xs text-white/50"
     >
       <span
         >© {{ currentYear }} {{ org?.name }}. Todos los derechos
         reservados.</span
       >
+      <div class="flex items-center gap-4">
+        <a
+          routerLink="/legal/privacity"
+          class="hover:text-white transition-colors"
+          >Política de Privacidad</a
+        >
+        <span>·</span>
+        <a
+          routerLink="/legal/terms"
+          class="hover:text-white transition-colors"
+          >Términos de Servicio</a
+        >
+      </div>
       <span
         >Desarrollado por
         <span class="text-white font-medium">Jhon Legarda</span></span

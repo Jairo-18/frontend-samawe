@@ -1,0 +1,103 @@
+<app-base-page headerTitle="Mi Perfil">
+  @if (loading) {
+    <div class="flex justify-center items-center py-16">
+      <span class="text-[var(--text-color)]">Cargando...</span>
+    </div>
+  } @else if (user) {
+    <div class="p-4">
+
+      <!-- Acciones -->
+      <div class="flex justify-end mb-6">
+        @if (!editMode) {
+          <button mat-stroked-button color="primary" (click)="toggleEdit()">
+            <mat-icon>edit</mat-icon> Editar perfil
+          </button>
+        } @else {
+          <div class="flex gap-2">
+            <button mat-stroked-button (click)="toggleEdit()" [disabled]="saving">
+              Cancelar
+            </button>
+            <button mat-flat-button color="primary" (click)="save()" [disabled]="saving">
+              {{ saving ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Formulario -->
+      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="firstName" [readonly]="!editMode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="lastName" [readonly]="!editMode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput formControlName="email" [readonly]="!editMode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Tipo de identificación</mat-label>
+          @if (editMode) {
+            <mat-select formControlName="identificationType">
+              @for (type of identificationTypes; track type.identificationTypeId) {
+                <mat-option [value]="type.identificationTypeId">{{ type.name }}</mat-option>
+              }
+            </mat-select>
+          } @else {
+            <input matInput [value]="user.identificationType.name" readonly />
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Número de identificación</mat-label>
+          <input matInput formControlName="identificationNumber" [readonly]="!editMode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Indicativo</mat-label>
+          @if (editMode) {
+            <mat-select formControlName="phoneCode">
+              @for (pc of phoneCodes; track pc.phoneCodeId) {
+                <mat-option [value]="pc.phoneCodeId">{{ pc.code }} - {{ pc.name }}</mat-option>
+              }
+            </mat-select>
+          } @else {
+            <input matInput [value]="user.phoneCode.code + ' - ' + user.phoneCode.name" readonly />
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Teléfono</mat-label>
+          <input matInput formControlName="phone" [readonly]="!editMode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Tipo de persona</mat-label>
+          @if (editMode) {
+            <mat-select formControlName="personType">
+              @for (pt of personTypes; track pt.personTypeId) {
+                <mat-option [value]="pt.personTypeId">{{ pt.name }}</mat-option>
+              }
+            </mat-select>
+          } @else {
+            <input matInput [value]="user.personType?.name || '—'" readonly />
+          }
+        </mat-form-field>
+
+        <!-- Solo lectura -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Rol</mat-label>
+          <input matInput [value]="user.roleType?.name" readonly />
+        </mat-form-field>
+
+      </form>
+    </div>
+  }
+</app-base-page>

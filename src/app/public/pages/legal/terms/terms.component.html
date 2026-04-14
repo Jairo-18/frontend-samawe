@@ -1,0 +1,46 @@
+<app-base-page
+  [showHeader]="false"
+  [showInfo]="false"
+  [showActions]="false"
+  [showBorder]="false"
+>
+  <div class="max-w-3xl mx-auto text-gray-700">
+    <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
+      Términos y Condiciones
+    </h3>
+
+    @if (section(); as sec) {
+      @for (item of sec.items; track item.legalItemId; let i = $index) {
+        <section class="mb-8">
+          @if (item.title) {
+            <h4
+              class="text-lg font-semibold text-gray-800 mb-3 border-b pb-1 block"
+            >
+              {{ i + 1 }}. {{ item.title }}
+            </h4>
+          }
+
+          @if (item.description) {
+            <p
+              class="text-sm leading-relaxed mb-3"
+              [innerHTML]="item.description | boldText"
+            ></p>
+          }
+
+          @if (item.children.length > 0) {
+            <ul class="list-disc pl-5 space-y-1 text-sm">
+              @for (child of item.children; track child.legalItemChildId) {
+                <li
+                  class="leading-relaxed"
+                  [innerHTML]="child.content | boldText"
+                ></li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    } @else {
+      <p class="text-sm text-gray-400 mt-8">No hay contenido disponible.</p>
+    }
+  </div>
+</app-base-page>

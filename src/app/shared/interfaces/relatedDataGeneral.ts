@@ -1,4 +1,7 @@
-import { Organizational } from '../../shared/interfaces/organizational.interface';
+import {
+  MediaType,
+  Organizational
+} from '../../shared/interfaces/organizational.interface';
 
 export interface CreateType {
   code: string;
@@ -154,5 +157,6 @@ export interface AppRelatedData {
   discountType: DiscountType[];
   additionalType: AdditionalType[];
   personType: PersonType[];
+  mediaType: MediaType[];
   organizational: Organizational[];
 }

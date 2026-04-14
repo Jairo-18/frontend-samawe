@@ -7,7 +7,9 @@ import {
   OrganizationalMedia,
   MediaType,
   CorporateValue,
-  BenefitSection
+  BenefitSection,
+  LegalSection,
+  LegalType
 } from '../../shared/interfaces/organizational.interface';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { BehaviorSubject, tap } from 'rxjs';
@@ -292,6 +294,102 @@ export class ApplicationService {
   deleteBenefitItem(itemId: string): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
       `${environment.apiUrl}benefit-section/items/${itemId}`
+    );
+  }
+
+  getLegalSections(
+    organizationalId: string
+  ): Observable<ApiResponseInterface<LegalSection[]>> {
+    return this._http.get<ApiResponseInterface<LegalSection[]>>(
+      `${environment.apiUrl}legal/organizational/${organizationalId}`
+    );
+  }
+
+  createLegalSection(
+    organizationalId: string,
+    data: { type: LegalType; items?: { title?: string; content: string; order?: number }[] }
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${environment.apiUrl}legal/organizational/${organizationalId}`,
+      data
+    );
+  }
+
+  deleteLegalSection(sectionId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/${sectionId}`
+    );
+  }
+
+  addLegalItem(
+    sectionId: string,
+    data: { title?: string; description?: string; order?: number }
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${environment.apiUrl}legal/${sectionId}/items`,
+      data
+    );
+  }
+
+  updateLegalItem(
+    itemId: string,
+    data: { title?: string; description?: string; order?: number }
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/items/${itemId}`,
+      data
+    );
+  }
+
+  deleteLegalItem(itemId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/items/${itemId}`
+    );
+  }
+
+  addLegalChild(
+    itemId: string,
+    data: { content: string; order?: number }
+  ): Observable<ApiResponseInterface<{ rowId: string }>> {
+    return this._http.post<ApiResponseInterface<{ rowId: string }>>(
+      `${environment.apiUrl}legal/items/${itemId}/children`,
+      data
+    );
+  }
+
+  updateLegalChild(
+    childId: string,
+    data: { content?: string; order?: number }
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/children/${childId}`,
+      data
+    );
+  }
+
+  deleteLegalChild(childId: string): Observable<ApiResponseInterface<void>> {
+    return this._http.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/children/${childId}`
+    );
+  }
+
+  reorderLegalItems(
+    sectionId: string,
+    items: { id: string; order: number }[]
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/${sectionId}/items/reorder`,
+      { items }
+    );
+  }
+
+  reorderLegalChildren(
+    itemId: string,
+    items: { id: string; order: number }[]
+  ): Observable<ApiResponseInterface<void>> {
+    return this._http.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}legal/items/${itemId}/children/reorder`,
+      { items }
     );
   }
 
