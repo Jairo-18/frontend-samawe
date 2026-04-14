@@ -69,14 +69,25 @@
             />
           }
         } @else {
-          <button
+          <app-button-landing
+            [label]="userInfo?.firstName ?? ''"
+            variant="transparent"
             [matMenuTriggerFor]="userMenu"
-            class="flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200 border-2 border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-green-50"
           >
-            <mat-icon>account_circle</mat-icon>
-            <span class="font-bold">{{ userInfo?.firstName }}</span>
-            <mat-icon class="scale-75">keyboard_arrow_down</mat-icon>
-          </button>
+            @if (userInfo?.avatarUrl) {
+              <img
+                slot="icon"
+                [src]="userInfo?.avatarUrl"
+                alt="avatar"
+                class="w-7 h-7 rounded-full object-cover border border-[var(--primary-color)]"
+              />
+            } @else {
+              <mat-icon slot="icon">account_circle</mat-icon>
+            }
+            <mat-icon slot="suffix" class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px]">
+              keyboard_arrow_down
+            </mat-icon>
+          </app-button-landing>
 
           <mat-menu #userMenu="matMenu" xPosition="before">
             <ng-container *ngFor="let item of loggedMenuItems">

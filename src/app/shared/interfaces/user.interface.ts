@@ -11,6 +11,7 @@ export interface UserInterface {
   confirmPassword: string;
   roleType?: RoleType;
   personType?: PersonType;
+  avatarUrl?: string;
   organizationalId?: string;
   createdAt: Date;
   updatedAt: Date;

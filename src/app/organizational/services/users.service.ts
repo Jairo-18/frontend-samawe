@@ -86,4 +86,19 @@ export class UsersService {
   deleteUserPanel(userId: string): Observable<unknown> {
     return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
   }
+
+  uploadAvatar(userId: string, file: File): Observable<ApiResponseInterface<void>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this._httpClient.patch<ApiResponseInterface<void>>(
+      `${environment.apiUrl}user/${userId}/avatar`,
+      formData
+    );
+  }
+
+  deleteAvatar(userId: string): Observable<ApiResponseInterface<void>> {
+    return this._httpClient.delete<ApiResponseInterface<void>>(
+      `${environment.apiUrl}user/${userId}/avatar`
+    );
+  }
 }

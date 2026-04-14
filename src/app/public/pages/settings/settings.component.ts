@@ -40,12 +40,12 @@ export class SettingsComponent implements OnInit {
     const roleCode = this.userInfo?.roleType?.code?.toLowerCase().trim() || '';
 
     const profileItems: SettingsItem[] = [
-      { label: 'Ver Perfil', icon: 'person', route: '/user/profile' },
-      {
-        label: 'Cambiar Contraseña',
-        icon: 'lock',
-        route: `/auth/${this.userInfo?.userId}/change-password`
-      }
+      { label: 'Ver Perfil', icon: 'person', route: '/user/profile' }
+      // {
+      //   label: 'Cambiar Contraseña',
+      //   icon: 'lock',
+      //   route: `/auth/${this.userInfo?.userId}/change-password`
+      // }
     ];
 
     if (

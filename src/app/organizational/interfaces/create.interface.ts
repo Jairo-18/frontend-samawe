@@ -34,6 +34,7 @@ export interface UserComplete {
   roleType?: RoleType;
   personType?: PersonType;
   isActive: boolean;
+  avatarUrl?: string;
   organizationalId?: string;
   createdAt: Date;
   updatedAt: Date;
