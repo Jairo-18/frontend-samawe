@@ -21,8 +21,6 @@ export class GoogleCallbackComponent implements OnInit {
   error: string | null = null;
 
   ngOnInit(): void {
-    // Data arrives via URL fragment (#) to avoid tokens appearing in server
-    // access logs and Referer headers. Parse the fragment manually.
     const fragment = window.location.hash.replace(/^#/, '');
     const params = new URLSearchParams(fragment);
 
@@ -60,11 +58,14 @@ export class GoogleCallbackComponent implements OnInit {
     this.loading = false;
 
     if (params.get('isNewUser') === 'true') {
-      localStorage.setItem('_pendingGoogleProfile', JSON.stringify({
-        firstName: params.get('firstName') || '',
-        lastName: params.get('lastName') || '',
-        email: params.get('email') || '',
-      }));
+      localStorage.setItem(
+        '_pendingGoogleProfile',
+        JSON.stringify({
+          firstName: params.get('firstName') || '',
+          lastName: params.get('lastName') || '',
+          email: params.get('email') || ''
+        })
+      );
       this._router.navigateByUrl('/complete-profile');
     } else {
       this._router.navigateByUrl('/home');

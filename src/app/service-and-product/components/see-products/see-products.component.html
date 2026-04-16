@@ -36,10 +36,20 @@
     </div>
   </section>
   <div class="mt-4">
-    <div class="overflow-auto mb-3">
-      @if (loading) {
-        <app-loader></app-loader>
-      } @else if (dataSource.data.length > 0) {
+    @if (!loading && dataSource.data.length > 0) {
+      <mat-paginator
+        [length]="paginationParams.total"
+        [pageSize]="paginationParams.perPage"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageIndex]="(paginationParams.page || 0) - 1"
+        (page)="onChangePagination($event)"
+      ></mat-paginator>
+    }
+    <div class="table-flip-wrapper mb-3">
+      <div class="table-flip-inner">
+        @if (loading) {
+          <app-loader></app-loader>
+        } @else if (dataSource.data.length > 0) {
         <table mat-table [dataSource]="dataSource" matSort>
           <ng-container matColumnDef="categoryType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
@@ -171,18 +181,12 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-        <mat-paginator
-          [length]="paginationParams.total"
-          [pageSize]="paginationParams.perPage"
-          [pageSizeOptions]="[5, 10, 25, 100]"
-          [pageIndex]="(paginationParams.page || 0) - 1"
-          (page)="onChangePagination($event)"
-        ></mat-paginator>
-      } @else {
-        <div class="w-full justify-center items-center flex">
-          <p>No se encontraron productos</p>
-        </div>
-      }
+        } @else {
+          <div class="w-full justify-center items-center flex">
+            <p>No se encontraron productos</p>
+          </div>
+        }
+      </div>
     </div>
   </div>
 } @else {
@@ -228,10 +232,19 @@
     <mat-tab [label]="'Resultados'">
       <div class="mat-elevation-z8">
         <app-loader *ngIf="loading"></app-loader>
+        <mat-paginator
+          *ngIf="!loading && dataSource.data.length > 0"
+          [length]="paginationParams.total"
+          [pageSize]="paginationParams.perPage"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [pageIndex]="(paginationParams.page || 0) - 1"
+          (page)="onChangePagination($event)"
+        ></mat-paginator>
         <div
           *ngIf="!loading && dataSource.data.length > 0"
-          class="overflow-auto mb-3"
+          class="table-flip-wrapper mb-3"
         >
+          <div class="table-flip-inner">
           <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="categoryType">
               <th mat-header-cell *matHeaderCellDef class="center-text">Rol</th>
@@ -360,6 +373,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
+          </div>
         </div>
         <div
           *ngIf="!loading && dataSource.data.length === 0"
@@ -367,13 +381,6 @@
         >
           <p>No se encontraron productos</p>
         </div>
-        <mat-paginator
-          [length]="paginationParams.total"
-          [pageSize]="paginationParams.perPage"
-          [pageSizeOptions]="[5, 10, 25, 100]"
-          [pageIndex]="(paginationParams.page || 0) - 1"
-          (page)="onChangePagination($event)"
-        ></mat-paginator>
       </div>
     </mat-tab>
   </mat-tab-group>

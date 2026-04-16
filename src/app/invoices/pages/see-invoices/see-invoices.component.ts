@@ -8,6 +8,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CreateInvoiceDialogComponent } from '../../components/create-invoice-dialog/create-invoice-dialog.component';
@@ -51,6 +53,8 @@ import { FormGroup } from '@angular/forms';
     LoaderComponent,
     MatTableModule,
     MatMenuModule,
+    MatCheckboxModule,
+    MatTooltipModule,
     InvoicePdfComponent,
     FormatCopPipe
   ],
@@ -68,7 +72,11 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
   selectedInvoice: any = null;
   invoiceToPrintData?: Invoice;
+  selectedInvoiceIds = new Set<number>();
+  downloadingExcel: boolean = false;
+
   displayedColumns: string[] = [
+    'select',
     'invoiceType',
     'code',
     'clientName',
@@ -163,7 +171,7 @@ export class SeeInvoicesComponent implements OnInit {
   ];
   constructor(private _invoicePrintService: InvoicePrintService) {
     this.isMobile = window.innerWidth <= 768;
-    if (this.isMobile) this.paginationParams.perPage = 5;
+    if (this.isMobile) this.paginationParams.perPage = 10;
     this.userLogged = this._authService.getUserLoggedIn();
   }
   ngOnInit(): void {
@@ -399,5 +407,73 @@ export class SeeInvoicesComponent implements OnInit {
         );
       }
     }, 300);
+  }
+
+  isSelected(invoiceId: number): boolean {
+    return this.selectedInvoiceIds.has(invoiceId);
+  }
+
+  toggleSelection(invoiceId: number): void {
+    if (this.selectedInvoiceIds.has(invoiceId)) {
+      this.selectedInvoiceIds.delete(invoiceId);
+    } else {
+      this.selectedInvoiceIds.add(invoiceId);
+    }
+  }
+
+  get mobileColumns(): string[] {
+    return this.displayedColumns.filter((c) => c !== 'select');
+  }
+
+  get currentPageIds(): number[] {
+    return this.dataSource.data.map((inv: any) => inv.invoiceId);
+  }
+
+  isAllCurrentPageSelected(): boolean {
+    return (
+      this.currentPageIds.length > 0 &&
+      this.currentPageIds.every((id) => this.selectedInvoiceIds.has(id))
+    );
+  }
+
+  isIndeterminate(): boolean {
+    const selected = this.currentPageIds.filter((id) =>
+      this.selectedInvoiceIds.has(id)
+    );
+    return selected.length > 0 && selected.length < this.currentPageIds.length;
+  }
+
+  toggleAllCurrentPage(): void {
+    if (this.isAllCurrentPageSelected()) {
+      this.currentPageIds.forEach((id) => this.selectedInvoiceIds.delete(id));
+    } else {
+      this.currentPageIds.forEach((id) => this.selectedInvoiceIds.add(id));
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedInvoiceIds.clear();
+  }
+
+  downloadSelectedExcel(): void {
+    if (this.selectedInvoiceIds.size === 0) return;
+    this.downloadingExcel = true;
+    const ids = Array.from(this.selectedInvoiceIds);
+    this._invoiceService.downloadSelectedInvoicesExcel(ids).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const now = new Date();
+        const fecha = now.toLocaleDateString('es-CO').replace(/\//g, '-');
+        a.href = url;
+        a.download = `Facturas_Seleccionadas_${fecha}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.downloadingExcel = false;
+      },
+      error: () => {
+        this.downloadingExcel = false;
+      }
+    });
   }
 }

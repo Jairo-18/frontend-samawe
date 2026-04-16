@@ -2,3 +2,12 @@
   overflow-y: hidden !important;
 }
 
+.table-flip-wrapper {
+  overflow-x: auto;
+  transform: rotateX(180deg);
+
+  .table-flip-inner {
+    transform: rotateX(180deg);
+  }
+}
+

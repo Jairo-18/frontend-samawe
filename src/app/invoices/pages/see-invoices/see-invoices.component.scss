@@ -1,0 +1,9 @@
+.table-flip-wrapper {
+  overflow-x: auto;
+  transform: rotateX(180deg);
+  padding-bottom: 16px;
+
+  .table-flip-inner {
+    transform: rotateX(180deg);
+  }
+}

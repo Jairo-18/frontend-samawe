@@ -271,11 +271,13 @@ export class AddAccommodationComponent implements OnInit {
       if (rate > 1) rate = rate / 100;
       taxPercent = rate;
     }
-    // priceSale is all-in; decompose tax for display only
+
     this.unitPrice = this.subtotal;
-    this.taxAmount = taxPercent > 0
-      ? Math.round((this.subtotal - this.subtotal / (1 + taxPercent)) * 100) / 100
-      : 0;
+    this.taxAmount =
+      taxPercent > 0
+        ? Math.round((this.subtotal - this.subtotal / (1 + taxPercent)) * 100) /
+          100
+        : 0;
     let amount = this.parseNumber(formValue.amount);
     if (amount <= 0) amount = 1;
 
@@ -355,7 +357,9 @@ export class AddAccommodationComponent implements OnInit {
       amountPerson: acc.amountPerson ?? 0,
       amountBathroom: acc.amountBathroom ?? 0,
       priceSale: price,
-      ...(acc.taxeType?.taxeTypeId != null && { taxeTypeId: acc.taxeType.taxeTypeId })
+      ...(acc.taxeType?.taxeTypeId != null && {
+        taxeTypeId: acc.taxeType.taxeTypeId
+      })
     });
     this.calculateFinalPrice();
   }

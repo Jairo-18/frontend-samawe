@@ -72,6 +72,14 @@ export class InvoiceService {
     );
   }
 
+  downloadSelectedInvoicesExcel(invoiceIds: number[]): Observable<Blob> {
+    return this._httpClient.post(
+      `${environment.apiUrl}invoices/selected/excel`,
+      { invoiceIds },
+      { responseType: 'blob' }
+    );
+  }
+
   addDetails(
     invoiceId: number,
     details: CreateInvoiceDetaill[]
