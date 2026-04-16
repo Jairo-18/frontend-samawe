@@ -69,6 +69,7 @@ export interface AddedAccommodationInvoiceDetaill {
   bedTypeId: number;
   stateType?: StateType;
   taxeTypeId?: number;
+  taxeType?: TaxeType;
   organizationalId?: string;
 }
 export interface AddedExcursionInvoiceDetaill {
@@ -81,6 +82,7 @@ export interface AddedExcursionInvoiceDetaill {
   stateType?: StateType;
   categoryTypeId: number;
   taxeTypeId?: number;
+  taxeType?: TaxeType;
   organizationalId?: string;
 }
 export interface TogglePaymentResponse {

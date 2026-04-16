@@ -188,7 +188,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       }),
       amount: product.amount,
       categoryId: product.categoryType?.categoryTypeId,
-      ...(product.taxeTypeId != null && { taxeTypeId: product.taxeTypeId })
+      ...(product.taxeType?.taxeTypeId != null && { taxeTypeId: product.taxeType.taxeTypeId })
     });
     this.updateFinalPrice();
   }

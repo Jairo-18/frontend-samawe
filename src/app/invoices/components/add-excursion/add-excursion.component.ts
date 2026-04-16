@@ -197,7 +197,7 @@ export class AddExcursionComponent implements OnInit {
           priceBuy: fallbackPrice,
           priceWithoutTax: fallbackPrice
         }),
-        ...(exc.taxeTypeId != null && { taxeTypeId: exc.taxeTypeId })
+        ...(exc.taxeType?.taxeTypeId != null && { taxeTypeId: exc.taxeType.taxeTypeId })
       },
       { emitEvent: true }
     );

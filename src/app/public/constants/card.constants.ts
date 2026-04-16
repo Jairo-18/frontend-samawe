@@ -43,8 +43,8 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
   },
   {
     icon: 'tour',
-    title: 'Pasadías',
-    description: 'Crea tus pasadías y administra tus pasadías',
+    title: 'Pasadías y Servicios',
+    description: 'Crea tus pasadías o servicios y administralos',
     route: '/service-and-product/general',
     queryParams: { editExcursion: true },
     iconNext: 'navigate_next',

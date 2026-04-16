@@ -38,9 +38,10 @@ export class PendingItemsTableComponent {
   getTaxByType(item: PendingInvoiceDetail, taxeTypeId: number): number {
     if (item.payload.taxeTypeId !== taxeTypeId) return 0;
     const priceSale = Number(item.payload.priceSale || 0);
+    const amount = Number(item.payload.amount || 1);
     const taxRate = this.getTaxPercentage(item.payload.taxeTypeId);
     return taxRate > 0
-      ? Math.round((priceSale - priceSale / (1 + taxRate)) * 100) / 100
+      ? Math.round((priceSale - priceSale / (1 + taxRate)) * amount * 100) / 100
       : 0;
   }
   getTaxPercentage(taxeTypeId?: number): number {

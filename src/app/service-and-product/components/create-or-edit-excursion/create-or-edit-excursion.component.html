@@ -5,7 +5,7 @@
   [subtitle]="
     isEditMode
       ? 'Edita los campos que desees'
-      : 'Aquí puedes crear pasadías con sus respectivos campos'
+      : 'Aquí puedes crear pasadías o servicios con sus respectivos campos'
   "
 ></app-section-header>
 <form [formGroup]="excursionForm" class="flex flex-col">
@@ -155,7 +155,7 @@
         [disabled]="isSaving"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-        {{ isEditMode ? 'Guardar cambios' : 'Crear pasadía' }}
+        {{ isEditMode ? 'Guardar cambios' : 'Crear' }}
       </button>
     </div>
   </section>

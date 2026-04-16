@@ -355,7 +355,7 @@ export class AddAccommodationComponent implements OnInit {
       amountPerson: acc.amountPerson ?? 0,
       amountBathroom: acc.amountBathroom ?? 0,
       priceSale: price,
-      ...(acc.taxeTypeId != null && { taxeTypeId: acc.taxeTypeId })
+      ...(acc.taxeType?.taxeTypeId != null && { taxeTypeId: acc.taxeType.taxeTypeId })
     });
     this.calculateFinalPrice();
   }

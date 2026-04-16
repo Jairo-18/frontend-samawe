@@ -82,6 +82,7 @@ export class SeeInvoicesComponent implements OnInit {
     'totalVat',
     'totalIco8',
     'totalIco5',
+    'subtotalWithoutTax',
     'subtotalWithTax',
     'total',
     'actions'

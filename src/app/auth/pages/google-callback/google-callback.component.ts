@@ -21,50 +21,53 @@ export class GoogleCallbackComponent implements OnInit {
   error: string | null = null;
 
   ngOnInit(): void {
-    this._route.queryParams.subscribe((params) => {
-      const accessToken = params['accessToken'];
-      const refreshToken = params['refreshToken'];
-      const userId = params['userId'];
-      const roleTypeId = params['roleTypeId'];
-      const roleTypeName = params['roleTypeName'];
-      const accessSessionId = params['accessSessionId'];
-      const organizationalId = params['organizationalId'] || null;
-      const avatarUrl = params['avatarUrl'] || null;
+    // Data arrives via URL fragment (#) to avoid tokens appearing in server
+    // access logs and Referer headers. Parse the fragment manually.
+    const fragment = window.location.hash.replace(/^#/, '');
+    const params = new URLSearchParams(fragment);
 
-      if (!accessToken || !userId) {
-        this.error =
-          'Error al autenticar con Google. Por favor intenta de nuevo.';
-        this.loading = false;
-        setTimeout(() => this._router.navigate(['/auth/login']), 2000);
-        return;
-      }
+    const accessToken = params.get('accessToken');
+    const refreshToken = params.get('refreshToken') ?? '';
+    const userId = params.get('userId');
+    const roleTypeId = params.get('roleTypeId') ?? '';
+    const roleTypeName = params.get('roleTypeName') ?? '';
+    const accessSessionId = params.get('accessSessionId') ?? '';
+    const organizationalId = params.get('organizationalId') || null;
+    const avatarUrl = params.get('avatarUrl') || null;
 
-      const sessionData: LoginSuccessInterface = {
-        tokens: { accessToken, refreshToken },
-        user: {
-          userId,
-          roleType: { roleTypeId, name: roleTypeName },
-          organizationalId: organizationalId || null,
-          avatarUrl: avatarUrl || null
-        },
-        session: { accessSessionId }
-      };
-
-      this._authService.saveLocalUserData(sessionData);
-      this._authService['_isLoggedSubject'].next(true);
-
+    if (!accessToken || !userId) {
+      this.error =
+        'Error al autenticar con Google. Por favor intenta de nuevo.';
       this.loading = false;
+      setTimeout(() => this._router.navigate(['/auth/login']), 2000);
+      return;
+    }
 
-      if (params['isNewUser'] === 'true') {
-        localStorage.setItem('_pendingGoogleProfile', JSON.stringify({
-          firstName: params['firstName'] || '',
-          lastName: params['lastName'] || '',
-          email: params['email'] || '',
-        }));
-        this._router.navigateByUrl('/complete-profile');
-      } else {
-        this._router.navigateByUrl('/home');
-      }
-    });
+    const sessionData: LoginSuccessInterface = {
+      tokens: { accessToken, refreshToken },
+      user: {
+        userId,
+        roleType: { roleTypeId, name: roleTypeName },
+        organizationalId: organizationalId || null,
+        avatarUrl: avatarUrl || null
+      },
+      session: { accessSessionId }
+    };
+
+    this._authService.saveLocalUserData(sessionData);
+    this._authService['_isLoggedSubject'].next(true);
+
+    this.loading = false;
+
+    if (params.get('isNewUser') === 'true') {
+      localStorage.setItem('_pendingGoogleProfile', JSON.stringify({
+        firstName: params.get('firstName') || '',
+        lastName: params.get('lastName') || '',
+        email: params.get('email') || '',
+      }));
+      this._router.navigateByUrl('/complete-profile');
+    } else {
+      this._router.navigateByUrl('/home');
+    }
   }
 }
