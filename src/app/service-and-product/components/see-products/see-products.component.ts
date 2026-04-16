@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProductComplete } from './../../interface/product.interface';
 import { CommonModule } from '@angular/common';
 import {
@@ -36,6 +37,7 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
 @Component({
   selector: 'app-see-products',
@@ -56,6 +58,7 @@ import { ProductsPrintComponent } from '../../../shared/components/products-prin
     MatTabGroup,
     SectionHeaderComponent,
     FormatCopPipe,
+    FormatPercentPipe,
     ProductsPrintComponent
   ],
   templateUrl: './see-products.component.html',
@@ -85,6 +88,7 @@ export class SeeProductsComponent implements OnInit {
     'isActive',
     'priceBuy',
     'priceSale',
+    'taxeType',
     'actions'
   ];
   dataSource = new MatTableDataSource<ProductComplete>([]);
@@ -228,4 +232,3 @@ export class SeeProductsComponent implements OnInit {
     });
   }
 }
-

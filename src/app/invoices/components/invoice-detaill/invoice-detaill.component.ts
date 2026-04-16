@@ -61,17 +61,11 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     hasNextPage: false
   };
   displayedColumns: string[] = [
-    'code',
-    'name',
-    'startDate',
-    'endDate',
-    'amount',
-    'priceWithoutTax',
-    'priceWithTax',
-    'subtotal',
-    'isPaid',
-    'actions'
+    'code', 'name', 'startDate', 'endDate', 'amount',
+    'priceWithoutTax', 'taxVat', 'taxIco8', 'taxIco5',
+    'subtotal', 'isPaid', 'actions'
   ];
+
   dataSource = new MatTableDataSource<InvoiceDetail>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private paginatorInitialized = false;

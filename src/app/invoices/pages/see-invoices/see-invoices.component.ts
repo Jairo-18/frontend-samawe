@@ -79,7 +79,10 @@ export class SeeInvoicesComponent implements OnInit {
     'stateType',
     'invoiceElectronic',
     'tableNumber',
-    'totalTaxes',
+    'totalVat',
+    'totalIco8',
+    'totalIco5',
+    'subtotalWithTax',
     'total',
     'actions'
   ];

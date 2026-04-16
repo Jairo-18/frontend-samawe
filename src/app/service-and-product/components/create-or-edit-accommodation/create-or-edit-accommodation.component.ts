@@ -32,7 +32,8 @@ import { AccommodationsService } from '../../services/accommodations.service';
 import {
   BedType,
   CategoryType,
-  StateType
+  StateType,
+  TaxeType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
@@ -66,6 +67,7 @@ export class CreateOrEditAccommodationComponent
 {
   @Input() stateTypes: StateType[] = [];
   @Input() bedTypes: BedType[] = [];
+  @Input() taxeTypes: TaxeType[] = [];
   @Input() currentAccommodation?: AccommodationComplete;
   @Output() accommodationSaved = new EventEmitter<void>();
   @Output() accommodationCanceled = new EventEmitter<void>();
@@ -136,7 +138,8 @@ export class CreateOrEditAccommodationComponent
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
-      stateTypeId: [null, Validators.required]
+      stateTypeId: [2, [Validators.required]],
+      taxeTypeId: [1, [Validators.required]]
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -179,7 +182,9 @@ export class CreateOrEditAccommodationComponent
       amountBathroom: accommodation.amountBathroom ?? 0,
       priceBuy: accommodation.priceBuy,
       priceSale: accommodation.priceSale,
-      stateTypeId: accommodation.stateType?.stateTypeId
+      stateTypeId: accommodation.stateType?.stateTypeId,
+      taxeTypeId:
+        accommodation.taxeType?.taxeTypeId ?? accommodation.taxeTypeId ?? null
     });
     this.accommodationImages = accommodation.images || [];
     this.cdr.detectChanges();
@@ -197,7 +202,8 @@ export class CreateOrEditAccommodationComponent
       amountBathroom: 0,
       priceBuy: 0,
       priceSale: 0,
-      stateTypeId: null
+      stateTypeId: null,
+      taxeTypeId: 1
     });
     this.accommodationImages = [];
     if (this.imageUploader) {
@@ -258,7 +264,8 @@ export class CreateOrEditAccommodationComponent
         priceSale: Math.abs(Number(formValue.priceSale)),
         categoryTypeId: formValue.categoryTypeId,
         bedTypeId: formValue.bedTypeId,
-        stateTypeId: formValue.stateTypeId
+        stateTypeId: formValue.stateTypeId,
+        taxeTypeId: formValue.taxeTypeId ?? undefined
       };
       if (this.isEditMode) {
         const updateData = { ...accommodationSave };
@@ -316,4 +323,3 @@ export class CreateOrEditAccommodationComponent
     this.resetForm();
   }
 }
-

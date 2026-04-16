@@ -30,6 +30,9 @@ export interface Invoice {
   total?: string;
   paidTotal?: number;
   totalTaxes?: number;
+  totalVat?: number;
+  totalIco8?: number;
+  totalIco5?: number;
   startDate: string;
   endDate: string;
   user: UserComplete;
@@ -81,6 +84,9 @@ export interface InvoiceComplete {
   paidTotal?: number;
   startDate: string;
   totalTaxes?: number;
+  totalVat?: number;
+  totalIco8?: number;
+  totalIco5?: number;
   endDate: string;
   user: UserComplete;
   employee: UserComplete;

@@ -130,9 +130,8 @@ export interface DiscountType {
 }
 export interface TaxeType {
   taxeTypeId: number;
-  code?: string;
   name?: string;
-  percentage?: string;
+  percentage?: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

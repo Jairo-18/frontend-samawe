@@ -131,7 +131,7 @@ export class AddAccommodationComponent implements OnInit {
       name: ['', Validators.required],
       accommodationId: [null, Validators.required],
       priceSale: [0],
-      priceWithoutTax: [null, Validators.required],
+      priceWithoutTax: [null],
       taxeTypeId: [2],
       amount: [1, [Validators.required, Validators.min(1)]],
       amountPerson: [0],
@@ -271,8 +271,11 @@ export class AddAccommodationComponent implements OnInit {
       if (rate > 1) rate = rate / 100;
       taxPercent = rate;
     }
-    this.taxAmount = this.subtotal * taxPercent;
-    this.unitPrice = this.subtotal + this.taxAmount;
+    // priceSale is all-in; decompose tax for display only
+    this.unitPrice = this.subtotal;
+    this.taxAmount = taxPercent > 0
+      ? Math.round((this.subtotal - this.subtotal / (1 + taxPercent)) * 100) / 100
+      : 0;
     let amount = this.parseNumber(formValue.amount);
     if (amount <= 0) amount = 1;
 
@@ -351,7 +354,8 @@ export class AddAccommodationComponent implements OnInit {
       accommodationId: acc.accommodationId,
       amountPerson: acc.amountPerson ?? 0,
       amountBathroom: acc.amountBathroom ?? 0,
-      priceSale: price
+      priceSale: price,
+      ...(acc.taxeTypeId != null && { taxeTypeId: acc.taxeTypeId })
     });
     this.calculateFinalPrice();
   }
@@ -378,7 +382,7 @@ export class AddAccommodationComponent implements OnInit {
       return;
     }
     if (this.form.valid) {
-      const formValue = this.form.value;
+      const formValue = this.form.getRawValue();
       const priceToSend =
         this.subtotal && !isNaN(this.subtotal) && this.subtotal > 0
           ? this.subtotal
@@ -389,7 +393,7 @@ export class AddAccommodationComponent implements OnInit {
         accommodationId: formValue.accommodationId,
         amount: formValue.amount,
         priceBuy: Number(formValue.priceBuy) || 0,
-        priceWithoutTax: Number(priceToSend),
+        priceSale: Number(priceToSend),
         taxeTypeId: formValue.taxeTypeId,
         startDate: new Date(formValue.startDateTime).toISOString(),
         endDate: new Date(formValue.endDateTime).toISOString()

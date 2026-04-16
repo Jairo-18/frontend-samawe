@@ -182,19 +182,17 @@ export class ProfileComponent implements OnInit {
       phoneCode: String(raw.phoneCode),
       personType: raw.personType != null ? String(raw.personType) : undefined
     };
-    this._usersService
-      .updateUserProfile(userId, body)
-      .subscribe({
-        next: () => {
-          this._usersService.getUserEditPanel(userId).subscribe((res) => {
-            this.user = res.data;
-            this.editMode = false;
-            this.saving = false;
-          });
-        },
-        error: () => {
+    this._usersService.updateUserProfile(userId, body).subscribe({
+      next: () => {
+        this._usersService.getUserEditPanel(userId).subscribe((res) => {
+          this.user = res.data;
+          this.editMode = false;
           this.saving = false;
-        }
-      });
+        });
+      },
+      error: () => {
+        this.saving = false;
+      }
+    });
   }
 }

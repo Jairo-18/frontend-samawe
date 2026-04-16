@@ -83,7 +83,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       name: ['', Validators.required],
       excursionId: [null, Validators.required],
       priceSale: [0, [Validators.required, Validators.min(0)]],
-      priceWithoutTax: [0, Validators.required],
+      priceWithoutTax: [0],
       amount: [1, [Validators.required, Validators.min(1)]],
       taxeTypeId: [2],
       finalPrice: [0]
@@ -162,7 +162,8 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       ...(shouldUpdatePrice && {
         priceSale: exc.priceBuy,
         priceWithoutTax: exc.priceBuy
-      })
+      }),
+      ...(exc.taxeTypeId != null && { taxeTypeId: exc.taxeTypeId })
     });
     this.updateFinalPrice();
   }
@@ -185,9 +186,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         0
     );
     const amount = this.parseNumber(this.form.get('amount')?.value ?? 0);
-    const taxRate = this.getTaxRate();
-    const unitWithTax = base * (1 + taxRate);
-    const total = unitWithTax * amount;
+    const total = base * amount;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
   private round(n: number, d = 2): number {
@@ -251,7 +250,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       accommodationId: 0,
       excursionId: formValue.excursionId,
       amount: this.parseNumber(formValue.amount),
-      priceWithoutTax: this.parseNumber(formValue.priceWithoutTax),
+      priceSale: this.parseNumber(formValue.priceWithoutTax),
       taxeTypeId: formValue.taxeTypeId,
       startDate: this.getDateTimeFromInvoiceDate(),
       endDate: this.getDateTimeFromInvoiceDate()

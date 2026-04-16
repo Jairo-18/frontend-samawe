@@ -1,6 +1,7 @@
 import {
   CategoryType,
-  StateType
+  StateType,
+  TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
 export interface CreateExcursionPanel {
@@ -10,6 +11,7 @@ export interface CreateExcursionPanel {
   description?: string;
   priceBuy: number;
   taxe?: number;
+  taxeTypeId?: number;
   priceSale: number;
   stateTypeId: number;
   categoryTypeId: number;
@@ -23,6 +25,8 @@ export interface ExcursionComplete {
   priceBuy: number;
   priceSale: number;
   taxe?: number;
+  taxeTypeId?: number;
+  taxeType?: TaxeType;
   stateType: StateType;
   categoryType: CategoryType;
   updatedAt: Date;

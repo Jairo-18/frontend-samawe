@@ -119,7 +119,7 @@ export class AddProductComponent implements OnInit {
       productId: [null, Validators.required],
       priceSale: [0],
       priceBuy: [0, [Validators.required, Validators.min(0)]],
-      priceWithoutTax: [null, Validators.required],
+      priceWithoutTax: [null],
       taxeTypeId: [2],
       amountSale: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
@@ -171,9 +171,9 @@ export class AddProductComponent implements OnInit {
       productId: product.productId,
       priceSale: product.priceSale,
       priceBuy: product.priceBuy ?? 0,
-      priceWithoutTax: product.priceSale,
       amount: product.amount,
-      categoryId: product.categoryType?.categoryTypeId
+      categoryId: product.categoryType?.categoryTypeId,
+      ...(product.taxeTypeId != null && { taxeTypeId: product.taxeTypeId })
     });
     this.updateFinalPrice();
   }
@@ -184,7 +184,7 @@ export class AddProductComponent implements OnInit {
     this.form.reset({
       name: '',
       productId: null,
-      priceSale: { value: '', disabled: true },
+      priceSale: 0,
       priceBuy: 0,
       priceWithoutTax: 0,
       taxeTypeId: 2,
@@ -223,15 +223,11 @@ export class AddProductComponent implements OnInit {
     return rate;
   }
   private updateFinalPrice() {
-    const base = Number(
-      this.form.get('priceWithoutTax')?.value ??
-        this.form.get('priceSale')?.value ??
-        0
+    const priceSale = Number(
+      this.form.get('priceSale')?.value ?? 0
     );
     const amountSale = Number(this.form.get('amountSale')?.value ?? 0);
-    const taxRate = this.getTaxRate();
-    const unitWithTax = base * (1 + taxRate);
-    const total = unitWithTax * amountSale;
+    const total = priceSale * amountSale;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
   private round(n: number, d = 2): number {
@@ -265,14 +261,14 @@ export class AddProductComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const invoiceDetailPayload: CreateInvoiceDetaill = {
       productId: formValue.productId,
       accommodationId: 0,
       excursionId: 0,
       amount: formValue.amountSale,
       priceBuy: Number(formValue.priceBuy) || 0,
-      priceWithoutTax: Number(formValue.priceWithoutTax),
+      priceSale: Number(formValue.priceSale),
       taxeTypeId: formValue.taxeTypeId,
       startDate: new Date(formValue.startDateTime).toISOString(),
       endDate: new Date(formValue.endDateTime).toISOString()

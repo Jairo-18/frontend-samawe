@@ -1,7 +1,8 @@
 import {
   BedType,
   CategoryType,
-  StateType
+  StateType,
+  TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
 export interface CreateAccommodationPanel {
@@ -15,6 +16,7 @@ export interface CreateAccommodationPanel {
   amountBathroom: number;
   priceBuy: number;
   taxe?: number;
+  taxeTypeId?: number;
   priceSale: number;
   categoryTypeId: number;
   bedTypeId: number;
@@ -33,6 +35,8 @@ export interface AccommodationComplete {
   priceBuy: number;
   priceSale: number;
   taxe?: number;
+  taxeTypeId?: number;
+  taxeType?: TaxeType;
   categoryType: CategoryType;
   bedType: BedType;
   stateType?: StateType;

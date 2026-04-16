@@ -67,8 +67,6 @@
           Nombre requerido
         </mat-error>
       </mat-form-field>
-    </section>
-    <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Descripción</mat-label>
         <mat-icon matPrefix>description</mat-icon>
@@ -87,6 +85,8 @@
           Máximo 500 caracteres
         </mat-error>
       </mat-form-field>
+    </section>
+    <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Precio de compra</mat-label>
         <input
@@ -106,6 +106,16 @@
           class="text-right"
         />
         <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Tipo de impuesto</mat-label>
+        <mat-select formControlName="taxeTypeId">
+          <mat-option [value]="null">Sin impuesto</mat-option>
+          <mat-option *ngFor="let tax of taxeTypes" [value]="tax.taxeTypeId">
+            {{ tax.name }} ({{ tax.percentage }}%)
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>receipt</mat-icon>
       </mat-form-field>
     </section>
   </div>

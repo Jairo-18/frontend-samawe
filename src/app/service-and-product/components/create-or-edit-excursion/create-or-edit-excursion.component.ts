@@ -28,7 +28,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import {
   CategoryType,
-  StateType
+  StateType,
+  TaxeType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import {
   CreateExcursionPanel,
@@ -64,6 +65,7 @@ import { ImageItem } from '../../../shared/interfaces/image.interface';
 })
 export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   @Input() stateTypes: StateType[] = [];
+  @Input() taxeTypes: TaxeType[] = [];
   @Input() currentExcursion?: ExcursionComplete;
   @Output() excursionSaved = new EventEmitter<void>();
   @Output() excursionCanceled = new EventEmitter<void>();
@@ -121,7 +123,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
-      stateTypeId: [null, Validators.required]
+      stateTypeId: [2, [Validators.required]],
+      taxeTypeId: [1, [Validators.required]]
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -157,7 +160,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       description: excursion.description,
       priceBuy: excursion.priceBuy,
       priceSale: excursion.priceSale,
-      stateTypeId: excursion.stateType?.stateTypeId
+      stateTypeId: excursion.stateType?.stateTypeId,
+      taxeTypeId: excursion.taxeType?.taxeTypeId ?? excursion.taxeTypeId ?? null
     });
     this.excursionImages = excursion.images || [];
     this.cdr.detectChanges();
@@ -170,7 +174,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       description: '',
       priceBuy: 0,
       priceSale: 0,
-      stateTypeId: null
+      stateTypeId: null,
+      taxeTypeId: 1
     });
     this.excursionImages = [];
     if (this.imageUploader) {
@@ -224,7 +229,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
         categoryTypeId: formValue.categoryTypeId,
-        stateTypeId: formValue.stateTypeId
+        stateTypeId: formValue.stateTypeId,
+        taxeTypeId: formValue.taxeTypeId ?? undefined
       };
       if (this.isEditMode) {
         const updateData = { ...excursionSave };
@@ -280,4 +286,3 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     this.resetForm();
   }
 }
-

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -39,6 +40,7 @@ import {
 import { AccommodationsService } from '../../services/accommodations.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 @Component({
   selector: 'app-see-accommodations',
   standalone: true,
@@ -57,7 +59,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatTab,
     MatTabGroup,
     SectionHeaderComponent,
-    FormatCopPipe
+    FormatCopPipe,
+    FormatPercentPipe
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'
@@ -88,6 +91,7 @@ export class SeeAccommodationsComponent implements OnInit {
     'amountRoom',
     'priceBuy',
     'priceSale',
+    'taxeType',
     'actions'
   ];
   dataSource = new MatTableDataSource<CreateAccommodationPanel>([]);
@@ -215,4 +219,3 @@ export class SeeAccommodationsComponent implements OnInit {
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
 }
-

@@ -30,16 +30,19 @@ export class PendingItemsTableComponent {
   @Output() itemDeleted = new EventEmitter<number>();
   @Output() saveAll = new EventEmitter<void>();
   displayedColumns: string[] = [
-    'type',
-    'name',
-    'startDate',
-    'endDate',
-    'amount',
-    'priceWithoutTax',
-    'tax',
-    'subtotal',
-    'actions'
+    'type', 'name', 'startDate', 'endDate', 'amount',
+    'priceWithoutTax', 'taxVat', 'taxIco8', 'taxIco5',
+    'subtotal', 'actions'
   ];
+
+  getTaxByType(item: PendingInvoiceDetail, taxeTypeId: number): number {
+    if (item.payload.taxeTypeId !== taxeTypeId) return 0;
+    const priceSale = Number(item.payload.priceSale || 0);
+    const taxRate = this.getTaxPercentage(item.payload.taxeTypeId);
+    return taxRate > 0
+      ? Math.round((priceSale - priceSale / (1 + taxRate)) * 100) / 100
+      : 0;
+  }
   getTaxPercentage(taxeTypeId?: number): number {
     if (!taxeTypeId) return 0;
     const tax = this.taxeTypes.find((t) => t.taxeTypeId === taxeTypeId);
@@ -51,17 +54,25 @@ export class PendingItemsTableComponent {
     if (rate > 1) rate = rate / 100;
     return rate;
   }
+  calculateBasePrice(item: PendingInvoiceDetail): number {
+    const priceSale = Number(item.payload.priceSale || 0);
+    const taxRate = this.getTaxPercentage(item.payload.taxeTypeId);
+    return taxRate > 0
+      ? Math.round((priceSale / (1 + taxRate)) * 100) / 100
+      : priceSale;
+  }
   calculateTaxAmount(item: PendingInvoiceDetail): number {
-    const priceWithoutTax = Number(item.payload.priceWithoutTax || 0);
+    const priceSale = Number(item.payload.priceSale || 0);
     const amount = Number(item.payload.amount || 1);
     const taxRate = this.getTaxPercentage(item.payload.taxeTypeId);
-    return priceWithoutTax * amount * taxRate;
+    return taxRate > 0
+      ? Math.round((priceSale - priceSale / (1 + taxRate)) * amount * 100) / 100
+      : 0;
   }
   calculateSubtotal(item: PendingInvoiceDetail): number {
-    const priceWithoutTax = Number(item.payload.priceWithoutTax || 0);
+    const priceSale = Number(item.payload.priceSale || 0);
     const amount = Number(item.payload.amount || 1);
-    const taxAmount = this.calculateTaxAmount(item);
-    return priceWithoutTax * amount + taxAmount;
+    return priceSale * amount;
   }
   onDelete(index: number) {
     this.itemDeleted.emit(index);

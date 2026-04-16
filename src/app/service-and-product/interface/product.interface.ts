@@ -1,5 +1,6 @@
 import {
   CategoryType,
+  TaxeType,
   UnitOfMeasure
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
@@ -13,6 +14,7 @@ export interface CreateProductPanel {
   priceSale: number;
   isActive: boolean;
   taxe?: number;
+  taxeTypeId?: number;
   categoryTypeId: number;
   unitOfMeasureId?: number;
   organizationalId?: string;
@@ -29,6 +31,8 @@ export interface ProductComplete {
   isActive: boolean;
   categoryType: CategoryType;
   unitOfMeasure?: UnitOfMeasure;
+  taxeTypeId?: number;
+  taxeType?: TaxeType;
   organizationalId?: string;
   updatedAt: Date;
   createdAt: Date;

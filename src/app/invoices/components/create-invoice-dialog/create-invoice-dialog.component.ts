@@ -113,11 +113,31 @@ export class CreateInvoiceDialogComponent implements OnInit {
       allowedStateTypes.includes(Number(state.stateTypeId))
     );
 
+    this.form.get('payTypeId')?.valueChanges.subscribe((payTypeId) => {
+      this.applyTransferRule(payTypeId);
+    });
+
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
     } else {
       this.setupClientAutocomplete();
+    }
+  }
+
+  private isTransferPayType(payTypeId: number): boolean {
+    const selected = this.payTypes.find((p) => p.payTypeId === payTypeId);
+    return !!selected?.name?.toLowerCase().includes('transfer');
+  }
+
+  private applyTransferRule(payTypeId: number): void {
+    const electronicControl = this.form.get('invoiceElectronic');
+    if (this.isTransferPayType(payTypeId)) {
+      electronicControl?.setValue(true, { emitEvent: false });
+      electronicControl?.disable({ emitEvent: false });
+    } else {
+      electronicControl?.setValue(false, { emitEvent: false });
+      electronicControl?.enable({ emitEvent: false });
     }
   }
   private loadInvoiceData(invoiceId: number): void {
@@ -147,6 +167,9 @@ export class CreateInvoiceDialogComponent implements OnInit {
       transfer: invoice.transfer,
       stateTypeId: invoice.stateType?.stateTypeId
     });
+    if (invoice.payType?.payTypeId) {
+      this.applyTransferRule(invoice.payType.payTypeId);
+    }
     if (invoice.user) {
       const clientForDisplay: Partial<CreateUserPanel> = {
         userId: invoice.user.userId,

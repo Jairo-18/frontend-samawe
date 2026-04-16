@@ -94,6 +94,9 @@
           <mat-option [value]="false">No</mat-option>
         </mat-select>
         <mat-icon matPrefix>bolt</mat-icon>
+        <mat-hint *ngIf="form.get('invoiceElectronic')?.disabled">
+          Se activa automáticamente para pagos por transferencia
+        </mat-hint>
       </mat-form-field>
 
 

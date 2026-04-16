@@ -115,7 +115,7 @@ export class AddExcursionComponent implements OnInit {
           Validators.pattern(/^\d+([.,]\d{1,2})?$/)
         ]
       ],
-      priceWithoutTax: [null, Validators.required],
+      priceWithoutTax: [null],
       taxeTypeId: [2],
       amount: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
@@ -196,7 +196,8 @@ export class AddExcursionComponent implements OnInit {
         ...(shouldUpdatePrice && {
           priceBuy: fallbackPrice,
           priceWithoutTax: fallbackPrice
-        })
+        }),
+        ...(exc.taxeTypeId != null && { taxeTypeId: exc.taxeTypeId })
       },
       { emitEvent: true }
     );
@@ -221,8 +222,7 @@ export class AddExcursionComponent implements OnInit {
         0
     );
     const amount = this.parseNumber(this.form.get('amount')?.value ?? 0);
-    const taxRate = this.getTaxRate();
-    const total = base * (1 + taxRate) * amount;
+    const total = base * amount;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
   private round(n: number, d = 2): number {
@@ -287,7 +287,7 @@ export class AddExcursionComponent implements OnInit {
         excursionId: val.excursionId,
         amount: this.parseNumber(val.amount),
         priceBuy: this.parseNumber(val.priceBuy),
-        priceWithoutTax: this.parseNumber(val.priceWithoutTax),
+        priceSale: this.parseNumber(val.priceWithoutTax),
         taxeTypeId: val.taxeTypeId,
         startDate: new Date(val.startDateTime).toISOString(),
         endDate: new Date(val.endDateTime).toISOString()

@@ -6,7 +6,7 @@
     width 0.3s ease;
   width: 100%;
   display: flex;
-  min-height: 100dvh;
+  min-height: 100svh;
   flex-direction: column;
   margin-left: 0;
 
@@ -45,7 +45,7 @@
 }
 
 .auth-content-center {
-  min-height: calc(100dvh - $heigth-nav-bar);
+  min-height: calc(100svh - $heigth-nav-bar);
   width: 100%;
   display: flex;
   justify-content: center;

@@ -182,7 +182,7 @@ export class AddRecipeToOrderModalComponent implements OnInit {
       {
         productId: this.data.productId,
         amount: amount,
-        priceWithoutTax: 0
+        priceSale: 0
       }
     ];
 

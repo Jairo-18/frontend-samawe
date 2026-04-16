@@ -32,6 +32,7 @@ import { CreateProductPanel } from '../../interface/product.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import {
   CategoryType,
+  TaxeType,
   UnitOfMeasure
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
@@ -99,6 +100,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   }
   private _categoryTypes: CategoryType[] = [];
   @Input() unitOfMeasureTypes: UnitOfMeasure[] = [];
+  @Input() taxeTypes: TaxeType[] = [];
   productForm!: FormGroup;
   productId: number = 0;
   isEditMode: boolean = false;
@@ -132,7 +134,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
       isActive: [true, Validators.required],
-      unitOfMeasureId: [1, [Validators.required]]
+      unitOfMeasureId: [1, [Validators.required]],
+      taxeTypeId: [1, [Validators.required]]
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -170,7 +173,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       priceBuy: product.priceBuy,
       priceSale: product.priceSale,
       isActive: product.isActive ?? false,
-      unitOfMeasureId: product.unitOfMeasure?.unitOfMeasureId ?? null
+      unitOfMeasureId: product.unitOfMeasure?.unitOfMeasureId ?? null,
+      taxeTypeId: product.taxeType?.taxeTypeId ?? product.taxeTypeId ?? null
     });
     this.productImages = product.images || [];
     this.cdr.detectChanges();
@@ -185,7 +189,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       priceBuy: 0,
       priceSale: 0,
       isActive: true,
-      unitOfMeasureId: null
+      unitOfMeasureId: null,
+      taxeTypeId: 1
     });
     this.productImages = [];
     if (this.imageUploader) {
@@ -238,7 +243,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
         isActive: formValue.isActive,
-        unitOfMeasureId: formValue.unitOfMeasureId ?? undefined
+        unitOfMeasureId: formValue.unitOfMeasureId ?? undefined,
+        taxeTypeId: formValue.taxeTypeId ?? undefined
       };
       if (this.isEditMode) {
         const updateData = { ...productSave };
@@ -291,4 +297,3 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     this.resetForm();
   }
 }
-

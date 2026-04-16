@@ -103,7 +103,7 @@ export class AddInvoiceBuyComponent implements OnInit {
           Validators.pattern(/^\d+([.,]\d{1,2})?$/)
         ]
       ],
-      priceWithoutTax: [0, Validators.required],
+      priceWithoutTax: [0],
       taxeTypeId: [2],
       amountSale: [1, [Validators.required, Validators.min(1)]],
       finalPrice: [0],
@@ -187,7 +187,8 @@ export class AddInvoiceBuyComponent implements OnInit {
         priceWithoutTax: product.priceBuy ?? 0
       }),
       amount: product.amount,
-      categoryId: product.categoryType?.categoryTypeId
+      categoryId: product.categoryType?.categoryTypeId,
+      ...(product.taxeTypeId != null && { taxeTypeId: product.taxeTypeId })
     });
     this.updateFinalPrice();
   }
@@ -235,9 +236,7 @@ export class AddInvoiceBuyComponent implements OnInit {
     const amountSale = this.parseNumber(
       this.form.get('amountSale')?.value ?? 0
     );
-    const taxRate = this.getTaxRate();
-    const unitWithTax = base * (1 + taxRate);
-    const total = unitWithTax * amountSale;
+    const total = base * amountSale;
     this.form.patchValue({ finalPrice: this.round(total, 2) });
   }
   private round(n: number, d = 2): number {
@@ -277,14 +276,14 @@ export class AddInvoiceBuyComponent implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const invoiceDetailPayload: CreateInvoiceDetaill = {
       productId: formValue.productId,
       accommodationId: 0,
       excursionId: 0,
       amount: this.parseNumber(formValue.amountSale),
       priceBuy: this.parseNumber(formValue.priceBuy),
-      priceWithoutTax: this.parseNumber(formValue.priceWithoutTax),
+      priceSale: this.parseNumber(formValue.priceWithoutTax),
       taxeTypeId: formValue.taxeTypeId,
       startDate: this.getDateTimeFromInvoiceDate(),
       endDate: this.getDateTimeFromInvoiceDate()

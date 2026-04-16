@@ -47,13 +47,25 @@
           P. sin impuesto
         </th>
         <td mat-cell *matCellDef="let item" class="right-text">
-          {{ item.payload.priceWithoutTax | formatCop }}
+          {{ calculateBasePrice(item) | formatCop }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="tax">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Impuesto</th>
+      <ng-container matColumnDef="taxVat">
+        <th mat-header-cell *matHeaderCellDef class="center-text">IVA 19%</th>
         <td mat-cell *matCellDef="let item" class="right-text">
-          {{ calculateTaxAmount(item) | formatCop}}
+          {{ getTaxByType(item, 1) | formatCop }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="taxIco8">
+        <th mat-header-cell *matHeaderCellDef class="center-text">IPO 8%</th>
+        <td mat-cell *matCellDef="let item" class="right-text">
+          {{ getTaxByType(item, 3) | formatCop }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="taxIco5">
+        <th mat-header-cell *matHeaderCellDef class="center-text">IPO 5%</th>
+        <td mat-cell *matCellDef="let item" class="right-text">
+          {{ getTaxByType(item, 4) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="subtotal">

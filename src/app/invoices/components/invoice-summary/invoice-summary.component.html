@@ -72,16 +72,46 @@
     </div>
   </div>
   <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
-  <div class="flex content-between">
-    <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Impuesto:</span>
+  @if ((invoiceData.totalVat ?? 0) > 0) {
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold text-xs md:text-base">IVA 19%:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-xs md:text-base">{{ invoiceData.totalVat ?? 0 | formatCop }}</span>
+      </div>
     </div>
-    <div class="flex justify-end w-[50%]">
-      <span class="text-xs md:text-base">
-        {{ invoiceData.totalTaxes ?? 0 | formatCop }}
-      </span>
+  }
+  @if ((invoiceData.totalIco8 ?? 0) > 0) {
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold text-xs md:text-base">IPO 8%:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-xs md:text-base">{{ invoiceData.totalIco8 ?? 0 | formatCop }}</span>
+      </div>
     </div>
-  </div>
+  }
+  @if ((invoiceData.totalIco5 ?? 0) > 0) {
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold text-xs md:text-base">IPO 5%:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-xs md:text-base">{{ invoiceData.totalIco5 ?? 0 | formatCop }}</span>
+      </div>
+    </div>
+  }
+  @if ((invoiceData.totalTaxes ?? 0) > 0) {
+    <div class="flex content-between">
+      <div class="flex justify-start w-[50%]">
+        <span class="font-bold text-xs md:text-base">Total Impuestos:</span>
+      </div>
+      <div class="flex justify-end w-[50%]">
+        <span class="text-xs md:text-base">{{ invoiceData.totalTaxes ?? 0 | formatCop }}</span>
+      </div>
+    </div>
+  }
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
       <span class="font-bold text-xs md:text-base">Total:</span>

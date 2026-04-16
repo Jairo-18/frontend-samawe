@@ -20,6 +20,7 @@ import {
   BedType,
   CategoryType,
   StateType,
+  TaxeType,
   UnitOfMeasure
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { AccommodationComplete } from '../../interface/accommodation.interface';
@@ -74,6 +75,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   stateTypes: StateType[] = [];
   bedTypes: BedType[] = [];
   unitOfMeasureTypes: UnitOfMeasure[] = [];
+  taxeTypes: TaxeType[] = [];
   searchFieldsProducts: SearchField[] = searchFieldsProducts;
   searchFieldsAccommodations: SearchField[] = searchFieldsAccommodations;
   searchFieldsExcursions: SearchField[] = searchFieldsExcursions;
@@ -143,6 +145,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
         this.stateTypes = res.data?.stateType || [];
         this.bedTypes = res.data?.bedType || [];
         this.unitOfMeasureTypes = res.data?.unitOfMeasure || [];
+        this.taxeTypes = res.data?.taxeType || [];
         this.updateCategoryTypeOptions();
       },
       error: (err) => console.error('Error al cargar datos de select:', err)

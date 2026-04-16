@@ -39,6 +39,7 @@ import {
 import { ExcursionsService } from '../../services/excursions.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ExcursiosPrintComponent } from '../../../shared/components/excursios-print/excursios-print.component';
 @Component({
   selector: 'app-see-excursions',
@@ -59,6 +60,7 @@ import { ExcursiosPrintComponent } from '../../../shared/components/excursios-pr
     MatTabGroup,
     SectionHeaderComponent,
     FormatCopPipe,
+    FormatPercentPipe,
     ExcursiosPrintComponent
   ],
   templateUrl: './see-excursions.component.html',
@@ -87,6 +89,7 @@ export class SeeExcursionsComponent implements OnInit {
     'stateType',
     'priceBuy',
     'priceSale',
+    'taxeType',
     'actions'
   ];
   dataSource = new MatTableDataSource<CreateExcursionPanel>([]);
@@ -244,4 +247,3 @@ export class SeeExcursionsComponent implements OnInit {
     });
   }
 }
-

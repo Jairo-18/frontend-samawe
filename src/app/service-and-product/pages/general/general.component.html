@@ -5,6 +5,7 @@
         <app-create-or-edit-product
           [categoryTypes]="categoryTypes"
           [unitOfMeasureTypes]="unitOfMeasureTypes"
+          [taxeTypes]="taxeTypes"
           (productSaved)="reloadProducts(); tabGroup.selectedIndex = 0"
           (productCanceled)="currentProduct = undefined"
           [currentProduct]="currentProduct"
@@ -23,6 +24,7 @@
         <app-create-or-edit-excursion
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypesExcursion"
+          [taxeTypes]="taxeTypes"
           (excursionSaved)="reloadExcursion(); tabGroup.selectedIndex = 1"
           (excursionCanceled)="currentExcursion = undefined"
           [currentExcursion]="currentExcursion"
@@ -42,6 +44,7 @@
           [categoryTypes]="categoryTypes"
           [stateTypes]="stateTypesAccommodation"
           [bedTypes]="bedTypes"
+          [taxeTypes]="taxeTypes"
           (accommodationSaved)="
             reloadAccommodations(); tabGroup.selectedIndex = 2
           "

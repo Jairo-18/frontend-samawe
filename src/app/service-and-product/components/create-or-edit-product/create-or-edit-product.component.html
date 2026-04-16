@@ -56,6 +56,13 @@
         />
         <mat-icon matSuffix>numbers</mat-icon>
       </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="isActive">
+          <mat-option [value]="true">Activo</mat-option>
+          <mat-option [value]="false">Inactivo</mat-option>
+        </mat-select>
+      </mat-form-field>
     </section>
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
@@ -91,11 +98,14 @@
         <mat-icon matSuffix>straighten</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Estado</mat-label>
-        <mat-select formControlName="isActive">
-          <mat-option [value]="true">Activo</mat-option>
-          <mat-option [value]="false">Inactivo</mat-option>
+        <mat-label>Tipo de impuesto</mat-label>
+        <mat-select formControlName="taxeTypeId">
+          <mat-option [value]="null">Sin impuesto</mat-option>
+          <mat-option *ngFor="let tax of taxeTypes" [value]="tax.taxeTypeId">
+            {{ tax.name }} ({{ tax.percentage }}%)
+          </mat-option>
         </mat-select>
+        <mat-icon matPrefix>receipt</mat-icon>
       </mat-form-field>
     </section>
   </div>

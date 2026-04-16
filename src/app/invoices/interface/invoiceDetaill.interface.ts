@@ -22,6 +22,9 @@ export interface InvoiceDetail {
   accommodation?: AccommodationComplete;
   excursion?: ExcursionComplete;
   taxeType: TaxeType;
+  totalVat: number;
+  totalIco8: number;
+  totalIco5: number;
   isPaid: boolean;
   organizationalId?: string;
 }
@@ -32,7 +35,7 @@ export interface CreateInvoiceDetaill {
   amount: number;
   priceBuy?: number;
   taxe?: number;
-  priceWithoutTax: number;
+  priceSale: number;
   taxeTypeId?: number;
   startDate?: string;
   endDate?: string;
