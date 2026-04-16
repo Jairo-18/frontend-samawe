@@ -67,7 +67,7 @@ export interface PersonType {
   deletedAt?: Date;
 }
 export interface PayType {
-  payTypeId: string;
+  payTypeId: number;
   code?: string;
   name?: string;
   createdAt: Date;
