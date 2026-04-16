@@ -117,6 +117,15 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.applyTransferRule(payTypeId);
     });
 
+    this.form.get('invoiceElectronic')?.valueChanges.subscribe((isElectronic) => {
+      if (isElectronic) {
+        const transferType = this.payTypes.find((p) => p.name?.toLowerCase().includes('transfer'));
+        if (transferType) {
+          this.form.get('payTypeId')?.setValue(transferType.payTypeId, { emitEvent: false });
+        }
+      }
+    });
+
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
