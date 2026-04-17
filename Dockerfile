@@ -13,14 +13,16 @@ WORKDIR /app
 COPY . .
 RUN npm run build -- --configuration development
 
-FROM nginx:alpine AS production
-COPY --from=builder-production /app/dist/frontend-samawe/browser /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+FROM node:22-alpine AS production
+WORKDIR /app
+COPY --from=builder-production /app/dist/frontend-samawe ./dist/frontend-samawe
+ENV PORT=80
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "dist/frontend-samawe/server/server.mjs"]
 
-FROM nginx:alpine AS development
-COPY --from=builder-development /app/dist/frontend-samawe/browser /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+FROM node:22-alpine AS development
+WORKDIR /app
+COPY --from=builder-development /app/dist/frontend-samawe ./dist/frontend-samawe
+ENV PORT=80
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "dist/frontend-samawe/server/server.mjs"]
