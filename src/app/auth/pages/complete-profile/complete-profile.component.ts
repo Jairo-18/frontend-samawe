@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { UsersService } from '../../../organizational/services/users.service';
 import { AuthService } from '../../services/auth.service';
@@ -63,6 +63,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   form: FormGroup;
   identificationType: IdentificationType[] = [];
   personType: PersonType[] = [];
+  phoneCode: PhoneCode[] = [];
   filteredPhoneCodes: PhoneCode[] = [];
   loadingPhoneCodes = false;
   loading = true;
@@ -141,6 +142,8 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.identificationType = res.data?.identificationType || [];
         this.personType = res.data?.personType || [];
+        this.phoneCode = res.data?.phoneCode || [];
+        this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
         const orgs = res.data?.organizational || [];
         if (orgs.length > 0) {
           this.form.patchValue(
@@ -157,44 +160,24 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   }
 
   private setupPhoneCodeSearch(): void {
-    this.loadPhoneCodes('');
     this.form
       .get('phoneCodeSearch')
-      ?.valueChanges.pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((term: string) => {
-          if (typeof term !== 'string') {
-            return of({ data: this.filteredPhoneCodes, meta: {} });
-          }
-          this.loadingPhoneCodes = true;
-          return this._relatedDataService.searchPhoneCodes(term, 1, 20);
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.filteredPhoneCodes = (res as any).data || [];
-          this.loadingPhoneCodes = false;
-        },
-        error: () => {
-          this.filteredPhoneCodes = [];
-          this.loadingPhoneCodes = false;
+      ?.valueChanges.pipe(debounceTime(150), distinctUntilChanged())
+      .subscribe((term) => {
+        if (typeof term !== 'string') return;
+        const q = term.trim().toLowerCase();
+        if (!q) {
+          this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
+          return;
         }
+        this.filteredPhoneCodes = this.phoneCode
+          .filter(
+            (pc) =>
+              (pc.name || '').toLowerCase().includes(q) ||
+              (pc.code || '').toLowerCase().includes(q)
+          )
+          .slice(0, 20);
       });
-  }
-
-  private loadPhoneCodes(search: string): void {
-    this.loadingPhoneCodes = true;
-    this._relatedDataService.searchPhoneCodes(search, 1, 20).subscribe({
-      next: (res) => {
-        this.filteredPhoneCodes = res.data || [];
-        this.loadingPhoneCodes = false;
-      },
-      error: () => {
-        this.filteredPhoneCodes = [];
-        this.loadingPhoneCodes = false;
-      }
-    });
   }
 
   private setupIdentificationTypeListener(): void {

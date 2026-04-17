@@ -16,7 +16,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import * as uuid from 'uuid';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
 import { RegisterUser } from '../../interfaces/register.interface';
@@ -144,31 +144,23 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
   }
   setupPhoneCodeSearch(): void {
-    this._relatedDataService.searchPhoneCodes('', 1, 20).subscribe({
-      next: (res) => {
-        this.filteredPhoneCodes = res.data || [];
-      }
-    });
     this.formStep2
       .get('phoneCodeSearch')
-      ?.valueChanges.pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((term: string) => {
-          if (typeof term !== 'string')
-            return of({ data: this.filteredPhoneCodes });
-          this.loadingPhoneCodes = true;
-          return this._relatedDataService.searchPhoneCodes(term, 1, 20);
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.filteredPhoneCodes = res.data || [];
-          this.loadingPhoneCodes = false;
-        },
-        error: () => {
-          this.loadingPhoneCodes = false;
+      ?.valueChanges.pipe(debounceTime(150), distinctUntilChanged())
+      .subscribe((term) => {
+        if (typeof term !== 'string') return;
+        const q = term.trim().toLowerCase();
+        if (!q) {
+          this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
+          return;
         }
+        this.filteredPhoneCodes = this.phoneCode
+          .filter(
+            (pc) =>
+              (pc.name || '').toLowerCase().includes(q) ||
+              (pc.code || '').toLowerCase().includes(q)
+          )
+          .slice(0, 20);
       });
   }
 
@@ -221,6 +213,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.identificationType = res.data?.identificationType || [];
         this.phoneCode = res.data?.phoneCode || [];
         this.personType = res.data?.personType || [];
+        this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
       }
     });
   }

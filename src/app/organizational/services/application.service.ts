@@ -146,7 +146,21 @@ export class ApplicationService {
         mediaMap[type].push(m);
       });
       this._mediaMapSubject.next(mediaMap);
+      this._preloadAuthBackgrounds(mediaMap);
     }
+  }
+
+  private _preloadAuthBackgrounds(
+    mediaMap: Record<string, OrganizationalMedia[]>
+  ): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+    ['LOGIN_BG', 'REGISTER_BG'].forEach((code) => {
+      const url = mediaMap[code]?.[0]?.url;
+      if (url) {
+        const img = new Image();
+        img.src = url;
+      }
+    });
   }
 
   loadMedia(id: string): void {

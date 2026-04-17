@@ -31,7 +31,7 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
 import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
-import { debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
   selector: 'app-create-or-edit-users',
   standalone: true,
@@ -102,7 +102,7 @@ export class CreateOrEditUsersComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
       isActive: [true, Validators.required],
-      personTypeId: ['']
+      personTypeId: [{ value: '', disabled: true }]
     });
   }
   ngOnInit(): void {
@@ -144,6 +144,8 @@ export class CreateOrEditUsersComponent implements OnInit {
 
         this.identificationType = res.data?.identificationType || [];
         this.personType = res.data?.personType || [];
+        this.phoneCode = res.data?.phoneCode || [];
+        this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
         this.loading = false;
       },
       error: (error) => {
@@ -153,45 +155,24 @@ export class CreateOrEditUsersComponent implements OnInit {
     });
   }
   setupPhoneCodeSearch(): void {
-    this.loadPhoneCodes('');
     this.userForm
       .get('phoneCodeSearch')
-      ?.valueChanges.pipe(
-        debounceTime(400),
-        distinctUntilChanged(),
-        switchMap((searchTerm: string) => {
-          if (typeof searchTerm !== 'string') {
-            return of({ data: this.filteredPhoneCodes, meta: {} });
-          }
-          this.loadingPhoneCodes = true;
-          return this._relatedDataService.searchPhoneCodes(searchTerm, 1, 20);
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.filteredPhoneCodes = response.data || [];
-          this.loadingPhoneCodes = false;
-        },
-        error: (error) => {
-          console.error('Error buscando códigos de país:', error);
-          this.filteredPhoneCodes = [];
-          this.loadingPhoneCodes = false;
+      ?.valueChanges.pipe(debounceTime(150), distinctUntilChanged())
+      .subscribe((term) => {
+        if (typeof term !== 'string') return;
+        const q = term.trim().toLowerCase();
+        if (!q) {
+          this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
+          return;
         }
+        this.filteredPhoneCodes = this.phoneCode
+          .filter(
+            (pc) =>
+              (pc.name || '').toLowerCase().includes(q) ||
+              (pc.code || '').toLowerCase().includes(q)
+          )
+          .slice(0, 20);
       });
-  }
-  loadPhoneCodes(search: string = ''): void {
-    this.loadingPhoneCodes = true;
-    this._relatedDataService.searchPhoneCodes(search, 1, 20).subscribe({
-      next: (response) => {
-        this.filteredPhoneCodes = response.data || [];
-        this.loadingPhoneCodes = false;
-      },
-      error: (error) => {
-        console.error('Error cargando códigos de país:', error);
-        this.filteredPhoneCodes = [];
-        this.loadingPhoneCodes = false;
-      }
-    });
   }
   displayPhoneCode(phoneCode: PhoneCode): string {
     return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
