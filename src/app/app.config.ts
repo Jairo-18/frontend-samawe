@@ -18,9 +18,10 @@ import { routes } from './app.routes';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { getMaterialPaginatorTranslations } from './shared/utilities/material-paginator-translations';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { TransformDateService } from './shared/services/transform-date.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { MyErrorStateMatcher } from './shared/matchers/error-state.matcher';
@@ -47,7 +48,9 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'es' },
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' },
     { provide: ErrorStateMatcher, useValue: new MyErrorStateMatcher() },
+    provideClientHydration(withEventReplay()),
     provideHttpClient(
+      withFetch(),
       withInterceptors([
         apiUrlInterceptor,
         authInterceptor,

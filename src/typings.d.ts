@@ -1,1 +1,1 @@
-declare module 'html2pdf.js';
+/* html2pdf.js removed — will be replaced with an SSR-compatible library */

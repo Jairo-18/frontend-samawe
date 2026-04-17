@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, Output, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -26,6 +26,8 @@ interface MediaSection {
   styleUrls: ['./organizational-multimedia.component.scss']
 })
 export class OrganizationalMultimediaComponent {
+  private readonly _platformId = inject(PLATFORM_ID);
+
   @Input() mediaMap: Record<string, OrganizationalMedia | OrganizationalMedia[]> = {};
   @Input() mediaTypes: MediaType[] = [];
   @Input() mediaLoading: Record<string, boolean> = {};
@@ -80,6 +82,7 @@ export class OrganizationalMultimediaComponent {
   }
 
   triggerInput(code: string): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const input = document.getElementById(`input-${code}`) as HTMLInputElement;
     input?.click();
   }

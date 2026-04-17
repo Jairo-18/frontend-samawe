@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, Input, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { AccommodationsService } from '../../../../../service-and-product/services/accommodations.service';
 import { MostRequestedAccommodation } from '../../../../../service-and-product/interface/accommodation.interface';
@@ -26,6 +26,7 @@ export class MostRequestedSectionComponent implements OnInit, OnDestroy {
     AccommodationsService
   );
   private readonly _router: Router = inject(Router);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   accommodations: MostRequestedAccommodation[] = [];
   currentIndex: Map<number, number> = new Map();
@@ -69,7 +70,7 @@ export class MostRequestedSectionComponent implements OnInit, OnDestroy {
   }
 
   private _removeMouseUpListener(): void {
-    if (this._mouseUpListener) {
+    if (this._mouseUpListener && isPlatformBrowser(this._platformId)) {
       document.removeEventListener('mouseup', this._mouseUpListener);
       this._mouseUpListener = null;
     }
@@ -100,7 +101,9 @@ export class MostRequestedSectionComponent implements OnInit, OnDestroy {
       this._handleDragEnd(e.clientX);
       this._removeMouseUpListener();
     };
-    document.addEventListener('mouseup', this._mouseUpListener);
+    if (isPlatformBrowser(this._platformId)) {
+      document.addEventListener('mouseup', this._mouseUpListener);
+    }
   }
 
   onTouchStart(event: TouchEvent): void {

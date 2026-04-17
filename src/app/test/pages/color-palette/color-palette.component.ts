@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ColorSwatch,
   PALETTE_1,
@@ -19,6 +19,7 @@ const ACTIVE_PALETTE = PALETTE_2;
   styleUrl: './color-palette.component.scss'
 })
 export class ColorPaletteComponent {
+  private readonly _platformId = inject(PLATFORM_ID);
   palette = ACTIVE_PALETTE;
   colors: ColorSwatch[] = ACTIVE_PALETTE.colors;
 
@@ -29,6 +30,7 @@ export class ColorPaletteComponent {
   copied: string | null = null;
 
   copy(text: string) {
+    if (!isPlatformBrowser(this._platformId)) return;
     navigator.clipboard.writeText(text).then(() => {
       this.copied = text;
       setTimeout(() => (this.copied = null), 1500);

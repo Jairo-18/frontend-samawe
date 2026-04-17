@@ -4,11 +4,12 @@ import {
   inject,
   OnInit,
   OnDestroy,
+  PLATFORM_ID,
   ViewChild,
   ElementRef
 } from '@angular/core';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   MatPaginator,
@@ -74,6 +75,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
     inject(LocalStorageService);
   private readonly _ordersSocket: OrdersSocketService =
     inject(OrdersSocketService);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   private readonly _destroy$ = new Subject<void>();
   private readonly _reload$ = new Subject<void>();
@@ -133,7 +135,9 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    this.isMobile = window.innerWidth <= 768;
+    if (isPlatformBrowser(this._platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+    }
     if (this.isMobile) this.paginationParams.perPage = 5;
   }
 
@@ -284,7 +288,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
   }
 
   openEditInvoiceDialog(invoiceId: number): void {
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     const relatedData = this._relatedDataService.relatedData();
 
     this._matDialog

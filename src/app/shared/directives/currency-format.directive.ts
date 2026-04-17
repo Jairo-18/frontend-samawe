@@ -2,11 +2,13 @@ import {
   Directive,
   ElementRef,
   HostListener,
+  Inject,
   OnInit,
   Optional,
   Self,
   OnDestroy
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { NgControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 @Directive({
@@ -19,7 +21,8 @@ export class CurrencyFormatDirective implements OnInit, OnDestroy {
   private lastValue = '';
   constructor(
     private el: ElementRef,
-    @Optional() @Self() private control: NgControl
+    @Optional() @Self() private control: NgControl,
+    @Inject(DOCUMENT) private _document: Document
   ) {
     this.elInput = this.el.nativeElement;
   }
@@ -28,7 +31,7 @@ export class CurrencyFormatDirective implements OnInit, OnDestroy {
       this.formatAndSetDisplay(this.control.value);
     }, 0);
     this.sub = this.control.valueChanges?.subscribe((val) => {
-      if (document.activeElement !== this.elInput) {
+      if (this._document.activeElement !== this.elInput) {
         this.formatAndSetDisplay(val);
       }
     });

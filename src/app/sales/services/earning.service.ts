@@ -1,4 +1,5 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpResponse } from '@angular/common/http';
@@ -16,6 +17,7 @@ import { AuthService } from '../../auth/services/auth.service';
 export class EarningService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _platformId = inject(PLATFORM_ID);
   getGeneragetProductSummary(): Observable<ProductSummary> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
@@ -55,6 +57,7 @@ export class EarningService {
     response: HttpResponse<Blob>,
     defaultName: string
   ): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const blob = response.body;
     if (!blob) return;
     const contentDisposition = response.headers.get('Content-Disposition');

@@ -1,13 +1,15 @@
 import {
   Component,
   inject,
+  NgZone,
   OnInit,
   OnDestroy,
   Input,
   HostListener,
-  ElementRef
+  ElementRef,
+  PLATFORM_ID
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +45,9 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   @Input() userInfo?: UserInterface;
 
   isMenuOpen: boolean = false;
+  private readonly _ngZone: NgZone = inject(NgZone);
   private readonly _elementRef: ElementRef = inject(ElementRef);
+  private readonly _platformId = inject(PLATFORM_ID);
   private readonly _router: Router = inject(Router);
   private _ordersSocket: OrdersSocketService = inject(OrdersSocketService);
   private _notificationApi: NotificationApiService = inject(
@@ -107,11 +111,13 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   }
 
   private setupAudioReminder() {
-    this.audioReminderInterval = setInterval(() => {
-      if (this.unreadNotifications > 0 && this.showNotificationsIcon) {
-        this.playNotificationSound();
-      }
-    }, 60000);
+    this._ngZone.runOutsideAngular(() => {
+      this.audioReminderInterval = setInterval(() => {
+        if (this.unreadNotifications > 0 && this.showNotificationsIcon) {
+          this.playNotificationSound();
+        }
+      }, 60000);
+    });
   }
 
   private loadNotifications() {
@@ -205,6 +211,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   }
 
   private playNotificationSound() {
+    if (!isPlatformBrowser(this._platformId)) return;
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const w = window as any;

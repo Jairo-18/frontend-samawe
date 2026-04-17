@@ -5,6 +5,7 @@ import {
   ElementRef,
   inject,
   OnInit,
+  PLATFORM_ID,
   ViewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +29,7 @@ import { UserComplete } from '../../../organizational/interfaces/create.interfac
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -70,6 +71,7 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _platformId = inject(PLATFORM_ID);
   selectedInvoice: any = null;
   invoiceToPrintData?: Invoice;
   selectedInvoiceIds = new Set<number>();
@@ -170,7 +172,9 @@ export class SeeInvoicesComponent implements OnInit {
     }
   ];
   constructor(private _invoicePrintService: InvoicePrintService) {
-    this.isMobile = window.innerWidth <= 768;
+    if (isPlatformBrowser(this._platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+    }
     if (this.isMobile) this.paginationParams.perPage = 10;
     this.userLogged = this._authService.getUserLoggedIn();
   }
@@ -217,7 +221,7 @@ export class SeeInvoicesComponent implements OnInit {
     });
   }
   openCreateDialog(): void {
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     this._matDialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -237,7 +241,7 @@ export class SeeInvoicesComponent implements OnInit {
       });
   }
   openEditDialog(invoiceId: number): void {
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     this._matDialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -457,6 +461,7 @@ export class SeeInvoicesComponent implements OnInit {
 
   downloadSelectedExcel(): void {
     if (this.selectedInvoiceIds.size === 0) return;
+    if (!isPlatformBrowser(this._platformId)) return;
     this.downloadingExcel = true;
     const ids = Array.from(this.selectedInvoiceIds);
     this._invoiceService.downloadSelectedInvoicesExcel(ids).subscribe({

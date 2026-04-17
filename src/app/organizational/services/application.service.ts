@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -24,6 +25,7 @@ export class ApplicationService {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _seoService: SeoService = inject(SeoService);
+  private readonly _platformId = inject(PLATFORM_ID);
   private _mediaMapSubject = new BehaviorSubject<Record<
     string,
     OrganizationalMedia[]
@@ -77,53 +79,55 @@ export class ApplicationService {
             this.updateMediaFromOrg(org);
             this._seoService.applyFromOrg(org);
 
-            if (org.primaryColor) {
-              document.documentElement.style.setProperty(
-                '--primary-color',
-                org.primaryColor
-              );
-            }
-            if (org.secondaryColor) {
-              document.documentElement.style.setProperty(
-                '--secondary-color',
-                org.secondaryColor
-              );
-            }
-            if (org.tertiaryColor) {
-              document.documentElement.style.setProperty(
-                '--tertiary-color',
-                org.tertiaryColor
-              );
-            }
-            if (org.titleColor) {
-              document.documentElement.style.setProperty(
-                '--title-color',
-                org.titleColor
-              );
-            }
-            if (org.subtitleColor) {
-              document.documentElement.style.setProperty(
-                '--subtitle-color',
-                org.subtitleColor
-              );
-            }
-            if (org.textColor) {
-              document.documentElement.style.setProperty(
-                '--text-color',
-                org.textColor
-              );
-            }
-            if (org.bgPrimaryColor) {
-              document.documentElement.style.setProperty(
-                '--bg-primary-color',
-                org.bgPrimaryColor
-              );
-            }
-            if (org.bgSecondaryColor) {
-              document.documentElement.style.setProperty(
-                '--bg-secondary-color',
-                org.bgSecondaryColor
-              );
+            if (isPlatformBrowser(this._platformId)) {
+              if (org.primaryColor) {
+                document.documentElement.style.setProperty(
+                  '--primary-color',
+                  org.primaryColor
+                );
+              }
+              if (org.secondaryColor) {
+                document.documentElement.style.setProperty(
+                  '--secondary-color',
+                  org.secondaryColor
+                );
+              }
+              if (org.tertiaryColor) {
+                document.documentElement.style.setProperty(
+                  '--tertiary-color',
+                  org.tertiaryColor
+                );
+              }
+              if (org.titleColor) {
+                document.documentElement.style.setProperty(
+                  '--title-color',
+                  org.titleColor
+                );
+              }
+              if (org.subtitleColor) {
+                document.documentElement.style.setProperty(
+                  '--subtitle-color',
+                  org.subtitleColor
+                );
+              }
+              if (org.textColor) {
+                document.documentElement.style.setProperty(
+                  '--text-color',
+                  org.textColor
+                );
+              }
+              if (org.bgPrimaryColor) {
+                document.documentElement.style.setProperty(
+                  '--bg-primary-color',
+                  org.bgPrimaryColor
+                );
+              }
+              if (org.bgSecondaryColor) {
+                document.documentElement.style.setProperty(
+                  '--bg-secondary-color',
+                  org.bgSecondaryColor
+                );
+              }
             }
           }
         }

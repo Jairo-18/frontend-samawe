@@ -2,12 +2,14 @@ import {
   Directive,
   ElementRef,
   HostListener,
+  Inject,
   OnInit,
   Optional,
   Self,
   OnDestroy,
   Input
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { NgControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -24,7 +26,8 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
 
   constructor(
     private el: ElementRef,
-    @Optional() @Self() private control: NgControl
+    @Optional() @Self() private control: NgControl,
+    @Inject(DOCUMENT) private _document: Document
   ) {
     this.elInput = this.el.nativeElement;
   }
@@ -35,7 +38,7 @@ export class InvoiceCurrencyFormatDirective implements OnInit, OnDestroy {
     }, 0);
 
     this.sub = this.control.valueChanges?.subscribe((val) => {
-      if (document.activeElement !== this.elInput) {
+      if (this._document.activeElement !== this.elInput) {
         this.formatAndSetDisplay(val);
       }
     });

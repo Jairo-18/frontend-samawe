@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ProductComplete } from './../../interface/product.interface';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -8,6 +8,7 @@ import {
   Input,
   OnInit,
   Output,
+  PLATFORM_ID,
   ViewChild
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -77,6 +78,7 @@ export class SeeProductsComponent implements OnInit {
   private readonly _router = inject(Router);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _platformId = inject(PLATFORM_ID);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
   displayedColumns: string[] = [
@@ -112,7 +114,9 @@ export class SeeProductsComponent implements OnInit {
     this.loadProducts();
   }
   constructor() {
-    this.isMobile = window.innerWidth <= 768;
+    if (isPlatformBrowser(this._platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+    }
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }

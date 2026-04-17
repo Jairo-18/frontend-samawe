@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginSuccessInterface } from '../../interfaces/login.interface';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 
 @Component({
   selector: 'app-google-callback',
@@ -16,11 +17,15 @@ export class GoogleCallbackComponent implements OnInit {
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
 
   loading = true;
   error: string | null = null;
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+
     const fragment = window.location.hash.replace(/^#/, '');
     const params = new URLSearchParams(fragment);
 
@@ -58,7 +63,7 @@ export class GoogleCallbackComponent implements OnInit {
     this.loading = false;
 
     if (params.get('isNewUser') === 'true') {
-      localStorage.setItem(
+      this._localStorage.setItem(
         '_pendingGoogleProfile',
         JSON.stringify({
           firstName: params.get('firstName') || '',

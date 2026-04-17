@@ -1,37 +1,17 @@
-import { Injectable, inject } from '@angular/core';
-import html2pdf from 'html2pdf.js';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { InvoiceService } from '../../invoices/services/invoice.service';
 import { Invoice } from '../../invoices/interface/invoice.interface';
 @Injectable({ providedIn: 'root' })
 export class InvoicePrintService {
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
-  async printInvoice(invoice: Invoice, element: HTMLElement): Promise<void> {
-    const options = {
-      margin: 0.5,
-      filename: `${invoice.invoiceType.code}-${invoice.code}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
-    };
-    html2pdf()
-      .set(options)
-      .from(element)
-      .toPdf()
-      .get('pdf')
-
-      .then((pdf: any) => {
-        const pdfUrl = pdf.output('bloburl');
-        window.open(pdfUrl, '_blank');
-      });
+  private readonly _platformId = inject(PLATFORM_ID);
+  async printInvoice(_invoice: Invoice, _element: HTMLElement): Promise<void> {
+    if (!isPlatformBrowser(this._platformId)) return;
+    console.warn('printInvoice: html2pdf removed — pending SSR-compatible replacement');
   }
-  async downloadInvoice(invoice: Invoice, element: HTMLElement): Promise<void> {
-    const options = {
-      margin: 0.5,
-      filename: `${invoice.invoiceType.code}-${invoice.code}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
-    };
-    await html2pdf().set(options).from(element).save();
+  async downloadInvoice(_invoice: Invoice, _element: HTMLElement): Promise<void> {
+    if (!isPlatformBrowser(this._platformId)) return;
+    console.warn('downloadInvoice: html2pdf removed — pending SSR-compatible replacement');
   }
 }

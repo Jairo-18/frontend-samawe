@@ -1,6 +1,7 @@
 import { LocalStorageService } from './../../shared/services/localStorage.service';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, map, Observable, of, ReplaySubject, tap } from 'rxjs';
 import {
@@ -18,6 +19,8 @@ import { ChangePassword } from '../../organizational/interfaces/create.interface
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _ngZone: NgZone = inject(NgZone);
   private readonly _tokensStorageKey: string = '_sessionData';
   private readonly _localStorageService: LocalStorageService =
     inject(LocalStorageService);
@@ -82,7 +85,7 @@ export class AuthService {
       );
   }
   saveLocalUserData(userData: LoginSuccessInterface): void {
-    localStorage.setItem(this._tokensStorageKey, JSON.stringify(userData));
+    this._localStorageService.setItem(this._tokensStorageKey, JSON.stringify(userData));
   }
   logout(data: LogOutInterface): Observable<unknown> {
     const params = this._httpUtilities.httpParamsFromObject(data);
@@ -152,7 +155,7 @@ export class AuthService {
     if (user && accessToken && refreshToken) {
       user.tokens.accessToken = accessToken;
       user.tokens.refreshToken = refreshToken;
-      localStorage.setItem(this._tokensStorageKey, JSON.stringify(user));
+      this._localStorageService.setItem(this._tokensStorageKey, JSON.stringify(user));
     }
   }
 
@@ -181,7 +184,9 @@ export class AuthService {
       return;
     }
 
-    this._refreshTimer = setTimeout(() => this._proactiveRefresh(), delayMs);
+    this._ngZone.runOutsideAngular(() => {
+      this._refreshTimer = setTimeout(() => this._proactiveRefresh(), delayMs);
+    });
   }
 
   private _proactiveRefresh(): void {
@@ -253,6 +258,8 @@ export class AuthService {
   }
 
   loginWithGoogle(): void {
-    window.location.href = `${environment.apiUrl}auth/google`;
+    if (isPlatformBrowser(this._platformId)) {
+      window.location.href = `${environment.apiUrl}auth/google`;
+    }
   }
 }

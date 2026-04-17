@@ -2,9 +2,11 @@ import {
   Component,
   Input,
   OnChanges,
+  PLATFORM_ID,
   SimpleChanges,
   inject
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { GoogleMap, MapAdvancedMarker } from '@angular/google-maps';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
@@ -31,6 +33,7 @@ export class HowToArriveSectionComponent implements OnChanges {
   private readonly _mapsState: GoogleMapsStateService = inject(
     GoogleMapsStateService
   );
+  private readonly _platformId = inject(PLATFORM_ID);
 
   mapCenter: google.maps.LatLngLiteral = FALLBACK;
   mapOptions: google.maps.MapOptions = { mapId: 'DEMO_MAP_ID' };
@@ -66,7 +69,7 @@ export class HowToArriveSectionComponent implements OnChanges {
   }
 
   openMaps(): void {
-    if (this.org?.mapsUrl) {
+    if (this.org?.mapsUrl && isPlatformBrowser(this._platformId)) {
       window.open(this.org.mapsUrl, '_blank', 'noopener,noreferrer');
     }
   }

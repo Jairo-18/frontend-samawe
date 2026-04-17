@@ -3,8 +3,10 @@ import {
   Component,
   inject,
   OnInit,
+  PLATFORM_ID,
   ViewChild
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -35,6 +37,7 @@ export class RecipesGeneralComponent implements OnInit, AfterViewInit {
 
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _localStorage = inject(LocalStorageService);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   currentRecipe?: RecipeWithDetails;
   allRecipes: RecipeWithDetails[] = [];
@@ -84,6 +87,7 @@ export class RecipesGeneralComponent implements OnInit, AfterViewInit {
   }
 
   private _goToTop(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const main = document.querySelector('main');
     if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   }

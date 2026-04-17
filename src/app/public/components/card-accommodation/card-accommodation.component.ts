@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, Input, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PublicAccommodationListItem } from '../../../service-and-product/interface/accommodation.interface';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
@@ -12,6 +12,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
   styleUrl: './card-accommodation.component.scss'
 })
 export class CardAccommodationComponent implements OnDestroy {
+  private readonly _platformId = inject(PLATFORM_ID);
+
   @Input() accommodation!: PublicAccommodationListItem;
 
   currentImageIndex: number = 0;
@@ -65,7 +67,9 @@ export class CardAccommodationComponent implements OnDestroy {
       this._handleDragEnd(e.clientX);
       this._removeMouseUpListener();
     };
-    document.addEventListener('mouseup', this._mouseUpListener);
+    if (isPlatformBrowser(this._platformId)) {
+      document.addEventListener('mouseup', this._mouseUpListener);
+    }
   }
 
   onTouchStart(event: TouchEvent): void {
@@ -91,7 +95,7 @@ export class CardAccommodationComponent implements OnDestroy {
   }
 
   private _removeMouseUpListener(): void {
-    if (this._mouseUpListener) {
+    if (this._mouseUpListener && isPlatformBrowser(this._platformId)) {
       document.removeEventListener('mouseup', this._mouseUpListener);
       this._mouseUpListener = null;
     }

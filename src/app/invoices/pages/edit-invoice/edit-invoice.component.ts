@@ -4,10 +4,11 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   ViewChild
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -32,7 +33,6 @@ import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoic
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
-import html2pdf from 'html2pdf.js';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -93,6 +93,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _dialog: MatDialog = inject(MatDialog);
+  private readonly _platformId = inject(PLATFORM_ID);
   @ViewChild('invoiceToPrint') invoicePdfComp!: ElementRef;
   @ViewChild(InvoiceDetaillComponent)
   invoiceDetaillComponent!: InvoiceDetaillComponent;
@@ -161,7 +162,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   }
   openEditInvoiceDialog(): void {
     if (!this.invoiceId) return;
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     this._dialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -211,16 +212,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     });
   }
   async downloadInvoice(): Promise<void> {
-    const element = this.invoicePdfComp?.nativeElement;
-    if (!element || !this.invoiceData) return;
-    const options = {
-      margin: 0.5,
-      filename: `${this.invoiceData.invoiceType.code}-${this.invoiceData.code}.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const }
-    };
-    await html2pdf().set(options).from(element).save();
+    console.warn('downloadInvoice: html2pdf removed — pending SSR-compatible replacement');
   }
   onAllItemsSaved(): void {
     if (this.invoiceId) {

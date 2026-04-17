@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject, EMPTY } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   InvoiceItemUpdate,
@@ -11,7 +12,9 @@ import {
   providedIn: 'root'
 })
 export class OrdersSocketService {
-  private socket: Socket;
+  private socket: Socket | null = null;
+  private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _ngZone: NgZone = inject(NgZone);
 
   private _notifications = new BehaviorSubject<OrderUpdate[]>([]);
   public notifications$ = this._notifications.asObservable();
@@ -23,45 +26,42 @@ export class OrdersSocketService {
   private _invoiceItemAdded$ = new Subject<InvoiceItemUpdate>();
 
   constructor() {
-    const baseUrl = environment.apiUrl.endsWith('/')
-      ? environment.apiUrl.slice(0, -1)
-      : environment.apiUrl;
+    if (!isPlatformBrowser(this._platformId)) return;
 
-    this.socket = io(`${baseUrl}/orders`, {
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 20000,
-      transports: ['websocket']
+    this._ngZone.runOutsideAngular(() => {
+      const baseUrl = environment.apiUrl.endsWith('/')
+        ? environment.apiUrl.slice(0, -1)
+        : environment.apiUrl;
+
+      this.socket = io(`${baseUrl}/orders`, {
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        transports: ['websocket']
+      });
+
+      this.socket.on('connect', () => {
+        this.socket!.emit('joinOrders');
+      });
+
+      this.socket.on('reconnect', () => {
+        this.socket!.emit('joinOrders');
+      });
+
+      this.socket.on('disconnect', (reason: string) => {
+        console.warn('[Socket] Disconnected:', reason);
+      });
+
+      this.socket.on('orderUpdated', (data: OrderUpdate) => {
+        this._ngZone.run(() => this._orderUpdated$.next(data));
+      });
+
+      this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
+        this._ngZone.run(() => this._invoiceItemAdded$.next(data));
+      });
     });
-
-    this.socket.on('connect', () => {
-      this.socket.emit('joinOrders');
-    });
-
-    this.socket.on('reconnect', () => {
-      this.socket.emit('joinOrders');
-    });
-
-    this.socket.on('disconnect', (reason: string) => {
-      console.warn('[Socket] Disconnected:', reason);
-    });
-
-    this.socket.on('orderUpdated', (data: OrderUpdate) => {
-      this._orderUpdated$.next(data);
-    });
-
-    this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
-      this._invoiceItemAdded$.next(data);
-    });
-  }
-
-  private addNotification(notification: OrderUpdate) {
-    const current = this._notifications.getValue();
-    const updated = [notification, ...current].slice(0, 20);
-    this._notifications.next(updated);
-    this._unreadCount.next(this._unreadCount.getValue() + 1);
   }
 
   public markAsRead() {

@@ -1,13 +1,16 @@
 import {
   ChangeDetectorRef,
   Component,
+  inject,
   Input,
   Output,
   EventEmitter,
   OnInit,
   OnChanges,
+  PLATFORM_ID,
   SimpleChanges
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -59,6 +62,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   previewImageUrl: string | null = null;
   isDragging: boolean = false;
   private loadedEntityId: number | null = null;
+  private readonly _platformId = inject(PLATFORM_ID);
   constructor(
     private imageService: ImageService,
     private dialog: MatDialog,
@@ -170,7 +174,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     }
   }
   private openCropper(file: File): Promise<Blob | null> {
-    const isMobile = window.innerWidth < 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth < 768 : false;
     const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
       data: { file },
       width: isMobile ? '95vw' : '500px',

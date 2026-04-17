@@ -38,8 +38,10 @@ export class AppComponent implements OnDestroy {
     }
     this._setMaterialOutlinedIconsDefault();
     this._listenRouterChanges();
-    this._loadInitialBranding();
-    this._authService.scheduleTokenRefresh();
+    if (isPlatformBrowser(this.platformId)) {
+      this._loadInitialBranding();
+      this._authService.scheduleTokenRefresh();
+    }
   }
 
   private _loadInitialBranding(): void {

@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SeeMenusComponent } from '../../components/see-menus/see-menus.component';
 import { CreateOrEditMenuComponent } from '../../components/create-or-edit-menu/create-or-edit-menu.component';
 import { MenuResponse } from '../../interfaces/menu.interface';
@@ -27,6 +27,7 @@ export class MenuGeneralComponent implements OnInit {
   createOrEditComponent!: CreateOrEditMenuComponent;
 
   private readonly _localStorage = inject(LocalStorageService);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   currentMenu?: MenuResponse;
   isMesero: boolean = false;
@@ -63,6 +64,7 @@ export class MenuGeneralComponent implements OnInit {
   }
 
   private _goToTop(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const main = document.querySelector('main');
     if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
   }

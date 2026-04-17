@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AccommodationsService } from '../../../service-and-product/services/accommodations.service';
 import { PublicAccommodationListItem } from '../../../service-and-product/interface/accommodation.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
@@ -29,6 +29,7 @@ export class AccommodationComponent implements OnInit {
   );
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   org: Organizational | null = null;
 
@@ -73,6 +74,8 @@ export class AccommodationComponent implements OnInit {
     this.pagination.page = event.pageIndex + 1;
     this.pagination.perPage = event.pageSize;
     this.load();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this._platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

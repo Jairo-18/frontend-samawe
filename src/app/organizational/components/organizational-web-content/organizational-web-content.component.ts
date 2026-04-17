@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -79,6 +79,8 @@ export class OrganizationalWebContentComponent implements OnInit {
   iconSearch: string = '';
   filteredIcons: { icon: string; label: string }[] = HOTEL_ICONS;
 
+  private readonly _platformId = inject(PLATFORM_ID);
+
   constructor(private readonly _fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -89,6 +91,7 @@ export class OrganizationalWebContentComponent implements OnInit {
   }
 
   triggerImageInput(valueId: string): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const input = document.getElementById(
       `cv-img-${valueId}`
     ) as HTMLInputElement;

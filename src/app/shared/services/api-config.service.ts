@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
 export interface ApiConfig {
   apiUrl: string;
@@ -8,17 +9,22 @@ export interface ApiConfig {
   providedIn: 'root'
 })
 export class ApiConfigService {
+  private readonly _platformId = inject(PLATFORM_ID);
   private config: ApiConfig = {
     apiUrl: environment.apiUrl
   };
   constructor() {
     this.loadConfig();
   }
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this._platformId);
+  }
   private loadConfig(): void {
     if (!environment.production) {
       this.config = { apiUrl: environment.apiUrl };
       return;
     }
+    if (!this.isBrowser) return;
     const savedConfig = localStorage.getItem('api-config');
     if (savedConfig) {
       try {
@@ -47,7 +53,9 @@ export class ApiConfigService {
       url = url.replace('http://', 'https://');
     }
     this.config.apiUrl = url;
-    localStorage.setItem('api-config', JSON.stringify(this.config));
+    if (this.isBrowser) {
+      localStorage.setItem('api-config', JSON.stringify(this.config));
+    }
   }
   isUsingLocalhost(): boolean {
     return (
@@ -56,13 +64,16 @@ export class ApiConfigService {
     );
   }
   resetConfig(): void {
-    localStorage.removeItem('api-config');
+    if (this.isBrowser) {
+      localStorage.removeItem('api-config');
+    }
     this.config = { apiUrl: environment.apiUrl };
   }
   getConfig(): ApiConfig {
     return { ...this.config };
   }
   private isSiteSecure(): boolean {
+    if (!this.isBrowser) return false;
     return window.location.protocol === 'https:';
   }
 }

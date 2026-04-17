@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { AddProductComponent } from '../../../invoices/components/add-product/add-product.component';
 import { PendingItemsTableComponent } from '../../../invoices/components/pending-items-table/pending-items-table';
@@ -72,6 +72,7 @@ export class EditOrderComponent implements OnInit {
     InvoiceDetaillService
   );
   private readonly _dialog: MatDialog = inject(MatDialog);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
     const idParam = this._route.snapshot.paramMap.get('id');
@@ -172,7 +173,7 @@ export class EditOrderComponent implements OnInit {
 
   openEditInvoiceDialog(): void {
     if (!this.orderId) return;
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     this._dialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',

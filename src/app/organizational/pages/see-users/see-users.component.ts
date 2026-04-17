@@ -6,8 +6,8 @@ import {
   PersonType
 } from './../../../shared/interfaces/relatedDataGeneral';
 import { SearchField } from './../../../shared/interfaces/search.interface';
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
@@ -62,6 +62,7 @@ export class SeeUsersComponent implements OnInit {
   private readonly _router = inject(Router);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _platformId = inject(PLATFORM_ID);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
   displayedColumns: string[] = [
@@ -147,7 +148,9 @@ export class SeeUsersComponent implements OnInit {
     this.getDataForFields();
   }
   constructor() {
-    this.isMobile = window.innerWidth <= 768;
+    if (isPlatformBrowser(this._platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+    }
     if (this.isMobile) this.paginationParams.perPage = 5;
     this.userLogged = this._authService.getUserLoggedIn();
   }

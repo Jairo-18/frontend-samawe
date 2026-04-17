@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import {
@@ -62,6 +62,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _dialog: MatDialog = inject(MatDialog);
+  private readonly _platformId = inject(PLATFORM_ID);
 
   form: FormGroup;
   isLoading: boolean = true;
@@ -186,7 +187,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
 
-    if (this.organization) {
+    if (this.organization && isPlatformBrowser(this._platformId)) {
       if (this.organization.primaryColor) {
         document.documentElement.style.setProperty(
           '--primary-color',
@@ -239,6 +240,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   private setupLiveColorPreview(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+
     this._subscription.add(
       this.form.get('primaryColor')?.valueChanges.subscribe((color) => {
         if (color)
@@ -506,7 +509,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   previewMedia(mediaTypeCode: string): void {
     const url = this.getMediaUrl(mediaTypeCode);
-    if (url) window.open(url, '_blank');
+    if (url && isPlatformBrowser(this._platformId)) window.open(url, '_blank');
   }
 
   getMediaUrl(code: string): string | null {

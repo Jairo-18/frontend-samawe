@@ -27,6 +27,7 @@ import {
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 
 @Component({
   selector: 'app-complete-profile',
@@ -57,6 +58,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
   );
+  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
 
   form: FormGroup;
   identificationType: IdentificationType[] = [];
@@ -115,7 +117,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
 
   private loadPendingProfile(): void {
     try {
-      const raw = localStorage.getItem('_pendingGoogleProfile');
+      const raw = this._localStorage.getItem('_pendingGoogleProfile');
       if (raw) {
         const profile = JSON.parse(raw);
         const phone = this.extractPhoneFromEmail(profile.email || '');
@@ -246,7 +248,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
         headers: { Authorization: `Bearer ${token}` }
       });
     }
-    localStorage.clear();
+    this._localStorage.cleanLocalStorage();
   }
 
   save(): void {
@@ -278,7 +280,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.profileSaved = true;
-          localStorage.removeItem('_pendingGoogleProfile');
+          this._localStorage.removeItem('_pendingGoogleProfile');
           this.isSaving = false;
           this._router.navigateByUrl('/home');
         },

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import {
   FormBuilder,
@@ -17,7 +17,7 @@ import { TypeItem } from '../../../shared/interfaces/relatedDataGeneral';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { PageEvent } from '@angular/material/paginator';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-edit-types.component';
 import { TypesService } from '../../services/types.service';
@@ -45,6 +45,7 @@ export class SeeTypesComponent implements OnInit {
   private readonly _typesService = inject(TypesService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _platformId = inject(PLATFORM_ID);
   results?: TypeItem[];
   loading: boolean = false;
   showClearButton: boolean = false;
@@ -114,7 +115,7 @@ export class SeeTypesComponent implements OnInit {
     return Object.entries(this.buttons) || [];
   }
   openDialog() {
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
     const dialogRef = this._matDialog.open(CreateOrEditTypesComponent, {
       width: isMobile ? '90vw' : 'auto',
       height: 'auto',
@@ -136,7 +137,7 @@ export class SeeTypesComponent implements OnInit {
       .subscribe({
         next: (res) => {
           const data = res.data.type;
-          const isMobile = window.innerWidth <= 768;
+          const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
           const dialogRef = this._matDialog.open(CreateOrEditTypesComponent, {
             width: isMobile ? '90vw' : 'auto',
             height: 'auto',

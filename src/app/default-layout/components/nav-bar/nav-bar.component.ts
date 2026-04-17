@@ -3,8 +3,10 @@ import {
   inject,
   OnInit,
   OnDestroy,
-  HostListener
+  HostListener,
+  PLATFORM_ID
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { NAVBAR_CONST } from '../../../shared/constants/navbar.constans';
 import { ApplicationService } from '../../../organizational/services/application.service';
@@ -28,6 +30,7 @@ import { UsersService } from '../../../organizational/services/users.service';
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBarComponent implements OnInit, OnDestroy {
+  private readonly _platformId = inject(PLATFORM_ID);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
   private readonly _authService: AuthService = inject(AuthService);
@@ -61,6 +64,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
+    if (!isPlatformBrowser(this._platformId)) return;
     const current = window.scrollY;
     this.isScrolled = current > 0;
     this.isScrollingDown = current > this._lastScrollY && current > 80;

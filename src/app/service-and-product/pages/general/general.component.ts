@@ -6,8 +6,10 @@ import {
   Component,
   inject,
   OnInit,
+  PLATFORM_ID,
   ViewChild
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { SeeProductsComponent } from '../../components/see-products/see-products.component';
 import { ActivatedRoute } from '@angular/router';
@@ -63,6 +65,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _platformId = inject(PLATFORM_ID);
   private readonly tabIndexMap: Record<string, number> = {
     editProduct: 0,
     editExcursion: 1,
@@ -121,6 +124,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     this.createOrEditExcursionComponent?.imageUploader?.resetPending();
   }
   goToTop(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const main = document.querySelector('main');
     if (main) {
       main.scrollTo({

@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, HostListener, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
@@ -32,6 +33,7 @@ import { CookieConsentComponent } from '../../../shared/components/cookie-consen
   styleUrl: './default-layout.component.scss'
 })
 export class DefaultLayoutComponent implements OnInit, OnDestroy {
+  private readonly _platformId = inject(PLATFORM_ID);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _router: Router = inject(Router);
   private readonly _localStorage: LocalStorageService =
@@ -52,7 +54,9 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   showMobileMenu: boolean = false;
 
   constructor() {
-    this.isPhone = window.innerWidth <= 768;
+    if (isPlatformBrowser(this._platformId)) {
+      this.isPhone = window.innerWidth <= 768;
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -85,7 +89,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
 
     if (
       this._authService.isAuthenticated() &&
-      localStorage.getItem('_pendingGoogleProfile') &&
+      this._localStorage.getItem('_pendingGoogleProfile') &&
       !this._router.url.includes('/complete-profile')
     ) {
       this._router.navigateByUrl('/complete-profile');
@@ -98,7 +102,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
         const navEvent = event as NavigationEnd;
         if (
           this._authService.isAuthenticated() &&
-          localStorage.getItem('_pendingGoogleProfile') &&
+          this._localStorage.getItem('_pendingGoogleProfile') &&
           !navEvent.url.includes('/complete-profile')
         ) {
           this._router.navigateByUrl('/complete-profile');
