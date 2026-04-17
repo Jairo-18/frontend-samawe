@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && node scripts/fix-ssr-manifest.mjs",
     "watch": "ng build --watch --configuration development",
     "serve:ssr": "node dist/frontend-samawe/server/server.mjs",
     "test": "ng test",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.20",
-    "@angular/cli": "^21.1.4",
+    "@angular/cli": "~19.2.0",
     "@angular/compiler-cli": "19.2.18",
     "@types/express": "^4.17.25",
     "@types/jasmine": "~5.1.0",
