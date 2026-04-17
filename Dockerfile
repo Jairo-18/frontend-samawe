@@ -6,12 +6,12 @@ RUN npm install --legacy-peer-deps
 FROM deps AS builder-production
 WORKDIR /app
 COPY . .
-RUN npm run build -- --configuration production
+RUN npx ng build --configuration production && node scripts/fix-ssr-manifest.mjs
 
 FROM deps AS builder-development
 WORKDIR /app
 COPY . .
-RUN npm run build -- --configuration development
+RUN npx ng build --configuration development && node scripts/fix-ssr-manifest.mjs
 
 FROM node:22-alpine AS prod-deps
 WORKDIR /app
