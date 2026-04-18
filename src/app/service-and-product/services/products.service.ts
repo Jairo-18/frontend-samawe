@@ -42,10 +42,10 @@ export class ProductsService {
     data: ProductComplete[];
     pagination: PaginationInterface;
   }> {
-    const params = this._httpUtilities.httpParamsFromObject({
-      page: 1,
-      perPage: 500
-    });
+    const orgId = this._authService.getOrganizationalId();
+    const query: Record<string, unknown> = { page: 1, perPage: 500, isActive: true };
+    if (orgId) query['organizationalId'] = orgId;
+    const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
       data: ProductComplete[];
       pagination: PaginationInterface;

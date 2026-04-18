@@ -32,6 +32,7 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ProductsService } from '../../services/products.service';
+import { EarningService } from '../../../sales/services/earning.service';
 import {
   CategoryType,
   UnitOfMeasure
@@ -74,6 +75,7 @@ export class SeeProductsComponent implements OnInit {
   @Output() printRequested = new EventEmitter<void>();
   @ViewChild('productsPrint') productsPrintComponent!: ProductsPrintComponent;
   private readonly _productsService: ProductsService = inject(ProductsService);
+  private readonly _earningService: EarningService = inject(EarningService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router = inject(Router);
   private readonly _matDialog: MatDialog = inject(MatDialog);
@@ -95,6 +97,7 @@ export class SeeProductsComponent implements OnInit {
   ];
   dataSource = new MatTableDataSource<ProductComplete>([]);
   allProducts: ProductComplete[] = [];
+  totalInventory?: number;
   userLogged: UserInterface;
   form!: FormGroup;
   showClearButton: boolean = false;
@@ -214,24 +217,22 @@ export class SeeProductsComponent implements OnInit {
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
   printProducts(): void {
-    this._productsService.getAllProducts().subscribe({
-      next: (res) => {
-        this.allProducts = (res.data || []).sort(
-          (a: ProductComplete, b: ProductComplete) => {
-            const catCompare = a.categoryType.name.localeCompare(
-              b.categoryType.name
+    this._earningService.getGeneragetProductSummary().subscribe({
+      next: (summary) => {
+        this.totalInventory = summary.totalProductPriceSale ?? 0;
+        this._productsService.getAllProducts().subscribe({
+          next: (res) => {
+            this.allProducts = (res.data || []).sort(
+              (a: ProductComplete, b: ProductComplete) => {
+                const catCompare = a.categoryType.name.localeCompare(b.categoryType.name);
+                if (catCompare !== 0) return catCompare;
+                return a.name.localeCompare(b.name);
+              }
             );
-            if (catCompare !== 0) return catCompare;
-            return a.name.localeCompare(b.name);
+            if (!this.allProducts.length) return;
+            setTimeout(() => this.productsPrintComponent.print(), 0);
           }
-        );
-        if (!this.allProducts.length) {
-          console.warn('No hay productos para imprimir');
-          return;
-        }
-        setTimeout(() => {
-          this.productsPrintComponent.print();
-        }, 0);
+        });
       }
     });
   }

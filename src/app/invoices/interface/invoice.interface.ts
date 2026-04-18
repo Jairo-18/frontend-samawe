@@ -46,6 +46,7 @@ export interface Invoice {
   payType?: PayType;
   paidType?: PaidType;
   invoiceDetails: InvoiceDetail[];
+  invoiceElectronic?: boolean;
   tableNumber?: string;
   orderTime?: string;
   readyTime?: string;

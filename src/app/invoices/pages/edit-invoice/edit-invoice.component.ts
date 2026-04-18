@@ -53,6 +53,7 @@ import {
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -211,8 +212,11 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       }
     });
   }
+  private readonly _invoicePrintService: InvoicePrintService = inject(InvoicePrintService);
   async downloadInvoice(): Promise<void> {
-    console.warn('downloadInvoice: html2pdf removed — pending SSR-compatible replacement');
+    if (this.invoiceData) {
+      await this._invoicePrintService.downloadInvoice(this.invoiceData, null as any);
+    }
   }
   onAllItemsSaved(): void {
     if (this.invoiceId) {

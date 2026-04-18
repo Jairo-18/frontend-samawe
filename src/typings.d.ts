@@ -1,1 +1,2 @@
-/* html2pdf.js removed — will be replaced with an SSR-compatible library */
+declare module 'pdfmake/build/pdfmake';
+declare module 'pdfmake/build/vfs_fonts';

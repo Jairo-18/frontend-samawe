@@ -40,8 +40,13 @@ export class ExcursionsService {
     }>(`${environment.apiUrl}excursion/paginated-list`, { params });
   }
   getAllExcursions(): Observable<{ data: ExcursionListResponse }> {
+    const orgId = this._authService.getOrganizationalId();
+    const params = orgId
+      ? this._httpUtilities.httpParamsFromObject({ organizationalId: orgId })
+      : undefined;
     return this._httpClient.get<{ data: ExcursionListResponse }>(
-      `${environment.apiUrl}excursion`
+      `${environment.apiUrl}excursion`,
+      { params }
     );
   }
   getExcursionEditPanel(
