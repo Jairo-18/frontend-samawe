@@ -7,6 +7,7 @@ const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 const app = express();
+app.disable('x-powered-by');
 const angularApp = new AngularNodeAppEngine();
 
 app.use(
