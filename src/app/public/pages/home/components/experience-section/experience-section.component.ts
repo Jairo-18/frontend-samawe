@@ -13,12 +13,11 @@ import { SectionHeaderComponent } from '../../../../../public/components/section
 })
 export class ExperienceSectionComponent {
   @Input() org: Organizational | null = null;
-  private readonly _router = inject(Router);
+  private readonly _router: Router = inject(Router);
 
   get imageUrl(): string {
-    const excluded = ['LOGO', 'LOGIN_BG', 'REGISTER_BG'];
     return (
-      this.org?.medias?.find((m) => !excluded.includes(m.mediaType?.code))
+      this.org?.medias?.find((m) => m.mediaType?.code === 'ABOUT_US_IMAGE')
         ?.url ?? 'assets/images/notFound.avif'
     );
   }

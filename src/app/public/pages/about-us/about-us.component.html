@@ -1,7 +1,180 @@
-<article class="auth-content-center">
-  <div class="p-2 flex text-center">
-    <span
-      >¡Estamos haciendo todo lo posible para construir este sitio web!</span
+<section class="w-full min-h-screen bg-[var(--bg-secondary-color)]">
+  @if (!org) {
+    <div class="flex justify-center py-20">
+      <app-loader />
+    </div>
+  }
+
+  @if (org) {
+    <!-- Hero con ABOUT_US_IMAGE -->
+    <div class="relative w-full h-[60vh] overflow-hidden">
+      <img
+        [src]="getMedia('ABOUT_US_IMAGE')"
+        [alt]="org.aboutUsTitle ?? 'Sobre Nosotros'"
+        class="absolute inset-0 w-full h-full object-cover z-0"
+      />
+      <div class="absolute inset-0 bg-black/40 z-0"></div>
+      <div
+        class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
+      >
+        <p
+          class="text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
+        >
+          @if (org.city || org.department) {
+            {{ org.city }}{{ org.city && org.department ? ', ' : ''
+            }}{{ org.department }}
+          } @else {
+            Quiénes somos
+          }
+        </p>
+        <h2
+          class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
+        >
+          {{ org.aboutUsTitle ?? '' }}
+        </h2>
+        @if (org.aboutUsDescription) {
+          <p
+            class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90"
+          >
+            {{ org.aboutUsDescription }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Secciones -->
+    <div
+      class="max-w-[1400px] mx-auto px-6 md:px-10 py-16 flex flex-col gap-20"
     >
-  </div>
-</article>
+      <!-- Misión -->
+      @if (org.missionTitle || org.missionDescription) {
+        <div class="flex flex-col md:flex-row-reverse gap-10 items-center">
+          <div
+            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+          >
+            <img
+              [src]="getMedia('MISSION_IMAGE')"
+              [alt]="org.missionTitle ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-fill"
+            />
+          </div>
+          <div class="flex flex-col gap-4">
+            <app-section-header
+              label="Misión"
+              [title]="org.missionTitle ?? ''"
+              [description]="org.missionDescription"
+              variant="left"
+            />
+          </div>
+        </div>
+      }
+
+      <!-- Visión -->
+      @if (org.visionTitle || org.visionDescription) {
+        <div class="flex flex-col md:flex-row gap-10 items-center">
+          <div
+            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+          >
+            <img
+              [src]="getMedia('VISION_IMAGE')"
+              [alt]="org.visionTitle ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-fill"
+            />
+          </div>
+          <div class="flex flex-col gap-4">
+            <app-section-header
+              label="Visión"
+              [title]="org.visionTitle ?? ''"
+              [description]="org.visionDescription"
+              variant="left"
+            />
+          </div>
+        </div>
+      }
+
+      <!-- Historia -->
+      @if (org.historyTitle || org.historyDescription) {
+        <div class="flex flex-col md:flex-row-reverse gap-10 items-center">
+          <div
+            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+          >
+            <img
+              [src]="getMedia('HISTORY_IMAGE')"
+              [alt]="org.historyTitle ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-fill"
+            />
+          </div>
+          <div class="flex flex-col gap-4">
+            <app-section-header
+              label="Historia"
+              [title]="org.historyTitle ?? ''"
+              [description]="org.historyDescription"
+              variant="left"
+            />
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Valores corporativos -->
+    @if (org.corporateValues && org.corporateValues.length > 0) {
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+        <div class="max-w-[1400px] mx-auto flex flex-col gap-10">
+          <app-section-header
+            label="Nuestros valores"
+            title="Lo que nos define"
+          />
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            @for (value of org.corporateValues; track value.corporateValueId) {
+              <div
+                class="relative rounded-[4px] overflow-hidden shadow-md border border-[var(--primary-color)]"
+              >
+                <img
+                  [src]="value.imageUrl || 'assets/images/notFound.avif'"
+                  [alt]="value.title"
+                  class="w-full h-[450px] md:h-[550px] object-fill block"
+                />
+                <div
+                  class="absolute inset-0"
+                  style="
+                    background: linear-gradient(
+                      to top,
+                      color-mix(
+                        in srgb,
+                        var(--primary-color) 100%,
+                        transparent
+                      ),
+                      color-mix(
+                        in srgb,
+                        var(--secondary-color) 10%,
+                        transparent
+                      ),
+                      transparent
+                    );
+                  "
+                ></div>
+                <div
+                  class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-1 text-center"
+                >
+                  <h3 class="text-lg font-bold text-white drop-shadow">
+                    {{ value.title }}
+                  </h3>
+                  @if (value.description) {
+                    <p class="text-sm text-white/80 leading-relaxed">
+                      {{ value.description }}
+                    </p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <app-reservation-section
+      [org]="org"
+      class="!bg-[var(--bg-secondary-color)]"
+    />
+  }
+</section>

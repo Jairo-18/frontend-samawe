@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, inject, Input, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  Input,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { AccommodationsService } from '../../../../../service-and-product/services/accommodations.service';

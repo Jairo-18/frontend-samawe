@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy, HostListener, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  HostListener,
+  PLATFORM_ID
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';

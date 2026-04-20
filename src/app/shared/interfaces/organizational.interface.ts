@@ -111,6 +111,7 @@ export interface Organizational {
   gastronomyIngredientsDescription?: string;
   accommodationsTitle?: string;
   accommodationsDescription?: string;
+  howToArriveDescription?: string;
   howToArrivePublicTransportDescription?: string;
   howToArrivePrivateTransportDescription?: string;
   accessibilityDescription?: string;

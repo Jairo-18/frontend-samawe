@@ -8,7 +8,6 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
-import { SectionHeaderComponent } from '../../components/section-header/section-header.component';
 
 @Component({
   selector: 'app-accommodation',
@@ -17,8 +16,7 @@ import { SectionHeaderComponent } from '../../components/section-header/section-
     CommonModule,
     CardAccommodationComponent,
     MatPaginatorModule,
-    LoaderComponent,
-    SectionHeaderComponent
+    LoaderComponent
   ],
   templateUrl: './accommodation.component.html',
   styleUrl: './accommodation.component.scss'
@@ -68,6 +66,13 @@ export class AccommodationComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  getMedia(code: string): string {
+    return (
+      this.org?.medias?.find((m) => m.mediaType?.code === code)?.url ??
+      'assets/images/notFound.avif'
+    );
   }
 
   onPageChange(event: PageEvent): void {

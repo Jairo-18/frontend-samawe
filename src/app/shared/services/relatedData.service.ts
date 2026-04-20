@@ -46,6 +46,7 @@ export class RelatedDataService {
         >(`${environment.apiUrl}app/related-data`)
         .pipe(
           tap((response) => {
+            console.log('[RelatedData] respuesta:', response);
             this._relatedData.set(response);
             this._isLoading.set(false);
           }),

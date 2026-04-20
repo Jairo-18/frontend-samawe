@@ -20,7 +20,10 @@
     <app-card-home></app-card-home>
   </app-base-page>
 } @else {
-  <app-hero-section [org]="org" [isLoggedUser]="isLoggedUser"></app-hero-section>
+  <app-hero-section
+    [org]="org"
+    [isLoggedUser]="isLoggedUser"
+  ></app-hero-section>
   <app-most-requested-section [org]="org"></app-most-requested-section>
   <app-experience-section [org]="org"></app-experience-section>
   <app-about-us-section [org]="org"></app-about-us-section>

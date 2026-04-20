@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
@@ -140,6 +146,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       gastronomyIngredientsDescription: [''],
       accommodationsTitle: [''],
       accommodationsDescription: [''],
+      howToArriveDescription: [''],
       howToArrivePublicTransportDescription: [''],
       howToArrivePrivateTransportDescription: [''],
       accessibilityDescription: [''],
@@ -317,6 +324,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
           this.buildMediaMap(org.medias ?? []);
           this.benefitSections = org.benefitSections ?? [];
           this.corporateValues = org.corporateValues ?? [];
+          if (this.organizationalId)
+            this.loadCorporateValues(this.organizationalId);
           this.legalSections = org.legalSections ?? [];
         }
         this.isLoading = false;
@@ -373,6 +382,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       gastronomyIngredientsDescription: org.gastronomyIngredientsDescription,
       accommodationsTitle: org.accommodationsTitle,
       accommodationsDescription: org.accommodationsDescription,
+      howToArriveDescription: org.howToArriveDescription,
       howToArrivePublicTransportDescription:
         org.howToArrivePublicTransportDescription,
       howToArrivePrivateTransportDescription:

@@ -1,19 +1,26 @@
 @if (
+  org?.howToArriveDescription ||
   org?.howToArrivePublicTransportDescription ||
   org?.howToArrivePrivateTransportDescription
 ) {
-  <section class="w-full py-16 px-6 md:px-16 bg-[var(--bg-primary-color)]">
-    <div class="max-w-7xl mx-auto flex flex-col gap-10">
-      <app-section-header label="Ubicación" title="Cómo llegar" />
+  <section class="w-full py-16 px-6 md:px-16 bg-inherit">
+    <div class="max-w-[1400px] mx-auto flex flex-col gap-10">
+      <app-section-header
+        label="Ubicación"
+        title="Cómo llegar"
+        [description]="org?.howToArriveDescription"
+      />
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Tarjetas transporte -->
         <div class="flex flex-col gap-6">
           @if (org?.howToArrivePublicTransportDescription) {
             <div
-              class="flex flex-col gap-4 bg-[var(--bg-secondary-color)] p-6 shadow-sm rounded-[4px] border-[1px] border-[var(--primary-color)]"
+              class="flex flex-col gap-4 bg-[var(--bg-secondary-color)] p-6 shadow-sm rounded-[4px] border-[1px] border-[var(--primary-color)] text-center md:text-left"
             >
-              <div class="flex items-center gap-3">
+              <div
+                class="flex items-center gap-3 justify-center md:justify-start"
+              >
                 <span
                   class="material-icons text-3xl text-[var(--primary-color)]"
                   >directions_bus</span
@@ -36,7 +43,9 @@
             <div
               class="flex flex-col gap-4 bg-[var(--bg-secondary-color)] p-6 shadow-sm rounded-[4px] border-[1px] border-[var(--primary-color)]"
             >
-              <div class="flex items-center gap-3">
+              <div
+                class="flex items-center gap-3 justify-center md:justify-start"
+              >
                 <span
                   class="material-icons text-3xl text-[var(--primary-color)]"
                   >directions_car</span
@@ -59,7 +68,9 @@
             <div
               class="flex flex-col gap-3 bg-[var(--bg-secondary-color)] p-6 shadow-sm rounded-[4px] border-[1px] border-[var(--primary-color)]"
             >
-              <div class="flex items-center gap-3">
+              <div
+                class="flex items-center gap-3 justify-center md:justify-start"
+              >
                 <span
                   class="material-icons text-3xl text-[var(--primary-color)]"
                   >accessible</span

@@ -114,12 +114,19 @@
       </span>
       @for (section of benefitSections; track section.benefitSectionId) {
         <div class="flex flex-col gap-2">
-          <span class="font-semibold text-gray-700 text-sm">{{ section.title }}</span>
+          <span class="font-semibold text-gray-700 text-sm">{{
+            section.title
+          }}</span>
           @if (section.items.length > 0) {
             <div class="flex flex-wrap gap-2">
               @for (item of section.items; track item.benefitItemId) {
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700">
-                  <mat-icon class="text-[var(--primary-color)] !text-base !w-4 !h-4">{{ item.icon }}</mat-icon>
+                <div
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700"
+                >
+                  <mat-icon
+                    class="text-[var(--primary-color)] !text-base !w-4 !h-4"
+                    >{{ item.icon }}</mat-icon
+                  >
                   {{ item.name }}
                 </div>
               }
@@ -136,6 +143,15 @@
       <mat-icon class="text-[var(--primary-color)]">map</mat-icon>
       Cómo Llegar
     </span>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Descripción General</mat-label>
+      <textarea
+        matInput
+        formControlName="howToArriveDescription"
+        rows="3"
+        placeholder="Para llegar al ecohotel..."
+      ></textarea>
+    </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Transporte Público</mat-label>
       <textarea
@@ -241,7 +257,9 @@
         class="flex items-center justify-between px-4 py-3 bg-gray-50 border-b"
       >
         <span class="font-semibold text-gray-800 flex items-center gap-2">
-          <mat-icon class="text-[var(--primary-color)] text-base">list</mat-icon>
+          <mat-icon class="text-[var(--primary-color)] text-base"
+            >list</mat-icon
+          >
           {{ section.title }}
           <span class="text-xs text-gray-400 font-normal"
             >({{ section.items.length }} items)</span
@@ -304,7 +322,9 @@
                   <mat-icon>grid_view</mat-icon>
                   {{ showIconPicker ? 'Cerrar selector' : 'Elegir icono' }}
                 </button>
-                @if (!itemForm.get('icon')?.value && itemForm.get('icon')?.touched) {
+                @if (
+                  !itemForm.get('icon')?.value && itemForm.get('icon')?.touched
+                ) {
                   <span class="text-xs text-red-500">Selecciona un icono</span>
                 }
               </div>
@@ -325,9 +345,11 @@
                       <button
                         type="button"
                         class="flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-colors cursor-pointer"
-                        [ngClass]="itemForm.get('icon')?.value === item.icon
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:bg-gray-50'"
+                        [ngClass]="
+                          itemForm.get('icon')?.value === item.icon
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        "
                         (click)="selectIcon(item.icon)"
                         [matTooltip]="item.label"
                       >
@@ -394,7 +416,9 @@
                 (click)="startEditItem(item, section.benefitSectionId)"
                 matTooltip="Editar"
               >
-                <mat-icon class="text-[var(--primary-color)] !text-base">edit</mat-icon>
+                <mat-icon class="text-[var(--primary-color)] !text-base"
+                  >edit</mat-icon
+                >
               </button>
               <button
                 mat-icon-button
@@ -471,50 +495,49 @@
       No hay valores corporativos aún.
     </p>
   }
-  @for (value of corporateValues; track value.corporateValueId) {
-    <div
-      class="flex items-start justify-between gap-4 p-4 border rounded-xl bg-white hover:shadow-sm transition-shadow"
-    >
-      <!-- Image thumbnail -->
-      <div class="shrink-0">
-        @if (value.imageUrl) {
-          <img
-            [src]="value.imageUrl"
-            [alt]="value.title"
-            class="w-16 h-16 object-cover rounded-lg border"
-          />
-        } @else {
-          <div
-            class="w-16 h-16 rounded-lg border border-dashed border-gray-300 flex items-center justify-center bg-gray-50"
-          >
-            <mat-icon class="text-gray-300">image</mat-icon>
-          </div>
-        }
-      </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+    @for (value of corporateValues; track value.corporateValueId) {
+      <div
+        class="relative rounded-[4px] overflow-hidden border border-[var(--primary-color)] shadow-md"
+      >
+        <!-- Imagen en flujo normal -->
+        <img
+          [src]="value.imageUrl || 'assets/images/notFound.avif'"
+          [alt]="value.title"
+          class="w-full h-[450px] md:h-[550px] object-fill block"
+        />
 
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-gray-800">{{ value.title }}</p>
-        <p class="text-sm text-gray-500 mt-1">{{ value.description }}</p>
-      </div>
+        <!-- Gradiente inferior -->
+        <div
+          class="absolute inset-0"
+          style="
+            background: linear-gradient(
+              to top,
+              color-mix(in srgb, var(--primary-color) 100%, transparent),
+              color-mix(in srgb, var(--secondary-color) 10%, transparent),
+              transparent
+            );
+          "
+        ></div>
 
-      <div class="flex gap-1 shrink-0 flex-col items-end">
-        <div class="flex gap-1">
+        <!-- Acciones (arriba derecha) -->
+        <div
+          class="absolute top-2 right-2 flex gap-1 bg-black/30 rounded-lg p-1"
+        >
           <button
             mat-icon-button
             (click)="editValue.emit(value)"
             matTooltip="Editar"
           >
-            <mat-icon class="text-[var(--primary-color)]">edit</mat-icon>
+            <mat-icon class="text-white">edit</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="deleteValue.emit(value.corporateValueId)"
             matTooltip="Eliminar"
           >
-            <mat-icon class="text-red-500">delete</mat-icon>
+            <mat-icon class="text-red-400">delete</mat-icon>
           </button>
-        </div>
-        <div class="flex gap-1">
           <input
             [id]="'cv-img-' + value.corporateValueId"
             type="file"
@@ -526,14 +549,12 @@
             mat-icon-button
             [disabled]="corporateValueImageLoading[value.corporateValueId]"
             (click)="triggerImageInput(value.corporateValueId)"
-            matTooltip="{{
-              value.imageUrl ? 'Cambiar imagen' : 'Subir imagen'
-            }}"
+            [matTooltip]="value.imageUrl ? 'Cambiar imagen' : 'Subir imagen'"
           >
             @if (corporateValueImageLoading[value.corporateValueId]) {
-              <mat-icon class="animate-spin text-gray-400">refresh</mat-icon>
+              <mat-icon class="animate-spin text-white">refresh</mat-icon>
             } @else {
-              <mat-icon class="text-gray-500">upload</mat-icon>
+              <mat-icon class="text-white">upload</mat-icon>
             }
           </button>
           @if (value.imageUrl) {
@@ -542,11 +563,21 @@
               (click)="deleteValueImage.emit(value.corporateValueId)"
               matTooltip="Eliminar imagen"
             >
-              <mat-icon class="text-orange-500">hide_image</mat-icon>
+              <mat-icon class="text-orange-400">hide_image</mat-icon>
             </button>
           }
         </div>
+
+        <!-- Texto (abajo) -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-1 text-center">
+          <p class="font-bold text-white drop-shadow">{{ value.title }}</p>
+          @if (value.description) {
+            <p class="text-sm text-white/80 leading-relaxed">
+              {{ value.description }}
+            </p>
+          }
+        </div>
       </div>
-    </div>
-  }
+    }
+  </div>
 </div>

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   FormBuilder,
