@@ -98,7 +98,7 @@
             </section>
           }
           <mat-tab-group animationDuration="0ms">
-            @if (invoiceData?.invoiceType?.code === 'FV') {
+            @if (invoiceData?.invoiceType?.code === 'FV' || invoiceData?.invoiceType?.code === 'CO') {
               <mat-tab label="Producto">
                 <ng-template matTabContent>
                   <app-add-product

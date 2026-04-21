@@ -184,7 +184,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private buildMediaMap(medias: OrganizationalMedia[]): void {
     const map: Record<string, OrganizationalMedia[]> = {};
     medias.forEach((m) => {
-      const code = m.mediaType.code;
+      const code = m.mediaType?.code;
+      if (!code) return;
       if (!map[code]) map[code] = [];
       map[code].push(m);
     });
@@ -300,13 +301,25 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private loadMedia(id: string): void {
-    this._applicationService.getMedia(id).subscribe({
+  private reloadMedias(onLoaded?: () => void): void {
+    if (!this.organizationalId) return;
+    this._applicationService.getMedia(this.organizationalId).subscribe({
       next: (res) => {
-        const flat = Object.values(res.data).flat();
-        this.buildMediaMap(flat);
-      }
+        if (res.data) {
+          this.buildMediaMapFromGrouped(res.data);
+        }
+        onLoaded?.();
+      },
+      error: () => onLoaded?.()
     });
+  }
+
+  private buildMediaMapFromGrouped(grouped: Record<string, OrganizationalMedia[]>): void {
+    const map: Record<string, OrganizationalMedia[]> = {};
+    Object.entries(grouped).forEach(([code, items]) => {
+      map[code] = items;
+    });
+    this.mediaMap = map;
   }
 
   private loadOrganization(): void {
@@ -482,8 +495,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       .uploadFile(this.organizationalId, type.mediaTypeId, file)
       .subscribe({
         next: () => {
-          this.loadMedia(this.organizationalId!);
-          this.mediaLoading[mediaTypeCode] = false;
+          this.reloadMedias(() => {
+            this.mediaLoading[mediaTypeCode] = false;
+          });
         },
         error: () => (this.mediaLoading[mediaTypeCode] = false)
       });
@@ -509,8 +523,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
         .deleteMedia(mediaItem.organizationalMediaId)
         .subscribe({
           next: () => {
-            this.loadMedia(this.organizationalId!);
-            this.mediaLoading[mediaTypeCode] = false;
+            this.reloadMedias(() => {
+              this.mediaLoading[mediaTypeCode] = false;
+            });
           },
           error: () => (this.mediaLoading[mediaTypeCode] = false)
         });
