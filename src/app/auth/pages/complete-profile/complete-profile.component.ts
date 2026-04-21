@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import { ApplicationService } from '../../../organizational/services/application.service';
 import { UsersService } from '../../../organizational/services/users.service';
 import { AuthService } from '../../services/auth.service';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
@@ -53,24 +54,27 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   private readonly _router: Router = inject(Router);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
   );
-  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
 
   form: FormGroup;
   identificationType: IdentificationType[] = [];
   personType: PersonType[] = [];
   phoneCode: PhoneCode[] = [];
   filteredPhoneCodes: PhoneCode[] = [];
-  loadingPhoneCodes = false;
-  loading = true;
-  isSaving = false;
-  showPassword = false;
-  showConfirmPassword = false;
-  private profileSaved = false;
+  loadingPhoneCodes: boolean = false;
+  loading: boolean = true;
+  isSaving: boolean = false;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+  private profileSaved: boolean = false;
 
   constructor() {
     this.form = this._fb.group(
@@ -144,17 +148,19 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
         this.personType = res.data?.personType || [];
         this.phoneCode = res.data?.phoneCode || [];
         this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
-        const orgs = res.data?.organizational || [];
-        if (orgs.length > 0) {
-          this.form.patchValue(
-            { organizationalId: orgs[0].organizationalId },
-            { emitEvent: false }
-          );
-        }
         this.loading = false;
       },
       error: () => {
         this.loading = false;
+      }
+    });
+
+    this._applicationService.currentOrg$.subscribe((org) => {
+      if (org) {
+        this.form.patchValue(
+          { organizationalId: org.organizationalId },
+          { emitEvent: false }
+        );
       }
     });
   }

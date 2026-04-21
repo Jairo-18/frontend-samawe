@@ -1,10 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationService } from '../../../organizational/services/application.service';
-import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import {
+  CorporateValue,
+  Organizational
+} from '../../../shared/interfaces/organizational.interface';
 import { SectionHeaderComponent } from '../../components/section-header/section-header.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
+import { filter, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'app-about-us',
@@ -23,11 +27,24 @@ export class AboutUsComponent implements OnInit {
     inject(ApplicationService);
 
   org: Organizational | null = null;
+  corporateValues: CorporateValue[] = [];
 
   ngOnInit(): void {
     this._applicationService.currentOrg$.subscribe((org) => {
       if (org) this.org = org;
     });
+
+    this._applicationService.currentOrg$
+      .pipe(
+        filter((org) => !!org),
+        take(1),
+        switchMap((org) =>
+          this._applicationService.getCorporateValues(org!.organizationalId)
+        )
+      )
+      .subscribe((res) => {
+        this.corporateValues = res.data ?? [];
+      });
   }
 
   getMedia(code: string): string {

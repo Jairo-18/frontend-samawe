@@ -14,7 +14,6 @@ import {
 } from '../../shared/interfaces/organizational.interface';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { BehaviorSubject, tap } from 'rxjs';
-import { RelatedDataService } from '../../shared/services/relatedData.service';
 import { SeoService } from '../../shared/services/seo.service';
 
 @Injectable({
@@ -22,8 +21,6 @@ import { SeoService } from '../../shared/services/seo.service';
 })
 export class ApplicationService {
   private readonly _http: HttpClient = inject(HttpClient);
-  private readonly _relatedDataService: RelatedDataService =
-    inject(RelatedDataService);
   private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
   private _mediaMapSubject = new BehaviorSubject<Record<
@@ -40,6 +37,14 @@ export class ApplicationService {
   ): Observable<ApiResponseInterface<Organizational>> {
     return this._http.get<ApiResponseInterface<Organizational>>(
       `${environment.apiUrl}organizational/${id}`
+    );
+  }
+
+  getOrganizationBySlug(
+    slug: string
+  ): Observable<ApiResponseInterface<Organizational>> {
+    return this._http.get<ApiResponseInterface<Organizational>>(
+      `${environment.apiUrl}organizational/slug/${slug}`
     );
   }
 
@@ -70,70 +75,66 @@ export class ApplicationService {
   }
 
   loadBrandingBySlug(slug: string): void {
-    this._relatedDataService.getRelatedData().subscribe({
+    this.getOrganizationBySlug(slug).subscribe({
       next: (res) => {
-        if (res.data && res.data.organizational) {
-          const org = res.data.organizational.find((o) => o.slug === slug);
-          if (org) {
-            this._currentOrgSubject.next(org);
-            this.updateMediaFromOrg(org);
-            this._seoService.applyFromOrg(org);
-            console.log(org);
-            if (isPlatformBrowser(this._platformId)) {
-              if (org.primaryColor) {
-                document.documentElement.style.setProperty(
-                  '--primary-color',
-                  org.primaryColor
-                );
-              }
-              if (org.secondaryColor) {
-                document.documentElement.style.setProperty(
-                  '--secondary-color',
-                  org.secondaryColor
-                );
-              }
-              if (org.tertiaryColor) {
-                document.documentElement.style.setProperty(
-                  '--tertiary-color',
-                  org.tertiaryColor
-                );
-              }
-              if (org.titleColor) {
-                document.documentElement.style.setProperty(
-                  '--title-color',
-                  org.titleColor
-                );
-              }
-              if (org.subtitleColor) {
-                document.documentElement.style.setProperty(
-                  '--subtitle-color',
-                  org.subtitleColor
-                );
-              }
-              if (org.textColor) {
-                document.documentElement.style.setProperty(
-                  '--text-color',
-                  org.textColor
-                );
-              }
-              if (org.bgPrimaryColor) {
-                document.documentElement.style.setProperty(
-                  '--bg-primary-color',
-                  org.bgPrimaryColor
-                );
-              }
-              if (org.bgSecondaryColor) {
-                document.documentElement.style.setProperty(
-                  '--bg-secondary-color',
-                  org.bgSecondaryColor
-                );
-              }
+        if (res.data) {
+          const org = res.data;
+          this._currentOrgSubject.next(org);
+          this.updateMediaFromOrg(org);
+          this._seoService.applyFromOrg(org);
+          if (isPlatformBrowser(this._platformId)) {
+            if (org.primaryColor) {
+              document.documentElement.style.setProperty(
+                '--primary-color',
+                org.primaryColor
+              );
+            }
+            if (org.secondaryColor) {
+              document.documentElement.style.setProperty(
+                '--secondary-color',
+                org.secondaryColor
+              );
+            }
+            if (org.tertiaryColor) {
+              document.documentElement.style.setProperty(
+                '--tertiary-color',
+                org.tertiaryColor
+              );
+            }
+            if (org.titleColor) {
+              document.documentElement.style.setProperty(
+                '--title-color',
+                org.titleColor
+              );
+            }
+            if (org.subtitleColor) {
+              document.documentElement.style.setProperty(
+                '--subtitle-color',
+                org.subtitleColor
+              );
+            }
+            if (org.textColor) {
+              document.documentElement.style.setProperty(
+                '--text-color',
+                org.textColor
+              );
+            }
+            if (org.bgPrimaryColor) {
+              document.documentElement.style.setProperty(
+                '--bg-primary-color',
+                org.bgPrimaryColor
+              );
+            }
+            if (org.bgSecondaryColor) {
+              document.documentElement.style.setProperty(
+                '--bg-secondary-color',
+                org.bgSecondaryColor
+              );
             }
           }
         }
       },
-      error: (err) =>
-        console.error('Error loading branding from related-data:', err)
+      error: (err) => console.error('Error loading branding by slug:', err)
     });
   }
 

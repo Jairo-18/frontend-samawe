@@ -13,6 +13,7 @@ import { MostRequestedAccommodation } from '../../../../../service-and-product/i
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../../../shared/pipes/capitalize.pipe';
 import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
+import { LoaderComponent } from '../../../../../shared/components/loader/loader.component';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 
 @Component({
@@ -22,7 +23,8 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
     CommonModule,
     ButtonLandingComponent,
     CapitalizePipe,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    LoaderComponent
   ],
   templateUrl: './most-requested-section.component.html',
   styleUrls: ['./most-requested-section.component.scss']
@@ -36,6 +38,7 @@ export class MostRequestedSectionComponent implements OnInit, OnDestroy {
   private readonly _platformId = inject(PLATFORM_ID);
 
   accommodations: MostRequestedAccommodation[] = [];
+  isLoading: boolean = true;
   currentIndex: Map<number, number> = new Map();
   visible: Map<number, boolean> = new Map();
   lightboxImage: string | null = null;
@@ -54,9 +57,11 @@ export class MostRequestedSectionComponent implements OnInit, OnDestroy {
           this.currentIndex.set(acc.accommodationId, 0);
           this.visible.set(acc.accommodationId, true);
         });
+        this.isLoading = false;
       },
       error: () => {
         this.accommodations = [];
+        this.isLoading = false;
       }
     });
   }

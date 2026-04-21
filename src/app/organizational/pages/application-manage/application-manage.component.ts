@@ -39,7 +39,7 @@ import {
   IdentificationType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
-import { Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import { forkJoin, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-application-manage',
@@ -324,23 +324,30 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   private loadOrganization(): void {
     this.isLoading = true;
-    this._relatedDataService.getRelatedData().subscribe({
-      next: (res) => {
-        this.identificationTypes = res.data.identificationType;
-        this.filteredPhoneCodes = res.data.phoneCode;
-        this.mediaTypes = res.data.mediaType ?? [];
-        this.setupPhoneCodeSearch(res.data.phoneCode);
-        const org = res.data.organizational?.[0];
+    const id = this.organizationalId!;
+
+    forkJoin([
+      this._relatedDataService.getRelatedData(),
+      this._applicationService.getOrganization(id),
+      this._applicationService.getLegalSections(id),
+      this._applicationService.getBenefitSections(id),
+    ]).subscribe({
+      next: ([relatedData, orgRes, legalRes, benefitRes]) => {
+        this.identificationTypes = relatedData.data.identificationType;
+        this.filteredPhoneCodes = relatedData.data.phoneCode;
+        this.mediaTypes = relatedData.data.mediaType ?? [];
+        this.setupPhoneCodeSearch(relatedData.data.phoneCode);
+
+        const org = orgRes.data;
         if (org) {
           this.organization = org;
           this.patchForm(org);
-          this.buildMediaMap(org.medias ?? []);
-          this.benefitSections = org.benefitSections ?? [];
-          this.corporateValues = org.corporateValues ?? [];
-          if (this.organizationalId)
-            this.loadCorporateValues(this.organizationalId);
-          this.legalSections = org.legalSections ?? [];
+          this.reloadMedias();
         }
+
+        this.legalSections = legalRes.data ?? [];
+        this.benefitSections = benefitRes.data ?? [];
+        this.loadCorporateValues(id);
         this.isLoading = false;
       },
       error: () => (this.isLoading = false)

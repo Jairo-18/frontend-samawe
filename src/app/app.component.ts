@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 import { ApplicationService } from './organizational/services/application.service';
 import { AuthService } from './auth/services/auth.service';
+import { RelatedDataService } from './shared/services/relatedData.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,8 @@ export class AppComponent implements OnDestroy {
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _relatedDataService: RelatedDataService =
+    inject(RelatedDataService);
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
@@ -40,6 +43,7 @@ export class AppComponent implements OnDestroy {
     this._listenRouterChanges();
     if (isPlatformBrowser(this.platformId)) {
       this._loadInitialBranding();
+      this._relatedDataService.getRelatedData().subscribe();
       this._authService.scheduleTokenRefresh();
     }
   }

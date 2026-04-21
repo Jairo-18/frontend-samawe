@@ -117,7 +117,7 @@
     </div>
 
     <!-- Valores corporativos -->
-    @if (org.corporateValues && org.corporateValues.length > 0) {
+    @if (corporateValues && corporateValues.length > 0) {
       <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
         <div class="max-w-[1400px] mx-auto flex flex-col gap-10">
           <app-section-header
@@ -125,7 +125,7 @@
             title="Lo que nos define"
           />
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            @for (value of org.corporateValues; track value.corporateValueId) {
+            @for (value of corporateValues; track value.corporateValueId) {
               <div
                 class="relative rounded-[4px] overflow-hidden shadow-md border border-[var(--primary-color)]"
               >

@@ -9,7 +9,7 @@
       Términos y Condiciones
     </h3>
 
-    @if (section(); as sec) {
+    @if (section; as sec) {
       @for (item of sec.items; track item.legalItemId; let i = $index) {
         <section class="mb-8">
           @if (item.title) {
