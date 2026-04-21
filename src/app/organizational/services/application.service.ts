@@ -78,7 +78,7 @@ export class ApplicationService {
             this._currentOrgSubject.next(org);
             this.updateMediaFromOrg(org);
             this._seoService.applyFromOrg(org);
-
+            console.log(org);
             if (isPlatformBrowser(this._platformId)) {
               if (org.primaryColor) {
                 document.documentElement.style.setProperty(
@@ -325,7 +325,10 @@ export class ApplicationService {
 
   createLegalSection(
     organizationalId: string,
-    data: { type: LegalType; items?: { title?: string; content: string; order?: number }[] }
+    data: {
+      type: LegalType;
+      items?: { title?: string; content: string; order?: number }[];
+    }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
       `${environment.apiUrl}legal/organizational/${organizationalId}`,
@@ -333,7 +336,9 @@ export class ApplicationService {
     );
   }
 
-  deleteLegalSection(sectionId: string): Observable<ApiResponseInterface<void>> {
+  deleteLegalSection(
+    sectionId: string
+  ): Observable<ApiResponseInterface<void>> {
     return this._http.delete<ApiResponseInterface<void>>(
       `${environment.apiUrl}legal/${sectionId}`
     );
