@@ -27,6 +27,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'gastronomy',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/gastronomy/gastronomy.component').then(
             (m) => m.GastronomyComponent
@@ -42,6 +43,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'blog',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/blog/blog.component').then((m) => m.BlogComponent)
       },
