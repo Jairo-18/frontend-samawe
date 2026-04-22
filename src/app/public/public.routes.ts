@@ -11,6 +11,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'about-us',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/about-us/about-us.component').then(
             (m) => m.AboutUsComponent
@@ -18,6 +19,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'accommodation',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/accommodation/accommodation.component').then(
             (m) => m.AccommodationComponent
@@ -32,6 +34,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'how-to-arrive',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/how-to-arrive/how-to-arrive.component').then(
             (m) => m.HowToArriveComponent

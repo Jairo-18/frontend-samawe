@@ -44,6 +44,8 @@ export class OrganizationalMultimediaComponent implements OnChanges {
   @Output() deleteMedia = new EventEmitter<string>();
   @Output() previewMedia = new EventEmitter<string>();
 
+  loadedImages = new Set<string>();
+
   get nonLogoTypes(): MediaType[] {
     return this.mediaTypes.filter((t) => t.code !== 'LOGO');
   }
@@ -54,37 +56,30 @@ export class OrganizationalMultimediaComponent implements OnChanges {
     return Array.isArray(media) ? media[0]?.url : media.url;
   }
 
-  private retryCount: Record<string, number> = {};
+  onImgLoad(code: string): void {
+    this.loadedImages.add(code);
+  }
 
-  private baseSrc: Record<string, string> = {};
+  isImageLoaded(code: string): boolean {
+    return this.loadedImages.has(code);
+  }
+
+  private retried = new Set<string>();
 
   onImgError(event: Event, code: string): void {
     const img = event.target as HTMLImageElement;
-    const failedSrc = img.src;
-    if (!this.baseSrc[code]) {
-      this.baseSrc[code] = failedSrc.split('?')[0].split('#')[0];
+    if (this.retried.has(code)) {
+      img.src = 'assets/images/notFound.avif';
+      return;
     }
-    const base = this.baseSrc[code];
-    const count = (this.retryCount[code] ?? 0) + 1;
-    this.retryCount[code] = count;
-
-    if (count <= 4) {
-      setTimeout(() => {
-        if (!img.src.startsWith(base)) {
-          this.retryCount[code] = 0;
-          return;
-        }
-        const sep = base.includes('?') ? '&' : '?';
-        img.src = `${base}${sep}_r=${Date.now()}`;
-      }, 1500 * count);
-    } else {
-      this.retryCount[code] = 0;
-    }
+    this.retried.add(code);
+    const base = img.src.split('?')[0];
+    img.src = `${base}?_r=${Date.now()}`;
   }
 
   ngOnChanges(): void {
-    this.retryCount = {};
-    this.baseSrc = {};
+    this.retried = new Set<string>();
+    this.loadedImages = new Set<string>();
   }
 
   triggerInput(code: string): void {

@@ -29,10 +29,14 @@
         <div
           class="w-40 h-40 rounded-full border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
         >
+          @if (getMediaUrl('LOGO') && !isImageLoaded('LOGO')) {
+            <div class="absolute inset-0 bg-gray-200 animate-pulse rounded-full z-10"></div>
+          }
           <img
             [src]="getMediaUrl('LOGO') || 'assets/images/notFound.avif'"
             alt="Logo"
             class="w-full h-full object-contain p-2"
+            (load)="onImgLoad('LOGO')"
             (error)="onImgError($event, 'LOGO')"
           />
           <div
@@ -106,12 +110,16 @@
               <div
                 class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
               >
+                @if (getMediaUrl(type.code) && !isImageLoaded(type.code)) {
+                  <div class="absolute inset-0 bg-gray-200 animate-pulse z-10"></div>
+                }
                 <img
                   [src]="
                     getMediaUrl(type.code) || 'assets/images/notFound.avif'
                   "
                   [alt]="type.name"
                   class="w-full h-full object-cover"
+                  (load)="onImgLoad(type.code)"
                   (error)="onImgError($event, type.code)"
                 />
                 <div

@@ -2,51 +2,52 @@
   <div class="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
     <app-loader></app-loader>
   </div>
-} @else {
-  <article
-    class="flex relative min-h-dvh"
-    [style.--sidebar-width]="
-      !showSideBar ? '0px' : isCollapsedSideBar ? '64px' : '288px'
-    "
-  >
-    @if (showSideBar) {
-      <app-side-bar
-        [userRole]="userInfo"
-        class="brand-side-bar"
-        (collapsed)="listenEvent($event)"
-        [closeSideBar]="closeSideBar"
-        (logout)="logout()"
-      ></app-side-bar>
+}
+
+<article
+  class="flex relative min-h-dvh"
+  [class.invisible]="_relatedDataService.isLoading()"
+  [style.--sidebar-width]="
+    !showSideBar ? '0px' : isCollapsedSideBar ? '64px' : '288px'
+  "
+>
+  @if (showSideBar) {
+    <app-side-bar
+      [userRole]="userInfo"
+      class="brand-side-bar"
+      (collapsed)="listenEvent($event)"
+      [closeSideBar]="closeSideBar"
+      (logout)="logout()"
+    ></app-side-bar>
+  }
+
+  <div class="app-container flex-1 relative">
+    @if (showNavBar) {
+      <app-nav-bar class="brand-nav-bar"></app-nav-bar>
     }
 
-    <div class="app-container flex-1 relative">
-      @if (showNavBar) {
-        <app-nav-bar class="brand-nav-bar"></app-nav-bar>
-      }
+    <app-notification-button
+      [showNotificationsIcon]="showNotificationsIcon"
+      [userInfo]="userInfo"
+      class="fixed top-4 right-7 z-50"
+    >
+    </app-notification-button>
 
-      <app-notification-button
-        [showNotificationsIcon]="showNotificationsIcon"
-        [userInfo]="userInfo"
-        class="fixed top-4 right-7 z-50"
-      >
-      </app-notification-button>
+    <main
+      class="main w-full"
+      [ngClass]="{ 'has-mobile-menu': showMobileMenu }"
+    >
+      <router-outlet></router-outlet>
+    </main>
 
-      <main
-        class="main w-full"
-        [ngClass]="{ 'has-mobile-menu': showMobileMenu }"
-      >
-        <router-outlet></router-outlet>
-      </main>
+    @if (showMobileMenu) {
+      <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
+    }
 
-      @if (showMobileMenu) {
-        <app-mobile-menu [userInfo]="userInfo"></app-mobile-menu>
-      }
-
-      @if (showNavBar) {
-        <app-footer></app-footer>
-      }
-    </div>
-  </article>
-}
+    @if (showNavBar) {
+      <app-footer></app-footer>
+    }
+  </div>
+</article>
 
 <app-cookie-consent></app-cookie-consent>

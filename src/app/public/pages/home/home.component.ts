@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, switchMap } from 'rxjs';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CardHomeComponent } from '../../components/card-home/card-home.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
-import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import { BenefitSection, Organizational } from '../../../shared/interfaces/organizational.interface';
 import { HeroSectionComponent } from './components/hero-section/hero-section.component';
 import { ExperienceSectionComponent } from './components/experience-section/experience-section.component';
 import { AboutUsSectionComponent } from './components/about-us-section/about-us-section.component';
@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
   org: Organizational | null = null;
+  benefitSections: BenefitSection[] = [];
 
   ngOnInit(): void {
     this._subscription.add(
@@ -66,9 +67,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._subscription.add(
       this._applicationService.currentOrg$.subscribe((org) => {
-        if (org) {
-          this.org = org;
-        }
+        if (org) this.org = org;
+      })
+    );
+
+    this._subscription.add(
+      this._applicationService.currentOrg$.pipe(
+        filter((org) => !!org),
+        switchMap((org) =>
+          this._applicationService.getBenefitSections(org!.organizationalId)
+        )
+      ).subscribe((res) => {
+        this.benefitSections = res.data ?? [];
       })
     );
   }

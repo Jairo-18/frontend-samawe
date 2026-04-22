@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
+import { BenefitSection, Organizational } from '../../../../../shared/interfaces/organizational.interface';
 
 @Component({
   selector: 'app-benefits-section',
@@ -11,4 +11,5 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
 })
 export class BenefitsSectionComponent {
   @Input() org: Organizational | null = null;
+  @Input() benefitSections: BenefitSection[] = [];
 }

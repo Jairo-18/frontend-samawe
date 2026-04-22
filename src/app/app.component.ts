@@ -65,7 +65,7 @@ export class AppComponent implements OnDestroy {
   }
   private _setScrollOnTop(): void {
     if (isPlatformBrowser(this.platformId)) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'instant' });
     }
   }
   ngOnDestroy(): void {

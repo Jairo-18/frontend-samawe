@@ -39,7 +39,12 @@ import {
   IdentificationType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
-import { forkJoin, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
+import {
+  forkJoin,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged
+} from 'rxjs';
 
 @Component({
   selector: 'app-application-manage',
@@ -181,17 +186,6 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildMediaMap(medias: OrganizationalMedia[]): void {
-    const map: Record<string, OrganizationalMedia[]> = {};
-    medias.forEach((m) => {
-      const code = m.mediaType?.code;
-      if (!code) return;
-      if (!map[code]) map[code] = [];
-      map[code].push(m);
-    });
-    this.mediaMap = map;
-  }
-
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
 
@@ -314,7 +308,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildMediaMapFromGrouped(grouped: Record<string, OrganizationalMedia[]>): void {
+  private buildMediaMapFromGrouped(
+    grouped: Record<string, OrganizationalMedia[]>
+  ): void {
     const map: Record<string, OrganizationalMedia[]> = {};
     Object.entries(grouped).forEach(([code, items]) => {
       map[code] = items;
@@ -331,8 +327,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       this._applicationService.getOrganization(id),
       this._applicationService.getLegalSections(id),
       this._applicationService.getBenefitSections(id),
+      this._applicationService.getMedia(id)
     ]).subscribe({
-      next: ([relatedData, orgRes, legalRes, benefitRes]) => {
+      next: ([relatedData, orgRes, legalRes, benefitRes, mediaRes]) => {
         this.identificationTypes = relatedData.data.identificationType;
         this.filteredPhoneCodes = relatedData.data.phoneCode;
         this.mediaTypes = relatedData.data.mediaType ?? [];
@@ -342,7 +339,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
         if (org) {
           this.organization = org;
           this.patchForm(org);
-          this.reloadMedias();
+        }
+
+        if (mediaRes.data) {
+          this.buildMediaMapFromGrouped(mediaRes.data);
         }
 
         this.legalSections = legalRes.data ?? [];
