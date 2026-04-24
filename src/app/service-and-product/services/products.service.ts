@@ -43,7 +43,11 @@ export class ProductsService {
     pagination: PaginationInterface;
   }> {
     const orgId = this._authService.getOrganizationalId();
-    const query: Record<string, unknown> = { page: 1, perPage: 500, isActive: true };
+    const query: Record<string, unknown> = {
+      page: 1,
+      perPage: 500,
+      isActive: true
+    };
     if (orgId) query['organizationalId'] = orgId;
     const params = this._httpUtilities.httpParamsFromObject(query);
     return this._httpClient.get<{
@@ -80,4 +84,3 @@ export class ProductsService {
     return this._httpClient.delete(`${environment.apiUrl}product/${productId}`);
   }
 }
-

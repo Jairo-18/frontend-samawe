@@ -1,7 +1,361 @@
-<article class="auth-content-center">
-  <div class="p-2 flex text-center">
-    <span
-      >¡Estamos haciendo todo lo posible para construir este sitio web!</span
-    >
+<section class="w-full h-full bg-[var(--bg-secondary-color)]">
+  <div class="py-5">
+    <app-section-header
+      label="Comunidad"
+      title="Reseñas del Hotel"
+      description="Comparte tu experiencia y lee lo que otros huéspedes dicen sobre nosotros."
+    />
   </div>
-</article>
+
+  <div class="max-w-3xl mx-auto px-4 pb-10">
+    <!-- Formulario nueva reseña -->
+    @if (isLoggedIn) {
+      <div
+        class="bg-[var(--bg-primary-color)] rounded-[4px] shadow-md border border-[var(--primary-color)] p-6 mb-6"
+      >
+        <h3 class="text-base font-semibold text-[var(--title-color)] mb-4">
+          Escribe una reseña
+        </h3>
+        <input
+          [(ngModel)]="newTitle"
+          placeholder="Título"
+          maxlength="255"
+          class="w-full border border-[var(--primary-color)] rounded-[4px] px-4 py-2.5 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] mb-3"
+        />
+        <textarea
+          [(ngModel)]="newComment"
+          placeholder="Cuéntanos tu experiencia..."
+          rows="4"
+          class="w-full border border-[var(--primary-color)] rounded-[4px] px-4 py-2.5 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] resize-none mb-3"
+        ></textarea>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="flex">
+            @for (pos of starPositions; track pos) {
+              <span class="material-icons text-xl text-yellow-400 cursor-default">
+                {{ getStarIcon(pos, newScore) }}
+              </span>
+            }
+          </div>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            step="0.5"
+            [(ngModel)]="newScore"
+            class="flex-1 accent-yellow-400"
+          />
+          <span class="text-sm font-semibold text-[var(--primary-color)] w-6">{{ newScore }}</span>
+        </div>
+        <div class="flex justify-end">
+          <button
+            (click)="submitReview()"
+            [disabled]="submitting || !newTitle.trim() || !newComment.trim()"
+            class="px-5 py-2 rounded-[4px] bg-[var(--primary-color)] text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
+          >
+            {{ submitting ? 'Publicando...' : 'Publicar reseña' }}
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="text-center py-5 mb-6 text-sm text-[var(--text-color)] border border-[var(--primary-color)] rounded-[4px] bg-[var(--bg-primary-color)]"
+      >
+        <span class="material-icons align-middle text-lg mr-1">lock</span>
+        Inicia sesión para dejar una reseña.
+      </div>
+    }
+
+    <!-- Buscador y filtros -->
+    @if (!loading && reviews.length > 0) {
+      <div class="flex flex-col sm:flex-row gap-2 mb-5">
+        <div class="relative flex-1">
+          <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-[var(--primary-color)] text-base">search</span>
+          <input
+            [(ngModel)]="searchQuery"
+            placeholder="Buscar reseñas..."
+            class="w-full pl-9 pr-4 py-2 border border-[var(--primary-color)] rounded-[4px] text-sm bg-[var(--bg-primary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+          />
+        </div>
+        <select
+          [(ngModel)]="filterScore"
+          class="border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-primary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+        >
+          <option value="all">Todas las reseñas</option>
+          <option value="good">Buenas (≥ 4 ★)</option>
+          <option value="bad">Malas (≤ 2 ★)</option>
+        </select>
+        <select
+          [(ngModel)]="sortOrder"
+          class="border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-primary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+        >
+          <option value="newest">Más recientes</option>
+          <option value="oldest">Más antiguas</option>
+        </select>
+      </div>
+    }
+
+    <!-- Loader -->
+    @if (loading) {
+      <div class="flex justify-center py-20">
+        <span class="material-icons animate-spin text-4xl text-[var(--primary-color)]">refresh</span>
+      </div>
+    }
+
+    <!-- Sin reseñas -->
+    @if (!loading && reviews.length === 0) {
+      <div class="flex flex-col items-center justify-center py-24 gap-3 text-[var(--text-color)]">
+        <span class="material-icons text-5xl">rate_review</span>
+        <p class="text-base">Sé el primero en dejar una reseña.</p>
+      </div>
+    }
+
+    <!-- Sin resultados de filtro -->
+    @if (!loading && reviews.length > 0 && filteredReviews.length === 0) {
+      <div class="flex flex-col items-center justify-center py-16 gap-3 text-[var(--text-color)]">
+        <span class="material-icons text-4xl">search_off</span>
+        <p class="text-sm">No hay reseñas que coincidan con tu búsqueda.</p>
+      </div>
+    }
+
+    <!-- Lista de reseñas -->
+    @for (review of filteredReviews; track review.reviewId) {
+      <div
+        class="bg-[var(--bg-primary-color)] rounded-[4px] shadow-md border border-[var(--primary-color)] p-5 mb-4"
+      >
+        <!-- Cabecera -->
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <img
+              [src]="review.user.avatarUrl || 'assets/images/defaultUser.png'"
+              [alt]="review.user.firstName + ' ' + review.user.lastName"
+              class="w-10 h-10 rounded-full object-cover border border-[var(--primary-color)]"
+            />
+            <div>
+              <p class="text-sm font-semibold text-[var(--title-color)]">
+                {{ review.user.firstName }} {{ review.user.lastName }}
+              </p>
+              <p class="text-xs text-[var(--text-color)]">
+                {{ formatDate(review.createdAt) }}
+                @if (wasEdited(review)) {
+                  <span class="ml-1 italic opacity-70">· editado {{ formatDate(review.updatedAt) }}</span>
+                }
+              </p>
+            </div>
+          </div>
+
+          @if (isOwner(review.user.userId)) {
+            <div class="flex gap-2">
+              <button
+                (click)="startEditReview(review)"
+                class="text-[var(--text-color)] hover:text-[var(--primary-color)] transition"
+              >
+                <span class="material-icons text-base">edit</span>
+              </button>
+              <button
+                (click)="deleteReview(review.reviewId)"
+                class="text-[var(--text-color)] hover:text-red-500 transition"
+              >
+                <span class="material-icons text-base">delete</span>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Contenido o edición -->
+        @if (editingReviewId === review.reviewId) {
+          <div class="mt-4">
+            <input
+              [(ngModel)]="editTitle"
+              maxlength="255"
+              class="w-full border border-[var(--primary-color)] rounded-[4px] px-4 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] mb-2"
+            />
+            <textarea
+              [(ngModel)]="editComment"
+              rows="3"
+              class="w-full border border-[var(--primary-color)] rounded-[4px] px-4 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] resize-none mb-2"
+            ></textarea>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="flex">
+                @for (pos of starPositions; track pos) {
+                  <span class="material-icons text-base text-yellow-400 cursor-default">
+                    {{ getStarIcon(pos, editScore) }}
+                  </span>
+                }
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                step="0.5"
+                [(ngModel)]="editScore"
+                class="flex-1 accent-yellow-400"
+              />
+              <span class="text-sm font-semibold text-[var(--primary-color)] w-6">{{ editScore }}</span>
+            </div>
+            <div class="flex gap-2 justify-end">
+              <button
+                (click)="editingReviewId = null"
+                class="px-4 py-1.5 text-sm rounded-[4px] border border-[var(--primary-color)] text-[var(--primary-color)] hover:opacity-80 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                (click)="saveEditReview(review.reviewId)"
+                class="px-4 py-1.5 text-sm rounded-[4px] bg-[var(--primary-color)] text-white hover:opacity-90 transition"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="flex items-center gap-0.5 mt-3">
+            @for (pos of starPositions; track pos) {
+              <span class="material-icons text-base text-yellow-400">
+                {{ getStarIcon(pos, review.score) }}
+              </span>
+            }
+            <span class="text-xs text-[var(--text-color)] ml-1 font-medium">{{ review.score }}</span>
+          </div>
+          <h4 class="mt-1 text-base font-semibold text-[var(--title-color)]">
+            {{ review.title }}
+          </h4>
+          <p class="mt-1 text-sm text-[var(--text-color)] leading-relaxed">
+            {{ review.comment }}
+          </p>
+        }
+
+        <!-- Pie: replies -->
+        <div class="mt-4 pt-3 border-t border-[var(--primary-color)] border-opacity-30 flex items-center gap-4">
+          <button
+            (click)="toggleReplies(review.reviewId)"
+            class="text-xs text-[var(--text-color)] hover:text-[var(--primary-color)] transition flex items-center gap-1"
+          >
+            <span class="material-icons text-sm">chat_bubble_outline</span>
+            {{ review.replies.length }}
+            {{ review.replies.length === 1 ? 'respuesta' : 'respuestas' }}
+            <span class="material-icons text-sm">{{
+              isRepliesExpanded(review.reviewId) ? 'expand_less' : 'expand_more'
+            }}</span>
+          </button>
+
+          @if (isLoggedIn) {
+            <button
+              (click)="startReply(review.reviewId)"
+              class="text-xs text-[var(--primary-color)] hover:opacity-80 transition flex items-center gap-1"
+            >
+              <span class="material-icons text-sm">reply</span>
+              Responder
+            </button>
+          }
+        </div>
+
+        <!-- Respuestas -->
+        @if (isRepliesExpanded(review.reviewId)) {
+          <div class="mt-3 pl-4 border-l-2 border-[var(--primary-color)] border-opacity-30 flex flex-col gap-4">
+            @if (review.replies.length === 0 && replyingToId !== review.reviewId) {
+              <p class="text-xs text-[var(--text-color)] italic opacity-70">Nadie ha respondido a esta reseña.</p>
+            }
+            @for (reply of review.replies; track reply.reviewReplyId) {
+              <div class="flex items-start gap-3">
+                <img
+                  [src]="reply.user.avatarUrl || 'assets/images/defaultUser.png'"
+                  [alt]="reply.user.firstName + ' ' + reply.user.lastName"
+                  class="w-8 h-8 rounded-full object-cover mt-0.5 border border-[var(--primary-color)]"
+                />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <span class="text-xs font-semibold text-[var(--title-color)]">
+                        {{ reply.user.firstName }} {{ reply.user.lastName }}
+                      </span>
+                      <span class="ml-2 text-xs text-[var(--text-color)]">{{ formatDate(reply.createdAt) }}</span>
+                      @if (reply.updatedAt && reply.updatedAt !== reply.createdAt) {
+                        <span class="ml-1 text-xs italic text-[var(--text-color)] opacity-70">· editado</span>
+                      }
+                    </div>
+                    @if (isOwner(reply.user.userId)) {
+                      <div class="flex gap-1">
+                        <button
+                          (click)="startEditReply(review.reviewId, reply)"
+                          class="text-[var(--text-color)] hover:text-[var(--primary-color)] transition"
+                        >
+                          <span class="material-icons text-sm">edit</span>
+                        </button>
+                        <button
+                          (click)="deleteReply(review.reviewId, reply.reviewReplyId)"
+                          class="text-[var(--text-color)] hover:text-red-500 transition"
+                        >
+                          <span class="material-icons text-sm">delete</span>
+                        </button>
+                      </div>
+                    }
+                  </div>
+
+                  @if (editingReplyKey === review.reviewId + '-' + reply.reviewReplyId) {
+                    <div class="mt-1">
+                      <textarea
+                        [(ngModel)]="editReplyComment"
+                        rows="2"
+                        class="w-full border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] resize-none mb-1"
+                      ></textarea>
+                      <div class="flex gap-2 justify-end">
+                        <button
+                          (click)="editingReplyKey = null"
+                          class="px-3 py-1 text-xs rounded-[4px] border border-[var(--primary-color)] text-[var(--primary-color)] hover:opacity-80 transition"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          (click)="saveEditReply(review.reviewId, reply.reviewReplyId)"
+                          class="px-3 py-1 text-xs rounded-[4px] bg-[var(--primary-color)] text-white hover:opacity-90 transition"
+                        >
+                          Guardar
+                        </button>
+                      </div>
+                    </div>
+                  } @else {
+                    <p class="mt-0.5 text-sm text-[var(--text-color)]">{{ reply.comment }}</p>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Formulario respuesta -->
+            @if (replyingToId === review.reviewId) {
+              <div class="flex gap-3 mt-1">
+                <div
+                  class="w-8 h-8 rounded-full bg-[var(--primary-color)] flex items-center justify-center text-white text-xs font-bold mt-0.5 shrink-0"
+                >
+                  {{ currentUser ? getInitials(currentUser) : '?' }}
+                </div>
+                <div class="flex-1">
+                  <textarea
+                    [(ngModel)]="replyComment"
+                    placeholder="Escribe tu respuesta..."
+                    rows="2"
+                    class="w-full border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] resize-none mb-1"
+                  ></textarea>
+                  <div class="flex gap-2 justify-end">
+                    <button
+                      (click)="replyingToId = null"
+                      class="px-3 py-1 text-xs rounded-[4px] border border-[var(--primary-color)] text-[var(--primary-color)] hover:opacity-80 transition"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      (click)="submitReply(review.reviewId)"
+                      [disabled]="replySubmitting || !replyComment.trim()"
+                      class="px-3 py-1 text-xs rounded-[4px] bg-[var(--primary-color)] text-white hover:opacity-90 transition disabled:opacity-50"
+                    >
+                      {{ replySubmitting ? 'Enviando...' : 'Enviar' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

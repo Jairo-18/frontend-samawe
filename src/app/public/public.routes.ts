@@ -56,6 +56,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'legal/privacity',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/legal/privacity/privacity.component').then(
             (m) => m.PrivacityComponent
@@ -63,6 +64,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'legal/terms',
+        data: { reuse: true },
         loadComponent: () =>
           import('./pages/legal/terms/terms.component').then(
             (m) => m.TermsComponent
