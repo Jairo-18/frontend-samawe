@@ -98,6 +98,17 @@
           ></app-organizational-multimedia>
         </ng-template>
       </mat-tab>
+
+      <mat-tab label="Google Business">
+        <ng-template matTabContent>
+          @if (organizationalId) {
+            <app-organizational-google-business
+              [organizationalId]="organizationalId"
+              [successFromCallback]="googleBusinessSuccess"
+            ></app-organizational-google-business>
+          }
+        </ng-template>
+      </mat-tab>
     </mat-tab-group>
   } @else {
     <app-loader></app-loader>

@@ -1,0 +1,67 @@
+<div class="flex items-start gap-3">
+  <img
+    [src]="reply.user.avatarUrl || 'assets/images/defaultUser.png'"
+    [alt]="reply.user.firstName + ' ' + reply.user.lastName"
+    class="w-8 h-8 rounded-full object-cover mt-0.5 border border-[var(--primary-color)]"
+  />
+  <div class="flex-1">
+    <div class="flex items-center justify-between">
+      <div>
+        <span class="text-xs font-semibold text-[var(--title-color)]">
+          {{ reply.user.firstName }} {{ reply.user.lastName }}
+        </span>
+        <span class="ml-2 text-xs text-[var(--text-color)]">{{ formatDate(reply.createdAt) }}</span>
+        @if (wasEdited) {
+          <span class="ml-1 text-xs italic text-[var(--text-color)] opacity-70">· editado</span>
+        }
+      </div>
+      @if (isOwner) {
+        <!-- Desktop: botones directos -->
+        <div class="hidden sm:flex gap-1">
+          <button mat-icon-button color="primary" (click)="startEdit()">
+            <span class="material-icons">edit</span>
+          </button>
+          <button mat-icon-button color="warn" (click)="delete()">
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
+        <!-- Mobile: menú desplegable -->
+        <div class="flex sm:hidden">
+          <button mat-icon-button [matMenuTriggerFor]="replyMenu">
+            <span class="material-icons text-[var(--text-color)]">more_vert</span>
+          </button>
+          <mat-menu #replyMenu="matMenu">
+            <button mat-menu-item (click)="startEdit()">
+              <span class="material-icons mr-2 text-[var(--primary-color)]">edit</span>
+              Editar
+            </button>
+            <button mat-menu-item (click)="delete()">
+              <span class="material-icons mr-2 text-red-500">delete</span>
+              <span class="text-red-500">Eliminar</span>
+            </button>
+          </mat-menu>
+        </div>
+      }
+    </div>
+
+    @if (editing) {
+      <div class="mt-1">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Editar respuesta</mat-label>
+          <textarea matInput [(ngModel)]="editComment" rows="2" cdkTextareaAutosize maxlength="750"></textarea>
+          <mat-hint align="end">{{ editComment.length }}/750</mat-hint>
+        </mat-form-field>
+        <div class="flex gap-2 justify-end">
+          <button (click)="cancelEdit()" class="px-3 py-1 text-xs rounded-[4px] border border-[var(--primary-color)] text-[var(--primary-color)] hover:opacity-80 transition">
+            Cancelar
+          </button>
+          <button (click)="save()" class="px-3 py-1 text-xs rounded-[4px] bg-[var(--primary-color)] text-white hover:opacity-90 transition">
+            Guardar
+          </button>
+        </div>
+      </div>
+    } @else {
+      <p class="mt-0.5 text-sm text-[var(--text-color)]">{{ reply.comment }}</p>
+    }
+  </div>
+</div>

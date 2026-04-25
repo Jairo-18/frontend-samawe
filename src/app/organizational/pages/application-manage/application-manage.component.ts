@@ -6,6 +6,7 @@ import {
   PLATFORM_ID
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import {
@@ -23,6 +24,7 @@ import { OrganizationalWebContentComponent } from '../../components/organization
 import { OrganizationalMultimediaComponent } from '../../components/organizational-multimedia/organizational-multimedia.component';
 import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
 import { OrganizationalLegalComponent } from '../../components/organizational-legal/organizational-legal.component';
+import { OrganizationalGoogleBusinessComponent } from '../../components/organizational-google-business/organizational-google-business.component';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -60,7 +62,8 @@ import {
     OrganizationalWebContentComponent,
     OrganizationalHomeContentComponent,
     OrganizationalMultimediaComponent,
-    OrganizationalLegalComponent
+    OrganizationalLegalComponent,
+    OrganizationalGoogleBusinessComponent
   ],
   templateUrl: './application-manage.component.html',
   styleUrls: ['./application-manage.component.scss']
@@ -74,6 +77,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     inject(RelatedDataService);
   private readonly _dialog: MatDialog = inject(MatDialog);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
 
   form: FormGroup;
   isLoading: boolean = true;
@@ -91,6 +95,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   benefitSectionForm: FormGroup;
 
   legalSections: LegalSection[] = [];
+  googleBusinessSuccess: boolean = false;
   private _subscription: Subscription = new Subscription();
 
   identificationTypes: IdentificationType[] = [];
@@ -184,6 +189,9 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     } else {
       this.isLoading = false;
     }
+    this._route.queryParams.subscribe((params) => {
+      this.googleBusinessSuccess = params['googleBusiness'] === 'success';
+    });
   }
 
   ngOnDestroy(): void {

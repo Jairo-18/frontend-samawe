@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
 import { Review, ReviewReply } from '../../shared/interfaces/review.interface';
+import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {
@@ -16,6 +17,28 @@ export class ReviewService {
     if (organizationalId) params['organizationalId'] = organizationalId;
     return this._http.get<ApiResponseInterface<Review[]>>(
       `${environment.apiUrl}reviews`,
+      { params }
+    );
+  }
+
+  getPaginated(
+    organizationalId: string,
+    page: number,
+    perPage: number = 15,
+    search?: string,
+    filter?: 'all' | '1' | '2' | '3' | '4' | '5',
+    sort?: 'newest' | 'oldest'
+  ): Observable<{ data: Review[]; pagination: PaginationInterface }> {
+    const params: Record<string, string> = {
+      organizationalId,
+      page: String(page),
+      perPage: String(perPage)
+    };
+    if (search?.trim()) params['search'] = search.trim();
+    if (filter && filter !== 'all') params['filter'] = filter;
+    if (sort) params['sort'] = sort;
+    return this._http.get<{ data: Review[]; pagination: PaginationInterface }>(
+      `${environment.apiUrl}reviews/paginated`,
       { params }
     );
   }
