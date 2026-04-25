@@ -90,6 +90,9 @@ export class BlogComponent implements OnInit, OnDestroy {
   readonly starPositions = [1, 2, 3, 4, 5];
 
   ngOnInit(): void {
+    this.isLoggedIn = this._authService.isAuthenticated();
+    this.currentUser = this.isLoggedIn ? this._localStorage.getUserData() : null;
+
     this._authService._isLoggedSubject.subscribe((logged) => {
       this.isLoggedIn = logged;
       this.currentUser = logged ? this._localStorage.getUserData() : null;
