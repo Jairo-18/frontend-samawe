@@ -18,6 +18,7 @@ export class PrivacityComponent implements OnInit {
     inject(ApplicationService);
 
   section: LegalSection | undefined;
+  isLoading: boolean = true;
 
   ngOnInit(): void {
     this._applicationService.currentOrg$
@@ -30,6 +31,7 @@ export class PrivacityComponent implements OnInit {
       )
       .subscribe((res) => {
         this.section = res.data?.find((s) => s.type === 'privacy');
+        this.isLoading = false;
       });
   }
 }

@@ -19,6 +19,7 @@ export class TermsComponent implements OnInit {
     inject(ApplicationService);
 
   section: LegalSection | undefined;
+  isLoading: boolean = true;
 
   ngOnInit(): void {
     this._applicationService.currentOrg$
@@ -31,6 +32,7 @@ export class TermsComponent implements OnInit {
       )
       .subscribe((res) => {
         this.section = res.data?.find((s) => s.type === 'terms');
+        this.isLoading = false;
       });
   }
 }

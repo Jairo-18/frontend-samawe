@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { filter } from 'rxjs';
 import { Organizational } from '../interfaces/organizational.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -8,11 +10,13 @@ export class SeoService {
   private readonly _title: Title = inject(Title);
   private readonly _meta: Meta = inject(Meta);
   private readonly _document: Document = inject(DOCUMENT);
+  private readonly _router: Router = inject(Router);
 
   applyFromOrg(org: Organizational): void {
     const title = org.metaTitle?.trim() || org.name;
     const description = org.metaDescription?.trim() || org.description || '';
-    const url = org.website || this._document.location.origin;
+    const siteUrl = org.website || this._document.location.origin;
+    const pageUrl = this._document.location.href;
     const image = this._resolveOgImage(org);
 
     this._title.setTitle(title);
@@ -20,13 +24,28 @@ export class SeoService {
     this._updateMeta('name', 'theme-color', org.primaryColor || '#2E7D32');
     this._updateMeta('property', 'og:title', title);
     this._updateMeta('property', 'og:description', description);
-    this._updateMeta('property', 'og:url', url);
+    this._updateMeta('property', 'og:url', pageUrl);
     this._updateMeta('property', 'og:image', image);
     this._updateMeta('property', 'og:site_name', org.name);
     this._updateMeta('name', 'twitter:title', title);
     this._updateMeta('name', 'twitter:description', description);
     this._updateMeta('name', 'twitter:image', image);
+    this._updateCanonical(pageUrl);
+
+    this._router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        const url = `${this._document.location.origin}${this._router.url}`;
+        this._updateCanonical(url);
+        this._updateMeta('property', 'og:url', url);
+      });
+  }
+
+  updatePageCanonical(path: string): void {
+    const origin = this._document.location.origin;
+    const url = path ? `${origin}/${path}` : origin;
     this._updateCanonical(url);
+    this._updateMeta('property', 'og:url', url);
   }
 
   private _updateMeta(

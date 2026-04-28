@@ -7,11 +7,10 @@ import { invoicesRoutes } from './invoices/invoices.routes';
 import { isLoggedGuard } from './shared/guards/isLogged.guard';
 import { pendingProfileGuard } from './shared/guards/pending-profile.guard';
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/home',
-    pathMatch: 'full'
-  },
+  { path: 'nosotros', redirectTo: '/about-us', pathMatch: 'full' },
+  { path: 'paquetes', redirectTo: '/accommodation', pathMatch: 'full' },
+  { path: 'samawe-1', redirectTo: '/accommodation', pathMatch: 'full' },
+  { path: 'excursion', redirectTo: '/how-to-arrive', pathMatch: 'full' },
 
   {
     path: '',

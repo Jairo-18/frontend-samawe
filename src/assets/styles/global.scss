@@ -88,7 +88,7 @@
 /* Toast clases */
 .toast-container {
   overflow: hidden;
-  border-radius: 16px !important;
+  border-radius: 4px !important;
   &.ngx-toastr {
     pointer-events: auto;
     position: fixed;
@@ -97,7 +97,7 @@
     max-width: 400px;
     margin: 10px;
     background-color: white;
-    border-radius: 16px !important;
+    border-radius: 4px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
@@ -286,11 +286,25 @@
   --mdc-typography-headline6-font-family: var(--font-title);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-title);
 }
 
-body, p, span, li, a, button, input, textarea, select, label {
+body,
+p,
+span,
+li,
+a,
+button,
+input,
+textarea,
+select,
+label {
   font-family: var(--font-body);
 }
 

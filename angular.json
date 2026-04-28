@@ -45,7 +45,7 @@
               "includePaths": ["src/assets/styles"]
             },
             "styles": ["src/styles.scss"],
-            "scripts": [],
+            "scripts": ["src/assets/js/animations.js"],
             "server": "src/main.server.ts",
             "ssr": {
               "entry": "server.ts"

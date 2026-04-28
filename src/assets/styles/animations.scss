@@ -34,3 +34,32 @@
   animation: fadeIn 0.5s ease-in-out forwards;
 }
 
+// Pre-hide hero children before Angular renders them.
+// html.js-anim is added by animations.js synchronously before Angular bootstraps.
+// This prevents the "visible → hidden → animate" flash on first load and route changes.
+html.js-anim {
+  article.relative > div.relative.z-10 > *,
+  div.relative.overflow-hidden > div.relative.z-10 > * {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+}
+
+// Image skeleton loader — shimmer shown while src is loading.
+@keyframes img-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+img.img-loading {
+  background: linear-gradient(
+    90deg,
+    #e8e2d9 25%,
+    #f5f1eb 50%,
+    #e8e2d9 75%
+  );
+  background-size: 200% 100%;
+  animation: img-shimmer 1.6s ease-in-out infinite;
+}
+
