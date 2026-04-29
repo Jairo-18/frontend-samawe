@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
+import { LangService } from '../../../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -16,6 +17,7 @@ export class HeroSectionComponent {
   @Input() isLoggedUser: boolean = false;
   private readonly _router: Router = inject(Router);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _langService = inject(LangService);
 
   getMedia(code: string): string {
     return (
@@ -26,11 +28,13 @@ export class HeroSectionComponent {
 
   openWhatsapp(): void {
     if (!isPlatformBrowser(this._platformId)) return;
-    const phone = this.org?.phone ?? '';
-    window.open(`https://wa.me/${phone}`, '_blank');
+    const phone = (this.org?.phone ?? '').replace(/\D/g, '');
+    if (phone) {
+      window.open(`https://wa.me/${phone}`, '_blank');
+    }
   }
 
   goToLogin(): void {
-    this._router.navigate(['/auth/login']);
+    this._router.navigateByUrl(this._langService.route('auth/login'));
   }
 }

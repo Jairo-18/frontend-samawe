@@ -12,6 +12,7 @@ import { AccommodationsService } from '../../../../../service-and-product/servic
 import { MostRequestedAccommodation } from '../../../../../service-and-product/interface/accommodation.interface';
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../../../shared/pipes/capitalize.pipe';
+import { TranslatedPipe } from '../../../../../shared/pipes/translated.pipe';
 import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
 import { LoaderComponent } from '../../../../../shared/components/loader/loader.component';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
@@ -23,6 +24,7 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
     CommonModule,
     ButtonLandingComponent,
     CapitalizePipe,
+    TranslatedPipe,
     SectionHeaderComponent,
     LoaderComponent
   ],

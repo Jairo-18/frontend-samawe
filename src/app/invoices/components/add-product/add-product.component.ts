@@ -165,7 +165,7 @@ export class AddProductComponent implements OnInit {
     }
   }
   onProductSelected(name: string): void {
-    const product = this.filteredProducts.find((p) => p.name === name);
+    const product = this.filteredProducts.find((p) => Object.values(p.name).includes(name));
     if (!product) return;
     this.form.patchValue({
       productId: product.productId,

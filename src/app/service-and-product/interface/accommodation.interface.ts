@@ -5,11 +5,13 @@ import {
   TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
+import { TranslatedField } from '../../shared/types/translated-field.type';
+
 export interface CreateAccommodationPanel {
   accommodationId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   jacuzzi: boolean;
   amountRoom: number;
@@ -26,8 +28,8 @@ export interface CreateAccommodationPanel {
 export interface AccommodationComplete {
   accommodationId: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   jacuzzi: boolean;
   amountRoom: number;
@@ -49,8 +51,8 @@ export interface AccommodationComplete {
 export interface GetAccommodationPaginatedList {
   accommodationId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   jacuzzi: boolean;
   amountRoom: number;
@@ -66,8 +68,8 @@ export interface GetAccommodationPaginatedList {
 export interface MostRequestedAccommodation {
   accommodationId: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   amountRoom: number;
   amountBathroom: number;
@@ -82,8 +84,8 @@ export interface MostRequestedAccommodation {
 
 export interface PublicAccommodationListItem {
   accommodationId: number;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   amountRoom: number;
   amountBathroom: number;
@@ -100,4 +102,3 @@ export interface CreateAccommodationRelatedData {
   bedType: BedType[];
   stateType: StateType[];
 }
-

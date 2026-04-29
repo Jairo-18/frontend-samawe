@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../../../../shared/components/base-page/base-page.component';
 import { RouterModule } from '@angular/router';
 import { BoldTextPipe } from '../../../../shared/pipes/bold-text.pipe';
+import { TranslatedPipe } from '../../../../shared/pipes/translated.pipe';
 import { CommonModule } from '@angular/common';
 import { LegalSection } from '../../../../shared/interfaces/organizational.interface';
 import { ApplicationService } from '../../../../organizational/services/application.service';
@@ -10,7 +11,7 @@ import { switchMap, filter, take } from 'rxjs';
 @Component({
   selector: 'app-terms',
   standalone: true,
-  imports: [BasePageComponent, RouterModule, BoldTextPipe, CommonModule],
+  imports: [BasePageComponent, RouterModule, BoldTextPipe, TranslatedPipe, CommonModule],
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.scss'
 })

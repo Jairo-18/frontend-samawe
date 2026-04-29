@@ -8,6 +8,7 @@ import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
 
 @Component({
   selector: 'app-navbar-desktop',
@@ -20,7 +21,8 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
     MatMenuModule,
     MatDividerModule,
     ButtonLandingComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    LangSwitcherComponent
   ],
   templateUrl: './navbar-desktop.component.html',
   styleUrls: ['./navbar-desktop.component.scss']
@@ -28,15 +30,15 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 export class NavbarDesktopComponent {
   @Input() navBarItems: NavItem[] = [];
   @Input() loginItem?: NavItem;
-  @Input() isLoggedUser = false;
+  @Input() isLoggedUser: boolean = false;
   @Input() userInfo?: UserInterface;
   @Input() loggedMenuItems: NavItem[] = [];
-  @Input() isScrolled = false;
-  @Input() isScrollingDown = false;
-  @Input() isPastHero = false;
-  @Input() isHomePage = false;
-  @Input() organizationalName = '';
-  @Input() logoUrl = '';
+  @Input() isScrolled: boolean = false;
+  @Input() isScrollingDown: boolean = false;
+  @Input() isPastHero: boolean = false;
+  @Input() isHomePage: boolean = false;
+  @Input() organizationalName: string = '';
+  @Input() logoUrl: string = '';
   @Output() openMenu = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 

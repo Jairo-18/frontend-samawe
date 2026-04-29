@@ -10,7 +10,7 @@
     <div class="relative w-full h-[60vh] overflow-hidden">
       <img
         [src]="getMedia('ABOUT_US_IMAGE')"
-        [alt]="org.aboutUsTitle ?? 'Sobre Nosotros'"
+        [alt]="(org.aboutUsTitle | translated) || 'Sobre Nosotros'"
         class="absolute inset-0 w-full h-full object-cover z-0"
       />
       <div class="absolute inset-0 bg-black/40 z-0"></div>
@@ -30,13 +30,13 @@
         <h2
           class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
         >
-          {{ org.aboutUsTitle ?? '' }}
+          {{ org.aboutUsTitle | translated }}
         </h2>
         @if (org.aboutUsDescription) {
           <p
             class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90"
           >
-            {{ org.aboutUsDescription }}
+            {{ org.aboutUsDescription | translated }}
           </p>
         }
       </div>
@@ -61,8 +61,8 @@
           <div class="flex flex-col gap-4">
             <app-section-header
               label="Misión"
-              [title]="org.missionTitle ?? ''"
-              [description]="org.missionDescription"
+              [title]="org.missionTitle | translated"
+              [description]="org.missionDescription | translated"
               variant="left"
             />
           </div>
@@ -84,8 +84,8 @@
           <div class="flex flex-col gap-4">
             <app-section-header
               label="Visión"
-              [title]="org.visionTitle ?? ''"
-              [description]="org.visionDescription"
+              [title]="org.visionTitle | translated"
+              [description]="org.visionDescription | translated"
               variant="left"
             />
           </div>
@@ -107,8 +107,8 @@
           <div class="flex flex-col gap-4">
             <app-section-header
               label="Historia"
-              [title]="org.historyTitle ?? ''"
-              [description]="org.historyDescription"
+              [title]="org.historyTitle | translated"
+              [description]="org.historyDescription | translated"
               variant="left"
             />
           </div>

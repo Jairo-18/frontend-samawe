@@ -4,11 +4,13 @@ import {
   TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
+import { TranslatedField } from '../../shared/types/translated-field.type';
+
 export interface CreateExcursionPanel {
   excursionId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   priceBuy: number;
   taxe?: number;
   taxeTypeId?: number;
@@ -20,8 +22,8 @@ export interface CreateExcursionPanel {
 export interface ExcursionComplete {
   excursionId: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   priceBuy: number;
   priceSale: number;
   taxe?: number;
@@ -38,4 +40,3 @@ export interface ExcursionComplete {
 export interface ExcursionListResponse {
   excursions: ExcursionComplete[];
 }
-

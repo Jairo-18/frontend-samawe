@@ -182,7 +182,7 @@ export class AddExcursionComponent implements OnInit {
     }
   }
   onExcursionSelected(name: string) {
-    const exc = this.filteredExcursions.find((e) => e.name === name);
+    const exc = this.filteredExcursions.find((e) => Object.values(e.name).includes(name));
     if (!exc) return;
 
     const fallbackPrice = exc.priceSale ?? exc.priceBuy ?? 0;

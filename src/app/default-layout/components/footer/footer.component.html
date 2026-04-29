@@ -61,33 +61,13 @@
       <span
         class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
       >
-        Explora
+        {{ 'footer.explore' | translate }}
       </span>
-      <a
-        routerLink="/home"
-        class="text-sm text-white/70 hover:text-white transition-colors"
-        >Inicio</a
-      >
-      <a
-        routerLink="/accommodation"
-        class="text-sm text-white/70 hover:text-white transition-colors"
-        >Alojamientos</a
-      >
-      <a
-        routerLink="/gastronomy"
-        class="text-sm text-white/70 hover:text-white transition-colors"
-        >Gastronomía</a
-      >
-      <a
-        routerLink="/about-us"
-        class="text-sm text-white/70 hover:text-white transition-colors"
-        >Sobre Nosotros</a
-      >
-      <a
-        routerLink="/how-to-arrive"
-        class="text-sm text-white/70 hover:text-white transition-colors"
-        >Cómo llegar</a
-      >
+      <a [routerLink]="lang.route('')"             class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.home'          | translate }}</a>
+      <a [routerLink]="lang.route('accommodation')" class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.accommodation' | translate }}</a>
+      <a [routerLink]="lang.route('gastronomy')"    class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.gastronomy'    | translate }}</a>
+      <a [routerLink]="lang.route('about-us')"      class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.about_us'      | translate }}</a>
+      <a [routerLink]="lang.route('how-to-arrive')" class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.how_to_arrive' | translate }}</a>
     </div>
 
     <!-- Col 3: Contacto -->
@@ -95,7 +75,7 @@
       <span
         class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
       >
-        Contacto
+        {{ 'footer.contact' | translate }}
       </span>
       @if (org?.phone) {
         <a
@@ -112,21 +92,14 @@
           [href]="'mailto:' + org?.email"
           class="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
         >
-          <span class="material-icons text-base leading-none text-white"
-            >email</span
-          >
+          <span class="material-icons text-base leading-none text-white">email</span>
           {{ org?.email }}
         </a>
       }
       @if (org?.address) {
         <p class="flex items-start gap-2 text-sm text-white/70">
-          <span class="material-icons text-base leading-tight mt-0.5 text-white"
-            >location_on</span
-          >
-          {{ org?.address }}
-          @if (org?.city) {
-            , {{ org?.city }}
-          }
+          <span class="material-icons text-base leading-tight mt-0.5 text-white">location_on</span>
+          {{ org?.address }}@if (org?.city) {, {{ org?.city }}}
         </p>
       }
     </div>
@@ -137,27 +110,13 @@
     <div
       class="max-w-7xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-row flex-wrap items-center justify-between gap-2 text-xs text-white/50"
     >
-      <span
-        >© {{ currentYear }} {{ org?.name }}. Todos los derechos
-        reservados.</span
-      >
+      <span>© {{ currentYear }} {{ org?.name }}. {{ 'footer.rights' | translate }}</span>
       <div class="flex items-center gap-4">
-        <a
-          routerLink="/legal/privacity"
-          class="hover:text-white transition-colors"
-          >Política de Privacidad</a
-        >
+        <a [routerLink]="lang.route('legal/privacity')" class="hover:text-white transition-colors">{{ 'footer.privacy' | translate }}</a>
         <span>·</span>
-        <a
-          routerLink="/legal/terms"
-          class="hover:text-white transition-colors"
-          >Términos de Servicio</a
-        >
+        <a [routerLink]="lang.route('legal/terms')" class="hover:text-white transition-colors">{{ 'footer.terms' | translate }}</a>
       </div>
-      <span
-        >Desarrollado por
-        <span class="text-white font-medium">Jhon Legarda</span></span
-      >
+      <span>{{ 'footer.developed_by' | translate }} <span class="text-white font-medium">Jhon Legarda</span></span>
     </div>
   </div>
 </footer>

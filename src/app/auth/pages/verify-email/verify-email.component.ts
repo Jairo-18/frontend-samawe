@@ -3,11 +3,13 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [RouterModule, LoaderComponent, ButtonLandingComponent],
+  imports: [RouterModule, LoaderComponent, ButtonLandingComponent, TranslateModule],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss'
 })
@@ -15,9 +17,10 @@ export class VerifyEmailComponent implements OnInit {
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _registerService: RegisterService = inject(RegisterService);
+  private readonly _langService = inject(LangService);
 
   state: 'loading' | 'success' | 'error' = 'loading';
-  errorMessage: string = 'El enlace es inválido o ha expirado.';
+  errorMessage: string = 'verify_email.error_msg';
 
   ngOnInit(): void {
     const token = this._route.snapshot.queryParamMap.get('token');
@@ -34,13 +37,13 @@ export class VerifyEmailComponent implements OnInit {
       },
       error: (err) => {
         this.errorMessage =
-          err?.error?.message || 'El enlace es inválido o ha expirado.';
+          err?.error?.message || 'verify_email.error_msg';
         this.state = 'error';
       }
     });
   }
 
   goToLogin(): void {
-    this._router.navigate(['/auth/login']);
+    this._router.navigateByUrl(this._langService.route('auth/login'));
   }
 }

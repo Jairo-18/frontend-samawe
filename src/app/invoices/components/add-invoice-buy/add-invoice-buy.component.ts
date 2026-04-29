@@ -176,7 +176,7 @@ export class AddInvoiceBuyComponent implements OnInit {
     }
   }
   onProductSelected(name: string): void {
-    const product = this.filteredProducts.find((p) => p.name === name);
+    const product = this.filteredProducts.find((p) => Object.values(p.name).includes(name));
     if (!product) return;
     const currentPriceBuy = this.parseNumber(this.form.get('priceBuy')?.value);
     const shouldUpdatePrice = !currentPriceBuy || currentPriceBuy === 0;

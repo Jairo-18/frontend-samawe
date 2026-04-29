@@ -36,10 +36,33 @@
     '/how-to-arrive',
     '/blog',
     '/legal/terms',
-    '/legal/privacity'
+    '/legal/privacity',
+    '/es',
+    '/en',
+    '/es/about-us',
+    '/en/about-us',
+    '/es/accommodation',
+    '/en/accommodation',
+    '/es/gastronomy',
+    '/en/gastronomy',
+    '/es/how-to-arrive',
+    '/en/how-to-arrive',
+    '/es/blog',
+    '/en/blog',
+    '/es/legal/terms',
+    '/en/legal/terms',
+    '/es/legal/privacity',
+    '/en/legal/privacity'
   ];
 
-  var LEGAL_PATHS = ['/legal/terms', '/legal/privacity'];
+  var LEGAL_PATHS = [
+    '/legal/terms',
+    '/legal/privacity',
+    '/es/legal/terms',
+    '/en/legal/terms',
+    '/es/legal/privacity',
+    '/en/legal/privacity'
+  ];
 
   function isPublicRoute() {
     var p = window.location.pathname;
@@ -319,16 +342,27 @@
       reveal(el, { dur: 600, del: 0, from: 'bottom', px: 25 });
     });
 
+    // ── Legal pages (/legal/privacity + /legal/terms) ───────────────────────
     qsa('app-privacity h3, app-terms h3').forEach(function (el) {
       reveal(el, { dur: 700, del: 0, from: 'bottom', px: 25 });
     });
-    qsa('app-privacity .legal-section, app-terms .legal-section').forEach(
+    qsa('app-privacity .legal-section h4, app-terms .legal-section h4').forEach(
+      function (el) {
+        reveal(el, { dur: 600, del: 0, from: 'left', px: 20 });
+      }
+    );
+    qsa('app-privacity .legal-section p, app-terms .legal-section p').forEach(
+      function (el) {
+        reveal(el, { dur: 600, del: 80, from: 'bottom', px: 15 });
+      }
+    );
+    qsa('app-privacity .legal-section li, app-terms .legal-section li').forEach(
       function (el, i) {
         reveal(el, {
-          dur: 600,
-          del: Math.min(i * 60, 360),
-          from: 'bottom',
-          px: 20
+          dur: 500,
+          del: Math.min(i * 40, 280),
+          from: 'left',
+          px: 15
         });
       }
     );

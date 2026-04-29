@@ -1,26 +1,29 @@
 import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginSuccessInterface } from '../../interfaces/login.interface';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-google-callback',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatProgressSpinnerModule, TranslateModule],
   templateUrl: './google-callback.component.html',
   styleUrl: './google-callback.component.scss'
 })
 export class GoogleCallbackComponent implements OnInit {
-  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
+  private readonly _langService = inject(LangService);
 
-  loading = true;
+  loading: boolean = true;
   error: string | null = null;
 
   ngOnInit(): void {
@@ -39,10 +42,9 @@ export class GoogleCallbackComponent implements OnInit {
     const avatarUrl = params.get('avatarUrl') || null;
 
     if (!accessToken || !userId) {
-      this.error =
-        'Error al autenticar con Google. Por favor intenta de nuevo.';
+      this.error = 'google_callback.error_msg';
       this.loading = false;
-      setTimeout(() => this._router.navigate(['/auth/login']), 2000);
+      setTimeout(() => this._router.navigateByUrl(this._langService.route('auth/login')), 2000);
       return;
     }
 
@@ -71,9 +73,9 @@ export class GoogleCallbackComponent implements OnInit {
           email: params.get('email') || ''
         })
       );
-      this._router.navigateByUrl('/complete-profile');
+      this._router.navigateByUrl(this._langService.route('complete-profile'));
     } else {
-      this._router.navigateByUrl('/home');
+      this._router.navigateByUrl(this._langService.route(''));
     }
   }
 }

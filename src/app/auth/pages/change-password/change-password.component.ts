@@ -15,6 +15,8 @@ import { MatIcon } from '@angular/material/icon';
 import { CustomValidationsService } from '../../../shared/services/customValidations.service';
 import { UsersService } from '../../../organizational/services/users.service';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 @Component({
   selector: 'app-change-password',
   standalone: true,
@@ -25,7 +27,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatInputModule,
     MatIcon,
     CommonModule,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    TranslateModule
   ],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss'
@@ -40,6 +43,7 @@ export class ChangePasswordComponent implements OnInit {
   showConfirmPassword: boolean = false;
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _router: Router = inject(Router);
+  private readonly _langService = inject(LangService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
@@ -92,7 +96,7 @@ export class ChangePasswordComponent implements OnInit {
       })
       .subscribe({
         next: () => {
-          this._router.navigate(['/auth/login']);
+          this._router.navigateByUrl(this._langService.route('auth/login'));
           this.changePasswordForm.reset();
         },
         error: (err) => {

@@ -9,10 +9,14 @@
         <span class="material-icons text-6xl text-[var(--primary-color)]"
           >mark_email_read</span
         >
-        <span class="font-extrabold text-xl">{{ registeredTitle }}</span>
-        <p class="text-sm text-gray-500 max-w-sm">{{ registeredSubtitle }}</p>
+        <span class="font-extrabold text-xl">{{
+          registeredTitle | translate
+        }}</span>
+        <p class="text-sm text-gray-500 max-w-sm">
+          {{ registeredSubtitle | translate }}
+        </p>
         <app-button-landing
-          label="Ir a iniciar sesión"
+          [label]="'register.go_to_login' | translate"
           variant="solid"
           (clicked)="goToLogin()"
           class="w-full max-w-xs"
@@ -36,21 +40,25 @@
         class="h-full w-full flex flex-col text-center py-5 gap-0 md:gap-1"
       >
         <div class="flex flex-col gap-1.5">
-          <span class="font-extrabold text-lg 2xl:text-xl">Registrarse</span>
-          <span class="font-medium text-sm md:text-base"
-            >Crea una nueva cuenta</span
-          >
+          <span class="font-extrabold text-lg 2xl:text-xl">{{
+            'register.title' | translate
+          }}</span>
+          <span class="font-medium text-sm md:text-base">{{
+            'register.subtitle' | translate
+          }}</span>
         </div>
         <mat-horizontal-stepper [linear]="true" #stepper class="w-full h-full">
           <mat-step [stepControl]="formStep1">
             <form [formGroup]="formStep1" class="flex flex-col mt-5">
-              <ng-template matStepLabel>Información Personal</ng-template>
+              <ng-template matStepLabel>{{
+                'register.step1_label' | translate
+              }}</ng-template>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Tipo de Identificación</mat-label>
+                <mat-label>{{ 'register.id_type' | translate }}</mat-label>
                 <mat-select formControlName="identificationTypeId" required>
-                  <mat-option value="" disabled selected
-                    >Seleccione su tipo de identificación</mat-option
-                  >
+                  <mat-option value="" disabled selected>{{
+                    'register.id_type_placeholder' | translate
+                  }}</mat-option>
                   <mat-option
                     *ngFor="let type of identificationType"
                     [value]="type.identificationTypeId.toString()"
@@ -64,11 +72,11 @@
                     formStep1.get('identificationTypeId')?.hasError('required')
                   "
                 >
-                  Tipo de identificación requerido
+                  {{ 'register.id_type_required' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Número de identificación</mat-label>
+                <mat-label>{{ 'register.id_number' | translate }}</mat-label>
                 <input
                   matInput
                   formControlName="identificationNumber"
@@ -81,18 +89,18 @@
                     formStep1.get('identificationNumber')?.hasError('required')
                   "
                 >
-                  Número de identificación requerido
+                  {{ 'register.id_number_required' | translate }}
                 </mat-error>
                 <mat-error
                   *ngIf="
                     formStep1.get('identificationNumber')?.hasError('pattern')
                   "
                 >
-                  Solo letras, números y guiones (sin espacios)
+                  {{ 'register.id_number_pattern' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Nombres Completos</mat-label>
+                <mat-label>{{ 'register.first_name' | translate }}</mat-label>
                 <input
                   matInput
                   formControlName="firstName"
@@ -103,11 +111,11 @@
                 <mat-error
                   *ngIf="formStep1.get('firstName')?.hasError('required')"
                 >
-                  Nombres completos requerido
+                  {{ 'register.first_name_required' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Apellidos Completos</mat-label>
+                <mat-label>{{ 'register.last_name' | translate }}</mat-label>
                 <input
                   matInput
                   formControlName="lastName"
@@ -118,12 +126,12 @@
                 <mat-error
                   *ngIf="formStep1.get('lastName')?.hasError('required')"
                 >
-                  Apellidos completos requerido
+                  {{ 'register.last_name_required' | translate }}
                 </mat-error>
               </mat-form-field>
               <div actions class="w-full flex justify-end text-sm md:text-base">
                 <app-button-landing
-                  label="Siguiente"
+                  [label]="'register.next' | translate"
                   variant="solid"
                   [disabled]="formStep1.invalid"
                   (clicked)="nextStep()"
@@ -134,9 +142,11 @@
           </mat-step>
           <mat-step [stepControl]="formStep2">
             <form [formGroup]="formStep2" class="flex flex-col mt-5">
-              <ng-template matStepLabel>Tu cuenta</ng-template>
+              <ng-template matStepLabel>{{
+                'register.step2_label' | translate
+              }}</ng-template>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Correo Electrónico</mat-label>
+                <mat-label>{{ 'register.email' | translate }}</mat-label>
                 <input
                   matInput
                   formControlName="email"
@@ -145,21 +155,23 @@
                 />
                 <mat-icon matPrefix>email</mat-icon>
                 <mat-error *ngIf="formStep2.get('email')?.hasError('required')">
-                  Correo electrónico requerido
+                  {{ 'register.email_required' | translate }}
                 </mat-error>
                 <mat-error *ngIf="formStep2.get('email')?.hasError('email')">
-                  Correo electrónico inválido
+                  {{ 'register.email_invalid' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Buscar país</mat-label>
+                <mat-label>{{
+                  'register.search_country' | translate
+                }}</mat-label>
                 <mat-icon matPrefix>flag</mat-icon>
                 <input
                   type="text"
                   matInput
                   formControlName="phoneCodeSearch"
                   [matAutocomplete]="autoPhoneCode"
-                  placeholder="Escribe para buscar..."
+                  [placeholder]="'register.search_placeholder' | translate"
                   [readonly]="isPhoneCodeSelected"
                   (blur)="onPhoneCodeBlur()"
                 />
@@ -169,7 +181,6 @@
                   mat-icon-button
                   type="button"
                   (click)="clearPhoneCodeSelection()"
-                  matTooltip="Limpiar selección"
                 >
                   <mat-icon>clear</mat-icon>
                 </button>
@@ -179,11 +190,13 @@
                   (optionSelected)="onPhoneCodeSelected($event.option.value)"
                 >
                   @if (loadingPhoneCodes) {
-                    <mat-option disabled>Buscando...</mat-option>
+                    <mat-option disabled>{{
+                      'register.searching' | translate
+                    }}</mat-option>
                   } @else if (filteredPhoneCodes.length === 0) {
-                    <mat-option disabled
-                      >No se encontraron resultados</mat-option
-                    >
+                    <mat-option disabled>{{
+                      'register.no_results' | translate
+                    }}</mat-option>
                   } @else {
                     @for (pc of filteredPhoneCodes; track pc.phoneCodeId) {
                       <mat-option [value]="pc">
@@ -195,22 +208,26 @@
                 <mat-error
                   *ngIf="formStep2.get('phoneCodeSearch')?.hasError('required')"
                 >
-                  No has seleccionado un país
+                  {{ 'register.no_country_selected' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Teléfono</mat-label>
-                <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
+                <mat-label>{{ 'register.phone' | translate }}</mat-label>
+                <input
+                  matInput
+                  formControlName="phone"
+                  (input)="onPhoneInput($event)"
+                />
                 <mat-icon matPrefix>phone_iphone</mat-icon>
                 <mat-error *ngIf="formStep2.get('phone')?.hasError('required')">
-                  Teléfono requerido
+                  {{ 'register.phone_required' | translate }}
                 </mat-error>
                 <mat-error *ngIf="formStep2.get('phone')?.hasError('pattern')">
-                  Solo números, máximo 15 dígitos
+                  {{ 'register.phone_pattern' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Contraseña</mat-label>
+                <mat-label>{{ 'register.password' | translate }}</mat-label>
                 <input
                   [type]="showPassword ? 'text' : 'password'"
                   matInput
@@ -230,19 +247,20 @@
                 <mat-error
                   *ngIf="formStep2.get('password')?.hasError('required')"
                 >
-                  Contraseña requerida
+                  {{ 'register.password_required' | translate }}
                 </mat-error>
                 <mat-error
                   *ngIf="
                     formStep2.get('password')?.hasError('passwordStrength')
                   "
                 >
-                  La contraseña debe tener 6 caracteres, con mayúscula,
-                  minúscula y un carácter especial.
+                  {{ 'register.password_strength' | translate }}
                 </mat-error>
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full mt-4">
-                <mat-label>Confirmar Contraseña</mat-label>
+                <mat-label>{{
+                  'register.confirm_password' | translate
+                }}</mat-label>
                 <input
                   [type]="showConfirmPassword ? 'text' : 'password'"
                   matInput
@@ -262,10 +280,10 @@
                 <mat-error
                   *ngIf="formStep2.get('confirmPassword')?.hasError('required')"
                 >
-                  Contraseña requerida
+                  {{ 'register.password_required' | translate }}
                 </mat-error>
                 <mat-error *ngIf="formStep2.hasError('passwordMismatch')">
-                  Las contraseñas no coinciden
+                  {{ 'register.password_mismatch' | translate }}
                 </mat-error>
               </mat-form-field>
               <section
@@ -274,7 +292,7 @@
               >
                 <div class="w-full md:w-[50%]">
                   <app-button-landing
-                    label="Anterior"
+                    [label]="'register.prev' | translate"
                     variant="transparent"
                     (clicked)="prevStep()"
                     class="w-full"
@@ -282,7 +300,7 @@
                 </div>
                 <div class="w-full md:w-[50%] mt-4 md:mt-0">
                   <app-button-landing
-                    label="Registrarse"
+                    [label]="'register.submit' | translate"
                     variant="solid"
                     [loading]="isSaving"
                     (clicked)="save()"
@@ -297,13 +315,13 @@
           class="text-center flex justify-center items-center gap-1 mt-3 md:mt-0"
         >
           <span class="font-medium text-sm md:text-base"
-            >¿Ya tienes una cuenta?
+            >{{ 'register.has_account' | translate }}
           </span>
           <a
-            routerLink="/auth/login"
+            routerLink="../login"
             class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
           >
-            Inicia sesión aquí
+            {{ 'register.login_here' | translate }}
           </a>
         </div>
       </section>

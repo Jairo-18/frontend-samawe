@@ -151,7 +151,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     }
   }
   onExcursionSelected(name: string) {
-    const exc = this.filteredExcursions.find((e) => e.name === name);
+    const exc = this.filteredExcursions.find((e) => Object.values(e.name).includes(name));
     if (!exc) return;
     const currentPriceSale = this.parseNumber(
       this.form.get('priceSale')?.value

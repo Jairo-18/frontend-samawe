@@ -33,6 +33,7 @@ import {
   LegalType
 } from '../../../shared/interfaces/organizational.interface';
 import { BoldTextPipe } from '../../../shared/pipes/bold-text.pipe';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-organizational-legal',
@@ -46,7 +47,8 @@ import { BoldTextPipe } from '../../../shared/pipes/bold-text.pipe';
     MatInputModule,
     MatTooltipModule,
     DragDropModule,
-    BoldTextPipe
+    BoldTextPipe,
+    TranslatedPipe
   ],
   templateUrl: './organizational-legal.component.html',
   styleUrls: ['./organizational-legal.component.scss']

@@ -4,11 +4,13 @@ import {
   UnitOfMeasure
 } from '../../shared/interfaces/relatedDataGeneral';
 import { ImageItem } from '../../shared/interfaces/image.interface';
+import { TranslatedField } from '../../shared/types/translated-field.type';
+
 export interface CreateProductPanel {
   productId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amount: number;
   priceBuy: number;
   priceSale: number;
@@ -22,8 +24,8 @@ export interface CreateProductPanel {
 export interface ProductComplete {
   productId: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amount: number;
   taxe?: number;
   priceBuy: number;
@@ -42,4 +44,3 @@ export interface ProductComplete {
 export interface ProductListResponse {
   products: ProductComplete[];
 }
-

@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-recovery-password',
@@ -23,7 +25,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     MatInputModule,
     MatButtonModule,
     RouterLink,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    TranslateModule
   ],
   templateUrl: './recovery-password.component.html',
   styleUrl: './recovery-password.component.scss'
@@ -33,6 +36,7 @@ export class RecoveryPasswordComponent implements OnDestroy {
   cooldownRemaining: number = 0;
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _router: Router = inject(Router);
+  private readonly _langService = inject(LangService);
   private _cooldownInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(private fb: FormBuilder) {
@@ -62,7 +66,7 @@ export class RecoveryPasswordComponent implements OnDestroy {
     this._authService.sendPasswordResetEmail(email).subscribe({
       next: () => {
         this._startCooldown();
-        this._router.navigate(['/auth/login']);
+        this._router.navigateByUrl(this._langService.route('auth/login'));
       },
       error: () => {
         this._startCooldown();

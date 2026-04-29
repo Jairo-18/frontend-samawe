@@ -3,11 +3,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PublicAccommodationListItem } from '../../../service-and-product/interface/accommodation.interface';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-card-accommodation',
   standalone: true,
-  imports: [CommonModule, CapitalizePipe, ButtonLandingComponent],
+  imports: [CommonModule, CapitalizePipe, ButtonLandingComponent, TranslatedPipe],
   templateUrl: './card-accommodation.component.html',
   styleUrl: './card-accommodation.component.scss'
 })
@@ -22,7 +23,12 @@ export class CardAccommodationComponent implements OnDestroy {
   readonly maxDescChars: number = 250;
 
   get shortDescription(): string {
-    const desc = this.accommodation?.description ?? '';
+    const raw = this.accommodation?.description;
+    const desc = !raw
+      ? ''
+      : typeof raw === 'string'
+        ? raw
+        : (raw['es'] ?? Object.values(raw)[0] ?? '');
     return desc.length > this.maxDescChars
       ? desc.slice(0, this.maxDescChars) + '…'
       : desc;

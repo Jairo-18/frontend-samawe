@@ -82,7 +82,7 @@
                 @if (item.description) {
                   <p
                     class="text-sm text-[var(--text-color)] m-0 mb-3 leading-relaxed"
-                    [innerHTML]="item.description | boldText"
+                    [innerHTML]="item.description | translated | boldText"
                   ></p>
                 }
 
@@ -120,7 +120,7 @@
 
                           <span
                             class="flex-1 text-sm text-[var(--text-color)] leading-relaxed"
-                            [innerHTML]="child.content | boldText"
+                            [innerHTML]="child.content | translated | boldText"
                           ></span>
                         </div>
 

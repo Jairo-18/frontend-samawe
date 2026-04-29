@@ -172,7 +172,9 @@ export class SeeExcursionsComponent implements OnInit {
     this._excursionService.getExcursionWithPagination(query).subscribe({
       next: (res) => {
         this.dataSource.data = (res.data || []).sort((a, b) =>
-          a.name.localeCompare(b.name)
+          (a.name['es'] ?? Object.values(a.name)[0] ?? '').localeCompare(
+            b.name['es'] ?? Object.values(b.name)[0] ?? ''
+          )
         );
         this.paginationParams = res?.pagination;
         this.loading = false;
@@ -237,7 +239,7 @@ export class SeeExcursionsComponent implements OnInit {
               b.categoryType.name
             );
             if (catCompare !== 0) return catCompare;
-            return a.name.localeCompare(b.name);
+            return (a.name['es'] ?? Object.values(a.name)[0] ?? '').localeCompare(b.name['es'] ?? Object.values(b.name)[0] ?? '');
           }
         );
         if (!this.allExcursions.length) {

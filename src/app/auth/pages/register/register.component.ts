@@ -33,6 +33,7 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
 import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -52,7 +53,8 @@ import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directiv
     ButtonLandingComponent,
     CapitalizePipe,
     NormalizeNameDirective,
-    NoSpacesDirective
+    NoSpacesDirective,
+    TranslateModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
@@ -63,9 +65,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   formStep2: FormGroup;
   currentStep: string = 'one';
   registered: boolean = false;
-  registeredTitle: string = '¡Revisa tu correo!';
-  registeredSubtitle: string =
-    'Te enviamos un enlace de verificación. Haz clic en él para activar tu cuenta.';
+  registeredTitle: string = 'register.success_title';
+  registeredSubtitle: string = 'register.success_subtitle';
   isSaving: boolean = false;
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
@@ -302,14 +303,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.isSaving = false;
           const code = err?.error?.code;
           if (code === 'PENDING_VERIFICATION') {
-            this.registeredTitle = '¡Ya tienes un registro pendiente!';
-            this.registeredSubtitle =
-              'Ya te enviamos un correo de verificación. Revísalo y haz clic en el enlace para activar tu cuenta.';
+            this.registeredTitle = 'register.pending_title';
+            this.registeredSubtitle = 'register.pending_subtitle';
             this.registered = true;
           } else if (code === 'VERIFICATION_RESENT') {
-            this.registeredTitle = '¡Te reenviamos el correo!';
-            this.registeredSubtitle =
-              'Tu enlace anterior había expirado. Te enviamos uno nuevo, revisa tu correo y haz clic en el enlace.';
+            this.registeredTitle = 'register.resent_title';
+            this.registeredSubtitle = 'register.resent_subtitle';
             this.registered = true;
           }
         }

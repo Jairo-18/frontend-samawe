@@ -28,6 +28,19 @@ import { MyErrorStateMatcher } from './shared/matchers/error-state.matcher';
 import { authInterceptor } from './shared/interceptors/auth.interceptor';
 import { notificationsInterceptorInterceptor } from './shared/interceptors/notifications.interceptor.interceptor';
 import { apiUrlInterceptor } from './shared/interceptors/api-url.interceptor';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+import esTranslations from '../assets/i18n/es.json';
+import enTranslations from '../assets/i18n/en.json';
+
+const TRANSLATIONS: Record<string, object> = { es: esTranslations, en: enTranslations };
+
+class InlineTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<object> {
+    return of(TRANSLATIONS[lang] ?? TRANSLATIONS['es']);
+  }
+}
+
 registerLocaleData(localeEs);
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,8 +49,10 @@ export const appConfig: ApplicationConfig = {
     provideNativeDateAdapter(MAT_NATIVE_DATE_FORMATS),
     provideAnimationsAsync(),
     importProvidersFrom(
-      ToastrModule.forRoot({
-        preventDuplicates: true
+      ToastrModule.forRoot({ preventDuplicates: true }),
+      TranslateModule.forRoot({
+        defaultLanguage: 'es',
+        loader: { provide: TranslateLoader, useClass: InlineTranslateLoader }
       })
     ),
     { provide: MatPaginatorIntl, useValue: getMaterialPaginatorTranslations() },

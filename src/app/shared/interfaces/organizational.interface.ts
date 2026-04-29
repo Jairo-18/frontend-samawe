@@ -3,6 +3,7 @@ import {
   PersonType,
   PhoneCode
 } from './relatedDataGeneral';
+import { TranslatedField } from '../types/translated-field.type';
 
 export interface MediaType {
   mediaTypeId: number;
@@ -22,22 +23,22 @@ export interface OrganizationalMedia {
 
 export interface CorporateValue {
   corporateValueId: string;
-  title: string;
-  description?: string;
+  title: TranslatedField;
+  description?: TranslatedField;
   order: number;
   imageUrl?: string;
 }
 
 export interface BenefitItem {
   benefitItemId: string;
-  name: string;
+  name: TranslatedField;
   icon: string;
   order: number;
 }
 
 export interface BenefitSection {
   benefitSectionId: string;
-  title: string;
+  title: TranslatedField;
   order: number;
   items: BenefitItem[];
 }
@@ -46,14 +47,14 @@ export type LegalType = 'terms' | 'privacy';
 
 export interface LegalItemChild {
   legalItemChildId: string;
-  content: string;
+  content: TranslatedField;
   order: number;
 }
 
 export interface LegalItem {
   legalItemId: string;
-  title?: string;
-  description?: string;
+  title?: TranslatedField;
+  description?: TranslatedField;
   order: number;
   children: LegalItemChild[];
 }
@@ -78,7 +79,7 @@ export interface Organizational {
   department?: string;
   timezone?: string;
   languageDefault?: string;
-  description?: string;
+  description?: TranslatedField;
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
@@ -87,40 +88,40 @@ export interface Organizational {
   subtitleColor?: string;
   bgPrimaryColor?: string;
   bgSecondaryColor?: string;
-  homeTitle?: string;
-  homeDescription?: string;
-  experienceTitle?: string;
-  experienceDescription?: string;
-  reservationTitle?: string;
-  reservationDescription?: string;
-  aboutUsTitle?: string;
-  aboutUsDescription?: string;
-  missionTitle?: string;
-  missionDescription?: string;
-  visionTitle?: string;
-  visionDescription?: string;
-  historyTitle?: string;
-  historyDescription?: string;
-  gastronomyTitle?: string;
-  gastronomyDescription?: string;
-  gastronomyHistoryTitle?: string;
-  gastronomyHistoryDescription?: string;
-  gastronomyKitchenTitle?: string;
-  gastronomyKitchenDescription?: string;
-  gastronomyIngredientsTitle?: string;
-  gastronomyIngredientsDescription?: string;
-  accommodationsTitle?: string;
-  accommodationsDescription?: string;
-  howToArriveDescription?: string;
-  howToArrivePublicTransportDescription?: string;
-  howToArrivePrivateTransportDescription?: string;
-  accessibilityDescription?: string;
+  homeTitle?: TranslatedField;
+  homeDescription?: TranslatedField;
+  experienceTitle?: TranslatedField;
+  experienceDescription?: TranslatedField;
+  reservationTitle?: TranslatedField;
+  reservationDescription?: TranslatedField;
+  aboutUsTitle?: TranslatedField;
+  aboutUsDescription?: TranslatedField;
+  missionTitle?: TranslatedField;
+  missionDescription?: TranslatedField;
+  visionTitle?: TranslatedField;
+  visionDescription?: TranslatedField;
+  historyTitle?: TranslatedField;
+  historyDescription?: TranslatedField;
+  gastronomyTitle?: TranslatedField;
+  gastronomyDescription?: TranslatedField;
+  gastronomyHistoryTitle?: TranslatedField;
+  gastronomyHistoryDescription?: TranslatedField;
+  gastronomyKitchenTitle?: TranslatedField;
+  gastronomyKitchenDescription?: TranslatedField;
+  gastronomyIngredientsTitle?: TranslatedField;
+  gastronomyIngredientsDescription?: TranslatedField;
+  accommodationsTitle?: TranslatedField;
+  accommodationsDescription?: TranslatedField;
+  howToArriveDescription?: TranslatedField;
+  howToArrivePublicTransportDescription?: TranslatedField;
+  howToArrivePrivateTransportDescription?: TranslatedField;
+  accessibilityDescription?: TranslatedField;
   mapsUrl?: string;
   videoUrl?: string;
   facebookUrl?: string;
   instagramUrl?: string;
-  metaTitle?: string;
-  metaDescription?: string;
+  metaTitle?: TranslatedField;
+  metaDescription?: TranslatedField;
   paymentEnabled: boolean;
   status: boolean;
   identificationType?: IdentificationType;

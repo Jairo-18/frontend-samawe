@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BasePageComponent } from '../../../../shared/components/base-page/base-page.component';
 import { BoldTextPipe } from '../../../../shared/pipes/bold-text.pipe';
+import { TranslatedPipe } from '../../../../shared/pipes/translated.pipe';
 import { CommonModule } from '@angular/common';
 import { LegalSection } from '../../../../shared/interfaces/organizational.interface';
 import { ApplicationService } from '../../../../organizational/services/application.service';
@@ -9,7 +10,7 @@ import { switchMap, filter, take } from 'rxjs';
 @Component({
   selector: 'app-privacity',
   standalone: true,
-  imports: [BasePageComponent, BoldTextPipe, CommonModule],
+  imports: [BasePageComponent, BoldTextPipe, TranslatedPipe, CommonModule],
   templateUrl: './privacity.component.html',
   styleUrl: './privacity.component.scss'
 })

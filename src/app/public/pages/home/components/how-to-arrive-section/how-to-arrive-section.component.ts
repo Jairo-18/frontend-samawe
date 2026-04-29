@@ -12,6 +12,7 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { GoogleMapsStateService } from '../../../../../shared/services/google-maps-state.service';
 import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
+import { TranslatedPipe } from '../../../../../shared/pipes/translated.pipe';
 
 const FALLBACK: google.maps.LatLngLiteral = { lat: 1.2143926, lng: -76.663683 };
 
@@ -22,7 +23,8 @@ const FALLBACK: google.maps.LatLngLiteral = { lat: 1.2143926, lng: -76.663683 };
     GoogleMap,
     MapAdvancedMarker,
     ButtonLandingComponent,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    TranslatedPipe
   ],
   templateUrl: './how-to-arrive-section.component.html',
   styleUrls: ['./how-to-arrive-section.component.scss']

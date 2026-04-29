@@ -4,19 +4,19 @@
   >
     @if (state === 'loading') {
       <app-loader />
-      <p class="text-sm text-gray-500">Verificando tu cuenta...</p>
+      <p class="text-sm text-gray-500">{{ 'verify_email.verifying' | translate }}</p>
     }
 
     @if (state === 'success') {
       <span class="material-icons text-6xl text-[var(--primary-color)]"
         >verified</span
       >
-      <span class="font-extrabold text-xl">¡Cuenta verificada!</span>
+      <span class="font-extrabold text-xl">{{ 'verify_email.success_title' | translate }}</span>
       <p class="text-sm text-gray-500">
-        Tu correo fue verificado correctamente. Ya puedes iniciar sesión.
+        {{ 'verify_email.success_subtitle' | translate }}
       </p>
       <app-button-landing
-        label="Iniciar sesión"
+        [label]="'verify_email.login_btn' | translate"
         variant="solid"
         (clicked)="goToLogin()"
         class="w-full"
@@ -25,10 +25,10 @@
 
     @if (state === 'error') {
       <span class="material-icons text-6xl text-red-400">error_outline</span>
-      <span class="font-extrabold text-xl">Enlace inválido</span>
-      <p class="text-sm text-gray-500">{{ errorMessage }}</p>
+      <span class="font-extrabold text-xl">{{ 'verify_email.error_title' | translate }}</span>
+      <p class="text-sm text-gray-500">{{ errorMessage | translate }}</p>
       <app-button-landing
-        label="Volver al inicio"
+        [label]="'verify_email.back_home_btn' | translate"
         variant="transparent"
         (clicked)="goToLogin()"
         class="w-full"

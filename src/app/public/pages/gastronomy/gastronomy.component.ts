@@ -5,6 +5,7 @@ import { Organizational } from '../../../shared/interfaces/organizational.interf
 import { SectionHeaderComponent } from '../../components/section-header/section-header.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-gastronomy',
@@ -13,7 +14,8 @@ import { ReservationSectionComponent } from '../home/components/reservation-sect
     CommonModule,
     SectionHeaderComponent,
     LoaderComponent,
-    ReservationSectionComponent
+    ReservationSectionComponent,
+    TranslatedPipe
   ],
   templateUrl: './gastronomy.component.html',
   styleUrl: './gastronomy.component.scss'

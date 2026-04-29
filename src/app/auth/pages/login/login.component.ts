@@ -18,7 +18,7 @@ import { ApplicationService } from '../../../organizational/services/application
 import { NotificationsService } from '../../../shared/services/notifications.service';
 import { Subscription } from 'rxjs';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
-
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -32,7 +32,8 @@ import { ButtonLandingComponent } from '../../../shared/components/button-landin
     CommonModule,
     MatIconModule,
     NgOptimizedImage,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

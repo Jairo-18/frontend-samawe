@@ -29,6 +29,8 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-complete-profile',
@@ -44,7 +46,8 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
     MatIconModule,
     MatProgressSpinnerModule,
     UppercaseDirective,
-    ButtonLandingComponent
+    ButtonLandingComponent,
+    TranslateModule
   ],
   templateUrl: './complete-profile.component.html',
   styleUrls: ['./complete-profile.component.scss']
@@ -63,6 +66,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   );
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  private readonly _langService = inject(LangService);
 
   form: FormGroup;
   identificationType: IdentificationType[] = [];
@@ -102,7 +106,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (!this._authService.getCurrentUserId()) {
-      this._router.navigateByUrl('/auth/login');
+      this._router.navigateByUrl(this._langService.route('auth/login'));
       return;
     }
     this.loadPendingProfile();
@@ -271,7 +275,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
           this.profileSaved = true;
           this._localStorage.removeItem('_pendingGoogleProfile');
           this.isSaving = false;
-          this._router.navigateByUrl('/home');
+          this._router.navigateByUrl(this._langService.route(''));
         },
         error: (err) => {
           console.error('Error al completar perfil:', err);

@@ -1,0 +1,17 @@
+<app-button-landing
+  variant="solid"
+  [label]="lang.lang() === 'es' ? 'EN' : 'ES'"
+  (clicked)="lang.switch()"
+  [class]="btnClass()"
+  [attr.aria-label]="
+    lang.lang() === 'es' ? 'Switch to English' : 'Cambiar a Español'
+  "
+>
+  <div slot="icon" class="flex items-center justify-center overflow-hidden rounded-sm w-5 h-[15px]">
+    @if (lang.lang() === 'es') {
+      <img src="https://flagcdn.com/w40/us.png" alt="English" class="w-full h-full object-cover">
+    } @else {
+      <img src="https://flagcdn.com/w40/co.png" alt="Español" class="w-full h-full object-cover">
+    }
+  </div>
+</app-button-landing>

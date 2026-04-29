@@ -11,17 +11,19 @@ import { ApplicationService } from '../../../organizational/services/application
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
 import { Subscription } from 'rxjs';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LangService } from '../../../shared/services/lang.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule, CapitalizePipe],
+  imports: [CommonModule, RouterLink, FontAwesomeModule, CapitalizePipe, TranslateModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  readonly lang = inject(LangService);
   private _subscription = new Subscription();
 
   currentYear = new Date().getFullYear();

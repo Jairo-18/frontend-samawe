@@ -1,3 +1,5 @@
+import { TranslatedField } from '../types/translated-field.type';
+
 export interface PaginatedUserPartial {
   userId: string;
   identificationNumber: string;
@@ -6,6 +8,5 @@ export interface PaginatedUserPartial {
   isActive: boolean;
 }
 export interface GeneralPartial {
-  name: string;
+  name: TranslatedField;
 }
-

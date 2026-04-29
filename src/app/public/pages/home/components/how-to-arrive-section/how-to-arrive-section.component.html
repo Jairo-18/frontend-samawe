@@ -8,7 +8,7 @@
       <app-section-header
         label="Ubicación"
         title="Cómo llegar"
-        [description]="org?.howToArriveDescription"
+        [description]="org?.howToArriveDescription | translated"
       />
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -34,7 +34,7 @@
               <p
                 class="text-sm text-[var(--text-color)] max-w-xl mx-auto font-semibold"
               >
-                {{ org?.howToArrivePublicTransportDescription }}
+                {{ org?.howToArrivePublicTransportDescription | translated }}
               </p>
             </div>
           }
@@ -59,7 +59,7 @@
               <p
                 class="text-sm text-[var(--text-color)] max-w-xl mx-auto font-semibold"
               >
-                {{ org?.howToArrivePrivateTransportDescription }}
+                {{ org?.howToArrivePrivateTransportDescription | translated }}
               </p>
             </div>
           }
@@ -84,7 +84,7 @@
               <p
                 class="text-sm text-[var(--text-color)] max-w-xl mx-auto font-semibold"
               >
-                {{ org?.accessibilityDescription }}
+                {{ org?.accessibilityDescription | translated }}
               </p>
             </div>
           }

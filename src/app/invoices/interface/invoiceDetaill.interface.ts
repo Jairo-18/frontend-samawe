@@ -5,6 +5,7 @@ import {
   StateType,
   TaxeType
 } from '../../shared/interfaces/relatedDataGeneral';
+import { TranslatedField } from '../../shared/types/translated-field.type';
 export interface InvoiceDetail {
   invoiceDetailId: number;
   amountSale: string;
@@ -44,8 +45,8 @@ export interface CreateInvoiceDetaill {
 export interface AddedProductInvoiceDetaill {
   productId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amount: number;
   priceBuy: number;
   priceSale: number;
@@ -57,8 +58,8 @@ export interface AddedProductInvoiceDetaill {
 export interface AddedAccommodationInvoiceDetaill {
   accommodationId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   amountPerson: number;
   jacuzzi: boolean;
   amountRoom: number;
@@ -75,8 +76,8 @@ export interface AddedAccommodationInvoiceDetaill {
 export interface AddedExcursionInvoiceDetaill {
   excursionId?: number;
   code: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   priceBuy: number;
   priceSale: number;
   stateType?: StateType;

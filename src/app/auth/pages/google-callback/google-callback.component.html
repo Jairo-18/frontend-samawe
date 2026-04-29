@@ -4,7 +4,7 @@
       *ngIf="loading"
       mode="indeterminate"
     ></mat-progress-spinner>
-    <p *ngIf="loading" class="text-gray-500">Iniciando sesión con Google...</p>
-    <p *ngIf="error" class="text-red-500">{{ error }}</p>
+    <p *ngIf="loading" class="text-gray-500">{{ 'google_callback.logging_in' | translate }}</p>
+    <p *ngIf="error" class="text-red-500">{{ error | translate }}</p>
   </div>
 </div>

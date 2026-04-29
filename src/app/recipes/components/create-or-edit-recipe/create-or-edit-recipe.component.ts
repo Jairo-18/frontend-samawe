@@ -210,7 +210,9 @@ export class CreateOrEditRecipeComponent implements OnChanges {
 
   displayFn(product: ProductComplete | string | null): string {
     if (!product) return '';
-    return typeof product === 'string' ? product : product.name;
+    if (typeof product === 'string') return product;
+    const n = product.name;
+    return typeof n === 'string' ? n : (n['es'] ?? Object.values(n)[0] ?? '');
   }
 
   getIngSearchControl(index: number): FormControl {

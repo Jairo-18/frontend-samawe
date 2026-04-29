@@ -4,8 +4,8 @@
   >
     <app-section-header
       label="Reservaciones"
-      [title]="org?.reservationTitle ?? ''"
-      [description]="org?.reservationDescription"
+      [title]="org?.reservationTitle | translated"
+      [description]="org?.reservationDescription | translated"
     />
     <div class="w-full max-w-xs">
       <app-button-landing

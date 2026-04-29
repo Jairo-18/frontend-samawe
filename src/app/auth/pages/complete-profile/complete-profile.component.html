@@ -3,9 +3,9 @@
     class="relative w-[90%] md:w-[75%] lg:w-[55%] xl:w-[45%] h-auto flex flex-col border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl p-6 md:p-10 gap-4 my-0 md:my-6"
   >
     <div class="flex flex-col gap-1 text-center">
-      <span class="font-extrabold text-xl">Completa tu perfil</span>
+      <span class="font-extrabold text-xl">{{ 'complete_profile.title' | translate }}</span>
       <span class="font-medium text-sm text-gray-500">
-        Necesitamos algunos datos adicionales para continuar
+        {{ 'complete_profile.subtitle' | translate }}
       </span>
     </div>
 
@@ -24,27 +24,27 @@
     >
       <!-- Nombres -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Nombres</mat-label>
+        <mat-label>{{ 'complete_profile.first_name' | translate }}</mat-label>
         <input matInput formControlName="firstName" appUppercase />
         <mat-icon matPrefix>person</mat-icon>
         <mat-error *ngIf="form.get('firstName')?.hasError('required')">
-          Nombre requerido
+          {{ 'complete_profile.first_name_req' | translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Apellidos -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Apellidos</mat-label>
+        <mat-label>{{ 'complete_profile.last_name' | translate }}</mat-label>
         <input matInput formControlName="lastName" appUppercase />
         <mat-icon matPrefix>people</mat-icon>
         <mat-error *ngIf="form.get('lastName')?.hasError('required')">
-          Apellido requerido
+          {{ 'complete_profile.last_name_req' | translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Tipo de identificación -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de identificación</mat-label>
+        <mat-label>{{ 'complete_profile.id_type' | translate }}</mat-label>
         <mat-select formControlName="identificationTypeId">
           <mat-option
             *ngFor="let t of identificationType"
@@ -57,30 +57,30 @@
         <mat-error
           *ngIf="form.get('identificationTypeId')?.hasError('required')"
         >
-          Tipo de identificación requerido
+          {{ 'complete_profile.id_type_req' | translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Número de identificación -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Número de identificación</mat-label>
+        <mat-label>{{ 'complete_profile.id_number' | translate }}</mat-label>
         <input matInput formControlName="identificationNumber" />
         <mat-icon matPrefix>credit_card</mat-icon>
         <mat-error
           *ngIf="form.get('identificationNumber')?.hasError('required')"
         >
-          Número de identificación requerido
+          {{ 'complete_profile.id_number_req' | translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Código de país (autocomplete) -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>País / Código de teléfono</mat-label>
+        <mat-label>{{ 'complete_profile.country_code' | translate }}</mat-label>
         <input
           matInput
           formControlName="phoneCodeSearch"
           [matAutocomplete]="autoPhone"
-          placeholder="Busca tu país..."
+          [placeholder]="'complete_profile.country_search' | translate"
         />
         <mat-icon matPrefix>flag</mat-icon>
         <mat-autocomplete
@@ -89,7 +89,7 @@
           (optionSelected)="onPhoneCodeSelected($event.option.value)"
         >
           <mat-option *ngIf="loadingPhoneCodes" disabled>
-            Cargando...
+            {{ 'verify_email.verifying' | translate }}
           </mat-option>
           <mat-option *ngFor="let pc of filteredPhoneCodes" [value]="pc">
             {{ pc.name }}{{ pc.code }}
@@ -104,28 +104,28 @@
             form.get('phoneCodeSearch')?.touched)
         "
       >
-        País / Código requerido
+        {{ 'complete_profile.country_req' | translate }}
       </span>
 
       <!-- Teléfono -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Teléfono</mat-label>
+        <mat-label>{{ 'complete_profile.phone' | translate }}</mat-label>
         <input matInput formControlName="phone" inputmode="numeric" />
         <mat-icon matPrefix>phone_iphone</mat-icon>
         <mat-error *ngIf="form.get('phone')?.hasError('required')">
-          Teléfono requerido
+          {{ 'complete_profile.phone_req' | translate }}
         </mat-error>
         <mat-error *ngIf="form.get('phone')?.hasError('pattern')">
-          Solo números, máximo 15 dígitos
+          {{ 'complete_profile.phone_pattern' | translate }}
         </mat-error>
       </mat-form-field>
 
       <!-- Contraseña (opcional) -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label
-          >Contraseña
+          >{{ 'complete_profile.password' | translate }}
           <span class="text-xs font-normal text-gray-400"
-            >(opcional)</span
+            >{{ 'complete_profile.optional' | translate }}</span
           ></mat-label
         >
         <input
@@ -145,11 +145,10 @@
           }}</mat-icon>
         </button>
         <mat-hint *ngIf="!form.get('password')?.value">
-          Si no ingresas contraseña, solo podrás entrar con Google
+          {{ 'complete_profile.pwd_hint' | translate }}
         </mat-hint>
         <mat-error *ngIf="form.get('password')?.hasError('passwordStrength')">
-          La contraseña debe tener 6 caracteres, con mayúscula, minúscula y un
-          carácter especial
+          {{ 'complete_profile.pwd_strength' | translate }}
         </mat-error>
       </mat-form-field>
 
@@ -159,7 +158,7 @@
         class="w-full"
         *ngIf="form.get('password')?.value"
       >
-        <mat-label>Confirmar contraseña</mat-label>
+        <mat-label>{{ 'complete_profile.confirm_pwd' | translate }}</mat-label>
         <input
           matInput
           formControlName="confirmPassword"
@@ -179,11 +178,11 @@
         <mat-error
           *ngIf="form.get('confirmPassword')?.hasError('passwordMismatch')"
         >
-          Las contraseñas no coinciden
+          {{ 'complete_profile.pwd_mismatch' | translate }}
         </mat-error>
       </mat-form-field>
       <app-button-landing
-        label="Enviar"
+        [label]="'complete_profile.send_btn' | translate"
         variant="solid"
         [disabled]="isSaving"
         type="submit"
@@ -202,7 +201,7 @@
             mode="indeterminate"
           ></mat-progress-spinner>
         </mat-icon>
-        <span>{{ isSaving ? 'Guardando...' : 'Continuar' }}</span>
+        <span>{{ isSaving ? ('complete_profile.saving' | translate) : ('complete_profile.continue_btn' | translate) }}</span>
       </button>
     </form>
   </article>

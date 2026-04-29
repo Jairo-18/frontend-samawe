@@ -164,7 +164,9 @@ export class AddAccommodationComponent implements OnInit {
       });
   }
   displayAccommodation(acc?: AddedAccommodationInvoiceDetaill): string {
-    return acc ? acc.name : '';
+    if (!acc) return '';
+    const n = acc.name;
+    return typeof n === 'string' ? n : (n['es'] ?? Object.values(n)[0] ?? '');
   }
   resetForm() {
     const now = new Date();

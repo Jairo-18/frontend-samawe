@@ -138,6 +138,12 @@
         }
       </div>
 
+      <!-- Lang switcher -->
+      <app-lang-switcher
+        class="hidden md:flex"
+        [ngClass]="isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-700'"
+      />
+
       <!-- Mobile: hamburguesa -->
       <button
         class="flex md:hidden p-1 transition-colors"

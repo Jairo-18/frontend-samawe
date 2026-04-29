@@ -7,6 +7,7 @@ import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
 
 @Component({
   selector: 'app-navbar-mobile',
@@ -18,7 +19,8 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
     MatIconModule,
     MatButtonModule,
     ButtonLandingComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    LangSwitcherComponent
   ],
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss']
@@ -26,11 +28,11 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 export class NavbarMobileComponent {
   @Input() navBarItems: NavItem[] = [];
   @Input() loginItem?: NavItem;
-  @Input() isLoggedUser = false;
+  @Input() isLoggedUser: boolean = false;
   @Input() userInfo?: UserInterface;
   @Input() loggedMenuItems: NavItem[] = [];
-  @Input() organizationalName = '';
-  @Input() logoUrl = '';
+  @Input() organizationalName: string = '';
+  @Input() logoUrl: string = '';
   @Output() closeMenu = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 

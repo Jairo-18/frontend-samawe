@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /auth/
+Disallow: /*/auth/
+Disallow: /*/user/
 Disallow: /organizational/
 Disallow: /service-and-product/
 Disallow: /invoice/

@@ -6,9 +6,11 @@
       class="h-full w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4"
     >
       <div class="flex flex-col gap-0 md:gap-1.5 mb-1 md:mb-0">
-        <span class="font-extrabold text-lg 2xl:text-xl">Iniciar Sesión</span>
+        <span class="font-extrabold text-lg 2xl:text-xl">{{
+          'login.title' | translate
+        }}</span>
         <span class="font-medium text-sm md:text-base">
-          Ingrese sus datos para acceder a su cuenta
+          {{ 'login.subtitle' | translate }}
         </span>
       </div>
       <form
@@ -16,18 +18,22 @@
         class="flex flex-col w-full items-center gap-0 md:gap-1.5"
       >
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Correo electrónico</mat-label>
-          <input matInput formControlName="email" (input)="onEmailInput($event)" />
+          <mat-label>{{ 'login.email' | translate }}</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            (input)="onEmailInput($event)"
+          />
           <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="form.get('email')?.hasError('required')">
-            Correo electrónico requerido
+            {{ 'login.email_required' | translate }}
           </mat-error>
           <mat-error *ngIf="form.get('email')?.hasError('email')">
-            Correo electrónico inválido
+            {{ 'login.email_invalid' | translate }}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Contraseña</mat-label>
+          <mat-label>{{ 'login.password' | translate }}</mat-label>
           <input
             [type]="!showPassword ? 'password' : 'text'"
             matInput
@@ -44,7 +50,7 @@
             <fa-icon [icon]="!showPassword ? eyeOpen : eyeClose"></fa-icon>
           </button>
           <mat-error *ngIf="form.get('password')?.hasError('required')">
-            Contraseña requerida
+            {{ 'login.password_required' | translate }}
           </mat-error>
         </mat-form-field>
         @if (loginError) {
@@ -52,7 +58,7 @@
             class="w-full flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm"
           >
             <span class="material-icons text-base">error_outline</span>
-            <span>Revisa tu correo y contraseña e inténtalo de nuevo.</span>
+            <span>{{ 'login.error_message' | translate }}</span>
           </div>
         }
         <div
@@ -61,8 +67,8 @@
           <app-button-landing
             [label]="
               cooldownRemaining > 0
-                ? 'Espera ' + cooldownRemaining + 's'
-                : 'Iniciar Sesión'
+                ? ('login.wait' | translate) + ' ' + cooldownRemaining + 's'
+                : ('login.submit' | translate)
             "
             variant="solid"
             [disabled]="form.invalid || cooldownRemaining > 0"
@@ -71,7 +77,7 @@
           />
 
           <app-button-landing
-            label="Continuar con Google"
+            [label]="'login.google' | translate"
             variant="transparent"
             (clicked)="loginWithGoogle()"
             class="w-full"
@@ -103,21 +109,21 @@
           <div>
             <a
               class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
-              routerLink="/auth/recovery-password"
+              routerLink="../recovery-password"
             >
-              ¿Olvidaste tu contraseña?
+              {{ 'login.forgot_password' | translate }}
             </a>
           </div>
           <div
             class="flex w-full content-between items-center justify-center gap-1"
           >
-            <span class="font-medium text-sm md:text-base"
-              >¿No tienes una cuenta?</span
-            >
+            <span class="font-medium text-sm md:text-base">{{
+              'login.no_account' | translate
+            }}</span>
             <a
-              routerLink="/auth/register"
+              routerLink="../register"
               class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
-              >Registrate aquí</a
+              >{{ 'login.register' | translate }}</a
             >
           </div>
         </div>

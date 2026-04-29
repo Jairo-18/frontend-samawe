@@ -10,11 +10,6 @@ export const publicRoutes: Routes = [
           import('./pages/home/home.component').then((m) => m.HomeComponent)
       },
       {
-        path: 'home',
-        redirectTo: '/',
-        pathMatch: 'full'
-      },
-      {
         path: 'about-us',
         data: { reuse: true },
         loadComponent: () =>

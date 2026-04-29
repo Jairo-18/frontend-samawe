@@ -9,6 +9,7 @@ import { SectionHeaderComponent } from '../../components/section-header/section-
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
 import { filter, switchMap, take } from 'rxjs';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-about-us',
@@ -17,7 +18,8 @@ import { filter, switchMap, take } from 'rxjs';
     CommonModule,
     SectionHeaderComponent,
     LoaderComponent,
-    ReservationSectionComponent
+    ReservationSectionComponent,
+    TranslatedPipe
   ],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss'
