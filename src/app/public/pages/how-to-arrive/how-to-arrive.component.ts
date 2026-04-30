@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import { SeoService } from '../../../shared/services/seo.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
 import { HowToArriveSectionComponent } from '../home/components/how-to-arrive-section/how-to-arrive-section.component';
@@ -19,14 +20,17 @@ import { HowToArriveSectionComponent } from '../home/components/how-to-arrive-se
   styleUrl: './how-to-arrive.component.scss'
 })
 export class HowToArriveComponent implements OnInit {
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _seoService: SeoService = inject(SeoService);
 
   org: Organizational | null = null;
 
   ngOnInit(): void {
     this._applicationService.currentOrg$.subscribe((org) => {
-      if (org) this.org = org;
+      if (org) {
+        this.org = org;
+        this._seoService.updatePage(org.name, org.howToArriveDescription);
+      }
     });
   }
 

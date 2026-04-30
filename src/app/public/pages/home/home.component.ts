@@ -8,6 +8,7 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
 import { CardHomeComponent } from '../../components/card-home/card-home.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { BenefitSection, Organizational } from '../../../shared/interfaces/organizational.interface';
+import { SeoService } from '../../../shared/services/seo.service';
 import { HeroSectionComponent } from './components/hero-section/hero-section.component';
 import { ExperienceSectionComponent } from './components/experience-section/experience-section.component';
 import { AboutUsSectionComponent } from './components/about-us-section/about-us-section.component';
@@ -39,8 +40,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _seoService: SeoService = inject(SeoService);
 
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
@@ -67,7 +68,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this._subscription.add(
       this._applicationService.currentOrg$.subscribe((org) => {
-        if (org) this.org = org;
+        if (org) {
+          this.org = org;
+          this._seoService.updatePage(org.homeTitle, org.homeDescription);
+        }
       })
     );
 

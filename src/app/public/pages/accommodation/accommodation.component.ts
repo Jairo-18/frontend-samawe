@@ -8,6 +8,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import { SeoService } from '../../../shared/services/seo.service';
 
 @Component({
   selector: 'app-accommodation',
@@ -22,11 +23,9 @@ import { Organizational } from '../../../shared/interfaces/organizational.interf
   styleUrl: './accommodation.component.scss'
 })
 export class AccommodationComponent implements OnInit {
-  private readonly _accommodationsService: AccommodationsService = inject(
-    AccommodationsService
-  );
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _accommodationsService: AccommodationsService = inject(AccommodationsService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
 
   org: Organizational | null = null;
@@ -44,7 +43,10 @@ export class AccommodationComponent implements OnInit {
 
   ngOnInit(): void {
     this._applicationService.currentOrg$.subscribe((org) => {
-      if (org) this.org = org;
+      if (org) {
+        this.org = org;
+        this._seoService.updatePage(org.accommodationsTitle, org.accommodationsDescription);
+      }
     });
     this.load();
   }

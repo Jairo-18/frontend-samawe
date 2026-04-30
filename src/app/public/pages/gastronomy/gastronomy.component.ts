@@ -6,6 +6,7 @@ import { SectionHeaderComponent } from '../../components/section-header/section-
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { SeoService } from '../../../shared/services/seo.service';
 
 @Component({
   selector: 'app-gastronomy',
@@ -21,14 +22,17 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
   styleUrl: './gastronomy.component.scss'
 })
 export class GastronomyComponent implements OnInit {
-  private readonly _applicationService: ApplicationService =
-    inject(ApplicationService);
+  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _seoService: SeoService = inject(SeoService);
 
   org: Organizational | null = null;
 
   ngOnInit(): void {
     this._applicationService.currentOrg$.subscribe((org) => {
-      if (org) this.org = org;
+      if (org) {
+        this.org = org;
+        this._seoService.updatePage(org.gastronomyTitle, org.gastronomyDescription);
+      }
     });
   }
 

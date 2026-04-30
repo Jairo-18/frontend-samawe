@@ -30,6 +30,7 @@ import {
   GoogleBusinessService,
   GoogleReview
 } from '../../../organizational/services/google-business.service';
+import { SeoService } from '../../../shared/services/seo.service';
 
 @Component({
   selector: 'app-blog',
@@ -56,6 +57,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
   private readonly _appService: ApplicationService = inject(ApplicationService);
   private readonly _googleBusinessService: GoogleBusinessService = inject(GoogleBusinessService);
+  private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _destroy$ = new Subject<void>();
   private readonly _searchSubject = new Subject<string>();
@@ -105,6 +107,7 @@ export class BlogComponent implements OnInit, OnDestroy {
     this._appService.currentOrg$.subscribe((org) => {
       if (org) {
         this.org = org;
+        this._seoService.updatePage(org.name, org.description);
         this.loadReviews();
       }
     });

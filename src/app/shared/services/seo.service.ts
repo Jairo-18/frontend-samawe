@@ -51,6 +51,21 @@ export class SeoService {
       });
   }
 
+  updatePage(title: TranslatedField | string | undefined, description: TranslatedField | string | undefined): void {
+    const resolvedTitle = title ? (typeof title === 'string' ? title : this._resolve(title)) : '';
+    const resolvedDesc = description ? (typeof description === 'string' ? description : this._resolve(description)) : '';
+    if (resolvedTitle) {
+      this._title.setTitle(resolvedTitle);
+      this._updateMeta('property', 'og:title', resolvedTitle);
+      this._updateMeta('name', 'twitter:title', resolvedTitle);
+    }
+    if (resolvedDesc) {
+      this._updateMeta('name', 'description', resolvedDesc);
+      this._updateMeta('property', 'og:description', resolvedDesc);
+      this._updateMeta('name', 'twitter:description', resolvedDesc);
+    }
+  }
+
   updatePageCanonical(path: string): void {
     const origin = this._document.location.origin;
     const url = path ? `${origin}/${path}` : origin;
