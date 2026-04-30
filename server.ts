@@ -10,6 +10,31 @@ const app = express();
 app.disable('x-powered-by');
 const angularApp = new AngularNodeAppEngine();
 
+const legacyRedirects: Record<string, string> = {
+  '/nosotros':    '/es/about-us',
+  '/paquetes':    '/es/accommodation',
+  '/samawe-1':   '/es/accommodation',
+  '/excursion':  '/es/how-to-arrive',
+  '/home':        '/es',
+  '/accommodation': '/es/accommodation',
+  '/about-us':   '/es/about-us',
+  '/gastronomy':  '/es/gastronomy',
+  '/how-to-arrive': '/es/how-to-arrive',
+  '/blog':        '/es/blog',
+};
+
+app.use((req, res, next) => {
+  const target = legacyRedirects[req.path];
+  if (target) {
+    return res.redirect(301, target);
+  }
+  // www → non-www
+  if (req.hostname.startsWith('www.')) {
+    return res.redirect(301, `https://${req.hostname.slice(4)}${req.url}`);
+  }
+  next();
+});
+
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
