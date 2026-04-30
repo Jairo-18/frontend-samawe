@@ -10,9 +10,9 @@ export const DEFAULT_LANG: Lang = 'es';
 
 @Injectable({ providedIn: 'root' })
 export class LangService {
-  private readonly _translate = inject(TranslateService);
-  private readonly _router = inject(Router);
-  private readonly _document = inject(DOCUMENT);
+  private readonly _translate: TranslateService = inject(TranslateService);
+  private readonly _router: Router = inject(Router);
+  private readonly _document: Document = inject(DOCUMENT);
   private readonly _platformId = inject(PLATFORM_ID);
 
   private readonly _lang = signal<Lang>(DEFAULT_LANG);

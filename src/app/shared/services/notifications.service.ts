@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import {
   NotificationInterface,
   NotificationsTypes
@@ -9,15 +10,16 @@ import {
 })
 export class NotificationsService {
   private _toastrService: ToastrService = inject(ToastrService);
+  private _translateService: TranslateService = inject(TranslateService);
   showNotification(
     type: NotificationsTypes,
     information: string,
     title?: string
   ): void {
     const notification: NotificationInterface = {
-      title,
+      title: title ? this._translateService.instant(title) : undefined,
       type,
-      information
+      information: this._translateService.instant(information)
     };
     this._showToast(notification);
   }

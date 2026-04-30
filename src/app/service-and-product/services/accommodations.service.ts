@@ -75,10 +75,14 @@ export class AccommodationsService {
     );
   }
 
-  getMostRequested(): Observable<{ statusCode: number; data: MostRequestedAccommodation[] }> {
-    return this._httpClient.get<{ statusCode: number; data: MostRequestedAccommodation[] }>(
-      `${environment.apiUrl}accommodation/public/most-requested`
-    );
+  getMostRequested(): Observable<{
+    statusCode: number;
+    data: MostRequestedAccommodation[];
+  }> {
+    return this._httpClient.get<{
+      statusCode: number;
+      data: MostRequestedAccommodation[];
+    }>(`${environment.apiUrl}accommodation/public/most-requested`);
   }
 
   getPublicAccommodationList(query: BasePaginationParams): Observable<{
@@ -92,4 +96,3 @@ export class AccommodationsService {
     }>(`${environment.apiUrl}accommodation/public/list`, { params });
   }
 }
-

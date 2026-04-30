@@ -3,5 +3,6 @@ export interface NavItem {
   icon?: string;
   title?: string;
   children?: NavItem[];
+  exact?: boolean;
 }
 

@@ -23,7 +23,13 @@
     "developed_by": "Desarrollado por"
   },
   "auth": {
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "recipes": "Recetas",
+    "menu": "Menú",
+    "restaurant": "Restaurante",
+    "reports": "Reportes / Ganancias",
+    "settings": "Configuraciones"
   },
   "login": {
     "title": "Iniciar Sesión",
@@ -154,5 +160,152 @@
   },
   "common": {
     "loading": "Cargando..."
+  },
+  "api": {
+    "common": {
+      "created": "Información almacenada correctamente",
+      "updated": "Información actualizada correctamente",
+      "deleted": "Registro eliminado con éxito",
+      "duplicated": "Registro duplicado",
+      "validation": "Error de validación",
+      "not_found": "Registro no encontrado",
+      "unauthorized": "Tu sesión caducó",
+      "service_error": "Error de servicio",
+      "delete_related": "No es posible eliminar el registro, debido a que se encuentra en uso",
+      "retrieved": "Información recuperada correctamente",
+      "uploaded": "Archivo subido correctamente",
+      "passwords_not_match": "Las contraseñas no coinciden",
+      "unauthorized_password": "No tienes acceso para modificar las contraseñas de otro usuario",
+      "password_changed": "Contraseña cambiada correctamente"
+    },
+    "errors": {
+      "session_expired": "Sesión caducada",
+      "re_login": "Inicia sesión de nuevo",
+      "unauthorized": "No estás autorizado",
+      "auth_error": "Error de autenticación"
+    },
+    "auth": {
+      "welcome": "Bienvenid@",
+      "sign_out": "Sesión finalizada correctamente",
+      "recovery_sent": "Correo enviado correctamente"
+    },
+    "user": {
+      "created": "Usuario creado correctamente",
+      "updated": "Información almacenada correctamente",
+      "avatar_updated": "Foto de perfil actualizada correctamente",
+      "avatar_deleted": "Foto de perfil eliminada correctamente",
+      "deleted": "Usuario eliminado exitosamente"
+    },
+    "types": {
+      "updated": "Registro actualizado correctamente",
+      "deleted": "Registro eliminado exitosamente"
+    },
+    "legal": {
+      "section_deleted": "Sección eliminada correctamente",
+      "item_updated": "Item actualizado correctamente",
+      "item_deleted": "Item eliminado correctamente",
+      "subitem_updated": "Sub-item actualizado correctamente",
+      "subitem_deleted": "Sub-item eliminado correctamente"
+    },
+    "benefit_section": {
+      "section_updated": "Sección actualizada correctamente",
+      "section_deleted": "Sección eliminada correctamente",
+      "item_updated": "Item actualizado correctamente",
+      "item_deleted": "Item eliminado correctamente"
+    },
+    "excursion": {
+      "created": "Registro exitoso",
+      "updated": "Actualizado correctamente",
+      "deleted": "Eliminado correctamente",
+      "image_uploaded": "Imagen subida correctamente",
+      "image_deleted": "Imagen eliminada exitosamente"
+    },
+    "accommodation": {
+      "created": "Registro de hospedaje exitoso",
+      "updated": "Hospedaje actualizado correctamente",
+      "deleted": "Hospedaje eliminado exitosamente",
+      "image_uploaded": "Imagen subida correctamente",
+      "image_deleted": "Imagen eliminada exitosamente"
+    },
+    "invoice": {
+      "created": "Factura registrada",
+      "created_title": "Factura creada",
+      "deleted": "Factura eliminada exitosamente",
+      "deleted_title": "Factura eliminada",
+      "items_added": "Items agregados exitosamente",
+      "items_added_title": "Items agregados",
+      "updated": "Factura editada exitosamente",
+      "updated_title": "Factura editada",
+      "item_deleted": "Item eliminado correctamente",
+      "item_deleted_title": "Item eliminado",
+      "items_updated": "Items actualizados exitosamente",
+      "items_updated_title": "Estados de pago actualizados",
+      "payment_paid": "Item marcado como pagado",
+      "payment_pending": "Item marcado como pendiente",
+      "payment_title": "Estado de pago actualizado"
+    },
+    "backup": {
+      "uploaded": "Backup manual subido exitosamente"
+    },
+    "notifications": {
+      "count": "Contador obtenido",
+      "initial": "Carga inicial obtenida",
+      "marked_read": "Notificaciones marcadas como leídas",
+      "marked_unread": "Notificaciones marcadas como no leídas",
+      "toggled_read": "Notificación marcada como leída",
+      "toggled_unread": "Notificación marcada como no leída",
+      "all_deleted": "Todas las notificaciones han sido eliminadas",
+      "deleted": "Notificación eliminada"
+    },
+    "menu": {
+      "created": "Menú creado exitosamente",
+      "updated": "Menú actualizado exitosamente",
+      "dish_removed": "Platillo removido del menú exitosamente",
+      "deleted": "Menú eliminado exitosamente"
+    },
+    "review": {
+      "created": "Reseña creada exitosamente",
+      "updated": "Reseña actualizada correctamente",
+      "deleted": "Reseña eliminada correctamente",
+      "reply_added": "Respuesta agregada exitosamente",
+      "reply_updated": "Respuesta actualizada correctamente",
+      "reply_deleted": "Respuesta eliminada correctamente"
+    },
+    "organizational": {
+      "updated": "Organización actualizada correctamente",
+      "deleted": "Organización eliminada correctamente",
+      "file_uploaded": "Se ha subido el archivo correctamente",
+      "file_updated": "Se ha actualizado el archivo correctamente",
+      "file_deleted": "Se ha eliminado el archivo correctamente",
+      "value_updated": "Valor corporativo actualizado",
+      "value_deleted": "Valor corporativo eliminado",
+      "image_deleted": "Imagen eliminada correctamente"
+    },
+    "google_business": {
+      "saved": "Ubicación guardada correctamente",
+      "disconnected": "Google Business desconectado"
+    },
+    "recipe": {
+      "created": "Receta creada exitosamente",
+      "updated": "Receta actualizada exitosamente",
+      "ingredient_updated": "Ingrediente actualizado exitosamente",
+      "deleted": "Receta eliminada exitosamente",
+      "ingredient_deleted": "Ingrediente eliminado de la receta"
+    },
+    "product": {
+      "created": "Registro de producto exitoso",
+      "updated": "Producto actualizado correctamente",
+      "deleted": "Producto eliminado exitosamente",
+      "image_uploaded": "Imagen subida correctamente",
+      "image_deleted": "Imagen eliminada exitosamente"
+    }
+  },
+  "cookies": {
+    "banner_label": "Aviso de cookies",
+    "message": "Utilizamos cookies propias y de terceros para mejorar tu experiencia, analizar el tráfico y personalizar el contenido. Al continuar navegando aceptas nuestra ",
+    "privacy_link": "Política de Privacidad",
+    "message_end": " y el uso de cookies.",
+    "accept": "Aceptar",
+    "reject": "Rechazar"
   }
 }

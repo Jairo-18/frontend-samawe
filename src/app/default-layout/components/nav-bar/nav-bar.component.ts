@@ -32,9 +32,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class NavBarComponent implements OnInit, OnDestroy {
   private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private readonly _authService: AuthService = inject(AuthService);
-  private readonly _localStorage: LocalStorageService = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _router: Router = inject(Router);
   private readonly _langService: LangService = inject(LangService);
@@ -56,6 +58,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isHomePage = false;
   userInfo?: UserInterface;
   loggedMenuItems: NavItem[] = [];
+  isBrowser = isPlatformBrowser(this._platformId);
   private _lastScrollY = 0;
 
   @HostListener('window:scroll', [])
@@ -72,7 +75,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this._buildNavItems();
 
     this._subscription.add(
-      this._translate.onLangChange.subscribe(() => this._buildNavItems())
+      this._translate.onLangChange.subscribe(() => {
+        this._buildNavItems();
+        this.updateLoggedMenu();
+      })
     );
 
     this.isHomePage = this._isHomePath(this._router.url);
@@ -80,7 +86,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this._router.events
         .pipe(filter((e) => e instanceof NavigationEnd))
         .subscribe((e) => {
-          this.isHomePage = this._isHomePath((e as NavigationEnd).urlAfterRedirects);
+          this.isHomePage = this._isHomePath(
+            (e as NavigationEnd).urlAfterRedirects
+          );
           this._buildNavItems();
         })
     );
@@ -111,12 +119,37 @@ export class NavBarComponent implements OnInit, OnDestroy {
   private _buildNavItems(): void {
     const r = (path: string) => this._langService.route(path);
     this.navBarItems = [
-      { title: this._translate.instant('nav.home'),         route: r(''),              icon: 'home' },
-      { title: this._translate.instant('nav.accommodation'), route: r('accommodation'), icon: 'hotel' },
-      { title: this._translate.instant('nav.gastronomy'),    route: r('gastronomy'),    icon: 'restaurant' },
-      { title: this._translate.instant('nav.about_us'),      route: r('about-us'),      icon: 'groups' },
-      { title: this._translate.instant('nav.how_to_arrive'), route: r('how-to-arrive'), icon: 'map' },
-      { title: this._translate.instant('nav.blog'),          route: r('blog'),          icon: 'article' },
+      {
+        title: this._translate.instant('nav.home'),
+        route: r(''),
+        icon: 'home',
+        exact: true
+      },
+      {
+        title: this._translate.instant('nav.accommodation'),
+        route: r('accommodation'),
+        icon: 'hotel'
+      },
+      {
+        title: this._translate.instant('nav.gastronomy'),
+        route: r('gastronomy'),
+        icon: 'restaurant'
+      },
+      {
+        title: this._translate.instant('nav.about_us'),
+        route: r('about-us'),
+        icon: 'groups'
+      },
+      {
+        title: this._translate.instant('nav.how_to_arrive'),
+        route: r('how-to-arrive'),
+        icon: 'map'
+      },
+      {
+        title: this._translate.instant('nav.blog'),
+        route: r('blog'),
+        icon: 'article'
+      }
     ];
     this.loginItem = {
       title: this._translate.instant('nav.login'),
@@ -130,14 +163,25 @@ export class NavBarComponent implements OnInit, OnDestroy {
       const sessionUser = this._localStorage.getUserData();
       const roleName = sessionUser?.roleType?.name?.toUpperCase() || '';
       const roleCode = sessionUser?.roleType?.code?.toUpperCase() || '';
-      this.loggedMenuItems =
-        NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+      const rawItems = NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+      this.loggedMenuItems = rawItems.map(item => ({
+        ...item,
+        title: item.title ? this._translate.instant(item.title) : item.title,
+        route: item.route ? this._langService.route(item.route) : undefined,
+        children: item.children ? item.children.map(child => ({
+          ...child,
+          title: child.title ? this._translate.instant(child.title) : child.title,
+          route: child.route ? this._langService.route(child.route) : undefined
+        })) : undefined
+      }));
 
       const userId = sessionUser?.userId;
       if (userId) {
         this._subscription.add(
           this._usersService.getUserEditPanel(userId).subscribe({
-            next: (res) => { this.userInfo = res.data as unknown as UserInterface; }
+            next: (res) => {
+              this.userInfo = res.data as unknown as UserInterface;
+            }
           })
         );
       }
@@ -147,8 +191,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
     }
   }
 
-  openMobileMenu(): void  { this.isMobileMenuOpen = true; }
-  closeMobileMenu(): void { this.isMobileMenuOpen = false; }
+  openMobileMenu(): void {
+    this.isMobileMenuOpen = true;
+  }
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+  }
 
   logout(): void {
     const allSessionData = this._localStorage.getAllSessionData();
@@ -171,5 +219,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { this._subscription.unsubscribe(); }
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
 }

@@ -17,7 +17,8 @@ export class HeroSectionComponent {
   @Input() isLoggedUser: boolean = false;
   private readonly _router: Router = inject(Router);
   private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _langService = inject(LangService);
+  private readonly _langService: LangService = inject(LangService);
+  isBrowser = isPlatformBrowser(this._platformId);
 
   getMedia(code: string): string {
     return (

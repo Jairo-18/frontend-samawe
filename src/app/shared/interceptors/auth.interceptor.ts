@@ -3,6 +3,7 @@ import {
   HttpInterceptorFn,
   HttpRequest
 } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/services/auth.service';
 import { inject, Injector, runInInjectionContext } from '@angular/core';
 import {
@@ -48,8 +49,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 authService.setRefreshingToken = false;
                 notificationsService.showNotification(
                   'error',
-                  'Inicia sesión de nuevo',
-                  'Sesión caducada'
+                  'api.errors.re_login',
+                  'api.errors.session_expired'
                 );
                 authService.cleanStorageAndRedirectToLogin();
                 return throwError(() => refreshError);
@@ -75,13 +76,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           }
           const hadSession = !!authService.getAuthToken() || !!refreshToken;
           if (hadSession) {
-            const isSessionExpired = err?.error?.message === 'Tu sesión caducó';
+            const isSessionExpired = err?.error?.message === 'api.common.unauthorized';
             notificationsService.showNotification(
               'error',
               isSessionExpired
-                ? 'Inicia sesión de nuevo'
-                : err?.error?.message || 'Error de autenticación',
-              isSessionExpired ? 'Sesión caducada' : undefined
+                ? 'api.errors.re_login'
+                : err?.error?.message || 'api.errors.auth_error',
+              isSessionExpired ? 'api.errors.session_expired' : undefined
             );
             authService.cleanStorageAndRedirectToLogin();
           }
@@ -90,8 +91,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         case 403:
           notificationsService.showNotification(
             'error',
-            err?.error?.message || 'Algo anda mal',
-            'No estás autorizado'
+            err?.error?.message || 'api.errors.unauthorized',
+            'api.errors.unauthorized'
           );
           return throwError(() => err);
         default:
@@ -108,7 +109,8 @@ export const addTokenToRequest = (
   const authToken: string = refreshToken ?? (authService.getAuthToken() || '');
   return req.clone({
     setHeaders: {
-      Authorization: `Bearer ${authToken}`
+      Authorization: `Bearer ${authToken}`,
+      'X-Client-Key': environment.clientApiKey
     }
   });
 };

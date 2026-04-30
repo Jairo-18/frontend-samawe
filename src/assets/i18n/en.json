@@ -23,7 +23,13 @@
     "developed_by": "Developed by"
   },
   "auth": {
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "profile": "Profile",
+    "recipes": "Recipes",
+    "menu": "Menu",
+    "restaurant": "Restaurant",
+    "reports": "Reports / Earnings",
+    "settings": "Settings"
   },
   "login": {
     "title": "Sign In",
@@ -154,5 +160,152 @@
   },
   "common": {
     "loading": "Loading..."
+  },
+  "api": {
+    "common": {
+      "created": "Record saved successfully",
+      "updated": "Record updated successfully",
+      "deleted": "Record deleted successfully",
+      "duplicated": "Duplicate record",
+      "validation": "Validation error",
+      "not_found": "Record not found",
+      "unauthorized": "Your session has expired",
+      "service_error": "Service error",
+      "delete_related": "Cannot delete this record because it is currently in use",
+      "retrieved": "Information retrieved successfully",
+      "uploaded": "File uploaded successfully",
+      "passwords_not_match": "Passwords do not match",
+      "unauthorized_password": "You are not authorized to change another user's password",
+      "password_changed": "Password changed successfully"
+    },
+    "errors": {
+      "session_expired": "Session expired",
+      "re_login": "Please sign in again",
+      "unauthorized": "You are not authorized",
+      "auth_error": "Authentication error"
+    },
+    "auth": {
+      "welcome": "Welcome!",
+      "sign_out": "Session ended successfully",
+      "recovery_sent": "Email sent successfully"
+    },
+    "user": {
+      "created": "User created successfully",
+      "updated": "Information saved successfully",
+      "avatar_updated": "Profile picture updated successfully",
+      "avatar_deleted": "Profile picture removed successfully",
+      "deleted": "User deleted successfully"
+    },
+    "types": {
+      "updated": "Record updated successfully",
+      "deleted": "Record deleted successfully"
+    },
+    "legal": {
+      "section_deleted": "Section deleted successfully",
+      "item_updated": "Item updated successfully",
+      "item_deleted": "Item deleted successfully",
+      "subitem_updated": "Sub-item updated successfully",
+      "subitem_deleted": "Sub-item deleted successfully"
+    },
+    "benefit_section": {
+      "section_updated": "Section updated successfully",
+      "section_deleted": "Section deleted successfully",
+      "item_updated": "Item updated successfully",
+      "item_deleted": "Item deleted successfully"
+    },
+    "excursion": {
+      "created": "Record created successfully",
+      "updated": "Updated successfully",
+      "deleted": "Deleted successfully",
+      "image_uploaded": "Image uploaded successfully",
+      "image_deleted": "Image deleted successfully"
+    },
+    "accommodation": {
+      "created": "Accommodation created successfully",
+      "updated": "Accommodation updated successfully",
+      "deleted": "Accommodation deleted successfully",
+      "image_uploaded": "Image uploaded successfully",
+      "image_deleted": "Image deleted successfully"
+    },
+    "invoice": {
+      "created": "Invoice registered",
+      "created_title": "Invoice created",
+      "deleted": "Invoice deleted successfully",
+      "deleted_title": "Invoice deleted",
+      "items_added": "Items added successfully",
+      "items_added_title": "Items added",
+      "updated": "Invoice updated successfully",
+      "updated_title": "Invoice updated",
+      "item_deleted": "Item deleted successfully",
+      "item_deleted_title": "Item deleted",
+      "items_updated": "Items updated successfully",
+      "items_updated_title": "Payment statuses updated",
+      "payment_paid": "Item marked as paid",
+      "payment_pending": "Item marked as pending",
+      "payment_title": "Payment status updated"
+    },
+    "backup": {
+      "uploaded": "Manual backup uploaded successfully"
+    },
+    "notifications": {
+      "count": "Count retrieved",
+      "initial": "Initial load retrieved",
+      "marked_read": "Notifications marked as read",
+      "marked_unread": "Notifications marked as unread",
+      "toggled_read": "Notification marked as read",
+      "toggled_unread": "Notification marked as unread",
+      "all_deleted": "All notifications have been deleted",
+      "deleted": "Notification deleted"
+    },
+    "menu": {
+      "created": "Menu created successfully",
+      "updated": "Menu updated successfully",
+      "dish_removed": "Dish removed from menu successfully",
+      "deleted": "Menu deleted successfully"
+    },
+    "review": {
+      "created": "Review created successfully",
+      "updated": "Review updated successfully",
+      "deleted": "Review deleted successfully",
+      "reply_added": "Reply added successfully",
+      "reply_updated": "Reply updated successfully",
+      "reply_deleted": "Reply deleted successfully"
+    },
+    "organizational": {
+      "updated": "Organization updated successfully",
+      "deleted": "Organization deleted successfully",
+      "file_uploaded": "File uploaded successfully",
+      "file_updated": "File updated successfully",
+      "file_deleted": "File deleted successfully",
+      "value_updated": "Corporate value updated",
+      "value_deleted": "Corporate value deleted",
+      "image_deleted": "Image deleted successfully"
+    },
+    "google_business": {
+      "saved": "Location saved successfully",
+      "disconnected": "Google Business disconnected"
+    },
+    "recipe": {
+      "created": "Recipe created successfully",
+      "updated": "Recipe updated successfully",
+      "ingredient_updated": "Ingredient updated successfully",
+      "deleted": "Recipe deleted successfully",
+      "ingredient_deleted": "Ingredient removed from recipe"
+    },
+    "product": {
+      "created": "Product created successfully",
+      "updated": "Product updated successfully",
+      "deleted": "Product deleted successfully",
+      "image_uploaded": "Image uploaded successfully",
+      "image_deleted": "Image deleted successfully"
+    }
+  },
+  "cookies": {
+    "banner_label": "Cookie notice",
+    "message": "We use our own and third-party cookies to improve your experience, analyze traffic and personalize content. By continuing to browse you accept our ",
+    "privacy_link": "Privacy Policy",
+    "message_end": " and the use of cookies.",
+    "accept": "Accept",
+    "reject": "Reject"
   }
 }

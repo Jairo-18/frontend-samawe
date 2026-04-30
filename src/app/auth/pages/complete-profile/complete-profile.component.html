@@ -182,27 +182,13 @@
         </mat-error>
       </mat-form-field>
       <app-button-landing
-        [label]="'complete_profile.send_btn' | translate"
+        [label]="isSaving ? ('complete_profile.saving' | translate) : ('complete_profile.continue_btn' | translate)"
         variant="solid"
         [disabled]="isSaving"
+        [loading]="isSaving"
         type="submit"
         class="w-full"
       />
-      <button
-        mat-fab
-        extended="true"
-        type="submit"
-        class="!w-full text-white mt-2"
-        [disabled]="isSaving"
-      >
-        <mat-icon *ngIf="isSaving">
-          <mat-progress-spinner
-            diameter="20"
-            mode="indeterminate"
-          ></mat-progress-spinner>
-        </mat-icon>
-        <span>{{ isSaving ? ('complete_profile.saving' | translate) : ('complete_profile.continue_btn' | translate) }}</span>
-      </button>
     </form>
   </article>
 </div>

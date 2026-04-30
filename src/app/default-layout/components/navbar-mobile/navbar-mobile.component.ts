@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
@@ -18,6 +19,7 @@ import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/
     CommonModule,
     MatIconModule,
     MatButtonModule,
+    TranslatePipe,
     ButtonLandingComponent,
     CapitalizePipe,
     LangSwitcherComponent
@@ -33,6 +35,7 @@ export class NavbarMobileComponent {
   @Input() loggedMenuItems: NavItem[] = [];
   @Input() organizationalName: string = '';
   @Input() logoUrl: string = '';
+  @Input() isBrowser: boolean = false;
   @Output() closeMenu = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 

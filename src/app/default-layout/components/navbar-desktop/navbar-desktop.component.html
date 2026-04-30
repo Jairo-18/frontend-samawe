@@ -42,9 +42,7 @@
         <a
           [routerLink]="item.route"
           routerLinkActive="!text-[var(--primary-color)]"
-          [routerLinkActiveOptions]="
-            item.route === '/home' ? exactOptionsStrict : exactOptions
-          "
+          [routerLinkActiveOptions]="item.exact ? exactOptionsStrict : exactOptions"
           class="cursor-pointer hover-underline-animation font-medium text-sm lg:text-base px-1 lg:px-1 3xl:px-2 py-1 transition-colors duration-200 whitespace-nowrap flex items-center gap-2"
         >
           <mat-icon class="scale-90" *ngIf="item.icon">{{
@@ -59,89 +57,98 @@
     <section class="flex flex-1 items-center justify-end gap-x-3">
       <!-- Desktop: login o menú usuario -->
       <div class="hidden md:flex">
-        @if (!isLoggedUser) {
-          @if (loginItem) {
-            <app-button-landing
-              [label]="loginItem.title ?? ''"
-              [icon]="loginItem.icon ?? ''"
-              variant="transparent"
-              [routerLink]="loginItem.route"
-            />
-          }
-        } @else {
-          <app-button-landing
-            [label]="userInfo?.firstName ?? ''"
-            variant="transparent"
-            [matMenuTriggerFor]="userMenu"
-          >
-            @if (userInfo?.avatarUrl) {
-              <img
-                slot="icon"
-                [src]="userInfo?.avatarUrl"
-                alt="avatar"
-                class="w-7 h-7 rounded-full object-cover border border-[var(--primary-color)]"
+        @if (isBrowser) {
+          @if (!isLoggedUser) {
+            @if (loginItem) {
+              <app-button-landing
+                [label]="loginItem.title ?? ''"
+                [icon]="loginItem.icon ?? ''"
+                variant="transparent"
+                [routerLink]="loginItem.route"
               />
-            } @else {
-              <mat-icon slot="icon">account_circle</mat-icon>
             }
-            <mat-icon slot="suffix" class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px]">
-              keyboard_arrow_down
-            </mat-icon>
-          </app-button-landing>
-
-          <mat-menu #userMenu="matMenu" xPosition="before">
-            <ng-container *ngFor="let item of loggedMenuItems">
-              <ng-container
-                *ngIf="
-                  item.children && item.children.length > 0;
-                  else regularItem
-                "
-              >
-                <button mat-menu-item [matMenuTriggerFor]="subMenu">
-                  <mat-icon class="text-[var(--primary-color)]">{{
-                    item.icon
-                  }}</mat-icon>
-                  <span>{{ item.title }}</span>
-                </button>
-                <mat-menu #subMenu="matMenu">
-                  <button
-                    mat-menu-item
-                    *ngFor="let child of item.children"
-                    [routerLink]="child.route"
-                  >
-                    <mat-icon class="text-[var(--primary-color)]">{{
-                      child.icon
-                    }}</mat-icon>
-                    <span>{{ child.title }}</span>
-                  </button>
-                </mat-menu>
-              </ng-container>
-              <ng-template #regularItem>
-                <button mat-menu-item [routerLink]="item.route">
-                  <mat-icon class="text-[var(--primary-color)]">{{
-                    item.icon
-                  }}</mat-icon>
-                  <span>{{ item.title }}</span>
-                </button>
-              </ng-template>
-            </ng-container>
-            <mat-divider />
-            <button
-              mat-menu-item
-              (click)="logoutEvent.emit()"
-              class="text-red-600"
+          } @else {
+            <app-button-landing
+              [label]="userInfo?.firstName ?? ''"
+              variant="transparent"
+              [matMenuTriggerFor]="userMenu"
             >
-              <mat-icon class="text-red-600">logout</mat-icon>
-              <span class="font-bold">Cerrar Sesión</span>
-            </button>
-          </mat-menu>
+              @if (userInfo?.avatarUrl) {
+                <img
+                  slot="icon"
+                  [src]="userInfo?.avatarUrl"
+                  alt="avatar"
+                  class="w-7 h-7 rounded-full object-cover border border-[var(--primary-color)]"
+                />
+              } @else {
+                <mat-icon slot="icon">account_circle</mat-icon>
+              }
+              <mat-icon
+                slot="suffix"
+                class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px]"
+              >
+                keyboard_arrow_down
+              </mat-icon>
+            </app-button-landing>
+
+            <mat-menu #userMenu="matMenu" xPosition="before">
+              <ng-container *ngFor="let item of loggedMenuItems">
+                <ng-container
+                  *ngIf="
+                    item.children && item.children.length > 0;
+                    else regularItem
+                  "
+                >
+                  <button mat-menu-item [matMenuTriggerFor]="subMenu">
+                    <mat-icon class="text-[var(--primary-color)]">{{
+                      item.icon
+                    }}</mat-icon>
+                    <span>{{ item.title ?? '' | translate }}</span>
+                  </button>
+                  <mat-menu #subMenu="matMenu">
+                    <button
+                      mat-menu-item
+                      *ngFor="let child of item.children"
+                      [routerLink]="child.route"
+                    >
+                      <mat-icon class="text-[var(--primary-color)]">{{
+                        child.icon
+                      }}</mat-icon>
+                      <span>{{ child.title ?? '' | translate }}</span>
+                    </button>
+                  </mat-menu>
+                </ng-container>
+                <ng-template #regularItem>
+                  <button mat-menu-item [routerLink]="item.route">
+                    <mat-icon class="text-[var(--primary-color)]">{{
+                      item.icon
+                    }}</mat-icon>
+                    <span>{{ item.title ?? '' | translate }}</span>
+                  </button>
+                </ng-template>
+              </ng-container>
+              <mat-divider />
+              <button
+                mat-menu-item
+                (click)="logoutEvent.emit()"
+                class="text-red-600"
+              >
+                <mat-icon class="text-red-600">logout</mat-icon>
+                <span class="font-bold">{{ 'auth.logout' | translate }}</span>
+              </button>
+            </mat-menu>
+          }
         }
       </div>
 
       <!-- Lang switcher -->
       <app-lang-switcher
         class="hidden md:flex"
-        [ngClass]="isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-700'"
+        [ngClass]="
+          isScrolled && !isPastHero && isHomePage
+            ? 'text-white'
+            : 'text-gray-700'
+        "
       />
 
       <!-- Mobile: hamburguesa -->

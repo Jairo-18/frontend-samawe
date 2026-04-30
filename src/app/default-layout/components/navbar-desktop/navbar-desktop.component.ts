@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
@@ -20,6 +21,7 @@ import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/
     MatIconModule,
     MatMenuModule,
     MatDividerModule,
+    TranslatePipe,
     ButtonLandingComponent,
     CapitalizePipe,
     LangSwitcherComponent
@@ -39,6 +41,7 @@ export class NavbarDesktopComponent {
   @Input() isHomePage: boolean = false;
   @Input() organizationalName: string = '';
   @Input() logoUrl: string = '';
+  @Input() isBrowser: boolean = false;
   @Output() openMenu = new EventEmitter<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 

@@ -41,7 +41,9 @@ export class LocalStorageService {
   }
   cleanLocalStorage(): void {
     if (!this.isLocalStorageAvailable()) return;
+    const lang = localStorage.getItem('lang');
     localStorage.clear();
+    if (lang) localStorage.setItem('lang', lang);
   }
   getItem(key: string) {
     if (!this.isLocalStorageAvailable()) return null;

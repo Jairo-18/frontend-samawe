@@ -41,6 +41,8 @@ import { ApplicationService } from '../../../organizational/services/application
 import { Subscription } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-side-bar',
@@ -58,7 +60,9 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
     CommonModule,
     LoaderComponent,
     NgOptimizedImage,
-    CapitalizePipe
+    CapitalizePipe,
+    LangSwitcherComponent,
+    TranslateModule
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',

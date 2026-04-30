@@ -1,6 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { LangService, Lang, SUPPORTED_LANGS } from '../services/lang.service';
+import { LangService, Lang, SUPPORTED_LANGS, DEFAULT_LANG } from '../services/lang.service';
 
 export const langGuard: CanActivateFn = (route) => {
   const lang = route.data['lang'] as Lang;
@@ -8,5 +8,5 @@ export const langGuard: CanActivateFn = (route) => {
     inject(LangService).init(lang);
     return true;
   }
-  return inject(Router).createUrlTree(['/es']);
+  return inject(Router).createUrlTree([`/${DEFAULT_LANG}`]);
 };

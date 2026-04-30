@@ -28,7 +28,7 @@
         variant="solid"
         (clicked)="openWhatsapp()"
       />
-      @if (!isLoggedUser) {
+      @if (isBrowser && !isLoggedUser) {
         <app-button-landing
           label="Iniciar Sesión"
           icon="login"

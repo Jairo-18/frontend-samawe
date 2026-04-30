@@ -1,4 +1,6 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Routes, Router } from '@angular/router';
+import { LangService } from './shared/services/lang.service';
 import { DefaultLayoutComponent } from './default-layout/pages/default-layout/default-layout.component';
 import { organizationalRoutes } from './organizational/organizational.routes';
 import { adminGuard } from './shared/guards/admin.guard';
@@ -11,7 +13,6 @@ import { langGuard } from './shared/guards/lang.guard';
 const publicChildren = () =>
   import('./public/public.routes').then((m) => m.publicRoutes);
 
-// Auth + user routes shared by both language prefixes
 const sharedLangChildren: Routes = [
   {
     path: 'auth',
@@ -41,22 +42,19 @@ const sharedLangChildren: Routes = [
 ];
 
 export const routes: Routes = [
-  // ── Backward-compat redirects (old URLs → /es/*) ─────────────────────────
-  { path: 'nosotros',      redirectTo: '/es/about-us',       pathMatch: 'full' },
-  { path: 'paquetes',      redirectTo: '/es/accommodation',  pathMatch: 'full' },
-  { path: 'samawe-1',      redirectTo: '/es/accommodation',  pathMatch: 'full' },
-  { path: 'excursion',     redirectTo: '/es/how-to-arrive',  pathMatch: 'full' },
-  { path: 'home',          redirectTo: '/es',                pathMatch: 'full' },
-  { path: 'accommodation', redirectTo: '/es/accommodation',  pathMatch: 'full' },
-  { path: 'about-us',      redirectTo: '/es/about-us',       pathMatch: 'full' },
-  { path: 'gastronomy',    redirectTo: '/es/gastronomy',     pathMatch: 'full' },
-  { path: 'how-to-arrive', redirectTo: '/es/how-to-arrive',  pathMatch: 'full' },
-  { path: 'blog',          redirectTo: '/es/blog',           pathMatch: 'full' },
+  { path: 'nosotros', redirectTo: '/es/about-us', pathMatch: 'full' },
+  { path: 'paquetes', redirectTo: '/es/accommodation', pathMatch: 'full' },
+  { path: 'samawe-1', redirectTo: '/es/accommodation', pathMatch: 'full' },
+  { path: 'excursion', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
+  { path: 'home', redirectTo: () => `/${inject(LangService).detectPreferred()}`, pathMatch: 'full' },
+  { path: 'accommodation', redirectTo: '/es/accommodation', pathMatch: 'full' },
+  { path: 'about-us', redirectTo: '/es/about-us', pathMatch: 'full' },
+  { path: 'gastronomy', redirectTo: '/es/gastronomy', pathMatch: 'full' },
+  { path: 'how-to-arrive', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
+  { path: 'blog', redirectTo: '/es/blog', pathMatch: 'full' },
 
-  // ── Root: redirect to /es ─────────────────────────────────────────────────
-  { path: '', redirectTo: '/es', pathMatch: 'full' },
+  { path: '', redirectTo: () => `/${inject(LangService).detectPreferred()}`, pathMatch: 'full' },
 
-  // ── Spanish public routes ─────────────────────────────────────────────────
   {
     path: 'es',
     component: DefaultLayoutComponent,
@@ -68,7 +66,6 @@ export const routes: Routes = [
     ]
   },
 
-  // ── English public routes ─────────────────────────────────────────────────
   {
     path: 'en',
     component: DefaultLayoutComponent,
@@ -80,7 +77,6 @@ export const routes: Routes = [
     ]
   },
 
-  // ── Admin routes (no lang prefix) ─────────────────────────────────────────
   {
     path: '',
     component: DefaultLayoutComponent,
@@ -125,9 +121,77 @@ export const routes: Routes = [
         path: 'test',
         loadChildren: () =>
           import('./test/test.routes').then((m) => m.testRoutes)
+      },
+      {
+        path: 'settings',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./public/pages/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          )
       }
     ]
   },
 
-  { path: '**', redirectTo: '/es' }
+  {
+    path: 'auth/google/callback',
+    loadComponent: () =>
+      import('./auth/pages/google-callback/google-callback.component').then(
+        (m) => m.GoogleCallbackComponent
+      )
+  },
+  {
+    path: 'auth',
+    children: [
+      {
+        path: 'login',
+        redirectTo: (route) => {
+          const router = inject(Router);
+          const lang = inject(LangService).detectPreferred();
+          return router.createUrlTree([`/${lang}/auth/login`], { queryParams: route.queryParams });
+        },
+        pathMatch: 'full'
+      },
+      {
+        path: 'register',
+        redirectTo: (route) => {
+          const router = inject(Router);
+          const lang = inject(LangService).detectPreferred();
+          return router.createUrlTree([`/${lang}/auth/register`], { queryParams: route.queryParams });
+        },
+        pathMatch: 'full'
+      },
+      {
+        path: 'verify-email',
+        redirectTo: (route) => {
+          const router = inject(Router);
+          const lang = inject(LangService).detectPreferred();
+          return router.createUrlTree([`/${lang}/auth/verify-email`], { queryParams: route.queryParams });
+        },
+        pathMatch: 'full'
+      },
+      {
+        path: 'recovery-password',
+        redirectTo: (route) => {
+          const router = inject(Router);
+          const lang = inject(LangService).detectPreferred();
+          return router.createUrlTree([`/${lang}/auth/recovery-password`], { queryParams: route.queryParams });
+        },
+        pathMatch: 'full'
+      },
+      {
+        path: ':userId/change-password',
+        redirectTo: (route) => {
+          const router = inject(Router);
+          const lang = inject(LangService).detectPreferred();
+          return router.createUrlTree(
+            [`/${lang}/auth`, route.params['userId'], 'change-password'],
+            { queryParams: route.queryParams }
+          );
+        },
+        pathMatch: 'full'
+      }
+    ]
+  },
+  { path: '**', redirectTo: () => `/${inject(LangService).detectPreferred()}` }
 ];

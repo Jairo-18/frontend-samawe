@@ -2,42 +2,42 @@ import { NavItem } from '../interfaces/navBar.interface';
 
 export const NAVBAR_CONST: NavItem[] = [
   {
-    title: 'INICIO',
+    title: 'nav.home',
     route: '/home',
     icon: 'home'
   },
   {
-    title: 'ALOJAMIENTO',
+    title: 'nav.accommodation',
     route: '/accommodation',
     icon: 'hotel'
   },
   {
-    title: 'GASTRONOMÍA',
+    title: 'nav.gastronomy',
     route: '/gastronomy',
     icon: 'restaurant'
   },
   {
-    title: 'SOBRE NOSOTROS',
+    title: 'nav.about_us',
     route: '/about-us',
     icon: 'groups'
   },
   {
-    title: 'CÓMO LLEGAR',
+    title: 'nav.how_to_arrive',
     route: '/how-to-arrive',
     icon: 'map'
   },
   {
-    title: 'BLOG',
+    title: 'nav.blog',
     route: '/blog',
     icon: 'article'
   },
   {
-    title: 'RESERVAR',
+    title: 'nav.reserve',
     route: '/reservations',
     icon: 'event_available'
   },
   {
-    title: 'INICIAR SESIÓN',
+    title: 'nav.login',
     route: '/auth/login',
     icon: 'login'
   }

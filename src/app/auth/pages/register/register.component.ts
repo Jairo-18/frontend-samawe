@@ -34,6 +34,7 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
 import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -85,6 +86,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private readonly _router: Router = inject(Router);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _langService: LangService = inject(LangService);
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
   );
@@ -316,7 +318,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
   }
   goToLogin(): void {
-    this._router.navigate(['/auth/login']);
+    this._router.navigateByUrl(this._langService.route('auth/login'));
   }
 
   togglePasswordVisibility(): void {

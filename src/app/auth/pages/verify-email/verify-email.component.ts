@@ -9,7 +9,12 @@ import { LangService } from '../../../shared/services/lang.service';
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [RouterModule, LoaderComponent, ButtonLandingComponent, TranslateModule],
+  imports: [
+    RouterModule,
+    LoaderComponent,
+    ButtonLandingComponent,
+    TranslateModule
+  ],
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.scss'
 })
@@ -36,8 +41,7 @@ export class VerifyEmailComponent implements OnInit {
         this.state = 'success';
       },
       error: (err) => {
-        this.errorMessage =
-          err?.error?.message || 'verify_email.error_msg';
+        this.errorMessage = err?.error?.message || 'verify_email.error_msg';
         this.state = 'error';
       }
     });
