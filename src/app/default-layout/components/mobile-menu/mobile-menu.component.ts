@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
@@ -31,14 +32,15 @@ import {
     MatIconModule,
     RouterLink,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    TranslateModule
   ],
   templateUrl: './mobile-menu.component.html',
   styleUrl: './mobile-menu.component.scss'
 })
 export class MobileMenuComponent implements OnInit, OnDestroy {
-  private readonly _router = inject(Router);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _router: Router = inject(Router);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private _routerSub = new Subscription();
 
   @Input() userInfo?: UserInterface;

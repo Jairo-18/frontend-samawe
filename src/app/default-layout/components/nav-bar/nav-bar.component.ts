@@ -50,12 +50,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isMobileMenuOpen = false;
   navBarItems: NavItem[] = [];
   loginItem: NavItem | undefined;
-  organizationalName = '';
-  logoUrl = '';
-  isScrolled = false;
-  isScrollingDown = false;
-  isPastHero = false;
-  isHomePage = false;
+  organizationalName: string = '';
+  logoUrl: string = '';
+  isScrolled: boolean = false;
+  isScrollingDown: boolean = false;
+  isPastHero: boolean = false;
+  isHomePage: boolean = false;
   userInfo?: UserInterface;
   loggedMenuItems: NavItem[] = [];
   isBrowser = isPlatformBrowser(this._platformId);
@@ -163,16 +163,23 @@ export class NavBarComponent implements OnInit, OnDestroy {
       const sessionUser = this._localStorage.getUserData();
       const roleName = sessionUser?.roleType?.name?.toUpperCase() || '';
       const roleCode = sessionUser?.roleType?.code?.toUpperCase() || '';
-      const rawItems = NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
-      this.loggedMenuItems = rawItems.map(item => ({
+      const rawItems =
+        NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+      this.loggedMenuItems = rawItems.map((item) => ({
         ...item,
         title: item.title ? this._translate.instant(item.title) : item.title,
         route: item.route ? this._langService.route(item.route) : undefined,
-        children: item.children ? item.children.map(child => ({
-          ...child,
-          title: child.title ? this._translate.instant(child.title) : child.title,
-          route: child.route ? this._langService.route(child.route) : undefined
-        })) : undefined
+        children: item.children
+          ? item.children.map((child) => ({
+              ...child,
+              title: child.title
+                ? this._translate.instant(child.title)
+                : child.title,
+              route: child.route
+                ? this._langService.route(child.route)
+                : undefined
+            }))
+          : undefined
       }));
 
       const userId = sessionUser?.userId;

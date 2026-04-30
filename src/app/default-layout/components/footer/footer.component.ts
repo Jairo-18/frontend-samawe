@@ -17,13 +17,20 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule, CapitalizePipe, TranslateModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FontAwesomeModule,
+    CapitalizePipe,
+    TranslateModule
+  ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit, OnDestroy {
-  private readonly _applicationService: ApplicationService = inject(ApplicationService);
-  readonly lang = inject(LangService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
+  readonly lang: LangService = inject(LangService);
   private _subscription = new Subscription();
 
   currentYear = new Date().getFullYear();
