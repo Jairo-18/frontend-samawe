@@ -1,12 +1,12 @@
 <app-base-page>
   <mat-tab-group animationDuration="600ms">
-    <mat-tab label="Ver órdenes">
+    <mat-tab [label]="'recipe.tabs.see_orders' | translate">
       <ng-template matTabContent>
         <app-see-orders></app-see-orders
       ></ng-template>
     </mat-tab>
 
-    <mat-tab label="Crear o editar órdenes" class="overflow-hidden">
+    <mat-tab [label]="'recipe.tabs.create_edit_order' | translate" class="overflow-hidden">
       <ng-template matTabContent>
         <app-create-or-edit-order></app-create-or-edit-order
       ></ng-template>

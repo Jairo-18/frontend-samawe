@@ -1,12 +1,12 @@
 <app-base-page
-  [headerTitle]="'Gestión de la Aplicación'"
+  [headerTitle]="'organizational.app_manage.title' | translate"
   [showContentTitle]="true"
-  contentInfo="Aquí puedes gestionar la información tu hotel"
+  [contentInfo]="'organizational.app_manage.subtitle' | translate"
   [showContentInfo]="true"
 >
   @if (!isLoading) {
     <mat-tab-group>
-      <mat-tab label="Información General">
+      <mat-tab label="{{ 'organizational.app_manage.tab_general' | translate }}">
         <ng-template matTabContent>
           <app-organizational-general-info
             [form]="form"
@@ -19,7 +19,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Apariencia y SEO">
+      <mat-tab label="{{ 'organizational.app_manage.tab_appearance' | translate }}">
         <ng-template matTabContent>
           <app-organizational-appearance
             [form]="form"
@@ -28,7 +28,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Contenido de inicio">
+      <mat-tab label="{{ 'organizational.app_manage.tab_home_content' | translate }}">
         <ng-template matTabContent>
           <app-organizational-home-content
             [form]="form"
@@ -38,7 +38,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Contenido Web">
+      <mat-tab label="{{ 'organizational.app_manage.tab_web_content' | translate }}">
         <ng-template matTabContent>
           <app-organizational-web-content
             [form]="form"
@@ -67,7 +67,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Términos y Privacidad">
+      <mat-tab label="{{ 'organizational.app_manage.tab_legal' | translate }}">
         <ng-template matTabContent>
           <app-organizational-legal
             [legalSections]="legalSections"
@@ -85,7 +85,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Multimedia">
+      <mat-tab label="{{ 'organizational.app_manage.tab_multimedia' | translate }}">
         <ng-template matTabContent>
           <app-organizational-multimedia
             [mediaMap]="mediaMap"
@@ -99,7 +99,7 @@
         </ng-template>
       </mat-tab>
 
-      <mat-tab label="Google Business">
+      <mat-tab label="{{ 'organizational.app_manage.tab_google' | translate }}">
         <ng-template matTabContent>
           @if (organizationalId) {
             <app-organizational-google-business

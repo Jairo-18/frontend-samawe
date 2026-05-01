@@ -1,7 +1,7 @@
-<app-base-page headerTitle="Mi Perfil">
+<app-base-page [headerTitle]="'user.profile.title' | translate">
   @if (loading) {
     <div class="flex justify-center items-center py-16">
-      <span class="text-[var(--text-color)]">Cargando...</span>
+      <span class="text-[var(--text-color)]">{{ 'user.profile.loading' | translate }}</span>
     </div>
   } @else if (user) {
     <div class="p-4">
@@ -9,7 +9,7 @@
       <div class="flex justify-end mb-6">
         @if (!editMode) {
           <app-button-landing
-            label="Editar perfil"
+            [label]="'user.profile.edit' | translate"
             icon="edit"
             variant="transparent"
             (clicked)="toggleEdit()"
@@ -17,13 +17,13 @@
         } @else {
           <div class="flex gap-2">
             <app-button-landing
-              label="Cancelar"
+              [label]="'user.profile.cancel' | translate"
               variant="transparent"
               [disabled]="saving"
               (clicked)="toggleEdit()"
             />
             <app-button-landing
-              label="Guardar"
+              [label]="'user.profile.save' | translate"
               variant="solid"
               [loading]="saving"
               (clicked)="save()"
@@ -40,7 +40,7 @@
         >
           <img
             [src]="user.avatarUrl || 'assets/images/defaultUser.png'"
-            alt="Foto de perfil"
+            [alt]="'user.profile.avatar_alt' | translate"
             class="w-28 h-28 md:w-[250px] md:h-[250px] rounded-full object-cover border-2 border-[var(--primary-color)]"
           />
 
@@ -67,22 +67,22 @@
       <!-- Formulario -->
       <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Nombre</mat-label>
+          <mat-label>{{ 'user.profile.first_name' | translate }}</mat-label>
           <input matInput formControlName="firstName" [readonly]="!editMode" appNormalizeName />
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Apellido</mat-label>
+          <mat-label>{{ 'user.profile.last_name' | translate }}</mat-label>
           <input matInput formControlName="lastName" [readonly]="!editMode" appNormalizeName />
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Correo electrónico</mat-label>
+          <mat-label>{{ 'user.profile.email' | translate }}</mat-label>
           <input matInput formControlName="email" [readonly]="!editMode" />
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tipo de identificación</mat-label>
+          <mat-label>{{ 'user.profile.id_type' | translate }}</mat-label>
           @if (editMode) {
             <mat-select formControlName="identificationType">
               @for (
@@ -100,7 +100,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Número de identificación</mat-label>
+          <mat-label>{{ 'user.profile.id_number' | translate }}</mat-label>
           <input
             matInput
             formControlName="identificationNumber"
@@ -110,7 +110,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Indicativo</mat-label>
+          <mat-label>{{ 'user.profile.phone_code' | translate }}</mat-label>
           @if (editMode) {
             <mat-select formControlName="phoneCode">
               @for (pc of phoneCodes; track pc.phoneCodeId) {
@@ -129,12 +129,12 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Teléfono</mat-label>
+          <mat-label>{{ 'user.profile.phone' | translate }}</mat-label>
           <input matInput formControlName="phone" [readonly]="!editMode" />
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tipo de persona</mat-label>
+          <mat-label>{{ 'user.profile.person_type' | translate }}</mat-label>
           @if (editMode) {
             <mat-select formControlName="personType">
               @for (pt of personTypes; track pt.personTypeId) {
@@ -148,7 +148,7 @@
 
         <!-- Solo lectura -->
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Rol</mat-label>
+          <mat-label>{{ 'user.profile.role' | translate }}</mat-label>
           <input matInput [value]="user.roleType?.name" readonly />
         </mat-form-field>
       </form>
@@ -172,7 +172,7 @@
 
     <img
       [src]="user!.avatarUrl || 'assets/images/defaultUser.png'"
-      alt="Foto de perfil"
+      [alt]="'user.profile.avatar_alt' | translate"
       class="max-w-[250px] max-h-[250px] rounded-full object-cover shadow-2xl ring-4 ring-white/20"
       (click)="$event.stopPropagation()"
     />
@@ -180,7 +180,7 @@
     <div class="flex gap-3" (click)="$event.stopPropagation()">
       <label class="cursor-pointer">
         <app-button-landing
-          label="Cambiar foto"
+          [label]="'user.profile.change_photo' | translate"
           icon="photo_camera"
           variant="solid"
           (clicked)="fileInput.click()"
@@ -196,7 +196,7 @@
 
       @if (user!.avatarUrl) {
         <app-button-landing
-          label="Eliminar foto"
+          [label]="'user.profile.delete_photo' | translate"
           icon="delete"
           variant="warning"
           (clicked)="deleteAvatar()"

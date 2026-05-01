@@ -40,6 +40,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-or-edit-recipe',
@@ -59,7 +60,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatTableModule,
     SectionHeaderComponent,
     ImageUploaderComponent,
-    FormatCopPipe
+    FormatCopPipe,
+    TranslateModule
   ],
   templateUrl: './create-or-edit-recipe.component.html',
   styleUrl: './create-or-edit-recipe.component.scss',
@@ -264,7 +266,8 @@ export class CreateOrEditRecipeComponent implements OnChanges {
       ingSearch: product.name
     });
     this.ingredientPriceMap[product.productId] = Number(product.priceBuy) || 0;
-    this.ingredientUnitMap[product.productId] = product.unitOfMeasure?.code ?? '';
+    this.ingredientUnitMap[product.productId] =
+      product.unitOfMeasure?.code ?? '';
     this._cdr.markForCheck();
   }
 

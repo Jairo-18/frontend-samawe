@@ -1,5 +1,5 @@
 <app-base-page
-  contentTitle="Ajustes del Perfil"
+  [contentTitle]="'public.settings.title' | translate"
   [showContentTitle]="true"
   [showBorder]="false"
   [pxMobile]="false"
@@ -31,7 +31,7 @@
         <mat-icon class="group-hover:scale-110 transition-transform"
           >logout</mat-icon
         >
-        <span class="text-[16px] font-semibold">Cerrar Sesión</span>
+        <span class="text-[16px] font-semibold">{{ 'auth.logout' | translate }}</span>
       </button>
     </div>
   </div>

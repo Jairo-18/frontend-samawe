@@ -39,6 +39,8 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-add-excursion',
   standalone: true,
@@ -56,7 +58,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     CurrencyFormatDirective,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTimepickerModule
+    MatTimepickerModule,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-excursion.component.html',
   styleUrl: './add-excursion.component.scss'
@@ -182,7 +186,9 @@ export class AddExcursionComponent implements OnInit {
     }
   }
   onExcursionSelected(name: string) {
-    const exc = this.filteredExcursions.find((e) => Object.values(e.name).includes(name));
+    const exc = this.filteredExcursions.find((e) =>
+      (e.name as unknown as string) === name || Object.values(e.name).includes(name)
+    );
     if (!exc) return;
 
     const fallbackPrice = exc.priceSale ?? exc.priceBuy ?? 0;
@@ -197,7 +203,9 @@ export class AddExcursionComponent implements OnInit {
           priceBuy: fallbackPrice,
           priceWithoutTax: fallbackPrice
         }),
-        ...(exc.taxeType?.taxeTypeId != null && { taxeTypeId: exc.taxeType.taxeTypeId })
+        ...(exc.taxeType?.taxeTypeId != null && {
+          taxeTypeId: exc.taxeType.taxeTypeId
+        })
       },
       { emitEvent: true }
     );

@@ -14,10 +14,12 @@ interface SettingsItem {
   route: string;
 }
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, BasePageComponent],
+  imports: [CommonModule, MatIconModule, BasePageComponent, TranslateModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss'
 })

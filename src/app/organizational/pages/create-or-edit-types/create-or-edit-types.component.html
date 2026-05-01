@@ -1,36 +1,36 @@
 <app-base-dialog
-  [title]="data?.editMode ? 'Editar tipo' : 'Crear nuevo tipo'"
+  [title]="data?.editMode ? ('organizational.edit_type.edit_title' | translate) : ('organizational.edit_type.create_title' | translate)"
   [description]="
     data?.editMode
-      ? 'Edita los campos necesarios.'
-      : 'Llena el formulario para registrar un nuevo tipo en el sistema.'
+      ? ('organizational.edit_type.edit_subtitle' | translate)
+      : ('organizational.edit_type.create_subtitle' | translate)
   "
 >
   <form form [formGroup]="formType">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Tipos</mat-label>
+      <mat-label>{{ 'organizational.edit_type.types' | translate }}</mat-label>
       <mat-select formControlName="selectedType" required>
-        <mat-option value="" disabled selected>Seleccione el tipo</mat-option>
+        <mat-option value="" disabled selected>{{ 'organizational.edit_type.select_type' | translate }}</mat-option>
         <mat-option *ngFor="let type of typeOptions" [value]="type.key">
           {{ type.value }}
         </mat-option>
       </mat-select>
       <mat-icon matPrefix>table_chart</mat-icon>
       <mat-error *ngIf="formType.get('selectedType')?.hasError('required')">
-        Tipo requerido
+        {{ 'organizational.edit_type.type_required' | translate }}
       </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Código o prefijo</mat-label>
+      <mat-label>{{ 'organizational.edit_type.code_prefix' | translate }}</mat-label>
       <input matInput formControlName="code" required appUppercase />
       <mat-icon matPrefix>person</mat-icon>
-      <mat-error *ngIf="formType.get('code')"> Código requerido </mat-error>
+      <mat-error *ngIf="formType.get('code')"> {{ 'organizational.edit_type.code_required' | translate }} </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Nombre</mat-label>
+      <mat-label>{{ 'organizational.edit_type.name' | translate }}</mat-label>
       <input matInput formControlName="name" required appUppercase />
       <mat-icon matPrefix>person</mat-icon>
-      <mat-error *ngIf="formType.get('name')"> Nombre requerido </mat-error>
+      <mat-error *ngIf="formType.get('name')"> {{ 'organizational.edit_type.name_required' | translate }} </mat-error>
     </mat-form-field>
     <section
       actions
@@ -43,10 +43,10 @@
         color="warn"
         (click)="cancel()"
       >
-        Cancelar
+        {{ 'organizational.common.cancel' | translate }}
       </button>
       <button class="w-full" mat-fab extended="true" (click)="save()" [disabled]="isSaving">
-        Guardar
+        {{ 'organizational.common.save' | translate }}
       </button>
     </section>
   </form>

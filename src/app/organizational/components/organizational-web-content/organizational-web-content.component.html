@@ -3,19 +3,19 @@
   <div class="flex flex-col gap-4">
     <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">restaurant</mat-icon>
-      Gastronomía
+      {{ 'organizational.web_content.gastronomy' | translate }}
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Título principal</mat-label>
+        <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="gastronomyTitle"
-          placeholder="Sabores que fluyen..."
+          [placeholder]="'organizational.web_content.gastronomy_ph' | translate"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción principal</mat-label>
+        <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="gastronomyDescription"
@@ -25,15 +25,15 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Título Historia</mat-label>
+        <mat-label>{{ 'organizational.web_content.history_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="gastronomyHistoryTitle"
-          placeholder="Nuestra Historia"
+          [placeholder]="'organizational.web_content.history_ph' | translate"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción Historia</mat-label>
+        <mat-label>{{ 'organizational.web_content.history_description' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="gastronomyHistoryDescription"
@@ -43,15 +43,15 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Título Cocina</mat-label>
+        <mat-label>{{ 'organizational.web_content.kitchen_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="gastronomyKitchenTitle"
-          placeholder="Nuestra cocina"
+          [placeholder]="'organizational.web_content.kitchen_ph' | translate"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción Cocina</mat-label>
+        <mat-label>{{ 'organizational.web_content.kitchen_description' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="gastronomyKitchenDescription"
@@ -61,15 +61,15 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Título Ingredientes</mat-label>
+        <mat-label>{{ 'organizational.web_content.ingredients_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="gastronomyIngredientsTitle"
-          placeholder="Ingredientes con historia"
+          [placeholder]="'organizational.web_content.ingredients_ph' | translate"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción Ingredientes</mat-label>
+        <mat-label>{{ 'organizational.web_content.ingredients_description' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="gastronomyIngredientsDescription"
@@ -83,19 +83,19 @@
   <div class="flex flex-col gap-4">
     <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">hotel</mat-icon>
-      Alojamiento
+      {{ 'organizational.web_content.accommodation' | translate }}
     </span>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Título principal</mat-label>
+        <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="accommodationsTitle"
-          placeholder="Habitaciones"
+          [placeholder]="'organizational.web_content.accommodation_ph' | translate"
         />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción principal</mat-label>
+        <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="accommodationsDescription"
@@ -110,7 +110,7 @@
     <div class="flex flex-col gap-4">
       <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
         <mat-icon class="text-[var(--primary-color)]">hotel_class</mat-icon>
-        Beneficios y Servicios
+        {{ 'organizational.web_content.benefits_services' | translate }}
       </span>
       @for (section of benefitSections; track section.benefitSectionId) {
         <div class="flex flex-col gap-2">
@@ -141,46 +141,46 @@
   <div class="flex flex-col gap-4">
     <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">map</mat-icon>
-      Cómo Llegar
+      {{ 'organizational.web_content.how_to_arrive' | translate }}
     </span>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Descripción General</mat-label>
+      <mat-label>{{ 'organizational.web_content.general_description' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="howToArriveDescription"
         rows="3"
-        placeholder="Para llegar al ecohotel..."
+        [placeholder]="'organizational.web_content.arrive_ph' | translate"
       ></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Transporte Público</mat-label>
+      <mat-label>{{ 'organizational.web_content.public_transport' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="howToArrivePublicTransportDescription"
         rows="3"
-        placeholder="Terminal del norte, flota sotrasanvicente..."
+        [placeholder]="'organizational.web_content.public_transport_ph' | translate"
       ></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Transporte Particular</mat-label>
+      <mat-label>{{ 'organizational.web_content.private_transport' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="howToArrivePrivateTransportDescription"
         rows="3"
-        placeholder="Autopista Medellín Bogotá, Rionegro..."
+        [placeholder]="'organizational.web_content.private_transport_ph' | translate"
       ></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Accesibilidad</mat-label>
+      <mat-label>{{ 'organizational.web_content.accessibility' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="accessibilityDescription"
         rows="3"
-        placeholder="La vía de ingreso es pavimentada..."
+        [placeholder]="'organizational.web_content.accessibility_ph' | translate"
       ></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Link Google Maps</mat-label>
+      <mat-label>{{ 'organizational.web_content.google_maps_link' | translate }}</mat-label>
       <input
         matInput
         formControlName="mapsUrl"
@@ -193,7 +193,7 @@
   <div class="flex justify-end mt-2">
     <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
       <mat-icon>save</mat-icon>
-      Guardar Contenido
+      {{ 'organizational.web_content.save_content' | translate }}
     </button>
   </div>
 </form>
@@ -202,7 +202,7 @@
 <div class="flex flex-col gap-4 mt-4 border-t pt-6">
   <span class="text-lg font-bold flex items-center gap-2">
     <mat-icon class="text-[var(--primary-color)]">hotel_class</mat-icon>
-    Beneficios y Servicios
+    {{ 'organizational.web_content.benefits_services' | translate }}
   </span>
 
   <!-- Add / Edit section form -->
@@ -212,16 +212,16 @@
   >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
       <mat-form-field appearance="outline" class="w-full md:col-span-2">
-        <mat-label>Nombre de la sección</mat-label>
+        <mat-label>{{ 'organizational.web_content.section_name' | translate }}</mat-label>
         <input
           matInput
           formControlName="title"
-          placeholder="Ej. Beneficios y servicios"
+          [placeholder]="'organizational.web_content.section_ph' | translate"
         />
-        <mat-error>El nombre es requerido</mat-error>
+        <mat-error>{{ 'organizational.web_content.name_required' | translate }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Orden</mat-label>
+        <mat-label>{{ 'organizational.web_content.order' | translate }}</mat-label>
         <input matInput type="number" formControlName="order" />
       </mat-form-field>
     </div>
@@ -233,12 +233,12 @@
         (click)="saveSectionEvt.emit()"
       >
         <mat-icon>{{ editingSection ? 'save' : 'add' }}</mat-icon>
-        {{ editingSection ? 'Actualizar sección' : 'Agregar sección' }}
+        {{ editingSection ? ('organizational.web_content.update_section' | translate) : ('organizational.web_content.add_section' | translate) }}
       </button>
       @if (editingSection) {
         <button mat-stroked-button (click)="cancelSectionEditEvt.emit()">
           <mat-icon>close</mat-icon>
-          Cancelar
+          {{ 'organizational.common.cancel' | translate }}
         </button>
       }
     </div>
@@ -246,7 +246,7 @@
 
   @if (benefitSections.length === 0) {
     <p class="text-gray-400 text-sm text-center py-4">
-      No hay secciones de beneficios aún.
+      {{ 'organizational.web_content.no_benefit_sections' | translate }}
     </p>
   }
 
@@ -262,28 +262,28 @@
           >
           {{ section.title }}
           <span class="text-xs text-gray-400 font-normal"
-            >({{ section.items.length }} items)</span
+            >({{ section.items.length }} {{ 'organizational.common.items' | translate }})</span
           >
         </span>
         <div class="flex gap-1">
           <button
             mat-icon-button
             (click)="editSectionEvt.emit(section)"
-            matTooltip="Editar sección"
+            [matTooltip]="'organizational.web_content.edit_section' | translate"
           >
             <mat-icon class="text-[var(--primary-color)]">edit</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="toggleItemForm(section.benefitSectionId)"
-            matTooltip="Agregar item"
+            [matTooltip]="'organizational.web_content.add_item' | translate"
           >
             <mat-icon class="text-green-600">add_circle</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="deleteSectionEvt.emit(section.benefitSectionId)"
-            matTooltip="Eliminar sección"
+            [matTooltip]="'organizational.web_content.delete_section' | translate"
           >
             <mat-icon class="text-red-500">delete</mat-icon>
           </button>
@@ -295,13 +295,13 @@
         <div class="p-4 bg-blue-50 border-b">
           <form [formGroup]="itemForm" class="flex flex-col gap-3">
             <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Nombre del beneficio</mat-label>
+              <mat-label>{{ 'organizational.web_content.benefit_name' | translate }}</mat-label>
               <input
                 matInput
                 formControlName="name"
-                placeholder="Ej. Desayuno incluido"
+                [placeholder]="'organizational.web_content.item_ph' | translate"
               />
-              <mat-error>El nombre es requerido</mat-error>
+              <mat-error>{{ 'organizational.web_content.name_required' | translate }}</mat-error>
             </mat-form-field>
 
             <!-- Icon selector -->
@@ -320,12 +320,12 @@
                   (click)="toggleIconPicker()"
                 >
                   <mat-icon>grid_view</mat-icon>
-                  {{ showIconPicker ? 'Cerrar selector' : 'Elegir icono' }}
+                  {{ showIconPicker ? ('organizational.web_content.close_selector' | translate) : ('organizational.web_content.choose_icon' | translate) }}
                 </button>
                 @if (
                   !itemForm.get('icon')?.value && itemForm.get('icon')?.touched
                 ) {
-                  <span class="text-xs text-red-500">Selecciona un icono</span>
+                  <span class="text-xs text-red-500">{{ 'organizational.web_content.select_icon' | translate }}</span>
                 }
               </div>
 
@@ -333,7 +333,7 @@
                 <div class="bg-white border rounded-xl p-3 flex flex-col gap-2">
                   <input
                     class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--primary-color)] transition-colors"
-                    placeholder="Buscar icono..."
+                    [placeholder]="'organizational.web_content.search_icon' | translate"
                     [(ngModel)]="iconSearch"
                     [ngModelOptions]="{ standalone: true }"
                     (input)="filterIcons()"
@@ -366,7 +366,7 @@
                       <p
                         class="col-span-4 sm:col-span-6 text-center text-gray-400 text-sm py-4"
                       >
-                        Sin resultados.
+                        {{ 'organizational.web_content.no_results' | translate }}
                       </p>
                     }
                   </div>
@@ -382,11 +382,11 @@
                 (click)="submitItem(section.benefitSectionId)"
               >
                 <mat-icon>{{ editingItemId ? 'save' : 'add' }}</mat-icon>
-                {{ editingItemId ? 'Actualizar item' : 'Agregar item' }}
+                {{ editingItemId ? ('organizational.web_content.update_item' | translate) : ('organizational.web_content.add_item' | translate) }}
               </button>
               <button mat-stroked-button (click)="cancelItemForm()">
                 <mat-icon>close</mat-icon>
-                Cancelar
+                {{ 'organizational.common.cancel' | translate }}
               </button>
             </div>
           </form>
@@ -396,11 +396,11 @@
       <!-- Items list -->
       @if (!section.items || section.items.length === 0) {
         <p class="text-gray-400 text-sm text-center py-4 px-4">
-          Sin items. Usa
+          {{ 'organizational.web_content.no_items_use' | translate }}
           <mat-icon class="text-green-600 !text-base align-middle"
             >add_circle</mat-icon
           >
-          para agregar.
+          {{ 'organizational.web_content.to_add' | translate }}
         </p>
       }
       <div class="divide-y">
@@ -414,7 +414,7 @@
               <button
                 mat-icon-button
                 (click)="startEditItem(item, section.benefitSectionId)"
-                matTooltip="Editar"
+                [matTooltip]="'organizational.common.edit' | translate"
               >
                 <mat-icon class="text-[var(--primary-color)] !text-base"
                   >edit</mat-icon
@@ -423,7 +423,7 @@
               <button
                 mat-icon-button
                 (click)="deleteItemEvt.emit(item.benefitItemId)"
-                matTooltip="Eliminar"
+                [matTooltip]="'organizational.common.delete' | translate"
               >
                 <mat-icon class="text-red-500 !text-base">delete</mat-icon>
               </button>
@@ -439,7 +439,7 @@
 <div class="flex flex-col gap-4 mt-4 border-t pt-6">
   <span class="text-lg font-bold flex items-center gap-2">
     <mat-icon class="text-[var(--primary-color)]">star</mat-icon>
-    Valores Corporativos
+    {{ 'organizational.web_content.corporate_values' | translate }}
   </span>
 
   <form
@@ -448,26 +448,26 @@
   >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
       <mat-form-field appearance="outline" class="w-full md:col-span-2">
-        <mat-label>Título del valor</mat-label>
+        <mat-label>{{ 'organizational.web_content.value_title' | translate }}</mat-label>
         <input
           matInput
           formControlName="title"
-          placeholder="Ej. Sostenibilidad"
+          [placeholder]="'organizational.web_content.value_ph' | translate"
         />
-        <mat-error>El título es requerido</mat-error>
+        <mat-error>{{ 'organizational.web_content.title_required' | translate }}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Orden</mat-label>
+        <mat-label>{{ 'organizational.web_content.order' | translate }}</mat-label>
         <input matInput type="number" formControlName="order" />
       </mat-form-field>
     </div>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Descripción</mat-label>
+      <mat-label>{{ 'organizational.web_content.description' | translate }}</mat-label>
       <textarea
         matInput
         formControlName="description"
         rows="2"
-        placeholder="Cuidamos el entorno natural..."
+        [placeholder]="'organizational.web_content.value_desc_ph' | translate"
       ></textarea>
     </mat-form-field>
     <div class="flex gap-3">
@@ -479,12 +479,12 @@
         class="flex-1"
       >
         <mat-icon>{{ editingValue ? 'save' : 'add' }}</mat-icon>
-        {{ editingValue ? 'Actualizar' : 'Agregar valor' }}
+        {{ editingValue ? ('organizational.common.update' | translate) : ('organizational.web_content.add_value' | translate) }}
       </button>
       @if (editingValue) {
         <button mat-stroked-button (click)="cancelEdit.emit()">
           <mat-icon>close</mat-icon>
-          Cancelar
+          {{ 'organizational.common.cancel' | translate }}
         </button>
       }
     </div>
@@ -492,7 +492,7 @@
 
   @if (corporateValues.length === 0) {
     <p class="text-gray-400 text-sm text-center py-4">
-      No hay valores corporativos aún.
+      {{ 'organizational.web_content.no_corporate_values' | translate }}
     </p>
   }
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
@@ -527,14 +527,14 @@
           <button
             mat-icon-button
             (click)="editValue.emit(value)"
-            matTooltip="Editar"
+            [matTooltip]="'organizational.common.edit' | translate"
           >
             <mat-icon class="text-white">edit</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="deleteValue.emit(value.corporateValueId)"
-            matTooltip="Eliminar"
+            [matTooltip]="'organizational.common.delete' | translate"
           >
             <mat-icon class="text-red-400">delete</mat-icon>
           </button>
@@ -549,7 +549,7 @@
             mat-icon-button
             [disabled]="corporateValueImageLoading[value.corporateValueId]"
             (click)="triggerImageInput(value.corporateValueId)"
-            [matTooltip]="value.imageUrl ? 'Cambiar imagen' : 'Subir imagen'"
+            [matTooltip]="value.imageUrl ? ('organizational.web_content.change_image' | translate) : ('organizational.web_content.upload_image' | translate)"
           >
             @if (corporateValueImageLoading[value.corporateValueId]) {
               <mat-icon class="animate-spin text-white">refresh</mat-icon>
@@ -561,7 +561,7 @@
             <button
               mat-icon-button
               (click)="deleteValueImage.emit(value.corporateValueId)"
-              matTooltip="Eliminar imagen"
+              [matTooltip]="'organizational.web_content.delete_image' | translate"
             >
               <mat-icon class="text-orange-400">hide_image</mat-icon>
             </button>

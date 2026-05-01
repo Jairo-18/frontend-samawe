@@ -1,12 +1,12 @@
 <app-base-page
-  [headerTitle]="'Sistema de Facturación de Hotel'"
+  [headerTitle]="'invoice.edit.page_title' | translate"
   [showContentTitle]="true"
   [showBackButton]="true"
   [showBorder]="false"
   [pxMobile]="false"
   backButtonRoute="/invoice/invoices/list"
-  backButtonText="Volver"
-  backButtonTooltip="Volver a la lista"
+  [backButtonText]="'invoice.edit.back' | translate"
+  [backButtonTooltip]="'invoice.edit.back_tooltip' | translate"
 >
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
     @if (initialLoading) {
@@ -31,7 +31,7 @@
                 class="w-full md:w-56 mt-2 md:mt-0"
                 *ngIf="invoiceData.invoiceType.code === 'FC'"
               >
-                <mat-label>Fecha de Factura</mat-label>
+                <mat-label>{{ 'invoice.edit.invoice_date' | translate }}</mat-label>
                 <input
                   matInput
                   [matDatepicker]="invoiceDatePicker"
@@ -53,7 +53,7 @@
                   invoiceData.invoiceType.code === 'CO'
                 "
               >
-                <mat-label>Fecha de Factura</mat-label>
+                <mat-label>{{ 'invoice.edit.invoice_date' | translate }}</mat-label>
                 <input matInput [value]="getFormattedInvoiceDate()" readonly />
                 <mat-icon matSuffix>event_note</mat-icon>
               </mat-form-field>
@@ -67,8 +67,8 @@
                     <span class="font-bold text-xs md:text-base">
                       {{
                         invoiceData.invoiceType.code === 'FC'
-                          ? 'PROVEEDOR:'
-                          : 'CLIENTE:'
+                          ? ('invoice.edit.supplier' | translate)
+                          : ('invoice.edit.client' | translate)
                       }}
                     </span>
                     <span class="font-normal text-xs md:text-base">
@@ -88,7 +88,7 @@
               </div>
               <div class="flex w-full md:w-[50%] justify-start md:justify-end">
                 <span class="font-bold text-xs md:text-base">
-                  EMPLEADO:
+                  {{ 'invoice.edit.employee' | translate }}
                   <span class="font-normal text-xs md:text-base">
                     {{ invoiceData.employee.firstName || '' }}
                     {{ invoiceData.employee.lastName || '' }}
@@ -99,7 +99,7 @@
           }
           <mat-tab-group animationDuration="0ms">
             @if (invoiceData?.invoiceType?.code === 'FV' || invoiceData?.invoiceType?.code === 'CO') {
-              <mat-tab label="Producto">
+              <mat-tab [label]="'invoice.edit.tab_product' | translate">
                 <ng-template matTabContent>
                   <app-add-product
                     [categoryTypes]="categoryTypes"
@@ -110,7 +110,7 @@
                   ></app-add-product>
                 </ng-template>
               </mat-tab>
-              <mat-tab label="Hospedaje">
+              <mat-tab [label]="'invoice.edit.tab_accommodation' | translate">
                 <ng-template matTabContent>
                   <app-add-accommodation
                     [categoryTypes]="categoryTypes"
@@ -126,8 +126,8 @@
               <mat-tab
                 [label]="
                   invoiceData?.invoiceType?.code === 'FC'
-                    ? 'Servicios'
-                    : 'Pasadías y Servicios'
+                    ? ('invoice.edit.tab_services' | translate)
+                    : ('invoice.edit.tab_day_trips' | translate)
                 "
               >
                 <ng-template matTabContent>
@@ -141,7 +141,7 @@
                 </ng-template>
               </mat-tab>
             } @else {
-              <mat-tab label="Productos">
+              <mat-tab [label]="'invoice.edit.tab_products_buy' | translate">
                 <ng-template matTabContent>
                   <app-add-invoice-buy
                     [categoryTypes]="categoryTypes"
@@ -156,8 +156,8 @@
               <mat-tab
                 [label]="
                   invoiceData?.invoiceType?.code === 'FC'
-                    ? 'Servicios'
-                    : 'Pasadías y Servicios'
+                    ? ('invoice.edit.tab_services' | translate)
+                    : ('invoice.edit.tab_day_trips' | translate)
                 "
               >
                 <ng-template matTabContent>
@@ -188,7 +188,7 @@
         >
           <div class="w-full text-center">
             <span class="font-bold text-sm md:text-base"
-              >Servicios y Productos Ingresados</span
+              >{{ 'invoice.edit.entered_items' | translate }}</span
             >
           </div>
           <app-invoice-detaill

@@ -1,6 +1,6 @@
 <app-section-header
-  [title]="'Ver Menús'"
-  [subtitle]="'Consulta los menús con sus platillos e ingredientes'"
+  [title]="'menu.see_title' | translate"
+  [subtitle]="'menu.see_subtitle' | translate"
 ></app-section-header>
 
 <app-search-fields
@@ -20,7 +20,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'menu.clear_filters' | translate }}
     </button>
   </div>
 
@@ -33,7 +33,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'menu.clear_filters' | translate }}
     </button>
   </div>
 </section>
@@ -75,7 +75,7 @@
                       <span
                         class="text-[var(--primary-color)] font-medium hover:underline ml-1"
                         (click)="toggleDescription($event, menu.menuId)"
-                        >ver más</span
+                        >{{ 'menu.see_more' | translate }}</span
                       >
                     } @else if (menu.description.length > 100) {
                       {{ menu.description }}
@@ -83,7 +83,7 @@
                         <span
                           class="text-[var(--primary-color)] font-medium hover:underline ml-1"
                           (click)="toggleDescription($event, menu.menuId)"
-                          >ver menos</span
+                          >{{ 'menu.see_less' | translate }}</span
                         >
                       }
                     } @else {
@@ -108,11 +108,11 @@
                   <mat-menu #menuActions="matMenu" xPosition="before" yPosition="above">
                     <button mat-menu-item (click)="editMenu.emit(menu)">
                       <mat-icon class="blue-color">edit</mat-icon>
-                      <span>Editar menú</span>
+                      <span>{{ 'menu.action_edit' | translate }}</span>
                     </button>
                     <button mat-menu-item (click)="openDeleteDialog(menu)">
                       <mat-icon class="red-color">delete</mat-icon>
-                      <span>Eliminar menú</span>
+                      <span>{{ 'menu.action_delete' | translate }}</span>
                     </button>
                   </mat-menu>
                 }
@@ -198,7 +198,7 @@
 
                 @if (getGroupedRecipes(menu.recipes).length === 0) {
                   <div class="text-center text-gray-400 py-4">
-                    Este menú no tiene platillos asociados
+                    {{ 'menu.no_dishes' | translate }}
                   </div>
                 }
               </div>
@@ -217,7 +217,7 @@
       <div
         class="w-full flex justify-center items-center min-h-[200px] text-center"
       >
-        <p class="text-gray-400">No se encontraron menús.</p>
+        <p class="text-gray-400">{{ 'menu.not_found' | translate }}</p>
       </div>
     }
   </div>

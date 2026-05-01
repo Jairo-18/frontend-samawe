@@ -3,7 +3,7 @@
     animationDuration="600ms"
     (selectedIndexChange)="onTabChange($event)"
   >
-    <mat-tab label="Ver Menús">
+    <mat-tab [label]="'menu.see_title' | translate">
       <ng-template matTabContent>
         <app-see-menus [isMesero]="isMesero" (editMenu)="onEditMenu($event)"></app-see-menus>
       </ng-template>
@@ -11,7 +11,7 @@
 
     @if (!isMesero) {
       <mat-tab
-        label="{{ currentMenu ? 'Editar Menú' : 'Crear Menú' }}"
+        [label]="currentMenu ? ('menu.edit_title' | translate) : ('menu.create_title' | translate)"
         class="overflow-hidden"
       >
         <ng-template matTabContent>

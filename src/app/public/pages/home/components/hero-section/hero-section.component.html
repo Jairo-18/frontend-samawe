@@ -23,14 +23,14 @@
     }
     <section class="flex flex-wrap justify-center gap-4 mt-8">
       <app-button-landing
-        label="Contáctanos"
+        [label]="'public.hero.contact' | translate"
         icon="phone"
         variant="solid"
         (clicked)="openWhatsapp()"
       />
       @if (isBrowser && !isLoggedUser) {
         <app-button-landing
-          label="Iniciar Sesión"
+          [label]="'public.hero.login' | translate"
           icon="login"
           variant="transparent"
           (clicked)="goToLogin()"

@@ -17,6 +17,8 @@ import { SectionHeaderComponent } from '../../../../../public/components/section
 import { LoaderComponent } from '../../../../../shared/components/loader/loader.component';
 import { Organizational } from '../../../../../shared/interfaces/organizational.interface';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-most-requested-section',
   standalone: true,
@@ -26,7 +28,8 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
     CapitalizePipe,
     TranslatedPipe,
     SectionHeaderComponent,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
   ],
   templateUrl: './most-requested-section.component.html',
   styleUrls: ['./most-requested-section.component.scss']

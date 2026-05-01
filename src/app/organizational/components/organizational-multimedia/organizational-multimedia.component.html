@@ -5,7 +5,7 @@
       <mat-icon class="text-[var(--primary-color)]"
         >branding_watermark</mat-icon
       >
-      Identidad de Marca
+      {{ 'organizational.multimedia.brand_identity' | translate }}
     </span>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
       <div
@@ -16,13 +16,15 @@
           class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
         >
           <mat-spinner diameter="40"></mat-spinner>
-          <span class="text-xs font-bold animate-pulse">PROCESANDO...</span>
+          <span class="text-xs font-bold animate-pulse">{{ 'organizational.multimedia.processing' | translate }}</span>
         </div>
         <div class="flex justify-between w-full items-center">
-          <span class="font-bold text-gray-800">Logo del Sistema</span>
+          <span class="text-sm font-semibold text-gray-700">
+            {{ 'organizational.multimedia.system_logo' | translate }}
+          </span>
           <mat-icon
             class="text-gray-400"
-            matTooltip="Imagen principal de la marca"
+            [matTooltip]="'organizational.multimedia.main_brand_image' | translate"
             >info</mat-icon
           >
         </div>
@@ -46,7 +48,7 @@
               mat-mini-fab
               color="primary"
               (click)="logoInput.click()"
-              matTooltip="Subir nuevo"
+              [matTooltip]="'organizational.multimedia.upload_new' | translate"
             >
               <mat-icon>upload</mat-icon>
             </button>
@@ -55,7 +57,7 @@
               mat-mini-fab
               color="accent"
               (click)="previewMedia.emit('LOGO')"
-              matTooltip="Ver"
+              [matTooltip]="'organizational.common.view' | translate"
             >
               <mat-icon>visibility</mat-icon>
             </button>
@@ -64,7 +66,7 @@
               mat-mini-fab
               color="warn"
               (click)="deleteMedia.emit('LOGO')"
-              matTooltip="Eliminar"
+              [matTooltip]="'organizational.common.delete' | translate"
             >
               <mat-icon>delete</mat-icon>
             </button>
@@ -78,7 +80,7 @@
           accept="image/*"
         />
         <p class="text-[10px] text-gray-400 text-center leading-tight">
-          PNG/WEBP TRANSPARENTE · 512×512 PX
+          {{ 'organizational.multimedia.logo_spec' | translate }}
         </p>
       </div>
     </div>
@@ -97,13 +99,13 @@
                 class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
               >
                 <mat-spinner diameter="40"></mat-spinner>
-                <span class="text-xs font-bold animate-pulse">SUBIENDO...</span>
+                <span class="text-xs font-bold animate-pulse">{{ 'organizational.multimedia.uploading' | translate }}</span>
               </div>
               <div class="flex justify-between w-full items-center">
                 <span class="font-bold text-gray-800">{{ type.name }}</span>
                 <mat-icon
                   class="text-gray-400"
-                  [matTooltip]="'Imagen para: ' + type.name"
+                  [matTooltip]="('organizational.multimedia.image_for' | translate) + type.name"
                   >info</mat-icon
                 >
               </div>
@@ -130,7 +132,7 @@
                     color="primary"
                     class="!w-12 !h-12"
                     (click)="triggerInput(type.code)"
-                    matTooltip="Subir imagen"
+                    [matTooltip]="'organizational.multimedia.upload_image' | translate"
                   >
                     <mat-icon>upload</mat-icon>
                   </button>
@@ -140,7 +142,7 @@
                     color="accent"
                     class="!w-12 !h-12"
                     (click)="previewMedia.emit(type.code)"
-                    matTooltip="Ver"
+                    [matTooltip]="'organizational.common.view' | translate"
                   >
                     <mat-icon>visibility</mat-icon>
                   </button>
@@ -150,7 +152,7 @@
                     color="warn"
                     class="!w-12 !h-12"
                     (click)="deleteMedia.emit(type.code)"
-                    matTooltip="Eliminar"
+                    [matTooltip]="'organizational.common.delete' | translate"
                   >
                     <mat-icon>delete</mat-icon>
                   </button>

@@ -41,6 +41,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-add-accommodation',
   standalone: true,
@@ -58,7 +60,9 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
     MatIcon,
     MatProgressSpinnerModule,
     MatTimepickerModule,
-    CurrencyFormatDirective
+    CurrencyFormatDirective,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'

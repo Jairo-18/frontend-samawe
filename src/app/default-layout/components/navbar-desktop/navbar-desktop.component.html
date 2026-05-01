@@ -154,7 +154,7 @@
       <!-- Mobile: hamburguesa -->
       <button
         class="flex md:hidden p-1 transition-colors"
-        aria-label="Abrir menú"
+        [attr.aria-label]="'nav.open_menu' | translate"
         (click)="openMenu.emit()"
       >
         <mat-icon>menu</mat-icon>

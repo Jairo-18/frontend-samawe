@@ -9,6 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ReviewReply } from '../../../shared/interfaces/review.interface';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-review-reply-item',
   standalone: true,
@@ -20,7 +22,8 @@ import { ReviewReply } from '../../../shared/interfaces/review.interface';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    CdkTextareaAutosize
+    CdkTextareaAutosize,
+    TranslateModule
   ],
   templateUrl: './review-reply-item.component.html'
 })

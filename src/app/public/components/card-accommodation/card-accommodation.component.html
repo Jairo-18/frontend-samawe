@@ -36,7 +36,7 @@
         @for (img of validImages; track $index) {
           <button
             (click)="changeSlide($index)"
-            [attr.aria-label]="'Foto ' + ($index + 1)"
+            [attr.aria-label]="('public.card_accommodation.photo' | translate) + ' ' + ($index + 1)"
             class="w-2 h-2 rounded-full transition-colors"
             [class]="currentImageIndex === $index ? 'bg-white' : 'bg-white/40'"
           ></button>
@@ -64,9 +64,7 @@
           class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
         >
           <span class="material-icons text-sm">person</span>
-          {{ accommodation.amountPerson }} persona{{
-            accommodation.amountPerson !== 1 ? 's' : ''
-          }}
+          {{ accommodation.amountPerson }} {{ accommodation.amountPerson !== 1 ? ('public.common.person_plural' | translate) : ('public.common.person_singular' | translate) }}
         </li>
         <li
           class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
@@ -78,9 +76,7 @@
           class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
         >
           <span class="material-icons text-sm">bathroom</span>
-          {{ accommodation.amountBathroom }} baño{{
-            accommodation.amountBathroom !== 1 ? 's' : ''
-          }}
+          {{ accommodation.amountBathroom }} {{ accommodation.amountBathroom !== 1 ? ('public.common.room_plural' | translate) : ('public.common.room_singular' | translate) }}
         </li>
         @if (accommodation.bedType) {
           <li
@@ -95,7 +91,7 @@
             class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
           >
             <span class="material-icons text-sm">hot_tub</span>
-            Jacuzzi
+            {{ 'public.card_accommodation.jacuzzi' | translate }}
           </li>
         }
       </ul>
@@ -105,12 +101,12 @@
         class="flex items-end justify-between gap-2 pt-2 border-t border-white/20"
       >
         <div>
-          <span class="text-xs text-white/60">Por noche</span>
+          <span class="text-xs text-white/60">{{ 'public.card_accommodation.per_night' | translate }}</span>
           <p class="text-lg font-bold text-white">
             COP {{ accommodation.priceSale | number: '1.0-0' }}
           </p>
         </div>
-        <app-button-landing label="Reservar" variant="solid" />
+        <app-button-landing [label]="'public.card_accommodation.reserve' | translate" variant="solid" />
       </div>
     </div>
   </article>

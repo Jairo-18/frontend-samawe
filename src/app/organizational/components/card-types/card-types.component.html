@@ -5,10 +5,9 @@
       <section class="w-full flex justify-end">
         <button
           mat-icon-button
-          color="primary"
-          (click)="edit.emit({ type: selectedType, id: item[getIdKey(item)] })"
+          class="bg-[var(--primary-color)] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[var(--secondary-color)] transition-colors duration-300"
         >
-          <mat-icon>edit</mat-icon>
+          {{ 'organizational.card_types.manage_permissions' | translate }}
         </button>
         <button
           mat-icon-button
@@ -21,11 +20,15 @@
         </button>
       </section>
       <section class="flex flex-col gap-2">
-        <div class="text-sm text-gray-500">Código / prefijo:</div>
+        <div class="text-sm text-gray-500">{{ 'organizational.card_types.code_prefix' | translate }}:</div>
         <div class="text-base font-semibold text-gray-800">
           {{ item.code }}
         </div>
-        <div class="text-sm text-gray-500 mt-2">Nombre:</div>
+        <p class="text-[var(--text-color)] text-sm mb-6 m-0 leading-relaxed">
+          {{ 'organizational.card_types.total' | translate }}:
+          <span class="font-bold text-[var(--title-color)]">{{ item['count'] }}</span>
+        </p>
+        <div class="text-sm text-gray-500 mt-2">{{ 'organizational.card_types.name' | translate }}:</div>
         <div class="text-base font-semibold text-gray-800">
           {{ item.name }}
         </div>

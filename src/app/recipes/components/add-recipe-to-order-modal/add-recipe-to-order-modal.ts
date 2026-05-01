@@ -21,6 +21,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-recipe-to-order-modal',
@@ -35,7 +37,9 @@ import { BaseDialogComponent } from '../../../shared/components/base-dialog/base
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     CommonModule,
-    BaseDialogComponent
+    BaseDialogComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-recipe-to-order-modal.html',
   styleUrl: './add-recipe-to-order-modal.scss'

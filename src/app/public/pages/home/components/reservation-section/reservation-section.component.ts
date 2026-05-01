@@ -5,10 +5,17 @@ import { ButtonLandingComponent } from '../../../../../shared/components/button-
 import { SectionHeaderComponent } from '../../../../../public/components/section-header/section-header.component';
 import { TranslatedPipe } from '../../../../../shared/pipes/translated.pipe';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-reservation-section',
   standalone: true,
-  imports: [ButtonLandingComponent, SectionHeaderComponent, TranslatedPipe],
+  imports: [
+    ButtonLandingComponent,
+    SectionHeaderComponent,
+    TranslatedPipe,
+    TranslateModule
+  ],
   templateUrl: './reservation-section.component.html',
   styleUrls: ['./reservation-section.component.scss']
 })

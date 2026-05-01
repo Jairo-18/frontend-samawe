@@ -16,6 +16,7 @@ import {
   OrganizationalMedia,
   MediaType
 } from '../../../shared/interfaces/organizational.interface';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organizational-multimedia',
@@ -25,7 +26,8 @@ import {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './organizational-multimedia.component.html',
   styleUrls: ['./organizational-multimedia.component.scss']

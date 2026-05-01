@@ -3,13 +3,13 @@
     class="flex flex-col max-w-[1400px] mx-auto gap-5 items-center justify-center text-center"
   >
     <app-section-header
-      label="Reservaciones"
+      [label]="'public.reservation.label' | translate"
       [title]="org?.reservationTitle | translated"
       [description]="org?.reservationDescription | translated"
     />
     <div class="w-full max-w-xs">
       <app-button-landing
-        label="Reservar ahora"
+        [label]="'public.reservation.reserve_now' | translate"
         variant="solid"
         (clicked)="navigate()"
       ></app-button-landing>

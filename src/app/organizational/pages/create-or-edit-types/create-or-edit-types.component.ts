@@ -17,8 +17,12 @@ import { MatInputModule } from '@angular/material/input';
 import { TYPE_ENTITY_LABELS_ES } from '../../../shared/constants/type.contstants';
 import { TypesService } from '../../services/types.service';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-create-or-edit-types',
+  standalone: true,
   imports: [
     BaseDialogComponent,
     CommonModule,
@@ -28,7 +32,9 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
     MatInputModule,
     MatSelectModule,
     MatIconModule,
-    UppercaseDirective
+    UppercaseDirective,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './create-or-edit-types.component.html',
   styleUrl: './create-or-edit-types.component.scss'

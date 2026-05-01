@@ -3,10 +3,12 @@ import { ChartConfiguration } from 'chart.js';
 import { InvoiceSummaryGroupedResponse } from '../../interface/earning.interface';
 import { formatDate } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-grapic',
   standalone: true,
-  imports: [NgChartsModule],
+  imports: [NgChartsModule, MatTooltipModule, TranslateModule],
   templateUrl: './grapic.component.html',
   styleUrl: './grapic.component.scss'
 })

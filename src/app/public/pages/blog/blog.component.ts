@@ -32,6 +32,8 @@ import {
 } from '../../../organizational/services/google-business.service';
 import { SeoService } from '../../../shared/services/seo.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-blog',
   standalone: true,
@@ -46,7 +48,8 @@ import { SeoService } from '../../../shared/services/seo.service';
     CdkTextareaAutosize,
     SectionHeaderComponent,
     LoaderComponent,
-    ReviewCardComponent
+    ReviewCardComponent,
+    TranslateModule
   ],
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.scss'

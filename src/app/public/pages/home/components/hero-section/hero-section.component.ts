@@ -5,10 +5,12 @@ import { Organizational } from '../../../../../shared/interfaces/organizational.
 import { ButtonLandingComponent } from '../../../../../shared/components/button-landing/button-landing.component';
 import { LangService } from '../../../../../shared/services/lang.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [ButtonLandingComponent, CommonModule],
+  imports: [ButtonLandingComponent, CommonModule, TranslateModule],
   templateUrl: './hero-section.component.html',
   styleUrls: ['./hero-section.component.scss']
 })

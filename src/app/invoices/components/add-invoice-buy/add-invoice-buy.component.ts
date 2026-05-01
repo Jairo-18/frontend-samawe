@@ -34,6 +34,8 @@ import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-invoice-buy',
@@ -49,7 +51,9 @@ import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoi
     MatSelectModule,
     MatIcon,
     MatProgressSpinnerModule,
-    InvoiceCurrencyFormatDirective
+    InvoiceCurrencyFormatDirective,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-invoice-buy.component.html',
   styleUrl: './add-invoice-buy.component.scss'
@@ -176,7 +180,9 @@ export class AddInvoiceBuyComponent implements OnInit {
     }
   }
   onProductSelected(name: string): void {
-    const product = this.filteredProducts.find((p) => Object.values(p.name).includes(name));
+    const product = this.filteredProducts.find((p) =>
+      (p.name as unknown as string) === name || Object.values(p.name).includes(name)
+    );
     if (!product) return;
     const currentPriceBuy = this.parseNumber(this.form.get('priceBuy')?.value);
     const shouldUpdatePrice = !currentPriceBuy || currentPriceBuy === 0;
@@ -188,7 +194,9 @@ export class AddInvoiceBuyComponent implements OnInit {
       }),
       amount: product.amount,
       categoryId: product.categoryType?.categoryTypeId,
-      ...(product.taxeType?.taxeTypeId != null && { taxeTypeId: product.taxeType.taxeTypeId })
+      ...(product.taxeType?.taxeTypeId != null && {
+        taxeTypeId: product.taxeType.taxeTypeId
+      })
     });
     this.updateFinalPrice();
   }

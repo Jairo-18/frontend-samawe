@@ -45,6 +45,8 @@ import { ApiResponseCreateInterface } from '../../../shared/interfaces/api-respo
 import { InvoiceService } from '../../../invoices/services/invoice.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-create-or-edit-order',
@@ -62,7 +64,9 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
     MatIconModule,
     LoaderComponent,
     UppercaseDirective,
-    SectionHeaderComponent
+    SectionHeaderComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './create-or-edit-order.component.html',
   styleUrls: ['./create-or-edit-order.component.scss']

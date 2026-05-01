@@ -1,12 +1,12 @@
 <article class="flex flex-col h-full justify-center m-4 md:m-0">
   <div>
-    <span class="text-base md:text-xl font-extrabold">Resumen de Factura</span>
+    <span class="text-base md:text-xl font-extrabold">{{ 'invoice.summary.title' | translate }}</span>
   </div>
   <div class="flex flex-col">
     @if (invoiceData.invoiceType.code === 'FC') {
-      <span class="font-bold text-xs md:text-base">Nombre del Proveedor</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.supplier_name' | translate }}</span>
     } @else {
-      <span class="font-bold text-xs md:text-base">Nombre del Cliente</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.client_name' | translate }}</span>
     }
     <div
       class="w-full rounded-lg border border-[var(--primary-color)] px-2 py-2 text-xs md:text-base mt-1"
@@ -18,7 +18,7 @@
   <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Tipo de pago:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.pay_type' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span class="text-xs md:text-base"
@@ -28,7 +28,7 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Estado de pago:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.paid_status' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span
@@ -51,7 +51,7 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Factura #:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.invoice_number' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span class="text-xs md:text-base">{{
@@ -63,7 +63,7 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Subtotal:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.subtotal' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span class="text-xs md:text-base">{{
@@ -75,7 +75,7 @@
   @if ((invoiceData.totalVat ?? 0) > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">IVA 19%:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.table.vat' | translate }}:</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span class="text-xs md:text-base">{{ invoiceData.totalVat ?? 0 | formatCop }}</span>
@@ -85,7 +85,7 @@
   @if ((invoiceData.totalIco8 ?? 0) > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">IPO 8%:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.table.ipo8' | translate }}:</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span class="text-xs md:text-base">{{ invoiceData.totalIco8 ?? 0 | formatCop }}</span>
@@ -95,7 +95,7 @@
   @if ((invoiceData.totalIco5 ?? 0) > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">IPO 5%:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.table.ipo5' | translate }}:</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span class="text-xs md:text-base">{{ invoiceData.totalIco5 ?? 0 | formatCop }}</span>
@@ -105,7 +105,7 @@
   @if ((invoiceData.totalTaxes ?? 0) > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">Total Impuestos:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.total_taxes' | translate }}</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span class="text-xs md:text-base">{{ invoiceData.totalTaxes ?? 0 | formatCop }}</span>
@@ -114,7 +114,7 @@
   }
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Total:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.total' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span
@@ -125,7 +125,7 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Total Pagado:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.total_paid' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span class="font-medium text-blue-600 text-xs md:text-base">{{
@@ -135,7 +135,7 @@
   </div>
   <div class="flex content-between">
     <div class="flex justify-start w-[50%]">
-      <span class="font-bold text-xs md:text-base">Pendiente por Pagar:</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.pending' | translate }}</span>
     </div>
     <div class="flex justify-end w-[50%]">
       <span class="font-medium text-red-600 text-xs md:text-base">{{
@@ -150,14 +150,14 @@
       [color]="allPaid ? 'warn' : 'primary'"
       (click)="toggleAll()"
     >
-      {{ allPaid ? 'Marcar todo como pendiente' : 'Marcar todo como pagado' }}
+      {{ allPaid ? ('invoice.summary.mark_all_pending' | translate) : ('invoice.summary.mark_all_paid' | translate) }}
     </button>
   </div>
   @if (invoiceData.cash && invoiceData.cash > 0) {
     <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">Efectivo:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.cash' | translate }}</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span
@@ -171,7 +171,7 @@
   @if (invoiceData.transfer && invoiceData.transfer > 0) {
     <div class="flex content-between">
       <div class="flex justify-start w-[50%]">
-        <span class="font-bold text-xs md:text-base">Transferencia:</span>
+        <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.transfer' | translate }}</span>
       </div>
       <div class="flex justify-end w-[50%]">
         <span
@@ -185,19 +185,19 @@
   <div class="border border-[var(--primary-color)] w-full h-[1px] my-6"></div>
   <div class="flex flex-col">
     <div class="flex justify-start w-full">
-      <span class="font-bold text-xs md:text-base">Observaciones</span>
+      <span class="font-bold text-xs md:text-base">{{ 'invoice.summary.observations' | translate }}</span>
     </div>
     <div
       class="flex justify-start w-full p-1 border border-[var(--primary-color)] rounded-lg px-2 py-2 mt-1"
     >
       <span
         class="font-medium text-[var(--primary-color)] text-xs md:text-base"
-        >{{ invoiceData.observations || 'NO HAY OBSERVACIONES' }}</span
+        >{{ invoiceData.observations || ('invoice.summary.no_observations' | translate) }}</span
       >
     </div>
   </div>
   <div class="my-2">
-    <span class="text-xs md:text-base">Los precios incluyen impuestos</span>
+    <span class="text-xs md:text-base">{{ 'invoice.summary.prices_include_tax' | translate }}</span>
   </div>
   <section class="flex flex-col gap-y-2">
     <div class="flex">
@@ -207,7 +207,7 @@
         class="!w-full !rounded-lg"
         (click)="onEdit()"
       >
-        Editar factura
+        {{ 'invoice.summary.edit_invoice' | translate }}
       </button>
     </div>
     <div class="flex">
@@ -217,7 +217,7 @@
         extended="true"
         (click)="onDownload()"
       >
-        Descargar PDF
+        {{ 'invoice.summary.download_pdf' | translate }}
       </button>
     </div>
   </section>

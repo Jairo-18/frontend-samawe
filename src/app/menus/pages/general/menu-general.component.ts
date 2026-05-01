@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  ViewChild
+} from '@angular/core';
 import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SeeMenusComponent } from '../../components/see-menus/see-menus.component';
@@ -6,6 +12,7 @@ import { CreateOrEditMenuComponent } from '../../components/create-or-edit-menu/
 import { MenuResponse } from '../../interfaces/menu.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-menu-general',
@@ -15,7 +22,8 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
     MatTabsModule,
     SeeMenusComponent,
     CreateOrEditMenuComponent,
-    BasePageComponent
+    BasePageComponent,
+    TranslateModule
   ],
   templateUrl: './menu-general.component.html',
   styleUrl: './menu-general.component.scss'
@@ -26,7 +34,8 @@ export class MenuGeneralComponent implements OnInit {
   @ViewChild(CreateOrEditMenuComponent)
   createOrEditComponent!: CreateOrEditMenuComponent;
 
-  private readonly _localStorage = inject(LocalStorageService);
+  private readonly _localStorage: LocalStorageService =
+    inject(LocalStorageService);
   private readonly _platformId = inject(PLATFORM_ID);
 
   currentMenu?: MenuResponse;

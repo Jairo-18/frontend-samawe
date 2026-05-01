@@ -6,14 +6,14 @@
     <div class="flex flex-col gap-4">
       <app-section-header
         variant="left"
-        label="Lo que ofrecemos"
+        [label]="'public.experience.label' | translate"
         [title]="org?.experienceTitle | translated"
         [description]="org?.experienceDescription | translated"
       />
 
       <div>
         <app-button-landing
-          label="Conocer más"
+          [label]="'public.experience.know_more' | translate"
           variant="solid"
           (clicked)="navigate()"
         ></app-button-landing>
@@ -25,7 +25,7 @@
     >
       <img
         [src]="imageUrl"
-        alt="Experiencias Samawé"
+        [alt]="'public.experience.image_alt' | translate"
         class="w-full h-full object-cover"
       />
     </div>

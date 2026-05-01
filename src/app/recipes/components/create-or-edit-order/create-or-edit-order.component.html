@@ -1,22 +1,22 @@
 <app-section-header
-  [title]="editMode ? 'Editar orden' : 'Crear orden'"
+  [title]="editMode ? ('recipe.create_edit_order.edit_title' | translate) : ('recipe.create_edit_order.create_title' | translate)"
   [subtitle]="
     editMode
-      ? 'Edita los campos que desees'
-      : 'Aquí puedes crear una nueva orden de restaurante'
+      ? ('recipe.create_edit_order.edit_subtitle' | translate)
+      : ('recipe.create_edit_order.create_subtitle' | translate)
   "
 ></app-section-header>
 <div class="px-2 md:px-6 py-4">
   <form [formGroup]="form" class="flex flex-col gap-4">
     @if (!isLoading) {
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar Cliente </mat-label>
+        <mat-label>{{ 'recipe.create_edit_order.search_client' | translate }}</mat-label>
         <input
           type="text"
           matInput
           [matAutocomplete]="clientAuto"
           [formControl]="clientFilterControl"
-          placeholder="Nombre del cliente..."
+          [placeholder]="'recipe.create_edit_order.client_placeholder' | translate"
           (focus)="onClientFocus()"
         />
         <mat-icon matPrefix>person</mat-icon>
@@ -33,7 +33,7 @@
           mat-icon-button
           type="button"
           (click)="clearClientSelection()"
-          matTooltip="Limpiar selección"
+          [matTooltip]="'recipe.create_edit_order.clear_selection' | translate"
         >
           <mat-icon>clear</mat-icon>
         </button>
@@ -58,7 +58,7 @@
             </div>
           </mat-option>
           <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">No se encontraron clientes</span>
+            <span class="text-gray-500">{{ 'recipe.create_edit_order.no_clients' | translate }}</span>
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -66,23 +66,23 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Table Number -->
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Número de Mesa</mat-label>
+          <mat-label>{{ 'recipe.create_edit_order.table_number' | translate }}</mat-label>
           <mat-select formControlName="tableNumber">
             <mat-option
               *ngFor="let table of tableOptions"
               [value]="table.toString()"
             >
-              Mesa {{ table }}
+              {{ table }}
             </mat-option>
-            <mat-option value="Barra">Barra</mat-option>
-            <mat-option value="Para llevar">Para llevar</mat-option>
+            <mat-option value="Barra">{{ 'recipe.create_edit_order.bar' | translate }}</mat-option>
+            <mat-option value="Para llevar">{{ 'recipe.create_edit_order.takeaway' | translate }}</mat-option>
           </mat-select>
           <mat-icon matPrefix>restaurant</mat-icon>
         </mat-form-field>
 
         <!-- Order State -->
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Estado de la Orden</mat-label>
+          <mat-label>{{ 'recipe.create_edit_order.order_status' | translate }}</mat-label>
           <mat-select formControlName="stateTypeId" required>
             <mat-option
               *ngFor="let type of stateTypes"
@@ -98,7 +98,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Pay Type -->
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Tipo de pago</mat-label>
+          <mat-label>{{ 'recipe.create_edit_order.payment_type' | translate }}</mat-label>
           <mat-select formControlName="payTypeId" required>
             <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
               {{ type.name }}
@@ -109,7 +109,7 @@
 
         <!-- Paid State -->
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Estado de pago</mat-label>
+          <mat-label>{{ 'recipe.create_edit_order.payment_status' | translate }}</mat-label>
           <mat-select formControlName="paidTypeId" required>
             <mat-option
               *ngFor="let type of paidTypes"
@@ -124,7 +124,7 @@
 
       <!-- Observations -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Notas adicionales</mat-label>
+        <mat-label>{{ 'recipe.create_edit_order.notes' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="observations"
@@ -133,7 +133,7 @@
           appUppercase
         ></textarea>
         <mat-icon matPrefix>notes</mat-icon>
-        <mat-hint align="end">{{ observationsLength }}/500 caracteres</mat-hint>
+        <mat-hint align="end">{{ observationsLength }}/500 {{ 'recipe.create_edit_order.chars' | translate }}</mat-hint>
       </mat-form-field>
     } @else {
       <app-loader></app-loader>
@@ -150,7 +150,7 @@
         type="button"
         (click)="resetForm()"
       >
-        Limpiar
+        {{ 'recipe.create_edit_order.clear' | translate }}
       </button>
     </div>
     <div class="w-full md:w-[24%]">
@@ -164,7 +164,7 @@
         [disabled]="form.invalid || isLoading"
       >
         <mat-icon>{{ editMode ? 'save' : 'add_circle' }}</mat-icon>
-        {{ editMode ? 'Guardar cambios' : 'Crear orden' }}
+        {{ editMode ? ('recipe.create_edit_order.save' | translate) : ('recipe.create_edit_order.create' | translate) }}
       </button>
     </div>
   </section>

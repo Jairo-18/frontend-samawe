@@ -25,6 +25,7 @@ import {
   PersonType,
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -41,7 +42,8 @@ import {
     ButtonLandingComponent,
     NormalizeNameDirective,
     NoSpacesDirective,
-    BasePageComponent
+    BasePageComponent,
+    TranslateModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'

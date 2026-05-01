@@ -31,6 +31,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { SearchField } from '../../../shared/interfaces/search.interface';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-see-menus',
@@ -45,7 +46,8 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
     MatMenuModule,
     LoaderComponent,
     SectionHeaderComponent,
-    SearchFieldsComponent
+    SearchFieldsComponent,
+    TranslateModule
   ],
   templateUrl: './see-menus.component.html',
   styleUrl: './see-menus.component.scss',
@@ -66,8 +68,6 @@ export class SeeMenusComponent implements OnInit {
   showClearButton: boolean = false;
   allMenusExpanded: boolean = false;
   expandedDescriptions: Set<number> = new Set<number>();
-
-
 
   params: any = {};
   paginationParams: PaginationInterface = {

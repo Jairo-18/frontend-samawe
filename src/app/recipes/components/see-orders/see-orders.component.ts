@@ -38,6 +38,7 @@ import { CreateInvoiceDialogComponent } from '../../../invoices/components/creat
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-see-orders',
@@ -54,7 +55,8 @@ import { OrdersSocketService } from '../../../shared/services/orders-socket.serv
     FormatCopPipe,
     SectionHeaderComponent,
     InvoicePdfComponent,
-    RelativeTimePipe
+    RelativeTimePipe,
+    TranslateModule
   ],
   templateUrl: './see-orders.component.html',
   styleUrls: ['./see-orders.component.scss']
@@ -288,7 +290,9 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
   }
 
   openEditInvoiceDialog(invoiceId: number): void {
-    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
     const relatedData = this._relatedDataService.relatedData();
 
     this._matDialog

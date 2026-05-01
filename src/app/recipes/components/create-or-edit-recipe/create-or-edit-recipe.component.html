@@ -1,20 +1,20 @@
 <app-section-header
-  [title]="isEditMode ? 'Editar Receta' : 'Nueva Receta'"
+  [title]="isEditMode ? ('recipe.create_edit_recipe.edit_title' | translate) : ('recipe.create_edit_recipe.create_title' | translate)"
   [subtitle]="
     isEditMode
-      ? 'Modifica los ingredientes del plato'
-      : 'Define los ingredientes para el plato'
+      ? ('recipe.create_edit_recipe.edit_subtitle' | translate)
+      : ('recipe.create_edit_recipe.create_subtitle' | translate)
   "
 ></app-section-header>
 
 <form [formGroup]="form" (ngSubmit)="save()">
   <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Buscar Plato / Producto</mat-label>
+    <mat-label>{{ 'recipe.create_edit_recipe.search_dish' | translate }}</mat-label>
     <input
       matInput
       [matAutocomplete]="autoDish"
       formControlName="dishSearch"
-      placeholder="Ej: Bandeja paisa..."
+      [placeholder]="'recipe.create_edit_recipe.dish_placeholder' | translate"
       (focus)="onDishFocus()"
       [readonly]="isEditMode"
     />
@@ -26,7 +26,7 @@
       mat-icon-button
       type="button"
       (click)="resetForm()"
-      matTooltip="Limpiar selección"
+      [matTooltip]="'recipe.create_edit_recipe.clear_selection' | translate"
     >
       <mat-icon>clear</mat-icon>
     </button>
@@ -49,7 +49,7 @@
         form.get('productId')?.touched
       "
     >
-      Selecciona un plato
+      {{ 'recipe.create_edit_recipe.select_dish_error' | translate }}
     </mat-error>
   </mat-form-field>
 
@@ -58,7 +58,7 @@
       <section
         class="flex flex-col md:flex-row justify-between items-center mb-4"
       >
-        <span class="text-base md:text-xl font-semibold">Ingredientes</span>
+        <span class="text-base md:text-xl font-semibold">{{ 'recipe.create_edit_recipe.ingredients' | translate }}</span>
         <div class="w-full md:w-[24%]">
           <button
             type="button"
@@ -67,7 +67,7 @@
             class="!w-full"
             (click)="addIngredient()"
           >
-            <mat-icon>add</mat-icon> Agregar
+            <mat-icon>add</mat-icon> {{ 'recipe.create_edit_recipe.add' | translate }}
           </button>
         </div>
       </section>
@@ -82,7 +82,7 @@
             >
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef class="center-text">
-                  Ingrediente
+                  {{ 'recipe.create_edit_recipe.col_ingredient' | translate }}
                 </th>
                 <td
                   mat-cell
@@ -131,7 +131,7 @@
               </ng-container>
               <ng-container matColumnDef="quantity">
                 <th mat-header-cell *matHeaderCellDef class="center-text">
-                  Cantidad
+                  {{ 'recipe.create_edit_recipe.col_quantity' | translate }}
                 </th>
                 <td
                   mat-cell
@@ -158,7 +158,7 @@
               </ng-container>
               <ng-container matColumnDef="cost">
                 <th mat-header-cell *matHeaderCellDef class="center-text">
-                  Precio Final
+                  {{ 'recipe.create_edit_recipe.col_final_price' | translate }}
                 </th>
                 <td
                   mat-cell
@@ -184,7 +184,7 @@
               </ng-container>
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef class="center-text">
-                  Acciones
+                  {{ 'recipe.create_edit_recipe.col_actions' | translate }}
                 </th>
                 <td
                   mat-cell
@@ -219,7 +219,7 @@
               >inventory_2</mat-icon
             >
             <p class="m-0 font-medium text-emerald-900/40 text-center">
-              No has agregado ingredientes para esta receta
+              {{ 'recipe.create_edit_recipe.no_ingredients' | translate }}
             </p>
           </div>
         }
@@ -228,9 +228,9 @@
             class="w-full flex flex-col md:flex-row justify-between items-center mt-6 text-black"
           >
             <div class="flex flex-col">
-              <span class="text-xs md:text-lg font-bold">Total Receta</span>
+              <span class="text-xs md:text-lg font-bold">{{ 'recipe.create_edit_recipe.total_recipe' | translate }}</span>
               <span class="text-[10px] md:text-sm"
-                >Costo calculado por ingredientes</span
+                >{{ 'recipe.create_edit_recipe.cost_by_ingredients' | translate }}</span
               >
             </div>
             <div class="flex flex-col">
@@ -269,7 +269,7 @@
           (click)="resetForm()"
           [disabled]="saving"
         >
-          Cancelar
+          {{ 'recipe.create_edit_recipe.cancel' | translate }}
         </button>
       </div>
     }
@@ -284,7 +284,7 @@
         [disabled]="saving || form.invalid || ingredientsArray.length === 0"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-        {{ isEditMode ? 'Guardar cambios' : 'Crear receta' }}
+        {{ isEditMode ? ('recipe.create_edit_recipe.save' | translate) : ('recipe.create_edit_recipe.create' | translate) }}
       </button>
     </div>
   </section>

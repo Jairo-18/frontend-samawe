@@ -39,6 +39,7 @@ import { Invoice } from '../../interface/invoice.interface';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormGroup } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-see-invoices',
   standalone: true,
@@ -57,7 +58,8 @@ import { FormGroup } from '@angular/forms';
     MatCheckboxModule,
     MatTooltipModule,
     InvoicePdfComponent,
-    FormatCopPipe
+    FormatCopPipe,
+    TranslateModule
   ],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
@@ -221,7 +223,9 @@ export class SeeInvoicesComponent implements OnInit {
     });
   }
   openCreateDialog(): void {
-    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
     this._matDialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -241,7 +245,9 @@ export class SeeInvoicesComponent implements OnInit {
       });
   }
   openEditDialog(invoiceId: number): void {
-    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
     this._matDialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',

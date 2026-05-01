@@ -98,7 +98,6 @@
                   }"
                 >
                   <button
-                    [matTooltip]="isCollapsed ? item.name : null"
                     class="flex items-center rounded-lg"
                     [ngClass]="{
                       'bg-none': isCollapsed,
@@ -186,7 +185,7 @@
       }"
     >
       <span class="font-bold text-xs md:text-xs 3xl:text-base"
-        >Rol:
+        >{{ 'sidebar.role' | translate }}:
         <span class="font-normal text-xs md:text-xs 3xl:text-base">{{
           userComplete?.roleType?.name
         }}</span>
@@ -203,7 +202,6 @@
         <app-lang-switcher class="text-white w-full" />
       </div>
       <button
-        [matTooltip]="isCollapsed ? 'Cerrar Sesión' : null"
         (click)="logout.emit(); removeFocus($event)"
         class="flex items-center justify-start"
         [ngClass]="{

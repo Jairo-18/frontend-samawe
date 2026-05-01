@@ -6,8 +6,8 @@
   <section class="w-full py-16 px-6 md:px-16 bg-inherit">
     <div class="max-w-[1400px] mx-auto flex flex-col gap-10">
       <app-section-header
-        label="Ubicación"
-        title="Cómo llegar"
+        [label]="'public.how_to_arrive_section.location_label' | translate"
+        [title]="'public.how_to_arrive_section.title' | translate"
         [description]="org?.howToArriveDescription | translated"
       />
 
@@ -28,7 +28,7 @@
                 <h3
                   class="text-lg font-bold text-[var(--title-color)] tracking-tight"
                 >
-                  Transporte público
+                  {{ 'public.how_to_arrive_section.public_transport' | translate }}
                 </h3>
               </div>
               <p
@@ -53,7 +53,7 @@
                 <h3
                   class="text-lg font-bold text-[var(--title-color)] tracking-tight"
                 >
-                  Vehículo propio
+                  {{ 'public.how_to_arrive_section.private_transport' | translate }}
                 </h3>
               </div>
               <p
@@ -78,7 +78,7 @@
                 <h3
                   class="text-lg font-bold text-[var(--title-color)] tracking-tight"
                 >
-                  Accesibilidad
+                  {{ 'public.how_to_arrive_section.accessibility' | translate }}
                 </h3>
               </div>
               <p
@@ -91,7 +91,7 @@
 
           @if (org?.mapsUrl) {
             <app-button-landing
-              label="Abrir en Google Maps"
+              [label]="'public.how_to_arrive_section.open_maps' | translate"
               icon="open_in_new"
               variant="transparent"
               (clicked)="openMaps()"

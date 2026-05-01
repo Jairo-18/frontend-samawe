@@ -35,6 +35,7 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { SearchField } from '../../../shared/interfaces/search.interface';
 import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-see-recipes',
@@ -48,7 +49,8 @@ import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
     SectionHeaderComponent,
     SearchFieldsComponent,
     MatIconModule,
-    RecipeCardComponent
+    RecipeCardComponent,
+    TranslateModule
   ],
   templateUrl: './see-recipes.component.html',
   styleUrl: './see-recipes.component.scss',

@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BenefitSection } from '../../../shared/interfaces/organizational.interface';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-organizational-home-content',
@@ -16,7 +18,9 @@ import { BenefitSection } from '../../../shared/interfaces/organizational.interf
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './organizational-home-content.component.html',
   styleUrls: ['./organizational-home-content.component.scss']

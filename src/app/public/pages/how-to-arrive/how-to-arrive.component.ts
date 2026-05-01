@@ -7,6 +7,8 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { ReservationSectionComponent } from '../home/components/reservation-section/reservation-section.component';
 import { HowToArriveSectionComponent } from '../home/components/how-to-arrive-section/how-to-arrive-section.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-how-to-arrive',
   standalone: true,
@@ -14,7 +16,8 @@ import { HowToArriveSectionComponent } from '../home/components/how-to-arrive-se
     CommonModule,
     LoaderComponent,
     ReservationSectionComponent,
-    HowToArriveSectionComponent
+    HowToArriveSectionComponent,
+    TranslateModule
   ],
   templateUrl: './how-to-arrive.component.html',
   styleUrl: './how-to-arrive.component.scss'

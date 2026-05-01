@@ -10,6 +10,8 @@ import { ApplicationService } from '../../../organizational/services/application
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
 import { SeoService } from '../../../shared/services/seo.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-accommodation',
   standalone: true,
@@ -17,7 +19,8 @@ import { SeoService } from '../../../shared/services/seo.service';
     CommonModule,
     CardAccommodationComponent,
     MatPaginatorModule,
-    LoaderComponent
+    LoaderComponent,
+    TranslateModule
   ],
   templateUrl: './accommodation.component.html',
   styleUrl: './accommodation.component.scss'

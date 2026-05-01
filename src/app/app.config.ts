@@ -4,7 +4,7 @@ import {
   LOCALE_ID,
   provideZoneChangeDetection
 } from '@angular/core';
-import { PreloadAllModules, RouteReuseStrategy, withPreloading } from '@angular/router';
+import { RouteReuseStrategy } from '@angular/router';
 import { CacheRouteReuseStrategy } from './shared/strategies/cache-route-reuse.strategy';
 import { provideRouter } from '@angular/router';
 import {
@@ -45,7 +45,7 @@ registerLocaleData(localeEs);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideRouter(routes),
     provideNativeDateAdapter(MAT_NATIVE_DATE_FORMATS),
     provideAnimationsAsync(),
     importProvidersFrom(

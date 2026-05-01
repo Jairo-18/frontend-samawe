@@ -34,6 +34,7 @@ import {
 } from '../../../shared/interfaces/organizational.interface';
 import { BoldTextPipe } from '../../../shared/pipes/bold-text.pipe';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organizational-legal',
@@ -48,7 +49,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     MatTooltipModule,
     DragDropModule,
     BoldTextPipe,
-    TranslatedPipe
+    TranslatedPipe,
+    TranslateModule
   ],
   templateUrl: './organizational-legal.component.html',
   styleUrls: ['./organizational-legal.component.scss']

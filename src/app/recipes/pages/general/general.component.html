@@ -3,7 +3,7 @@
     animationDuration="600ms"
     (selectedIndexChange)="onTabChange($event)"
   >
-    <mat-tab label="Ver recetas">
+    <mat-tab [label]="'recipe.tabs.see_recipes' | translate">
       <ng-template matTabContent>
         <app-see-recipes
           (editRecipe)="onEditRecipe($event)"
@@ -14,7 +14,7 @@
 
     @if (!isMesero) {
       <mat-tab
-        label="{{ currentRecipe ? 'Editar Receta' : 'Crear Receta' }}"
+        [label]="currentRecipe ? ('recipe.tabs.edit_recipe' | translate) : ('recipe.tabs.create_recipe' | translate)"
         class="overflow-hidden"
       >
         <ng-template matTabContent

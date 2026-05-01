@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TaxeType } from '../../../shared/interfaces/relatedDataGeneral';
 import { PendingInvoiceDetail } from '../../interface/pending-item.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-pending-items-table',
   standalone: true,
@@ -18,7 +19,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    FormatCopPipe
+    FormatCopPipe,
+    TranslateModule
   ],
   templateUrl: './pending-items-table.html',
   styleUrl: './pending-items-table.scss'
@@ -30,9 +32,17 @@ export class PendingItemsTableComponent {
   @Output() itemDeleted = new EventEmitter<number>();
   @Output() saveAll = new EventEmitter<void>();
   displayedColumns: string[] = [
-    'type', 'name', 'startDate', 'endDate', 'amount',
-    'priceWithoutTax', 'taxVat', 'taxIco8', 'taxIco5',
-    'subtotal', 'actions'
+    'type',
+    'name',
+    'startDate',
+    'endDate',
+    'amount',
+    'priceWithoutTax',
+    'taxVat',
+    'taxIco8',
+    'taxIco5',
+    'subtotal',
+    'actions'
   ];
 
   getTaxByType(item: PendingInvoiceDetail, taxeTypeId: number): number {
@@ -82,4 +92,3 @@ export class PendingItemsTableComponent {
     this.saveAll.emit();
   }
 }
-

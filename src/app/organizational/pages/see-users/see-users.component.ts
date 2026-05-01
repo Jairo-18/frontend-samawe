@@ -33,6 +33,8 @@ import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-see-users',
   standalone: true,
@@ -50,7 +52,8 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     LoaderComponent,
     MatTab,
     MatTabGroup,
-    BasePageComponent
+    BasePageComponent,
+    TranslateModule
   ],
   templateUrl: './see-users.component.html',
   styleUrl: './see-users.component.scss'

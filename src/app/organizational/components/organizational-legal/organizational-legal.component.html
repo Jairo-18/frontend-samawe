@@ -14,7 +14,8 @@
             color="primary"
             (click)="createSectionEvt.emit(legalType.value)"
           >
-            <mat-icon>add</mat-icon> Activar
+            <mat-icon>add</mat-icon>
+            {{ 'organizational.legal.activate' | translate }}
           </button>
         }
       </div>
@@ -54,14 +55,14 @@
                   }
                   @if (!item.title && !item.description) {
                     <p class="text-xs text-[var(--title-color)] m-0">
-                      Sin título
+                      {{ 'organizational.legal.no_title' | translate }}
                     </p>
                   }
                 </div>
                 <div class="flex gap-0.5 shrink-0">
                   <button
                     mat-icon-button
-                    matTooltip="Editar"
+                    [matTooltip]="'organizational.common.edit' | translate"
                     (click)="startEditItem(item, section.legalSectionId)"
                   >
                     <mat-icon>edit</mat-icon>
@@ -69,7 +70,7 @@
                   <button
                     mat-icon-button
                     color="warn"
-                    matTooltip="Eliminar"
+                    [matTooltip]="'organizational.common.delete' | translate"
                     (click)="deleteItemEvt.emit(item.legalItemId)"
                   >
                     <mat-icon>delete</mat-icon>
@@ -161,14 +162,15 @@
                       >
                         <strong>N</strong>
                       </button>
-                      <span
-                        >Selecciona texto → <strong>N</strong> para
-                        negrilla</span
-                      >
+                      <span>{{
+                        'organizational.legal.bold_hint' | translate
+                      }}</span>
                     </div>
 
                     <mat-form-field appearance="outline" class="w-full">
-                      <mat-label>Sub-item</mat-label>
+                      <mat-label>{{
+                        'organizational.legal.sub_item' | translate
+                      }}</mat-label>
                       <textarea
                         #childTextarea
                         matInput
@@ -179,7 +181,9 @@
                         childForm.get('content')?.hasError('required') &&
                         childForm.get('content')?.touched
                       ) {
-                        <mat-error>Requerido</mat-error>
+                        <mat-error>{{
+                          'organizational.common.required' | translate
+                        }}</mat-error>
                       }
                     </mat-form-field>
 
@@ -188,7 +192,7 @@
                         class="mb-2 px-3 py-2 bg-[var(--bg-primary-color)] border border-[var(--bg-secondary-color)] rounded text-sm text-[var(--text-color)]"
                       >
                         <p class="text-xs text-[var(--text-color)] mb-1 m-0">
-                          Vista previa:
+                          {{ 'organizational.legal.preview' | translate }}
                         </p>
                         <span
                           [innerHTML]="
@@ -210,7 +214,7 @@
                           class="!w-full"
                           (click)="closeChildForm()"
                         >
-                          Cancelar
+                          {{ 'organizational.common.cancel' | translate }}
                         </button>
                       </div>
                       <div class="flex flex-col md:flex-row w-full md:w-[50%]">
@@ -220,7 +224,11 @@
                           extended="true"
                           (click)="submitChild(item)"
                         >
-                          {{ editingChildId ? 'Actualizar' : 'Agregar' }}
+                          {{
+                            editingChildId
+                              ? ('organizational.common.update' | translate)
+                              : ('organizational.common.add' | translate)
+                          }}
                         </button>
                       </div>
                     </div>
@@ -233,7 +241,8 @@
                       class="!w-full"
                       (click)="openChildForm(item.legalItemId)"
                     >
-                      <mat-icon>add</mat-icon> sub-item
+                      <mat-icon>add</mat-icon>
+                      {{ 'organizational.legal.sub_item' | translate }}
                     </button>
                   </div>
                 }
@@ -252,11 +261,13 @@
                 <p
                   class="text-xs font-semibold text-[var(--primary-color)] mb-3 m-0"
                 >
-                  Editando item
+                  {{ 'organizational.legal.editing_item' | translate }}
                 </p>
                 <div class="flex flex-col gap-3">
                   <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Título (opcional)</mat-label>
+                    <mat-label>{{
+                      'organizational.legal.title_optional' | translate
+                    }}</mat-label>
                     <input matInput formControlName="title" />
                   </mat-form-field>
                   <div>
@@ -265,18 +276,19 @@
                         type="button"
                         mat-stroked-button
                         class="!min-w-0 !px-2 !h-7 !text-xs font-bold !leading-none"
-                        matTooltip="Selecciona texto y pulsa para negrilla"
+                        [matTooltip]="'organizational.legal.bold_tooltip' | translate"
                         (click)="applyBoldDescription()"
                       >
                         <strong>N</strong>
                       </button>
-                      <span class="text-xs text-[var(--text-color)]"
-                        >Selecciona texto → <strong>N</strong> para
-                        negrilla</span
-                      >
+                      <span class="text-xs text-[var(--text-color)]">{{
+                        'organizational.legal.bold_hint' | translate
+                      }}</span>
                     </div>
                     <mat-form-field appearance="outline" class="w-full">
-                      <mat-label>Descripción (opcional)</mat-label>
+                      <mat-label>{{
+                        'organizational.legal.description_optional' | translate
+                      }}</mat-label>
                       <textarea
                         #descriptionTextarea
                         matInput
@@ -286,34 +298,59 @@
                     </mat-form-field>
                   </div>
                   <div
-                    class="flex flex-col md:flex-row w-full justify-between gap-2"
+                    class="flex flex-col md:flex-row w-full justify-between gap-4 mt-2"
                   >
-                    <div class="flex flex-col md:flex-row w-full md:w-[50%]">
-                      <button
-                        mat-fab
-                        extended="true"
-                        color="warn"
-                        type="button"
-                        class="!w-full"
-                        (click)="cancelItemForm()"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                    <div class="flex flex-col md:flex-row w-full md:w-[50%]">
-                      <button
-                        mat-fab
-                        class="!w-full"
-                        extended="true"
-                        (click)="submitItem(section)"
-                      >
-                        Guardar
-                      </button>
-                    </div>
+                    <button
+                      mat-stroked-button
+                      type="button"
+                      class="flex-1"
+                      (click)="cancelItemForm()"
+                    >
+                      {{ 'organizational.common.cancel' | translate }}
+                    </button>
+                    <button
+                      mat-fab
+                      extended="true"
+                      class="flex-1"
+                      (click)="submitItem(section)"
+                    >
+                      <mat-icon>add</mat-icon>
+                      {{ 'organizational.legal.add_item' | translate }}
+                    </button>
                   </div>
                 </div>
               </div>
             }
+
+            <!-- Acciones sección -->
+            <div
+              class="flex flex-col md:flex-row w-full justify-between items-center px-4 py-3 border-t border-[var(--bg-secondary-color)] bg-[var(--bg-secondary-color)] gap-2"
+            >
+              <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                <button
+                  mat-fab
+                  extended="true"
+                  class="!w-full"
+                  (click)="openItemForm(section.legalSectionId)"
+                >
+                  <mat-icon>add</mat-icon>
+                  {{ 'organizational.legal.add_item' | translate }}
+                </button>
+              </div>
+              <div class="flex flex-col md:flex-row w-full md:w-[50%]">
+                <button
+                  mat-fab
+                  extended="true"
+                  color="warn"
+                  type="button"
+                  class="!w-full"
+                  (click)="deleteSectionEvt.emit(section.legalSectionId)"
+                >
+                  <mat-icon>delete_sweep</mat-icon>
+                  {{ 'organizational.legal.delete_section' | translate }}
+                </button>
+              </div>
+            </div>
           }
         </div>
 
@@ -326,15 +363,19 @@
             [formGroup]="itemForm"
           >
             <p class="text-xs font-semibold text-[var(--title-color)] mb-3 m-0">
-              Nuevo item
+              {{ 'organizational.legal.new_item' | translate }}
             </p>
             <div class="flex flex-col gap-3">
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Título (opcional)</mat-label>
+                <mat-label>{{
+                  'organizational.legal.title_optional' | translate
+                }}</mat-label>
                 <input matInput formControlName="title" />
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Descripción (opcional)</mat-label>
+                <mat-label>{{
+                  'organizational.legal.description_optional' | translate
+                }}</mat-label>
                 <textarea
                   matInput
                   formControlName="description"
@@ -353,7 +394,7 @@
                     class="!w-full"
                     (click)="cancelItemForm()"
                   >
-                    Cancelar
+                    {{ 'organizational.common.cancel' | translate }}
                   </button>
                 </div>
                 <div class="flex flex-col md:flex-row w-full md:w-[50%]">
@@ -363,7 +404,7 @@
                     class="!w-full"
                     (click)="submitItem(section)"
                   >
-                    Agregar item
+                    {{ 'organizational.legal.add_item' | translate }}
                   </button>
                 </div>
               </div>
@@ -382,7 +423,8 @@
               class="!w-full"
               (click)="openItemForm(section.legalSectionId)"
             >
-              <mat-icon>add</mat-icon> Agregar item
+              <mat-icon>add</mat-icon>
+              {{ 'organizational.legal.add_item' | translate }}
             </button>
           </div>
           <div class="flex flex-col md:flex-row w-full md:w-[50%]">
@@ -394,7 +436,8 @@
               class="!w-full"
               (click)="deleteSectionEvt.emit(section.legalSectionId)"
             >
-              <mat-icon>delete_sweep</mat-icon> Eliminar sección
+              <mat-icon>delete_sweep</mat-icon>
+              {{ 'organizational.legal.delete_section' | translate }}
             </button>
           </div>
         </div>

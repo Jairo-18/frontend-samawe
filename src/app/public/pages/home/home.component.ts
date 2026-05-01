@@ -17,6 +17,8 @@ import { MostRequestedSectionComponent } from './components/most-requested-secti
 import { HowToArriveSectionComponent } from './components/how-to-arrive-section/how-to-arrive-section.component';
 import { BenefitsSectionComponent } from './components/benefits-section/benefits-section.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -29,7 +31,8 @@ import { BenefitsSectionComponent } from './components/benefits-section/benefits
     AboutUsSectionComponent,
     ReservationSectionComponent,
     HowToArriveSectionComponent,
-    BenefitsSectionComponent
+    BenefitsSectionComponent,
+    TranslateModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

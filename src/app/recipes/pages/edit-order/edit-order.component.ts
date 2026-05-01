@@ -27,6 +27,7 @@ import {
   StateType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-order',
@@ -41,7 +42,8 @@ import { MatDialog } from '@angular/material/dialog';
     AddAccommodationComponent,
     AddExcursionComponent,
     LoaderComponent,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule
   ],
   templateUrl: './edit-order.component.html',
   styleUrls: ['./edit-order.component.scss']
@@ -173,7 +175,9 @@ export class EditOrderComponent implements OnInit {
 
   openEditInvoiceDialog(): void {
     if (!this.orderId) return;
-    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
     this._dialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',

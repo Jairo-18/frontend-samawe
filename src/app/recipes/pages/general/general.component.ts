@@ -15,6 +15,7 @@ import { CreateOrEditRecipeComponent } from '../../components/create-or-edit-rec
 import { RecipeWithDetails } from '../../interfaces/recipe.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-recipes-general',
@@ -24,7 +25,8 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
     MatTabsModule,
     SeeRecipesComponent,
     CreateOrEditRecipeComponent,
-    BasePageComponent
+    BasePageComponent,
+    TranslateModule
   ],
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'

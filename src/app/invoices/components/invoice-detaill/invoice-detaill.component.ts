@@ -25,6 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-invoice-detaill',
   standalone: true,
@@ -35,7 +36,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     MatIcon,
     MatButtonModule,
     FormatCopPipe,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './invoice-detaill.component.html',
   styleUrl: './invoice-detaill.component.scss'
@@ -61,9 +63,18 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
     hasNextPage: false
   };
   displayedColumns: string[] = [
-    'code', 'name', 'startDate', 'endDate', 'amount',
-    'priceWithoutTax', 'taxVat', 'taxIco8', 'taxIco5',
-    'subtotal', 'isPaid', 'actions'
+    'code',
+    'name',
+    'startDate',
+    'endDate',
+    'amount',
+    'priceWithoutTax',
+    'taxVat',
+    'taxIco8',
+    'taxIco5',
+    'subtotal',
+    'isPaid',
+    'actions'
   ];
 
   dataSource = new MatTableDataSource<InvoiceDetail>();

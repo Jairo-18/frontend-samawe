@@ -5,9 +5,10 @@ import { TranslatedField } from '../types/translated-field.type';
 @Pipe({
   name: 'translated',
   pure: false,
+  standalone: true
 })
 export class TranslatedPipe implements PipeTransform {
-  private readonly _lang = inject(LangService);
+  private readonly _lang: LangService = inject(LangService);
 
   transform(value: TranslatedField | string | null | undefined): string {
     if (!value) return '';

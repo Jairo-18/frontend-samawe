@@ -23,6 +23,9 @@ import { CreateOrEditTypesComponent } from '../create-or-edit-types/create-or-ed
 import { TypesService } from '../../services/types.service';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { SearchField } from '../../../shared/interfaces/search.interface';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-see-types',
   standalone: true,
@@ -36,7 +39,9 @@ import { SearchField } from '../../../shared/interfaces/search.interface';
     CardTypesComponent,
     LoaderComponent,
     CommonModule,
-    SearchFieldsComponent
+    SearchFieldsComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './see-types.component.html',
   styleUrls: ['./see-types.component.scss']

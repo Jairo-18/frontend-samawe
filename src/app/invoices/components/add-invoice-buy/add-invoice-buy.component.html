@@ -1,11 +1,11 @@
 <form [formGroup]="form" class="w-full overflow-hidden">
   <mat-form-field appearance="outline" class="w-full mt-3">
-    <mat-label>Buscar Producto</mat-label>
+    <mat-label>{{ 'invoice.common.search_product' | translate }}</mat-label>
     <input
       matInput
       [matAutocomplete]="auto"
       formControlName="name"
-      placeholder="Ejemplo: Coca Cola..."
+      [placeholder]="'invoice.common.product_placeholder' | translate"
       (focus)="onProductFocus()"
     />
     <mat-icon matPrefix>inventory</mat-icon>
@@ -15,7 +15,7 @@
       mat-icon-button
       type="button"
       (click)="clearProductSelection()"
-      matTooltip="Limpiar selección"
+      [matTooltip]="'invoice.common.clear_selection' | translate"
     >
       <mat-icon>clear</mat-icon>
     </button>
@@ -29,17 +29,17 @@
       >
         {{ product.name }}
         <span [ngClass]="product.isActive ? 'text-green-600' : 'text-red-600'">
-          - {{ product?.isActive ? 'Activo' : 'Inactivo' }}
+          - {{ product?.isActive ? ('invoice.common.active' | translate) : ('invoice.common.inactive' | translate) }}
         </span>
       </mat-option>
     </mat-autocomplete>
     <mat-error *ngIf="form.get('name')?.hasError('required')">
-      Debe seleccionar un producto
+      {{ 'invoice.errors.select_product' | translate }}
     </mat-error>
   </mat-form-field>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Unitario (Compra)</mat-label>
+      <mat-label>{{ 'invoice.common.unit_price_buy' | translate }}</mat-label>
       <input
         matInput
         type="text"
@@ -53,15 +53,15 @@
       />
       <mat-icon matSuffix>attach_money</mat-icon>
       <mat-error *ngIf="form.get('priceBuy')?.hasError('required')">
-        El precio de compra es requerido
+        {{ 'invoice.errors.price_buy_required' | translate }}
       </mat-error>
       <mat-error *ngIf="form.get('priceBuy')?.hasError('min')">
-        El precio debe ser mayor o igual a 0
+        {{ 'invoice.errors.price_min' | translate }}
       </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Final</mat-label>
+      <mat-label>{{ 'invoice.common.final_price' | translate }}</mat-label>
       <input
         matInput
         type="text"
@@ -75,7 +75,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Unidades en Existencia</mat-label>
+      <mat-label>{{ 'invoice.common.stock' | translate }}</mat-label>
       <input
         matInput
         type="text"
@@ -87,7 +87,7 @@
       <mat-icon matSuffix>store</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Cantidad</mat-label>
+      <mat-label>{{ 'invoice.common.quantity' | translate }}</mat-label>
       <input
         matInput
         type="text"
@@ -100,15 +100,15 @@
       />
       <mat-icon matSuffix>numbers</mat-icon>
       <mat-error *ngIf="form.get('amountSale')?.hasError('required')">
-        La cantidad es requerida
+        {{ 'invoice.errors.quantity_required' | translate }}
       </mat-error>
       <mat-error *ngIf="form.get('amountSale')?.hasError('min')">
-        La cantidad debe ser mayor a 0
+        {{ 'invoice.errors.quantity_min' | translate }}
       </mat-error>
     </mat-form-field>
   </div>
   <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Tipo de impuesto</mat-label>
+    <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
         {{ taxe.name }}
@@ -123,7 +123,7 @@
     [disabled]="isLoading"
     (click)="addProduct()"
   >
-    <ng-container *ngIf="!isLoading; else loading"> Añadir </ng-container>
+    <ng-container *ngIf="!isLoading; else loading"> {{ 'invoice.common.add' | translate }} </ng-container>
     <ng-template #loading>
       <mat-spinner diameter="24" color="accent"></mat-spinner>
     </ng-template>

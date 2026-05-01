@@ -1,6 +1,6 @@
 <app-section-header
-  [title]="'Ver Recetas'"
-  [subtitle]="'Consulta los ingredientes y costos de cada plato'"
+  [title]="'recipe.see_recipes.title' | translate"
+  [subtitle]="'recipe.see_recipes.subtitle' | translate"
 ></app-section-header>
 
 <app-search-fields
@@ -21,7 +21,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'recipe.see_recipes.clear_filters' | translate }}
     </button>
   </div>
 
@@ -34,7 +34,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'recipe.see_recipes.clear_filters' | translate }}
     </button>
   </div>
 </section>
@@ -70,7 +70,7 @@
       <div
         class="w-full flex justify-center items-center min-h-[200px] text-center"
       >
-        <p class="text-gray-400">No se encontraron recetas.</p>
+        <p class="text-gray-400">{{ 'recipe.see_recipes.no_results' | translate }}</p>
       </div>
     }
   </div>

@@ -12,7 +12,7 @@
         </span>
         <span class="ml-2 text-xs text-[var(--text-color)]">{{ formatDate(reply.createdAt) }}</span>
         @if (wasEdited) {
-          <span class="ml-1 text-xs italic text-[var(--text-color)] opacity-70">· editado</span>
+          <span class="ml-1 text-xs italic text-[var(--text-color)] opacity-70">· {{ 'public.review.edited' | translate }}</span>
         }
       </div>
       @if (isOwner) {
@@ -33,11 +33,11 @@
           <mat-menu #replyMenu="matMenu">
             <button mat-menu-item (click)="startEdit()">
               <span class="material-icons mr-2 text-[var(--primary-color)]">edit</span>
-              Editar
+              {{ 'public.common.edit' | translate }}
             </button>
             <button mat-menu-item (click)="delete()">
               <span class="material-icons mr-2 text-red-500">delete</span>
-              <span class="text-red-500">Eliminar</span>
+              <span class="text-red-500">{{ 'public.common.delete' | translate }}</span>
             </button>
           </mat-menu>
         </div>
@@ -47,16 +47,16 @@
     @if (editing) {
       <div class="mt-1">
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Editar respuesta</mat-label>
+          <mat-label>{{ 'public.review.edit_reply' | translate }}</mat-label>
           <textarea matInput [(ngModel)]="editComment" rows="2" cdkTextareaAutosize maxlength="750"></textarea>
           <mat-hint align="end">{{ editComment.length }}/750</mat-hint>
         </mat-form-field>
         <div class="flex gap-2 justify-end">
           <button (click)="cancelEdit()" class="px-3 py-1 text-xs rounded-[4px] border border-[var(--primary-color)] text-[var(--primary-color)] hover:opacity-80 transition">
-            Cancelar
+            {{ 'public.common.cancel' | translate }}
           </button>
           <button (click)="save()" class="px-3 py-1 text-xs rounded-[4px] bg-[var(--primary-color)] text-white hover:opacity-90 transition">
-            Guardar
+            {{ 'public.common.save' | translate }}
           </button>
         </div>
       </div>

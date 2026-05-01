@@ -4,6 +4,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { SeeOrdersComponent } from '../../components/see-orders/see-orders.component';
 import { CreateOrEditOrderComponent } from '../../components/create-or-edit-order/create-or-edit-order.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-restaurant-order',
@@ -13,7 +14,8 @@ import { CreateOrEditOrderComponent } from '../../components/create-or-edit-orde
     MatTabsModule,
     BasePageComponent,
     SeeOrdersComponent,
-    CreateOrEditOrderComponent
+    CreateOrEditOrderComponent,
+    TranslateModule
   ],
   templateUrl: './restaurant-order.component.html',
   styleUrls: ['./restaurant-order.component.scss']

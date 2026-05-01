@@ -36,6 +36,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -53,7 +55,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     CurrencyFormatDirective,
     MatTimepickerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'
@@ -165,7 +169,9 @@ export class AddProductComponent implements OnInit {
     }
   }
   onProductSelected(name: string): void {
-    const product = this.filteredProducts.find((p) => Object.values(p.name).includes(name));
+    const product = this.filteredProducts.find((p) =>
+      (p.name as unknown as string) === name || Object.values(p.name).includes(name)
+    );
     if (!product) return;
     this.form.patchValue({
       productId: product.productId,
@@ -173,7 +179,9 @@ export class AddProductComponent implements OnInit {
       priceBuy: product.priceBuy ?? 0,
       amount: product.amount,
       categoryId: product.categoryType?.categoryTypeId,
-      ...(product.taxeType?.taxeTypeId != null && { taxeTypeId: product.taxeType.taxeTypeId })
+      ...(product.taxeType?.taxeTypeId != null && {
+        taxeTypeId: product.taxeType.taxeTypeId
+      })
     });
     this.updateFinalPrice();
   }
@@ -223,9 +231,7 @@ export class AddProductComponent implements OnInit {
     return rate;
   }
   private updateFinalPrice() {
-    const priceSale = Number(
-      this.form.get('priceSale')?.value ?? 0
-    );
+    const priceSale = Number(this.form.get('priceSale')?.value ?? 0);
     const amountSale = Number(this.form.get('amountSale')?.value ?? 0);
     const total = priceSale * amountSale;
     this.form.patchValue({ finalPrice: this.round(total, 2) });

@@ -5,10 +5,18 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-card-accommodation',
   standalone: true,
-  imports: [CommonModule, CapitalizePipe, ButtonLandingComponent, TranslatedPipe],
+  imports: [
+    CommonModule,
+    CapitalizePipe,
+    ButtonLandingComponent,
+    TranslatedPipe,
+    TranslateModule
+  ],
   templateUrl: './card-accommodation.component.html',
   styleUrl: './card-accommodation.component.scss'
 })

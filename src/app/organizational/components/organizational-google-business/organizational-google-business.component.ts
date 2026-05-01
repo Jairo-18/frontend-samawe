@@ -7,11 +7,23 @@ import {
   GoogleBusinessLocation,
 } from '../../services/google-business.service';
 import { NotificationsService } from '../../../shared/services/notifications.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-organizational-google-business',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './organizational-google-business.component.html',
 })
 export class OrganizationalGoogleBusinessComponent implements OnInit {

@@ -36,6 +36,8 @@ import { CommonModule } from '@angular/common';
 import { InvoiceCurrencyFormatDirective } from '../../../shared/directives/invoice-currency-format.directive';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-invoice-buy-excursion',
@@ -51,7 +53,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     MatIcon,
     MatProgressSpinnerModule,
-    InvoiceCurrencyFormatDirective
+    InvoiceCurrencyFormatDirective,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './add-invoice-buy-excursion.component.html',
   styleUrl: './add-invoice-buy-excursion.component.scss'
@@ -151,19 +155,29 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
     }
   }
   onExcursionSelected(name: string) {
-    const exc = this.filteredExcursions.find((e) => Object.values(e.name).includes(name));
+    const exc = this.filteredExcursions.find(
+      (e) =>
+        (e.name as unknown as string) === name ||
+        Object.values(e.name).includes(name)
+    );
+
     if (!exc) return;
     const currentPriceSale = this.parseNumber(
       this.form.get('priceSale')?.value
     );
     const shouldUpdatePrice = !currentPriceSale || currentPriceSale === 0;
+    const price =
+      this.parseNumber(exc.priceBuy) || this.parseNumber(exc.priceSale) || 0;
+
     this.form.patchValue({
       excursionId: exc.excursionId,
       ...(shouldUpdatePrice && {
-        priceSale: exc.priceBuy,
-        priceWithoutTax: exc.priceBuy
+        priceSale: price,
+        priceWithoutTax: price
       }),
-      ...(exc.taxeTypeId != null && { taxeTypeId: exc.taxeTypeId })
+      ...(exc.taxeType?.taxeTypeId != null && {
+        taxeTypeId: exc.taxeType.taxeTypeId
+      })
     });
     this.updateFinalPrice();
   }

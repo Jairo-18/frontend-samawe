@@ -32,6 +32,9 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { NormalizeNameDirective } from '../../../shared/directives/normalize-name.directive';
 import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-create-or-edit-users',
   standalone: true,
@@ -51,7 +54,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     LoaderComponent,
     NormalizeNameDirective,
     NoSpacesDirective,
-    RouterLink
+    RouterLink,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './create-or-edit-users.component.html',
   styleUrl: './create-or-edit-users.component.scss'

@@ -7,10 +7,18 @@ import { LegalSection } from '../../../../shared/interfaces/organizational.inter
 import { ApplicationService } from '../../../../organizational/services/application.service';
 import { switchMap, filter, take } from 'rxjs';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-privacity',
   standalone: true,
-  imports: [BasePageComponent, BoldTextPipe, TranslatedPipe, CommonModule],
+  imports: [
+    BasePageComponent,
+    BoldTextPipe,
+    TranslatedPipe,
+    CommonModule,
+    TranslateModule
+  ],
   templateUrl: './privacity.component.html',
   styleUrl: './privacity.component.scss'
 })

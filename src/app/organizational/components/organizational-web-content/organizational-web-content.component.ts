@@ -26,6 +26,7 @@ import {
   BenefitItem
 } from '../../../shared/interfaces/organizational.interface';
 import { HOTEL_ICONS } from '../../constants/icons.constants';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-organizational-web-content',
@@ -38,7 +39,8 @@ import { HOTEL_ICONS } from '../../constants/icons.constants';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './organizational-web-content.component.html',
   styleUrls: ['./organizational-web-content.component.scss']

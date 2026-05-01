@@ -16,6 +16,8 @@ import { TranslatedPipe } from '../../../../../shared/pipes/translated.pipe';
 
 const FALLBACK: google.maps.LatLngLiteral = { lat: 1.2143926, lng: -76.663683 };
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-how-to-arrive-section',
   standalone: true,
@@ -24,7 +26,8 @@ const FALLBACK: google.maps.LatLngLiteral = { lat: 1.2143926, lng: -76.663683 };
     MapAdvancedMarker,
     ButtonLandingComponent,
     SectionHeaderComponent,
-    TranslatedPipe
+    TranslatedPipe,
+    TranslateModule
   ],
   templateUrl: './how-to-arrive-section.component.html',
   styleUrls: ['./how-to-arrive-section.component.scss']

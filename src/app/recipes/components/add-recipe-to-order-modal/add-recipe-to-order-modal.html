@@ -1,17 +1,17 @@
 <app-base-dialog
-  [title]="'Añadir a Pedido'"
-  [description]="'Vas a agregar ' + data.productName + ' a un pedido existente.'"
+  [title]="'recipe.add_to_order.title' | translate"
+  [description]="('recipe.add_to_order.description_prefix' | translate) + data.productName + ('recipe.add_to_order.description_suffix' | translate)"
 >
   <form form [formGroup]="searchForm" class="flex flex-col gap-4">
     <!-- Buscador de Factura (Autocomplete) -->
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Buscar Factura</mat-label>
+      <mat-label>{{ 'recipe.add_to_order.search_invoice' | translate }}</mat-label>
       <input
         type="text"
         matInput
         [matAutocomplete]="invoiceAuto"
         formControlName="search"
-        placeholder="Mesa o Nombre del cliente..."
+        [placeholder]="'recipe.add_to_order.search_placeholder' | translate"
         (focus)="onInvoiceFocus()"
       />
       <mat-icon matPrefix>search</mat-icon>
@@ -25,7 +25,7 @@
         mat-icon-button
         type="button"
         (click)="clearInvoiceSelection()"
-        matTooltip="Limpiar selección"
+        [matTooltip]="'recipe.add_to_order.clear_selection' | translate"
       >
         <mat-icon>clear</mat-icon>
       </button>
@@ -46,7 +46,7 @@
                 class="!text-[var(--primary-color)] !text-base !w-5 !h-5 !leading-5 align-middle"
                 >table_restaurant</mat-icon
               >
-              <span>Mesa {{ invoice.tableNumber }}</span>
+              <span>{{ 'recipe.add_to_order.table_label' | translate }} {{ invoice.tableNumber }}</span>
               <span class="text-gray-600"
                 >- {{ invoice.user.firstName }} {{ invoice.user.lastName
                 }}</span
@@ -60,7 +60,7 @@
         } @if(showNoResultsMessage) {
         <mat-option disabled>
           <span class="text-gray-500"
-            >No se encontraron pedidos activos en mesas.</span
+            >{{ 'recipe.add_to_order.no_orders' | translate }}</span
           >
         </mat-option>
         }
@@ -69,13 +69,13 @@
 
     <!-- Cantidad -->
     <mat-form-field appearance="outline" class="w-full mt-2">
-      <mat-label>Cantidad</mat-label>
+      <mat-label>{{ 'recipe.add_to_order.quantity' | translate }}</mat-label>
       <input matInput type="number" formControlName="amount" min="1" required />
       <mat-error *ngIf="searchForm.get('amount')?.hasError('required')">
-        La cantidad es requerida
+        {{ 'recipe.add_to_order.required' | translate }}
       </mat-error>
       <mat-error *ngIf="searchForm.get('amount')?.hasError('min')">
-        Debe ser al menos 1
+        {{ 'recipe.add_to_order.min_one' | translate }}
       </mat-error>
     </mat-form-field>
   </form>
@@ -94,7 +94,7 @@
         mat-dialog-close
         [disabled]="isSubmitting"
       >
-        Cancelar
+        {{ 'recipe.add_to_order.cancel' | translate }}
       </button>
     </div>
 
@@ -110,7 +110,7 @@
       >
         @if(isSubmitting) {
         <mat-icon class="animate-spin">sync</mat-icon>
-        } {{ isSubmitting ? 'Añadiendo...' : 'Añadir a pedido' }}
+        } {{ isSubmitting ? ('recipe.add_to_order.adding' | translate) : ('recipe.add_to_order.add' | translate) }}
       </button>
     </div>
   </section>

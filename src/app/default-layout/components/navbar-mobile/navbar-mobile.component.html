@@ -31,7 +31,7 @@
       </div>
       <button
         (click)="closeMenu.emit()"
-        aria-label="Cerrar menú"
+        [attr.aria-label]="'nav.close_menu' | translate"
         class="text-gray-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
       >
         <mat-icon>close</mat-icon>
@@ -84,7 +84,7 @@
                   <mat-icon>person</mat-icon>
                 </div>
                 <div class="min-w-0">
-                  <p class="text-white font-semibold text-sm truncate">Cargando...</p>
+                  <p class="text-white font-semibold text-sm truncate">{{ 'common.loading' | translate }}</p>
                 </div>
               }
             </div>

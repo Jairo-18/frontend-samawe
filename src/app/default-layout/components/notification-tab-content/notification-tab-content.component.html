@@ -10,7 +10,7 @@
       <mat-icon class="!w-12 !h-12 !text-5xl mb-2 opacity-20"
         >notifications_off</mat-icon
       >
-      <p>No tienes notificaciones aquí</p>
+      <p>{{ 'notifications.empty' | translate }}</p>
     </div>
   } @else {
     @for (notif of list || []; track notif.notificationId) {
@@ -46,7 +46,7 @@
               <span
                 class="font-bold text-sm"
                 [ngClass]="{ 'text-[var(--primary-color)]': !notif.read }"
-                >Factura: {{ notif.metadata?.code }}</span
+                >{{ 'notifications.invoice' | translate }}: {{ notif.metadata?.code }}</span
               >
               <span class="text-[10px] text-gray-400 text-right">{{
                 notif.createdAt | relativeTime
@@ -60,11 +60,9 @@
                 'text-green-600': notif.metadata?.stateCode === 'ENT'
               }"
             >
-              Estado: {{ notif.metadata?.state }}
+              {{ 'notifications.status' | translate }}: {{ notif.metadata?.state }}
               @if (notif.metadata?.tableNumber) {
-                <span class="text-gray-600"
-                  >Mesa: {{ notif.metadata?.tableNumber }}</span
-                >
+                <span class="text-gray-600">{{ 'notifications.table' | translate }}: {{ notif.metadata?.tableNumber }}</span>
               }
             </div>
 
@@ -79,9 +77,7 @@
           >
             <button
               mat-icon-button
-              [title]="
-                notif.read ? 'Marcar como no leído' : 'Marcar como leído'
-              "
+              [title]="notif.read ? ('notifications.mark_unread' | translate) : ('notifications.mark_read' | translate)"
               (click)="onToggleRead($event, notif)"
             >
               <mat-icon
@@ -94,7 +90,7 @@
             </button>
             <button
               mat-icon-button
-              title="Eliminar"
+              [title]="'notifications.delete' | translate"
               (click)="onDelete($event, notif)"
             >
               <mat-icon class="!text-lg text-red-400">delete_outline</mat-icon>
@@ -105,7 +101,7 @@
     }
     @if (loading) {
       <div class="p-4 text-center text-gray-400 text-xs">
-        Cargando más notificaciones...
+        {{ 'notifications.loading_more' | translate }}
       </div>
     }
   }

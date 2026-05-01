@@ -12,6 +12,8 @@ import { filter, switchMap, take } from 'rxjs';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { SeoService } from '../../../shared/services/seo.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-about-us',
   standalone: true,
@@ -20,7 +22,8 @@ import { SeoService } from '../../../shared/services/seo.service';
     SectionHeaderComponent,
     LoaderComponent,
     ReservationSectionComponent,
-    TranslatedPipe
+    TranslatedPipe,
+    TranslateModule
   ],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.scss'

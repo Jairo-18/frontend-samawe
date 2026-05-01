@@ -57,7 +57,7 @@
       <div
         class="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-indigo-50"
       >
-        <span class="text-sm font-medium">Sin imagen</span>
+        <span class="text-sm font-medium">{{ 'recipe.card.no_image' | translate }}</span>
       </div>
     }
   </div>
@@ -75,17 +75,17 @@
           @if (!isMesero) {
             <button mat-menu-item (click)="edit.emit(recipe)">
               <mat-icon class="blue-color">edit</mat-icon>
-              <span>Editar receta</span>
+              <span>{{ 'recipe.card.edit' | translate }}</span>
             </button>
           }
           <button mat-menu-item (click)="addToOrder.emit(recipe)">
             <mat-icon style="color: var(--primary-color)">assignment</mat-icon>
-            <span>Añadir a pedido</span>
+            <span>{{ 'recipe.card.add_to_order' | translate }}</span>
           </button>
           @if (!isMesero) {
             <button mat-menu-item (click)="delete.emit(recipe)">
               <mat-icon class="red-color">delete</mat-icon>
-              <span>Eliminar receta</span>
+              <span>{{ 'recipe.card.delete' | translate }}</span>
             </button>
           }
         </mat-menu>
@@ -96,11 +96,11 @@
         {{ recipe.productName }}
       </span>
       <span class="inline-flex items-center text-[9px] md:text-xs font-semibold rounded-full">
-        {{ recipe.availablePortions ?? 0 }} porciones disponibles
+        {{ recipe.availablePortions ?? 0 }} {{ 'recipe.card.portions' | translate }}
       </span>
       @if (hasCriticalIngredients) {
         <span class="text-[9px] md:text-xs text-red-900 leading-tight">
-          Solo hay un poco de: <strong>{{ criticalIngredientsNames }}</strong>
+          {{ 'recipe.card.critical_ingredients' | translate }} <strong>{{ criticalIngredientsNames }}</strong>
         </span>
       }
     </div>
@@ -151,8 +151,8 @@
         >
           {{
             showAllIngredients
-              ? 'Ver menos'
-              : 'Ver más (' + (recipe.ingredients.length - 2) + ' ingredientes)'
+              ? ('recipe.card.see_less' | translate)
+              : ('recipe.card.see_more' | translate) + ' (' + (recipe.ingredients.length - 2) + ' ' + ('recipe.card.ingredients_count' | translate) + ')'
           }}</span
         >
       </button>
@@ -164,7 +164,7 @@
     >
       <div class="flex flex-col">
         <span class="text-[9px] md:text-base font-semibold"
-          >Costo total de la receta</span
+          >{{ 'recipe.card.total_cost' | translate }}</span
         >
         <span class="text-[9px] md:text-base font-extrabold text-[#43a047]">
           {{ recipe.totalRecipeCost | formatCop }}
@@ -190,7 +190,7 @@
     <img
       [src]="previewImageUrl"
       class="object-contain max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20 z-[1005]"
-      alt="Vista previa de receta"
+      [alt]="'recipe.card.preview_alt' | translate"
     />
   </div>
 }

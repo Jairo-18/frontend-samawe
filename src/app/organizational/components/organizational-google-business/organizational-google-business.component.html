@@ -6,10 +6,6 @@
       <path fill="#FBBC05" d="M10.72 28.28A14.6 14.6 0 0 1 9.5 24c0-1.49.26-2.93.72-4.28l-7.08-5.5A23.94 23.94 0 0 0 0 24c0 3.88.93 7.55 2.58 10.78l8.14-6.5z"/>
       <path fill="#34A853" d="M24 47c5.45 0 10.03-1.8 13.37-4.9l-7.19-5.58c-1.8 1.21-4.1 1.98-6.18 1.98-6.27 0-11.6-4.17-13.28-9.72l-8.14 6.5C7.07 41.52 14.82 47 24 47z"/>
     </svg>
-    <div>
-      <h3 class="text-base font-semibold text-[var(--title-color)]">Google Business Profile</h3>
-      <p class="text-xs text-[var(--text-color)]">Conecta tu cuenta para mostrar reseñas de Google en el sitio.</p>
-    </div>
   </div>
 
   @if (loading) {
@@ -24,8 +20,8 @@
       <div class="border border-dashed border-[var(--primary-color)] rounded-[4px] p-8 flex flex-col items-center gap-4 text-center">
         <span class="material-icons text-5xl text-[var(--primary-color)] opacity-50">link_off</span>
         <p class="text-sm text-[var(--text-color)]">
-          No hay ninguna cuenta de Google Business conectada.
-          <br/>Las reseñas de Google no se mostrarán en el sitio hasta conectarla.
+          {{ 'organizational.google_business.no_account_connected' | translate }}
+          <br/>{{ 'organizational.google_business.reviews_not_shown' | translate }}
         </p>
         <button
           (click)="connect()"
@@ -37,7 +33,7 @@
             <path fill="#fff" d="M10.72 28.28A14.6 14.6 0 0 1 9.5 24c0-1.49.26-2.93.72-4.28l-7.08-5.5A23.94 23.94 0 0 0 0 24c0 3.88.93 7.55 2.58 10.78l8.14-6.5z"/>
             <path fill="#fff" d="M24 47c5.45 0 10.03-1.8 13.37-4.9l-7.19-5.58c-1.8 1.21-4.1 1.98-6.18 1.98-6.27 0-11.6-4.17-13.28-9.72l-8.14 6.5C7.07 41.52 14.82 47 24 47z"/>
           </svg>
-          Conectar con Google
+          {{ 'organizational.google_business.connect_google' | translate }}
         </button>
       </div>
     }
@@ -47,24 +43,24 @@
       <div class="border border-[var(--primary-color)] rounded-[4px] p-6 flex flex-col gap-4">
         <div class="flex items-center gap-2 text-green-600">
           <span class="material-icons text-base">check_circle</span>
-          <span class="text-sm font-medium">Cuenta conectada. Selecciona tu negocio.</span>
+          <span class="text-sm font-medium">{{ 'organizational.google_business.account_connected' | translate }}</span>
         </div>
 
         @if (loadingAccounts) {
           <div class="flex items-center gap-2 text-sm text-[var(--text-color)]">
-            <span class="material-icons animate-spin text-base">refresh</span> Cargando cuentas...
+            <span class="material-icons animate-spin text-base">refresh</span> {{ 'organizational.google_business.loading_accounts' | translate }}
           </div>
         }
 
         @if (!loadingAccounts && accounts.length > 0) {
           <div>
-            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">Cuenta de negocio</label>
+            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.business_account' | translate }}</label>
             <select
               [value]="selectedAccount"
               (change)="onAccountChange($any($event.target).value)"
               class="w-full border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none"
             >
-              <option value="">Selecciona una cuenta</option>
+              <option value="">{{ 'organizational.google_business.select_account' | translate }}</option>
               @for (acc of accounts; track acc.name) {
                 <option [value]="acc.name">{{ acc.accountName || acc.name }}</option>
               }
@@ -74,19 +70,19 @@
 
         @if (loadingLocations) {
           <div class="flex items-center gap-2 text-sm text-[var(--text-color)]">
-            <span class="material-icons animate-spin text-base">refresh</span> Cargando ubicaciones...
+            <span class="material-icons animate-spin text-base">refresh</span> {{ 'organizational.google_business.loading_locations' | translate }}
           </div>
         }
 
         @if (!loadingLocations && locations.length > 0) {
           <div>
-            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">Ubicación / Local</label>
+            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.location' | translate }}</label>
             <select
               [value]="selectedLocation"
               (change)="selectedLocation = $any($event.target).value"
               class="w-full border border-[var(--primary-color)] rounded-[4px] px-3 py-2 text-sm bg-[var(--bg-secondary-color)] text-[var(--title-color)] focus:outline-none"
             >
-              <option value="">Selecciona una ubicación</option>
+              <option value="">{{ 'organizational.google_business.select_location' | translate }}</option>
               @for (loc of locations; track loc.name) {
                 <option [value]="loc.name">{{ loc.title || loc.name }}</option>
               }
@@ -100,7 +96,7 @@
             [disabled]="saving"
             class="self-start px-5 py-2 rounded-[4px] bg-[var(--primary-color)] text-white text-sm font-medium hover:opacity-90 transition disabled:opacity-50"
           >
-            {{ saving ? 'Guardando...' : 'Guardar ubicación' }}
+            {{ saving ? ('organizational.google_business.saving' | translate) : ('organizational.google_business.save_location' | translate) }}
           </button>
         }
 
@@ -108,7 +104,7 @@
           (click)="disconnect()"
           class="self-start text-xs text-red-500 hover:underline mt-1"
         >
-          Desconectar cuenta
+          {{ 'organizational.google_business.disconnect_account' | translate }}
         </button>
       </div>
     }
@@ -118,20 +114,20 @@
       <div class="border border-green-400 bg-green-50 rounded-[4px] p-5 flex flex-col gap-3">
         <div class="flex items-center gap-2 text-green-700">
           <span class="material-icons text-base">check_circle</span>
-          <span class="text-sm font-semibold">Google Business conectado y configurado</span>
+          <span class="text-sm font-semibold">{{ 'organizational.google_business.google_connected' | translate }}</span>
         </div>
         <div class="text-xs text-gray-600 space-y-1">
-          <p><span class="font-medium">Cuenta:</span> {{ status?.accountName }}</p>
-          <p><span class="font-medium">Ubicación:</span> {{ status?.locationName }}</p>
+          <p><span class="font-medium">{{ 'organizational.google_business.account' | translate }}:</span> {{ status?.accountName }}</p>
+          <p><span class="font-medium">{{ 'organizational.google_business.location' | translate }}:</span> {{ status?.locationName }}</p>
         </div>
-        <p class="text-xs text-gray-500">Las reseñas de Google aparecerán automáticamente en la sección de reseñas del sitio.</p>
+        <p class="text-xs text-gray-500">{{ 'organizational.google_business.reviews_auto' | translate }}</p>
         <button
           (click)="disconnect()"
           [disabled]="disconnecting"
           class="self-start flex items-center gap-1 text-xs text-red-500 hover:underline disabled:opacity-50"
         >
           <span class="material-icons text-sm">link_off</span>
-          {{ disconnecting ? 'Desconectando...' : 'Desconectar' }}
+          {{ disconnecting ? ('organizational.google_business.disconnecting' | translate) : ('organizational.google_business.disconnect' | translate) }}
         </button>
       </div>
     }

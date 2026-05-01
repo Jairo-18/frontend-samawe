@@ -18,10 +18,7 @@
         </span>
       </div>
       <p class="text-sm leading-relaxed text-white/70">
-        {{
-          org?.description ||
-            'Un santuario de paz en el corazón del Putumayo. Descubre una experiencia única rodeada de naturaleza y cultura amazónica.'
-        }}
+        {{ org?.description || ('footer.default_description' | translate) }}
       </p>
       <!-- Redes sociales -->
       <div class="flex items-center gap-3 mt-1">

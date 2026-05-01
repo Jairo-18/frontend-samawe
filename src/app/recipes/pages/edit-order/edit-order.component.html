@@ -1,12 +1,12 @@
 <app-base-page
-  [headerTitle]="'Editar Orden de Restaurante'"
+  [headerTitle]="'recipe.edit_order.title' | translate"
   [showContentTitle]="true"
   [showBackButton]="true"
   [showBorder]="false"
   [pxMobile]="false"
   backButtonRoute="/recipes/restaurant-order"
-  backButtonText="Volver"
-  backButtonTooltip="Volver a órdenes"
+  [backButtonText]="'recipe.edit_order.back' | translate"
+  [backButtonTooltip]="'recipe.edit_order.back_tooltip' | translate"
 >
   <article class="flex flex-col md:flex-row gap-3 w-full h-full">
     @if (initialLoading) {
@@ -18,9 +18,9 @@
         <section class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)]">
           @if (invoiceData) {
             <span class="text-xs md:text-xl font-extrabold">
-              Orden Nr° {{ invoiceData.code || '' }}
+              {{ 'recipe.edit_order.order_nr' | translate }} {{ invoiceData.code || '' }}
               <span class="text-gray-500 font-normal text-sm ml-2"
-                >- {{ invoiceData.stateType?.name || 'Nuevo' }}</span
+                >- {{ invoiceData.stateType?.name || ('recipe.edit_order.new_state' | translate) }}</span
               >
             </span>
             <section class="flex-row md:flex w-full mt-2">
@@ -29,7 +29,7 @@
               >
                 <div class="flex flex-col">
                   <div class="flex flex-row gap-2">
-                    <span class="font-bold text-xs md:text-base">CLIENTE:</span>
+                    <span class="font-bold text-xs md:text-base">{{ 'recipe.edit_order.client' | translate }}</span>
                     <span class="font-normal text-xs md:text-base">
                       {{ invoiceData.user.firstName || 'Consumidor' }}
                       {{ invoiceData.user.lastName || 'Final' }}
@@ -39,7 +39,7 @@
                     class="flex flex-row gap-2 font-bold"
                     *ngIf="invoiceData.tableNumber"
                   >
-                    <span class="font-bold text-xs md:text-base">MESA:</span>
+                    <span class="font-bold text-xs md:text-base">{{ 'recipe.edit_order.table' | translate }}</span>
                     <span class="font-normal text-xs md:text-base">
                       {{ invoiceData.tableNumber }}
                     </span>
@@ -48,7 +48,7 @@
               </div>
               <div class="flex w-full md:w-[50%] justify-start md:justify-end">
                 <span class="font-bold text-xs md:text-base">
-                  ATENDIÓ:
+                  {{ 'recipe.edit_order.attended_by' | translate }}
                   <span class="font-normal text-xs md:text-base">
                     {{ invoiceData.employee.firstName || '' }}
                     {{ invoiceData.employee.lastName || '' }}
@@ -59,7 +59,7 @@
           }
 
           <mat-tab-group animationDuration="0ms" class="mt-4">
-            <mat-tab label="Productos/Menú">
+            <mat-tab [label]="'recipe.edit_order.tab_products' | translate">
               <ng-template matTabContent>
                 <app-add-product
                   [categoryTypes]="categoryTypes"
@@ -70,7 +70,7 @@
                 ></app-add-product>
               </ng-template>
             </mat-tab>
-            <mat-tab label="Hospedaje">
+            <mat-tab [label]="'recipe.edit_order.tab_lodging' | translate">
               <ng-template matTabContent>
                 <app-add-accommodation
                   [categoryTypes]="categoryTypes"
@@ -83,7 +83,7 @@
                 ></app-add-accommodation>
               </ng-template>
             </mat-tab>
-            <mat-tab label="Pasadías y Servicios">
+            <mat-tab [label]="'recipe.edit_order.tab_excursions' | translate">
               <ng-template matTabContent>
                 <app-add-excursion
                   [categoryTypes]="categoryTypes"
@@ -112,7 +112,7 @@
         >
           <div class="w-full text-center mb-2">
             <span class="font-bold text-sm md:text-base"
-              >Productos Agregados a la Orden</span
+              >{{ 'recipe.edit_order.added_products' | translate }}</span
             >
           </div>
           <app-invoice-detaill

@@ -24,6 +24,7 @@ import { OrderUpdate } from '../../../shared/interfaces/order-socket.interface';
 import { OrderNotification } from '../../../shared/interfaces/order-notification.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { NotificationTabContentComponent } from '../notification-tab-content/notification-tab-content.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-button',
@@ -35,7 +36,8 @@ import { NotificationTabContentComponent } from '../notification-tab-content/not
     MatIconModule,
     MatButtonModule,
     MatTabsModule,
-    NotificationTabContentComponent
+    NotificationTabContentComponent,
+    TranslateModule
   ],
   templateUrl: './notification-button.component.html',
   styleUrl: './notification-button.component.scss'

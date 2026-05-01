@@ -11,6 +11,8 @@ import { Review } from '../../../shared/interfaces/review.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ReviewReplyItemComponent } from '../review-reply-item/review-reply-item.component';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-review-card',
   standalone: true,
@@ -23,7 +25,8 @@ import { ReviewReplyItemComponent } from '../review-reply-item/review-reply-item
     MatButtonModule,
     MatMenuModule,
     CdkTextareaAutosize,
-    ReviewReplyItemComponent
+    ReviewReplyItemComponent,
+    TranslateModule
   ],
   templateUrl: './review-card.component.html'
 })

@@ -1,9 +1,9 @@
 <app-section-header
-  [title]="isEditMode ? 'Editar Menú' : 'Crear Menú'"
+  [title]="isEditMode ? ('menu.edit_title' | translate) : ('menu.create_title' | translate)"
   [subtitle]="
     isEditMode
-      ? 'Modifica el nombre, descripción o platillos del menú'
-      : 'Define un nuevo menú seleccionando los platillos con receta'
+      ? ('menu.edit_subtitle' | translate)
+      : ('menu.create_subtitle' | translate)
   "
 ></app-section-header>
 
@@ -12,25 +12,25 @@
   <div class="flex flex-col md:flex-row content-between w-full gap-2">
     <div class="flex flex-col gap-4 w-full md:w-[50%]">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Nombre del menú</mat-label>
+        <mat-label>{{ 'menu.name_label' | translate }}</mat-label>
         <input
           matInput
           formControlName="name"
-          placeholder="Ej: Menú Gourmet, Menú Infantil..."
+          [placeholder]="'menu.name_placeholder' | translate"
         />
         @if (
           form.get('name')?.hasError('required') && form.get('name')?.touched
         ) {
-          <mat-error>El nombre es requerido</mat-error>
+          <mat-error>{{ 'menu.name_required' | translate }}</mat-error>
         }
         @if (
           form.get('name')?.hasError('minlength') && form.get('name')?.touched
         ) {
-          <mat-error>Mínimo 2 caracteres</mat-error>
+          <mat-error>{{ 'menu.name_minlength' | translate }}</mat-error>
         }
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Descripción del menú</mat-label>
+        <mat-label>{{ 'menu.description_label' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="description"
@@ -41,17 +41,17 @@
           appUppercase
         ></textarea>
         <mat-icon matPrefix>notes</mat-icon>
-        <mat-hint align="end">{{ descriptionLength }}/500 caracteres</mat-hint>
+        <mat-hint align="end">{{ descriptionLength }}{{ 'menu.chars_limit' | translate }}</mat-hint>
       </mat-form-field>
     </div>
     <div class="w-full md:w-[50%] mb-4">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar platillo</mat-label>
+        <mat-label>{{ 'menu.search_dish' | translate }}</mat-label>
         <input
           matInput
           [(ngModel)]="recipeSearchTerm"
           [ngModelOptions]="{ standalone: true }"
-          placeholder="Filtrar por nombre del platillo..."
+          [placeholder]="'menu.search_dish_placeholder' | translate"
         />
         <mat-icon matPrefix>search</mat-icon>
         @if (recipeSearchTerm) {
@@ -72,7 +72,7 @@
   @if (selectedRecipeIds.size > 0) {
     <div class="mb-4">
       <span class="text-sm font-semibold text-gray-700 mb-2 block"
-        >Platillos seleccionados para esta receta ({{
+        >{{ 'menu.selected_dishes' | translate }} ({{
           selectedRecipeIds.size
         }})</span
       >
@@ -165,13 +165,13 @@
   } @else {
     <div class="text-center py-8 text-gray-400">
       <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
-      <p>No se encontraron platillos con receta</p>
+      <p>{{ 'menu.no_dishes_found' | translate }}</p>
     </div>
   }
 
   @if (form.invalid === false && selectedRecipeIds.size === 0 && form.touched) {
     <p class="text-red-500 text-sm mb-4">
-      Debe seleccionar al menos un platillo
+      {{ 'menu.select_dish_required' | translate }}
     </p>
   }
 
@@ -187,7 +187,7 @@
           color="warn"
           (click)="cancel()"
         >
-          Cancelar
+          {{ 'menu.cancel' | translate }}
         </button>
       </div>
     }
@@ -198,7 +198,7 @@
         class="!w-full"
         [disabled]="saving || selectedRecipeIds.size === 0"
       >
-        {{ isEditMode ? 'Guardar cambios' : 'Crear Menú' }}
+        {{ isEditMode ? ('menu.save_changes' | translate) : ('menu.create_title' | translate) }}
       </button>
     </div>
   </section>

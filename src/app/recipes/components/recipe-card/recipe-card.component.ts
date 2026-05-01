@@ -18,6 +18,7 @@ import {
 import { UnitFormatPipe } from '../../../shared/pipes/unit-format.pipe';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-recipe-card',
@@ -31,7 +32,8 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
     UnitFormatPipe,
     FormatCopPipe,
     DecimalPipe,
-    NgOptimizedImage
+    NgOptimizedImage,
+    TranslateModule
   ],
   templateUrl: './recipe-card.component.html',
   styleUrl: './recipe-card.component.scss'

@@ -1,6 +1,6 @@
 <app-section-header
-  [title]="'Ver órdenes'"
-  [subtitle]="'Aquí puedes ver las órdenes de restaurante'"
+  [title]="'recipe.see_orders.title' | translate"
+  [subtitle]="'recipe.see_orders.subtitle' | translate"
 ></app-section-header>
 
 <app-search-fields
@@ -21,7 +21,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'recipe.see_orders.clear_filters' | translate }}
     </button>
   </div>
 
@@ -34,7 +34,7 @@
       (click)="searchComponent.reset()"
       [disabled]="!showClearButton"
     >
-      Limpiar filtros
+      {{ 'recipe.see_orders.clear_filters' | translate }}
     </button>
   </div>
 </section>
@@ -100,25 +100,25 @@
                 (click)="openEditInvoiceDialog(order.invoiceId)"
               >
                 <mat-icon class="blue-color">edit_document</mat-icon>
-                <span>Editar factura</span>
+                <span>{{ 'recipe.see_orders.edit_invoice' | translate }}</span>
               </button>
               <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
                 <mat-icon class="blue-color">edit</mat-icon>
-                <span>Editar detalles</span>
+                <span>{{ 'recipe.see_orders.edit_details' | translate }}</span>
               </button>
               <button
                 mat-menu-item
                 (click)="onDownloadInvoice(order.invoiceId)"
               >
                 <mat-icon class="green-color">print</mat-icon>
-                <span>Imprimir factura</span>
+                <span>{{ 'recipe.see_orders.print_invoice' | translate }}</span>
               </button>
               <button
                 mat-menu-item
                 (click)="openDeleteOrderDialog(order.invoiceId)"
               >
                 <mat-icon class="red-color">delete</mat-icon>
-                <span>Eliminar</span>
+                <span>{{ 'recipe.see_orders.delete' | translate }}</span>
               </button>
             </mat-menu>
           </div>
@@ -134,7 +134,7 @@
                   >table_restaurant</mat-icon
                 >
                 <span class="text-sm font-bold text-gray-800"
-                  >Mesa {{ order.tableNumber || '---' }}</span
+                  >{{ 'recipe.see_orders.table_label' | translate }} {{ order.tableNumber || '---' }}</span
                 >
               </div>
               <span
@@ -176,7 +176,7 @@
             >
               <div class="flex flex-col items-center gap-0.5">
                 <span class="text-[10px] text-gray-400 uppercase tracking-wide"
-                  >Orden</span
+                  >{{ 'recipe.see_orders.order_time' | translate }}</span
                 >
                 <span class="text-xs font-bold text-gray-600">{{
                   order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
@@ -187,7 +187,7 @@
               >
               <div class="flex flex-col items-center gap-0.5">
                 <span class="text-[10px] text-gray-400 uppercase tracking-wide"
-                  >Listo</span
+                  >{{ 'recipe.see_orders.ready_time' | translate }}</span
                 >
                 <span
                   class="text-xs font-bold"
@@ -210,7 +210,7 @@
           >
             <div class="flex items-center gap-1">
               <mat-icon class="!text-sm text-gray-400">receipt</mat-icon>
-              <span class="text-xs text-gray-400">Total</span>
+              <span class="text-xs text-gray-400">{{ 'recipe.see_orders.total' | translate }}</span>
             </div>
             <span
               class="text-base font-extrabold"
@@ -240,7 +240,7 @@
     <div
       class="w-full flex justify-center items-center min-h-[200px] text-center"
     >
-      <p class="text-gray-400">No se encontraron órdenes de restaurante.</p>
+      <p class="text-gray-400">{{ 'recipe.see_orders.no_results' | translate }}</p>
     </div>
   }
 </div>

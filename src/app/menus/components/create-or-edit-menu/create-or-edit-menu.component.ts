@@ -32,6 +32,7 @@ import { RecipeService } from '../../../recipes/services/recipe.service';
 import { RecipeWithDetails } from '../../../recipes/interfaces/recipe.interface';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-or-edit-menu',
@@ -49,7 +50,8 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     MatProgressSpinnerModule,
     MatCheckboxModule,
     SectionHeaderComponent,
-    TextFieldModule
+    TextFieldModule,
+    TranslateModule
   ],
   templateUrl: './create-or-edit-menu.component.html',
   styleUrl: './create-or-edit-menu.component.scss',

@@ -47,6 +47,8 @@ import {
   debounceTime,
   distinctUntilChanged
 } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-application-manage',
@@ -63,7 +65,9 @@ import {
     OrganizationalHomeContentComponent,
     OrganizationalMultimediaComponent,
     OrganizationalLegalComponent,
-    OrganizationalGoogleBusinessComponent
+    OrganizationalGoogleBusinessComponent,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './application-manage.component.html',
   styleUrls: ['./application-manage.component.scss']

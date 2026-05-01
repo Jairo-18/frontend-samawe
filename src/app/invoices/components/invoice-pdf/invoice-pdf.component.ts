@@ -13,10 +13,11 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { Organizational } from '../../../shared/interfaces/organizational.interface';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-invoice-pdf',
   standalone: true,
-  imports: [CommonModule, MatTableModule, FormatCopPipe],
+  imports: [CommonModule, MatTableModule, FormatCopPipe, TranslateModule],
   templateUrl: './invoice-pdf.component.html',
   styleUrl: './invoice-pdf.component.scss'
 })

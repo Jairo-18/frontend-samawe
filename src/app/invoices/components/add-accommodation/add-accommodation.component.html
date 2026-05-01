@@ -1,11 +1,11 @@
 <form [formGroup]="form" class="w-full overflow-hidden">
   <mat-form-field appearance="outline" class="w-full mt-3">
-    <mat-label>Buscar Hospedaje</mat-label>
+    <mat-label>{{ 'invoice.common.search_accommodation' | translate }}</mat-label>
     <input
       matInput
       formControlName="name"
       [matAutocomplete]="auto"
-      placeholder="Ejemplo: Penhouse"
+      [placeholder]="'invoice.common.accommodation_placeholder' | translate"
       (focus)="onAccommodationFocus()"
     />
     <mat-icon matPrefix>home</mat-icon>
@@ -19,7 +19,7 @@
       mat-icon-button
       type="button"
       (click)="clearAccommodationSelection()"
-      matTooltip="Limpiar selección"
+      [matTooltip]="'invoice.common.clear_selection' | translate"
     >
       <mat-icon>clear</mat-icon>
     </button>
@@ -54,12 +54,12 @@
       </mat-option>
     </mat-autocomplete>
     <mat-error *ngIf="form.get('name')?.hasError('required')">
-      Debe seleccionar un hospedaje
+      {{ 'invoice.errors.select_accommodation' | translate }}
     </mat-error>
   </mat-form-field>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Unitario (Venta)</mat-label>
+      <mat-label>{{ 'invoice.common.unit_price_sale' | translate }}</mat-label>
       <input
         matInput
         formControlName="priceSale"
@@ -70,7 +70,7 @@
       <mat-icon matSuffix>attach_money</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Final</mat-label>
+      <mat-label>{{ 'invoice.common.final_price' | translate }}</mat-label>
       <input
         matInput
         formControlName="finalPrice"
@@ -81,7 +81,7 @@
       <mat-icon matSuffix>monetization_on</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Cantidad</mat-label>
+      <mat-label>{{ 'invoice.common.quantity' | translate }}</mat-label>
       <input
         matInput
         formControlName="amount"
@@ -94,7 +94,7 @@
   </div>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Mínimo Personas</mat-label>
+      <mat-label>{{ 'invoice.form.min_persons' | translate }}</mat-label>
       <input
         matInput
         formControlName="amountPerson"
@@ -105,7 +105,7 @@
       <mat-icon matSuffix>person</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Máximo Personas</mat-label>
+      <mat-label>{{ 'invoice.form.max_persons' | translate }}</mat-label>
       <input
         matInput
         formControlName="amountBathroom"
@@ -118,9 +118,9 @@
   </div>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Descuento</mat-label>
+      <mat-label>{{ 'invoice.form.discount' | translate }}</mat-label>
       <mat-select formControlName="discountTypeId">
-        <mat-option [value]="null">Sin descuento</mat-option>
+        <mat-option [value]="null">{{ 'invoice.form.no_discount' | translate }}</mat-option>
         <mat-option
           *ngFor="let discount of discountTypes"
           [value]="discount.discountTypeId"
@@ -131,9 +131,9 @@
       <mat-icon matPrefix>percent</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Personas Adicionales</mat-label>
+      <mat-label>{{ 'invoice.form.additional_persons' | translate }}</mat-label>
       <mat-select formControlName="additionalTypeId">
-        <mat-option [value]="null">Sin adicional</mat-option>
+        <mat-option [value]="null">{{ 'invoice.form.no_additional' | translate }}</mat-option>
         <mat-option
           *ngFor="let additional of additionalTypes"
           [value]="additional.additionalTypeId"
@@ -146,7 +146,7 @@
   </div>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Fecha de entrada</mat-label>
+      <mat-label>{{ 'invoice.form.start_date' | translate }}</mat-label>
       <input
         matInput
         [matDatepicker]="startDatePicker"
@@ -160,7 +160,7 @@
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Hora de entrada</mat-label>
+      <mat-label>{{ 'invoice.form.start_time' | translate }}</mat-label>
       <input
         matInput
         [matTimepicker]="startTimePicker"
@@ -174,7 +174,7 @@
       <mat-icon matPrefix>access_time</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Fecha de salida</mat-label>
+      <mat-label>{{ 'invoice.form.end_date' | translate }}</mat-label>
       <input
         matInput
         [matDatepicker]="endDatePicker"
@@ -188,7 +188,7 @@
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Hora de salida</mat-label>
+      <mat-label>{{ 'invoice.form.end_time' | translate }}</mat-label>
       <input
         matInput
         [matTimepicker]="endTimePicker"
@@ -203,7 +203,7 @@
     </mat-form-field>
   </div>
   <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Tipo de impuesto</mat-label>
+    <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
         {{ taxe.name }}
@@ -218,7 +218,7 @@
     [disabled]="isLoading"
     (click)="addAccommodation()"
   >
-    <ng-container *ngIf="!isLoading; else loading"> Añadir </ng-container>
+    <ng-container *ngIf="!isLoading; else loading"> {{ 'invoice.common.add' | translate }} </ng-container>
     <ng-template #loading>
       <mat-spinner diameter="24" color="accent"></mat-spinner>
     </ng-template>

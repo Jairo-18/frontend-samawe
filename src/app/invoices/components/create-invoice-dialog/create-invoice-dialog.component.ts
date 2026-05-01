@@ -46,6 +46,8 @@ import { PaginationPartialService } from '../../../shared/services/paginationPar
 import { PaginatedUserPartial } from '../../../shared/interfaces/paginatedPartial.interface';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-create-invoice-dialog',
   standalone: true,
@@ -65,7 +67,9 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
     CurrencyFormatDirective,
     UppercaseDirective,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './create-invoice-dialog.component.html',
   styleUrls: ['./create-invoice-dialog.component.scss']
@@ -117,14 +121,20 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.applyTransferRule(payTypeId);
     });
 
-    this.form.get('invoiceElectronic')?.valueChanges.subscribe((isElectronic) => {
-      if (isElectronic) {
-        const transferType = this.payTypes.find((p) => p.name?.toLowerCase().includes('transfer'));
-        if (transferType) {
-          this.form.get('payTypeId')?.setValue(transferType.payTypeId, { emitEvent: false });
+    this.form
+      .get('invoiceElectronic')
+      ?.valueChanges.subscribe((isElectronic) => {
+        if (isElectronic) {
+          const transferType = this.payTypes.find((p) =>
+            p.name?.toLowerCase().includes('transfer')
+          );
+          if (transferType) {
+            this.form
+              .get('payTypeId')
+              ?.setValue(transferType.payTypeId, { emitEvent: false });
+          }
         }
-      }
-    });
+      });
 
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
@@ -253,7 +263,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
     this.clientFilterControl.setValue('');
   }
   get isClientSelected(): boolean {
-    return typeof this.clientFilterControl.value === 'object' && this.clientFilterControl.value !== null;
+    return (
+      typeof this.clientFilterControl.value === 'object' &&
+      this.clientFilterControl.value !== null
+    );
   }
 
   get showNoResultsMessage(): boolean {

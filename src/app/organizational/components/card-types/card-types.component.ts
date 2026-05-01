@@ -9,15 +9,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-card-types',
+  standalone: true,
   imports: [
     CommonModule,
     MatPaginatorModule,
     MatFormFieldModule,
     ReactiveFormsModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslateModule,
+    MatTooltipModule
   ],
   templateUrl: './card-types.component.html',
   styleUrls: ['./card-types.component.scss']

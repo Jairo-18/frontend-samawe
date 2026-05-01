@@ -1,12 +1,12 @@
 <app-base-page
-  contentTitle="Gestiona tu hotel"
-  contentInfo="Crea y edita información de tu interés"
+  [contentTitle]="'organizational.see_types.title' | translate"
+  [contentInfo]="'organizational.see_types.subtitle' | translate"
   [showContentTitle]="true"
   [showContentInfo]="true"
 >
   <div slot="actions" class="w-full md:w-[25%]">
     <button mat-fab extended="true" class="!w-full" (click)="openDialog()">
-      Crear tipos
+      {{ 'organizational.see_types.create_types' | translate }}
     </button>
   </div>
   <section class="flex flex-col md:flex-row">
@@ -28,7 +28,7 @@
     </div>
     <div class="flex md:hidden my-4 border-b-2 border-[var(--primary-color)]">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipos</mat-label>
+        <mat-label>{{ 'organizational.see_types.types' | translate }}</mat-label>
         <mat-select [formControl]="buttonsControll">
           @for (button of buttonLabel; track $index) {
           <mat-option [value]="button[0]"> {{ button[1] }}</mat-option
@@ -62,7 +62,7 @@
         (remove)="onDeleteType($event)"
       ></app-card-types>
       } @else {
-      <span> No hay contenido registrado aún.</span>
+      <span> {{ 'organizational.see_types.no_content' | translate }}</span>
       }
     </div>
   </section>

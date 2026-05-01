@@ -8,6 +8,8 @@ import { ReservationSectionComponent } from '../home/components/reservation-sect
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { SeoService } from '../../../shared/services/seo.service';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-gastronomy',
   standalone: true,
@@ -16,7 +18,8 @@ import { SeoService } from '../../../shared/services/seo.service';
     SectionHeaderComponent,
     LoaderComponent,
     ReservationSectionComponent,
-    TranslatedPipe
+    TranslatedPipe,
+    TranslateModule
   ],
   templateUrl: './gastronomy.component.html',
   styleUrl: './gastronomy.component.scss'

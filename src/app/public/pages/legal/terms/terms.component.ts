@@ -8,10 +8,19 @@ import { LegalSection } from '../../../../shared/interfaces/organizational.inter
 import { ApplicationService } from '../../../../organizational/services/application.service';
 import { switchMap, filter, take } from 'rxjs';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-terms',
   standalone: true,
-  imports: [BasePageComponent, RouterModule, BoldTextPipe, TranslatedPipe, CommonModule],
+  imports: [
+    BasePageComponent,
+    RouterModule,
+    BoldTextPipe,
+    TranslatedPipe,
+    CommonModule,
+    TranslateModule
+  ],
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.scss'
 })

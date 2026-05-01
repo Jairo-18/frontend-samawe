@@ -7,10 +7,11 @@ import { Invoice } from '../../interface/invoice.interface';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-invoice-summary',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, FormatCopPipe],
+  imports: [CommonModule, MatButtonModule, FormatCopPipe, TranslateModule],
   templateUrl: './invoice-summary.component.html',
   styleUrl: './invoice-summary.component.scss'
 })

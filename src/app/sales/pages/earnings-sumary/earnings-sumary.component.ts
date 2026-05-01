@@ -21,6 +21,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { GrapicComponent } from '../../components/grapic/grapic.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-earnings-sumary',
   standalone: true,
@@ -37,7 +39,9 @@ import { GrapicComponent } from '../../components/grapic/grapic.component';
     MatFormFieldModule,
     MatButtonToggleModule,
     LoaderComponent,
-    GrapicComponent
+    GrapicComponent,
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './earnings-sumary.component.html',
   styleUrl: './earnings-sumary.component.scss'
@@ -170,4 +174,3 @@ export class EarningsSumaryComponent implements OnInit {
     this._earningService.downloadDetailsReport();
   }
 }
-

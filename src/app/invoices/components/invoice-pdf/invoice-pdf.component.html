@@ -11,7 +11,7 @@
       </div>
       <div class="col">
         <span>
-          Generado por:
+          {{ 'invoice.pdf.generated_by' | translate }}
           <span class="value">
             {{ invoiceData.employee.firstName }}
             {{ invoiceData.employee.lastName }}
@@ -20,7 +20,7 @@
       </div>
       <div class="col">
         <span>
-          Cliente:
+          {{ 'invoice.pdf.client' | translate }}
           <span class="value">
             {{ invoiceData.user.firstName }} {{ invoiceData.user.lastName }}
           </span>
@@ -36,13 +36,13 @@
       </div>
       <div class="col">
         <span>
-          Dirección:
+          {{ 'invoice.pdf.address' | translate }}
           <span class="value">{{ organizationalData?.address }}</span>
         </span>
       </div>
       <div class="col">
         <span>
-          Fecha de impresión:
+          {{ 'invoice.pdf.print_date' | translate }}
           <span class="value">
             {{ printDate | date: 'dd/MM/yyyy HH:mm:ss' }}
           </span>
@@ -54,17 +54,17 @@
   <table *ngIf="invoiceData?.invoiceDetails">
     <thead>
       <tr>
-        <th>Nro°</th>
-        <th>Item</th>
-        <th>Und</th>
-        <th>Precio</th>
-        <th>Impuesto</th>
-        <th>Subtotal</th>
+        <th>{{ 'invoice.pdf.col_number' | translate }}</th>
+        <th>{{ 'invoice.pdf.col_item' | translate }}</th>
+        <th>{{ 'invoice.pdf.col_units' | translate }}</th>
+        <th>{{ 'invoice.pdf.col_price' | translate }}</th>
+        <th>{{ 'invoice.pdf.col_tax' | translate }}</th>
+        <th>{{ 'invoice.pdf.col_subtotal' | translate }}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngIf="invoiceData.invoiceDetails.length === 0">
-        <td colspan="6" class="no-data">No hay productos registrados</td>
+        <td colspan="6" class="no-data">{{ 'invoice.pdf.no_products' | translate }}</td>
       </tr>
       <tr *ngFor="let detail of invoiceData.invoiceDetails; let i = index">
         <td class="text-left">{{ i + 1 }}</td>
@@ -96,7 +96,7 @@
     <div class="separator"></div>
     @if (invoiceData.cash && invoiceData.cash > 0) {
       <div class="row">
-        <div class="col-left"><span class="label">Efectivo:</span></div>
+        <div class="col-left"><span class="label">{{ 'invoice.pdf.cash' | translate }}</span></div>
         <div class="col-right">
           <span class="highlight">{{
             invoiceData.cash || '' | formatCop
@@ -106,7 +106,7 @@
     }
     @if (invoiceData.transfer && invoiceData.transfer > 0) {
       <div class="row">
-        <div class="col-left"><span class="label">Transferencia:</span></div>
+        <div class="col-left"><span class="label">{{ 'invoice.pdf.transfer' | translate }}</span></div>
         <div class="col-right">
           <span class="highlight">{{
             invoiceData.transfer || '' | formatCop
@@ -115,7 +115,7 @@
       </div>
     }
     <div class="row">
-      <div class="col-left"><span class="label">Estado de pago:</span></div>
+      <div class="col-left"><span class="label">{{ 'invoice.pdf.paid_status' | translate }}</span></div>
       <div class="col-right">
         <span
           class="status"
@@ -132,27 +132,27 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-left"><span class="label">Tipo de pago:</span></div>
+      <div class="col-left"><span class="label">{{ 'invoice.pdf.pay_type' | translate }}</span></div>
       <div class="col-right">
         <span>{{ invoiceData.payType?.name || '' }}</span>
       </div>
     </div>
     <div class="row">
       <div class="col-left">
-        <span class="label">Subtotal sin impuestos:</span>
+        <span class="label">{{ 'invoice.pdf.subtotal_no_tax' | translate }}</span>
       </div>
       <div class="col-right">
         <span>{{ invoiceData.subtotalWithoutTax ?? 0 | formatCop }}</span>
       </div>
     </div>
     <div class="row">
-      <div class="col-left"><span class="label">Impuestos:</span></div>
+      <div class="col-left"><span class="label">{{ 'invoice.pdf.taxes' | translate }}</span></div>
       <div class="col-right">
         <span>{{ invoiceData.totalTaxes ?? 0 | formatCop }}</span>
       </div>
     </div>
     <div class="row total">
-      <div class="col-left"><span class="label">Total:</span></div>
+      <div class="col-left"><span class="label">{{ 'invoice.pdf.total' | translate }}</span></div>
       <div class="col-right">
         <span class="highlight">{{ invoiceData.total ?? 0 | formatCop }}</span>
       </div>
@@ -160,7 +160,7 @@
   </section>
   <footer>
     <span>
-      "Gracias por su compañía - Factura generada por
+      "{{ 'invoice.pdf.footer' | translate }}
       {{ organizationalData?.legalName }}"
     </span>
   </footer>

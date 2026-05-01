@@ -54,6 +54,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -79,7 +80,8 @@ import { InvoicePrintService } from '../../../shared/services/invoicePrint.servi
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    TranslateModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
   templateUrl: './edit-invoice.component.html',
@@ -163,7 +165,9 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   }
   openEditInvoiceDialog(): void {
     if (!this.invoiceId) return;
-    const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth <= 768 : false;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
     this._dialog
       .open(CreateInvoiceDialogComponent, {
         width: isMobile ? '90vw' : '60vw',
@@ -212,10 +216,14 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       }
     });
   }
-  private readonly _invoicePrintService: InvoicePrintService = inject(InvoicePrintService);
+  private readonly _invoicePrintService: InvoicePrintService =
+    inject(InvoicePrintService);
   async downloadInvoice(): Promise<void> {
     if (this.invoiceData) {
-      await this._invoicePrintService.downloadInvoice(this.invoiceData, null as any);
+      await this._invoicePrintService.downloadInvoice(
+        this.invoiceData,
+        null as any
+      );
     }
   }
   onAllItemsSaved(): void {

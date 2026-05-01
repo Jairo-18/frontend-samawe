@@ -1,6 +1,6 @@
 <app-base-page
-  [headerTitle]="'Reporte de ganancias'"
-  contentInfo="Resumen completo de tu negocio"
+  [headerTitle]="'sales.title' | translate"
+  [contentInfo]="'sales.subtitle' | translate"
   [showContentTitle]="true"
   [showBorder]="false"
   [showContentTitle]="true"
@@ -32,7 +32,7 @@
     </div>
     <div class="md:hidden flex justify-center my-2 w-full px-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Período</mat-label>
+        <mat-label>{{ 'sales.period' | translate }}</mat-label>
         <mat-select
           [value]="selectedPeriod"
           (selectionChange)="onPeriodChange($event.value)"
@@ -53,25 +53,25 @@
               <i class="fas fa-box text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold">
-              Valor Bruto de Productos
+              {{ 'sales.gross_products' | translate }}
             </span>
           </div>
         </div>
         <div class="space-y-2">
           <div class="flex justify-between">
-            <span class="text-slate-600">Precio de compra</span>
+            <span class="text-slate-600">{{ 'sales.purchase_price' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceBuy ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-600">Precio de venta</span>
+            <span class="text-slate-600">{{ 'sales.sale_price' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between text-[#06a606] font-semibold">
-            <span>Utilidad</span>
+            <span>{{ 'sales.profit' | translate }}</span>
             <span>{{ productSummary?.balanceProduct ?? 0 | formatCop }}</span>
           </div>
         </div>
@@ -85,7 +85,7 @@
               <i class="fas fa-file-invoice text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold"
-              >Balance de Facturación</span
+              >{{ 'sales.billing_balance' | translate }}</span
             >
           </div>
           <span
@@ -96,14 +96,14 @@
         </div>
         <div class="space-y-2">
           <div class="flex justify-between text-[#06a606] font-semibold">
-            <span>Ventas</span>
+            <span>{{ 'sales.sales' | translate }}</span>
             <span class="font-semibold">{{
               invoiceBalance?.[selectedPeriod]?.totalInvoiceSale ?? 0
                 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between text-orange-600">
-            <span>Compras</span>
+            <span>{{ 'sales.purchases' | translate }}</span>
             <span class="font-semibold">{{
               invoiceBalance?.[selectedPeriod]?.totalInvoiceBuy ?? 0 | formatCop
             }}</span>
@@ -117,7 +117,7 @@
                 +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) < 0
             }"
           >
-            <span>Balance</span>
+            <span>{{ 'sales.balance' | translate }}</span>
             <span>{{
               invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0 | formatCop
             }}</span>
@@ -132,22 +132,22 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold">Inventario Total</span>
+            <span class="text-slate-800 font-semibold">{{ 'sales.total_inventory' | translate }}</span>
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
-            >Stock</span
+            >{{ 'sales.stock' | translate }}</span
           >
         </div>
         <div class="space-y-2">
           <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">Valor de inventario</span>
+            <span class="text-slate-600">{{ 'sales.inventory_value' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-600">Unidades totales</span>
+            <span class="text-slate-600">{{ 'sales.total_units' | translate }}</span>
             <span class="font-semibold">{{
               inventoryTotal?.totalStock ?? 0
             }}</span>
@@ -159,21 +159,21 @@
               <i class="fas fa-warehouse text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold"
-              >Estado de Productos</span
+              >{{ 'sales.product_status' | translate }}</span
             >
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
-            >Estado</span
+            >{{ 'sales.status' | translate }}</span
           >
         </div>
         <div class="space-y-2">
           <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">Activos</span>
+            <span class="text-slate-600">{{ 'sales.active' | translate }}</span>
             <span class="font-semibold">{{ activeProductsCount }}</span>
           </div>
           <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">Inactivos</span>
+            <span class="text-slate-600">{{ 'sales.inactive' | translate }}</span>
             <span class="font-semibold">{{ inactiveProductsCount }}</span>
           </div>
         </div>
@@ -187,48 +187,48 @@
               <i class="fas fa-warehouse text-white"></i>
             </div>
             <span class="text-slate-800 font-semibold">
-              Estado de tus Hospedajes
+              {{ 'sales.accommodation_status' | translate }}
             </span>
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
-            >Estado</span
+            >{{ 'sales.status' | translate }}</span
           >
         </div>
         <div class="space-y-2">
           <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">Disponibles</span>
+            <span class="text-slate-600">{{ 'sales.available' | translate }}</span>
             <span class="font-semibold">{{
               availableAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between text-yellow-600">
-            <span class="text-slate-600">En Mantenimiento</span>
+            <span class="text-slate-600">{{ 'sales.maintenance' | translate }}</span>
             <span class="font-semibold">{{
               maintenanceAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">Ocupados</span>
+            <span class="text-slate-600">{{ 'sales.occupied' | translate }}</span>
             <span class="font-semibold">{{ occupiedAccommodationsCount }}</span>
           </div>
           <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">Fuera de Servicio</span>
+            <span class="text-slate-600">{{ 'sales.out_of_service' | translate }}</span>
             <span class="font-semibold">{{
               noServiceAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between text-blue-600">
-            <span class="text-slate-600">Reservadas</span>
+            <span class="text-slate-600">{{ 'sales.reserved' | translate }}</span>
             <span class="font-semibold">{{ reservedAccommodationsCount }}</span>
           </div>
         </div>
       </div>
       <div class="flex flex-col gap-y-4">
         <button mat-fab extended="true" (click)="payReport()">
-          Descargar reporte de pagos</button
+          {{ 'sales.download_payment_report' | translate }}</button
         ><button mat-stroked-button extended="true" (click)="detaillsReport()">
-          Descargar reporte detallado
+          {{ 'sales.download_detailed_report' | translate }}
         </button>
       </div>
     </div>

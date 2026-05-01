@@ -1,11 +1,11 @@
 <form [formGroup]="form" class="w-full overflow-hidden">
   <mat-form-field appearance="outline" class="w-full mt-3">
-    <mat-label>Buscar pasadía o servicio</mat-label>
+    <mat-label>{{ 'invoice.common.search_excursion' | translate }}</mat-label>
     <input
       matInput
       formControlName="name"
       [matAutocomplete]="auto"
-      placeholder="Ejemplo: Pasadía niños o masajes"
+      [placeholder]="'invoice.common.excursion_placeholder' | translate"
       (focus)="onExcursionFocus()"
     />
     <mat-icon matPrefix>tour</mat-icon>
@@ -15,7 +15,7 @@
       mat-icon-button
       type="button"
       (click)="clearExcursionSelection()"
-      matTooltip="Limpiar selección"
+      [matTooltip]="'invoice.common.clear_selection' | translate"
     >
       <mat-icon>clear</mat-icon>
     </button>
@@ -49,12 +49,12 @@
       </mat-option>
     </mat-autocomplete>
     <mat-error *ngIf="form.get('name')?.hasError('required')">
-      Debe seleccionar un servicio o pasadía
+      {{ 'invoice.errors.select_excursion' | translate }}
     </mat-error>
   </mat-form-field>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Unitario (Venta)</mat-label>
+      <mat-label>{{ 'invoice.common.unit_price_sale' | translate }}</mat-label>
       <input
         matInput
         formControlName="priceBuy"
@@ -65,7 +65,7 @@
       <mat-icon matSuffix>attach_money</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Precio Final</mat-label>
+      <mat-label>{{ 'invoice.common.final_price' | translate }}</mat-label>
       <input
         matInput
         formControlName="finalPrice"
@@ -76,7 +76,7 @@
       <mat-icon matSuffix>monetization_on</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Cantidad</mat-label>
+      <mat-label>{{ 'invoice.common.quantity' | translate }}</mat-label>
       <input
         matInput
         formControlName="amount"
@@ -88,7 +88,7 @@
   </div>
   <div class="flex flex-col md:flex-row gap-0 md:gap-2">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Fecha de inicio</mat-label>
+      <mat-label>{{ 'invoice.form.start_date_excursion' | translate }}</mat-label>
       <input
         matInput
         [matDatepicker]="startDatePicker"
@@ -102,7 +102,7 @@
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Hora de inicio</mat-label>
+      <mat-label>{{ 'invoice.form.start_time_excursion' | translate }}</mat-label>
       <input
         matInput
         [matTimepicker]="startTimePicker"
@@ -116,7 +116,7 @@
       <mat-icon matPrefix>access_time</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Fecha de fin</mat-label>
+      <mat-label>{{ 'invoice.form.end_date_excursion' | translate }}</mat-label>
       <input
         matInput
         [matDatepicker]="endDatePicker"
@@ -130,7 +130,7 @@
       <mat-icon matPrefix>event</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Hora de fin</mat-label>
+      <mat-label>{{ 'invoice.form.end_time_excursion' | translate }}</mat-label>
       <input
         matInput
         [matTimepicker]="endTimePicker"
@@ -145,7 +145,7 @@
     </mat-form-field>
   </div>
   <mat-form-field appearance="outline" class="w-full">
-    <mat-label>Tipo de impuesto</mat-label>
+    <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
         {{ taxe.name }}
@@ -160,7 +160,7 @@
     [disabled]="isLoading"
     (click)="addExcursion()"
   >
-    <ng-container *ngIf="!isLoading; else loading"> Añadir </ng-container>
+    <ng-container *ngIf="!isLoading; else loading"> {{ 'invoice.common.add' | translate }} </ng-container>
     <ng-template #loading>
       <mat-spinner diameter="24" color="accent"></mat-spinner>
     </ng-template>

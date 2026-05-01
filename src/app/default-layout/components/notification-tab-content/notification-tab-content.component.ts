@@ -4,11 +4,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { OrderNotification } from '../../../shared/interfaces/order-notification.interface';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-tab-content',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, RelativeTimePipe],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    RelativeTimePipe,
+    TranslateModule
+  ],
   templateUrl: './notification-tab-content.component.html',
   styleUrl: './notification-tab-content.component.scss'
 })

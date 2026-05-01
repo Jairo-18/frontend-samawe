@@ -1,26 +1,26 @@
 <section class="flex flex-col p-4 rounded-2xl border border-orange-500">
   <div class="flex justify-between items-center mb-4">
     <span class="text-lg font-bold text-orange-800">
-      Items Pendientes por Guardar ({{ pendingItems.length }})
+      {{ 'invoice.pending_table.title' | translate }} ({{ pendingItems.length }})
     </span>
   </div>
   <div class="overflow-x-auto mb-4">
     <table mat-table [dataSource]="pendingItems" class="w-full bg-transparent">
       <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Tipo</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.type' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text font-medium">
           {{ item.type }}
         </td>
       </ng-container>
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Item</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.item' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="left-text">
           {{ item.name }}
         </td>
       </ng-container>
       <ng-container matColumnDef="startDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
-          Fecha Entrada
+          {{ 'invoice.table.start_date' | translate }}
         </th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.startDate ? (item.payload.startDate | date:
@@ -29,7 +29,7 @@
       </ng-container>
       <ng-container matColumnDef="endDate">
         <th mat-header-cell *matHeaderCellDef class="center-text">
-          Fecha Salida
+          {{ 'invoice.table.end_date' | translate }}
         </th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.endDate ? (item.payload.endDate | date: 'dd/MM/yyyy
@@ -37,51 +37,51 @@
         </td>
       </ng-container>
       <ng-container matColumnDef="amount">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Und</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.units' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ item.payload.amount }}
         </td>
       </ng-container>
       <ng-container matColumnDef="priceWithoutTax">
         <th mat-header-cell *matHeaderCellDef class="center-text">
-          P. sin impuesto
+          {{ 'invoice.table.price_no_tax' | translate }}
         </th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ calculateBasePrice(item) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="taxVat">
-        <th mat-header-cell *matHeaderCellDef class="center-text">IVA 19%</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.vat' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ getTaxByType(item, 1) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="taxIco8">
-        <th mat-header-cell *matHeaderCellDef class="center-text">IPO 8%</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.ipo8' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ getTaxByType(item, 3) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="taxIco5">
-        <th mat-header-cell *matHeaderCellDef class="center-text">IPO 5%</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.ipo5' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ getTaxByType(item, 4) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="subtotal">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Subtotal</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.subtotal' | translate }}</th>
         <td mat-cell *matCellDef="let item" class="right-text">
           {{ calculateSubtotal(item) | formatCop }}
         </td>
       </ng-container>
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="center-text">Acciones</th>
+        <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'invoice.table.actions' | translate }}</th>
         <td mat-cell *matCellDef="let item; let i = index" class="center-text">
           <button
             mat-icon-button
             color="warn"
             (click)="onDelete(i)"
-            matTooltip="Eliminar de la lista"
+            [matTooltip]="'invoice.pending_table.remove_tooltip' | translate"
           >
             <mat-icon>delete</mat-icon>
           </button>
@@ -98,7 +98,7 @@
     [disabled]="isSaving"
     (click)="onSave()"
   >
-    <ng-container *ngIf="!isSaving; else loading"> Guardar Todos </ng-container>
+    <ng-container *ngIf="!isSaving; else loading"> {{ 'invoice.pending_table.save_all' | translate }} </ng-container>
     <ng-template #loading>
       <mat-spinner diameter="24" color="accent"></mat-spinner>
     </ng-template>

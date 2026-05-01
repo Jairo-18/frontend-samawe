@@ -1,15 +1,19 @@
 <app-base-dialog
-  [title]="data.editMode ? 'Editar factura' : 'Crear factura'"
+  [title]="
+    data.editMode
+      ? ('invoice.dialog.edit_title' | translate)
+      : ('invoice.dialog.create_title' | translate)
+  "
   [description]="
     data.editMode
-      ? 'Edite los campos permitidos'
-      : 'Complete todos los campos requeridos'
+      ? ('invoice.dialog.edit_desc' | translate)
+      : ('invoice.dialog.create_desc' | translate)
   "
 >
   <form form [formGroup]="form" class="flex flex-col gap-4">
     @if (!isLoading) {
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de factura</mat-label>
+        <mat-label>{{ 'invoice.dialog.invoice_type' | translate }}</mat-label>
         <mat-select formControlName="invoiceTypeId" required>
           <mat-option
             *ngFor="let type of invoiceTypes"
@@ -20,17 +24,17 @@
         </mat-select>
         <mat-icon matPrefix>description</mat-icon>
         <mat-error *ngIf="form.get('invoiceTypeId')?.hasError('required')">
-          Tipo de factura requerido
+          {{ 'invoice.dialog.invoice_type_required' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Buscar Cliente</mat-label>
+        <mat-label>{{ 'invoice.dialog.search_client' | translate }}</mat-label>
         <input
           type="text"
           matInput
           [matAutocomplete]="clientAuto"
           [formControl]="clientFilterControl"
-          placeholder="Nombre del cliente..."
+          [placeholder]="'invoice.dialog.client_placeholder' | translate"
           [readonly]="isClientSelected"
           (focus)="onClientFocus()"
         />
@@ -48,7 +52,7 @@
           mat-icon-button
           type="button"
           (click)="clearClientSelection()"
-          matTooltip="Limpiar selección"
+          [matTooltip]="'invoice.common.clear_selection' | translate"
         >
           <mat-icon>clear</mat-icon>
         </button>
@@ -74,32 +78,41 @@
                     client.isActive ? 'text-green-600' : 'text-red-600'
                   "
                 >
-                  - {{ client.isActive ? 'Activo' : 'Inactivo' }}
+                  -
+                  {{
+                    client.isActive
+                      ? ('invoice.common.active' | translate)
+                      : ('invoice.common.inactive' | translate)
+                  }}
                 </span>
               </span>
             </div>
           </mat-option>
           <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">No se encontraron clientes</span>
+            <span class="text-gray-500">{{
+              'invoice.common.no_results_clients' | translate
+            }}</span>
           </mat-option>
         </mat-autocomplete>
         <mat-error *ngIf="form.get('userId')?.hasError('required')">
-          Cliente requerido
+          {{ 'invoice.dialog.client_required' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Factura electrónica</mat-label>
+        <mat-label>{{ 'invoice.dialog.electronic' | translate }}</mat-label>
         <mat-select formControlName="invoiceElectronic" required>
-          <mat-option [value]="true">Sí</mat-option>
-          <mat-option [value]="false">No</mat-option>
+          <mat-option [value]="true">{{
+            'invoice.common.yes' | translate
+          }}</mat-option>
+          <mat-option [value]="false">{{
+            'invoice.common.no' | translate
+          }}</mat-option>
         </mat-select>
         <mat-icon matPrefix>bolt</mat-icon>
-
       </mat-form-field>
 
-
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de pago</mat-label>
+        <mat-label>{{ 'invoice.dialog.pay_type' | translate }}</mat-label>
         <mat-select formControlName="payTypeId" required>
           <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
             {{ type.name }}
@@ -108,7 +121,7 @@
         <mat-icon matPrefix>credit_card</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Estado de pago</mat-label>
+        <mat-label>{{ 'invoice.dialog.paid_status' | translate }}</mat-label>
         <mat-select formControlName="paidTypeId" required>
           <mat-option *ngFor="let type of paidTypes" [value]="type.paidTypeId">
             {{ type.name }}
@@ -117,7 +130,7 @@
         <mat-icon matPrefix>monetization_on</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Efectivo</mat-label>
+        <mat-label>{{ 'invoice.dialog.cash' | translate }}</mat-label>
         <input
           matInput
           formControlName="cash"
@@ -127,7 +140,7 @@
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Transferencia</mat-label>
+        <mat-label>{{ 'invoice.dialog.transfer' | translate }}</mat-label>
         <input
           matInput
           formControlName="transfer"
@@ -142,7 +155,7 @@
         class="w-full"
         *ngIf="invoice?.tableNumber"
       >
-        <mat-label>Estado de la Orden</mat-label>
+        <mat-label>{{ 'invoice.dialog.order_status' | translate }}</mat-label>
         <mat-select formControlName="stateTypeId" required>
           <mat-option
             *ngFor="let state of stateTypes"
@@ -153,12 +166,12 @@
         </mat-select>
         <mat-icon matPrefix>assignment_turned_in</mat-icon>
         <mat-error *ngIf="form.get('stateTypeId')?.hasError('required')">
-          Estado requerido
+          {{ 'invoice.dialog.status_required' | translate }}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Observaciones</mat-label>
+        <mat-label>{{ 'invoice.dialog.observations' | translate }}</mat-label>
         <textarea
           matInput
           formControlName="observations"
@@ -169,7 +182,8 @@
         ></textarea>
         <mat-icon matPrefix>notes</mat-icon>
         <mat-hint align="end">
-          {{ observationsLength }}/500 caracteres</mat-hint
+          {{ observationsLength
+          }}{{ 'invoice.dialog.chars_limit' | translate }}</mat-hint
         >
       </mat-form-field>
     } @else {
@@ -189,7 +203,7 @@
         color="warn"
         (click)="cancel()"
       >
-        Cancelar
+        {{ 'invoice.common.cancel' | translate }}
       </button>
     </div>
 
@@ -203,7 +217,11 @@
         (click)="save()"
         [disabled]="form.invalid || isLoading"
       >
-        {{ data.editMode ? 'Guardar cambios' : 'Crear factura' }}
+        {{
+          data.editMode
+            ? ('invoice.dialog.save_btn' | translate)
+            : ('invoice.dialog.create_btn' | translate)
+        }}
       </button>
     </div>
   </section>

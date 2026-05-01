@@ -8,7 +8,7 @@
     >
       <img
         [src]="imageUrl"
-        alt="Sobre Nosotros Samawé"
+        [alt]="'public.about_us.image_alt' | translate"
         class="w-full h-full object-cover"
       />
     </div>
@@ -16,14 +16,14 @@
     <div class="flex flex-col gap-4 order-1 md:order-2">
       <app-section-header
         variant="left"
-        label="Quiénes somos"
+        [label]="'public.about_us.who_we_are' | translate"
         [title]="org?.aboutUsTitle | translated"
         [description]="org?.aboutUsDescription | translated"
       />
 
       <div>
         <app-button-landing
-          label="Conocer más"
+          [label]="'public.about_us.know_more' | translate"
           variant="transparent"
           (clicked)="navigate()"
         ></app-button-landing>
