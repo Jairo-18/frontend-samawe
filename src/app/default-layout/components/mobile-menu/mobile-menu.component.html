@@ -25,7 +25,7 @@
                     ? 'text-[var(--primary-color)]'
                     : 'text-[#797979]'
                 "
-                >{{ item.name }}</span
+                >{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span
               >
             </div>
           } @else if (item.name === 'Ajustes') {
@@ -40,7 +40,7 @@
               "
             >
               <mat-icon class="transition-transform">{{ item.icon }}</mat-icon>
-              <span class="text-[11px]">{{ item.name }}</span>
+              <span class="text-[11px]">{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
             </button>
           } @else {
             <!-- Other items (next to Inicio) -->
@@ -57,7 +57,7 @@
                 class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
                 >{{ item.icon }}</mat-icon
               >
-              <span>{{ item.name }}</span>
+              <span>{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
             </a>
           }
         } @else {
@@ -109,5 +109,14 @@
         </button>
       }
     </ng-container>
+    <div class="border-t border-gray-100">
+      <button
+        (click)="langService.switch(); settingsMenuOpen = false"
+        class="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+      >
+        <mat-icon class="text-[var(--primary-color)] !text-[20px] !w-5 !h-5">language</mat-icon>
+        <span>{{ 'service_and_product.mobile_menu.language' | translate }}: {{ langService.lang() === 'es' ? 'EN' : 'ES' }}</span>
+      </button>
+    </div>
   </div>
 }

@@ -41,6 +41,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -61,7 +62,8 @@ import { ProductsPrintComponent } from '../../../shared/components/products-prin
     SectionHeaderComponent,
     FormatCopPipe,
     FormatPercentPipe,
-    ProductsPrintComponent
+    ProductsPrintComponent,
+    TranslateModule
   ],
   templateUrl: './see-products.component.html',
   styleUrl: './see-products.component.scss'

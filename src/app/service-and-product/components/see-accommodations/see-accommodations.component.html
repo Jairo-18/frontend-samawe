@@ -1,6 +1,6 @@
 <app-section-header
-  [title]="'Gestionar hospedajes'"
-  [subtitle]="'Gestiona los hospedajes registrados en tu hotel'"
+  [title]="'service_and_product.accommodations.title' | translate"
+  [subtitle]="'service_and_product.accommodations.subtitle' | translate"
 ></app-section-header>
 @if (!isMobile) {
   <app-search-fields
@@ -20,7 +20,7 @@
         (click)="searchComponent.reset()"
         [disabled]="!showClearButton"
       >
-        Limpiar filtros
+        {{ 'service_and_product.actions.clear_filters' | translate }}
       </button>
     </div>
   </section>
@@ -42,14 +42,16 @@
         <table mat-table [dataSource]="dataSource" matSort>
           <ng-container matColumnDef="bedType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Tipo de cama
+              {{ 'service_and_product.table.bed_type' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
-              {{ accommodation?.bedType?.name || 'Sin camas' }}
+              {{ accommodation?.bedType?.name || ('service_and_product.values.no_beds' | translate) }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'service_and_product.table.status' | translate }}
+            </th>
             <td
               mat-cell
               class="font-bold"
@@ -72,12 +74,12 @@
                   accommodation?.stateType?.name === 'RESERVADO'
               }"
             >
-              {{ accommodation?.stateType?.name || 'Sin estado' }}
+              {{ accommodation?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Código
+              {{ 'service_and_product.table.code' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               {{ accommodation.code }}
@@ -85,7 +87,7 @@
           </ng-container>
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Nombre
+              {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
               {{ accommodation.name }}
@@ -93,7 +95,7 @@
           </ng-container>
           <ng-container matColumnDef="amountPerson">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Mínimo Personas
+              {{ 'service_and_product.table.min_persons' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               {{ accommodation.amountPerson }}
@@ -101,7 +103,7 @@
           </ng-container>
           <ng-container matColumnDef="jacuzzi">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Jacuzzi
+              {{ 'service_and_product.table.jacuzzi' | translate }}
             </th>
             <td
               mat-cell
@@ -111,12 +113,12 @@
                 accommodation.jacuzzi ? 'text-[#06a606]' : 'text-red-700'
               "
             >
-              {{ accommodation.jacuzzi ? 'Sí' : 'No' }}
+              {{ accommodation.jacuzzi ? ('service_and_product.values.yes' | translate) : ('service_and_product.values.no' | translate) }}
             </td>
           </ng-container>
           <ng-container matColumnDef="amountRoom">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Habitaciones
+              {{ 'service_and_product.table.rooms' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               {{ accommodation.amountRoom }}
@@ -124,7 +126,7 @@
           </ng-container>
           <ng-container matColumnDef="amountBathroom">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Máximo personas
+              {{ 'service_and_product.table.max_persons' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               {{ accommodation.amountBathroom }}
@@ -132,7 +134,7 @@
           </ng-container>
           <ng-container matColumnDef="priceBuy">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              P. Compra
+              {{ 'service_and_product.table.price_buy_short' | translate }}
             </th>
             <td
               mat-cell
@@ -144,7 +146,7 @@
           </ng-container>
           <ng-container matColumnDef="priceSale">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              P. Venta
+              {{ 'service_and_product.table.price_sell_short' | translate }}
             </th>
             <td
               mat-cell
@@ -156,7 +158,7 @@
           </ng-container>
           <ng-container matColumnDef="taxeType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Impuesto
+              {{ 'service_and_product.table.tax' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               {{ accommodation.taxeType?.percentage | formatPercent }}
@@ -164,7 +166,7 @@
           </ng-container>
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Acciones
+              {{ 'service_and_product.table.actions' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation" class="center-text">
               @if (!validateIfCanEditUserOrDelete()) {
@@ -196,7 +198,7 @@
         </table>
         } @else {
           <div class="w-full justify-center items-center flex">
-            <p>No se encontraron hospedajes.</p>
+            <p>{{ 'service_and_product.accommodations.not_found' | translate }}</p>
           </div>
         }
       </div>
@@ -207,7 +209,7 @@
     [(selectedIndex)]="selectedTabIndex"
     (selectedIndexChange)="onTabChange($event)"
   >
-    <mat-tab [label]="'Búsqueda'" class="h-full">
+    <mat-tab [label]="'service_and_product.tabs.search' | translate" class="h-full">
       <div class="mt-3 px-2">
         <app-search-fields
           [searchFields]="searchFieldsAccommodations"
@@ -227,7 +229,7 @@
             (click)="searchComponent.reset()"
             [disabled]="!showClearButton"
           >
-            Limpiar filtros
+            {{ 'service_and_product.actions.clear_filters' | translate }}
           </button>
         </div>
         <div class="w-full">
@@ -237,12 +239,12 @@
             extended="true"
             (click)="searchComponent.submitSearch(); selectedTabIndex = 1"
           >
-            Buscar
+            {{ 'service_and_product.actions.search' | translate }}
           </button>
         </div>
       </section>
     </mat-tab>
-    <mat-tab [label]="'Resultados'">
+    <mat-tab [label]="'service_and_product.tabs.results' | translate">
       <div class="mat-elevation-z8">
         <app-loader *ngIf="loading"></app-loader>
         <mat-paginator
@@ -260,13 +262,17 @@
           <div class="table-flip-inner">
           <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="bedType">
-              <th mat-header-cell *matHeaderCellDef>Tipo de cama</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.bed_type' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
-                {{ accommodation?.bedType?.name || 'Sin camas' }}
+                {{ accommodation?.bedType?.name || ('service_and_product.values.no_beds' | translate) }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
-              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.status' | translate }}
+              </th>
               <td
                 mat-cell
                 class="font-bold"
@@ -289,29 +295,37 @@
                     accommodation?.stateType?.name === 'RESERVADO'
                 }"
               >
-                {{ accommodation?.stateType?.name || 'Sin estado' }}
+                {{ accommodation?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
-              <th mat-header-cell *matHeaderCellDef>Código</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.code' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
                 {{ accommodation.code }}
               </td>
             </ng-container>
             <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.name' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
                 {{ accommodation.name }}
               </td>
             </ng-container>
             <ng-container matColumnDef="amountPerson">
-              <th mat-header-cell *matHeaderCellDef>Mínimo Personas</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.min_persons' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
                 {{ accommodation.amountPerson }}
               </td>
             </ng-container>
             <ng-container matColumnDef="jacuzzi">
-              <th mat-header-cell *matHeaderCellDef>Jacuzzi</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.jacuzzi' | translate }}
+              </th>
               <td
                 mat-cell
                 *matCellDef="let accommodation"
@@ -320,23 +334,29 @@
                   accommodation.jacuzzi ? 'text-[#06a606]' : 'text-red-700'
                 "
               >
-                {{ accommodation.jacuzzi ? 'Sí' : 'No' }}
+                {{ accommodation.jacuzzi ? ('service_and_product.values.yes' | translate) : ('service_and_product.values.no' | translate) }}
               </td>
             </ng-container>
             <ng-container matColumnDef="amountRoom">
-              <th mat-header-cell *matHeaderCellDef>Habitaciones</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.rooms' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
                 {{ accommodation.amountRoom }}
               </td>
             </ng-container>
             <ng-container matColumnDef="amountBathroom">
-              <th mat-header-cell *matHeaderCellDef>Máximo personas</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.max_persons' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation">
                 {{ accommodation.amountBathroom }}
               </td>
             </ng-container>
             <ng-container matColumnDef="priceBuy">
-              <th mat-header-cell *matHeaderCellDef>P. Compra</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.price_buy_short' | translate }}
+              </th>
               <td
                 mat-cell
                 *matCellDef="let accommodation"
@@ -346,7 +366,9 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="priceSale">
-              <th mat-header-cell *matHeaderCellDef>P. Venta</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.price_sell_short' | translate }}
+              </th>
               <td
                 mat-cell
                 *matCellDef="let accommodation"
@@ -356,13 +378,17 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="taxeType">
-              <th mat-header-cell *matHeaderCellDef>Impuesto</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.tax' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation" class="center-text">
                 {{ accommodation.taxeType?.percentage | formatPercent }}
               </td>
             </ng-container>
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'service_and_product.table.actions' | translate }}
+              </th>
               <td mat-cell *matCellDef="let accommodation" class="center-text">
                 <button
                   mat-icon-button
@@ -395,7 +421,7 @@
           *ngIf="!loading && dataSource.data.length === 0"
           class="text-center"
         >
-          <p>No se encontraron hospedajes</p>
+          <p>{{ 'service_and_product.accommodations.not_found' | translate }}</p>
         </div>
       </div>
     </mat-tab>

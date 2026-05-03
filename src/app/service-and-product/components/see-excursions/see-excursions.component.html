@@ -1,6 +1,6 @@
 <app-section-header
-  [title]="'Gestionar pasadías y servicios'"
-  [subtitle]="'Gestiona las pasadías y servicios registrados en tu hotel'"
+  [title]="'service_and_product.excursions.title' | translate"
+  [subtitle]="'service_and_product.excursions.subtitle' | translate"
 ></app-section-header>
 @if (!isMobile) {
   <app-search-fields
@@ -20,7 +20,7 @@
         (click)="searchComponent.reset()"
         [disabled]="!showClearButton"
       >
-        Limpiar filtros
+        {{ 'service_and_product.actions.clear_filters' | translate }}
       </button>
     </div>
     <div class="w-[24%]">
@@ -31,7 +31,7 @@
         color="primary"
         (click)="printExcursions()"
       >
-        Imprimir pasadías y servicios
+        {{ 'service_and_product.excursions.print' | translate }}
       </button>
     </div>
   </section>
@@ -53,15 +53,15 @@
         <table mat-table [dataSource]="dataSource" matSort>
           <ng-container matColumnDef="categoryType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Categoría
+              {{ 'service_and_product.table.category' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
-              {{ excursion?.categoryType?.name || 'Sin categoría' }}
+              {{ excursion?.categoryType?.name || ('service_and_product.values.no_category' | translate) }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Estado
+              {{ 'service_and_product.table.status' | translate }}
             </th>
             <td
               mat-cell
@@ -85,12 +85,12 @@
                   excursion?.stateType?.name === 'RESERVADO'
               }"
             >
-              {{ excursion?.stateType?.name || 'Sin estado' }}
+              {{ excursion?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Código
+              {{ 'service_and_product.table.code' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion" class="center-text">
               {{ excursion.code }}
@@ -98,7 +98,7 @@
           </ng-container>
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Nombre
+              {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
               {{ excursion.name }}
@@ -106,7 +106,7 @@
           </ng-container>
           <ng-container matColumnDef="priceBuy">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              P. Compra
+              {{ 'service_and_product.table.price_buy_short' | translate }}
             </th>
             <td
               mat-cell
@@ -118,7 +118,7 @@
           </ng-container>
           <ng-container matColumnDef="priceSale">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              P. Venta
+              {{ 'service_and_product.table.price_sell_short' | translate }}
             </th>
             <td
               mat-cell
@@ -130,7 +130,7 @@
           </ng-container>
           <ng-container matColumnDef="taxeType">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Impuesto
+              {{ 'service_and_product.table.tax' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion" class="center-text">
               {{ excursion.taxeType?.percentage | formatPercent }}
@@ -138,7 +138,7 @@
           </ng-container>
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="center-text">
-              Acciones
+              {{ 'service_and_product.table.actions' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion" class="center-text">
               @if (!validateIfCanEditUserOrDelete()) {
@@ -166,7 +166,7 @@
         </table>
         } @else {
           <div class="w-full justify-center items-center flex">
-            <p>No se encontraron pasadías o servicios</p>
+            <p>{{ 'service_and_product.excursions.not_found' | translate }}</p>
           </div>
         }
       </div>
@@ -177,7 +177,7 @@
     [(selectedIndex)]="selectedTabIndex"
     (selectedIndexChange)="onTabChange($event)"
   >
-    <mat-tab [label]="'Búsqueda'" class="h-full">
+    <mat-tab [label]="'service_and_product.tabs.search' | translate" class="h-full">
       <div class="mt-3 px-2">
         <app-search-fields
           [searchFields]="searchFieldsExcursions"
@@ -197,7 +197,7 @@
             (click)="searchComponent.reset()"
             [disabled]="!showClearButton"
           >
-            Limpiar filtros
+            {{ 'service_and_product.actions.clear_filters' | translate }}
           </button>
         </div>
         <div class="w-full">
@@ -207,12 +207,12 @@
             extended="true"
             (click)="searchComponent.submitSearch(); selectedTabIndex = 1"
           >
-            Buscar
+            {{ 'service_and_product.actions.search' | translate }}
           </button>
         </div>
       </section>
     </mat-tab>
-    <mat-tab [label]="'Resultados'">
+    <mat-tab [label]="'service_and_product.tabs.results' | translate">
       <div class="mat-elevation-z8">
         <app-loader *ngIf="loading"></app-loader>
         <mat-paginator
@@ -231,15 +231,15 @@
           <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="categoryType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Categoría
+                {{ 'service_and_product.table.category' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
-                {{ excursion?.categoryType?.name || 'Sin categoría' }}
+                {{ excursion?.categoryType?.name || ('service_and_product.values.no_category' | translate) }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Estado
+                {{ 'service_and_product.table.status' | translate }}
               </th>
               <td
                 mat-cell
@@ -263,12 +263,12 @@
                     excursion?.stateType?.name === 'RESERVADO'
                 }"
               >
-                {{ excursion?.stateType?.name || 'Sin estado' }}
+                {{ excursion?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Código
+                {{ 'service_and_product.table.code' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion" class="center-text">
                 {{ excursion.code }}
@@ -276,7 +276,7 @@
             </ng-container>
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Nombre
+                {{ 'service_and_product.table.name' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
                 {{ excursion.name }}
@@ -284,7 +284,7 @@
             </ng-container>
             <ng-container matColumnDef="priceBuy">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                P. Compra
+                {{ 'service_and_product.table.price_buy_short' | translate }}
               </th>
               <td
                 mat-cell
@@ -296,7 +296,7 @@
             </ng-container>
             <ng-container matColumnDef="priceSale">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                P. Venta
+                {{ 'service_and_product.table.price_sell_short' | translate }}
               </th>
               <td
                 mat-cell
@@ -308,7 +308,7 @@
             </ng-container>
             <ng-container matColumnDef="taxeType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Impuesto
+                {{ 'service_and_product.table.tax' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion" class="center-text">
                 {{ excursion.taxeType?.percentage | formatPercent }}
@@ -316,7 +316,7 @@
             </ng-container>
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef class="center-text">
-                Acciones
+                {{ 'service_and_product.table.actions' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion" class="center-text">
                 <button
@@ -348,7 +348,7 @@
           *ngIf="!loading && dataSource.data.length === 0"
           class="text-center"
         >
-          <p>No se encontraron pasadías o servicios</p>
+          <p>{{ 'service_and_product.excursions.not_found' | translate }}</p>
         </div>
       </div>
     </mat-tab>

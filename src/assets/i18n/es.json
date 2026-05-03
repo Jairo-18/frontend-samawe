@@ -182,7 +182,22 @@
     "loading_more": "Cargando más notificaciones..."
   },
   "sidebar": {
-    "role": "Rol"
+    "role": "Rol",
+    "home": "Inicio",
+    "clients": "Clientes",
+    "products_services": "Productos y Servicios",
+    "services": "Servicios",
+    "menu_item": "Menú",
+    "recipes": "Recetas",
+    "restaurant": "Restaurante",
+    "invoices": "Facturas",
+    "reports": "Reportes / Ganancias",
+    "management": "Gestión",
+    "application": "Aplicación",
+    "settings": "Ajustes",
+    "module_receptionist": "Panel de Recepcionista",
+    "module_chef": "Panel de Chef / Mesero",
+    "module_admin": "Panel de Administrador"
   },
   "sales": {
     "title": "Reporte de ganancias",
@@ -844,8 +859,130 @@
       "disconnect": "Desconectar"
     },
     "card_types": {
-      "code_prefix": "Código / prefijo:",
-      "name": "Nombre:"
+      "code_prefix": "Código / prefijo",
+      "name": "Nombre",
+      "total": "Total",
+      "edit": "Editar"
+    }
+  },
+  "service_and_product": {
+    "tabs": {
+      "products": "Productos",
+      "excursions": "Pasadías y Servicios",
+      "accommodations": "Hospedajes",
+      "search": "Búsqueda",
+      "results": "Resultados"
+    },
+    "products": {
+      "title": "Gestionar productos",
+      "subtitle": "Gestiona los productos registrados en tu hotel",
+      "print": "Imprimir productos",
+      "not_found": "No se encontraron productos"
+    },
+    "excursions": {
+      "title": "Gestionar pasadías y servicios",
+      "subtitle": "Gestiona las pasadías y servicios registrados en tu hotel",
+      "print": "Imprimir pasadías y servicios",
+      "not_found": "No se encontraron pasadías o servicios"
+    },
+    "accommodations": {
+      "title": "Gestionar hospedajes",
+      "subtitle": "Gestiona los hospedajes registrados en tu hotel",
+      "not_found": "No se encontraron hospedajes"
+    },
+    "table": {
+      "category": "Categoría",
+      "code": "Código",
+      "name": "Nombre",
+      "unit_of_measure": "Unidad de Medida",
+      "units": "Unidades",
+      "status": "Estado",
+      "price_buy": "Precio de compra",
+      "price_sell": "Precio de venta",
+      "tax": "Impuesto",
+      "actions": "Acciones",
+      "bed_type": "Tipo de cama",
+      "jacuzzi": "Jacuzzi",
+      "rooms": "Habitaciones",
+      "min_persons": "Mínimo Personas",
+      "max_persons": "Máximo personas",
+      "price_buy_short": "P. Compra",
+      "price_sell_short": "P. Venta",
+      "role": "Rol"
+    },
+    "values": {
+      "no_category": "Sin categoría",
+      "no_status": "Sin estado",
+      "no_beds": "Sin camas",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "yes": "Sí",
+      "no": "No"
+    },
+    "actions": {
+      "clear_filters": "Limpiar filtros",
+      "search": "Buscar"
+    },
+    "mobile_menu": {
+      "language": "Idioma",
+      "settings": "Ajustes"
+    },
+    "form": {
+      "category": "Categoría",
+      "select_category": "Seleccione la categoría",
+      "category_required": "Categoría requerida",
+      "state_type": "Tipo de estado",
+      "select_state": "Seleccione el tipo de estado",
+      "state_required": "Tipo de estado requerido",
+      "code": "Código",
+      "code_required": "Código requerido",
+      "description": "Descripción",
+      "description_max": "Máximo 500 caracteres",
+      "price_buy": "Precio de compra",
+      "price_sell": "Precio de venta",
+      "tax_type": "Tipo de impuesto",
+      "no_tax": "Sin impuesto",
+      "unit_of_measure": "Unidad de medida",
+      "units": "Unidades",
+      "status": "Estado",
+      "cancel": "Cancelar",
+      "save_changes": "Guardar cambios",
+      "bed_type": "Tipo de cama",
+      "select_bed": "Seleccione el tipo de cama",
+      "bed_required": "Tipo de cama requerido",
+      "jacuzzi_question": "¿Tiene jacuzzi?",
+      "rooms": "Habitaciones",
+      "field_required": "Campo requerido",
+      "min_persons": "Mínimo Personas",
+      "max_persons": "Máximo Personas"
+    },
+    "product_form": {
+      "edit_title": "Editar producto",
+      "create_title": "Crear producto",
+      "edit_subtitle": "Edita los campos que desees",
+      "create_subtitle": "Aquí puedes crear productos con sus respectivas categorías",
+      "code_label": "Código del producto",
+      "code_required": "Código del producto requerido",
+      "name_label": "Nombre del producto",
+      "name_required": "Nombre del producto requerido",
+      "create_btn": "Crear producto"
+    },
+    "excursion_form": {
+      "edit_title": "Editar pasadía o servicio",
+      "create_title": "Crear pasadía o servicio",
+      "edit_subtitle": "Edita los campos que desees",
+      "create_subtitle": "Aquí puedes crear pasadías o servicios con sus respectivos campos",
+      "name_label": "Nombre de la pasadía o servicio",
+      "category_required": "Categoría requerida",
+      "create_btn": "Crear"
+    },
+    "accommodation_form": {
+      "edit_title": "Editar hospedaje",
+      "create_title": "Crear hospedaje",
+      "edit_subtitle": "Edita los campos que desees",
+      "create_subtitle": "Aquí puedes crear hospedaje con sus respectivos campos",
+      "name_label": "Nombre del hospedaje",
+      "create_btn": "Crear hospedaje"
     }
   },
   "public": {

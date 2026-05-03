@@ -43,6 +43,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SidebarStateService } from '../../../shared/services/sidebar-state.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -85,10 +86,20 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _sidebarState: SidebarStateService =
+    inject(SidebarStateService);
 
   organizationalName: string = '';
   logoUrl: string = '';
-  isCollapsed: boolean = true;
+
+  /** Estado visual del sidebar — siempre sincronizado con el servicio singleton */
+  get isCollapsed(): boolean {
+    return this._sidebarState.isCollapsed;
+  }
+  set isCollapsed(value: boolean) {
+    this._sidebarState.isCollapsed = value;
+  }
+
   currentRoute: string = '';
   menuWithItems: MenuInterface[] = [];
   itemSelected: string | null = null;

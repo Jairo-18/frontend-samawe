@@ -1,20 +1,16 @@
 <app-section-header
-  [title]="isEditMode ? 'Editar producto' : 'Crear producto'"
-  [subtitle]="
-    isEditMode
-      ? 'Edita los campos que desees'
-      : 'Aquí puedes crear productos con sus respectivas categorías'
-  "
+  [title]="(isEditMode ? 'service_and_product.product_form.edit_title' : 'service_and_product.product_form.create_title') | translate"
+  [subtitle]="(isEditMode ? 'service_and_product.product_form.edit_subtitle' : 'service_and_product.product_form.create_subtitle') | translate"
 ></app-section-header>
 <form [formGroup]="productForm" class="flex flex-col">
   <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Categoría</mat-label>
+        <mat-label>{{ 'service_and_product.form.category' | translate }}</mat-label>
         <mat-select formControlName="categoryTypeId" required>
-          <mat-option value="" disabled selected
-            >Seleccione la categoría</mat-option
-          >
+          <mat-option value="" disabled selected>
+            {{ 'service_and_product.form.select_category' | translate }}
+          </mat-option>
           <mat-option
             *ngFor="let category of visibleCategoryTypes"
             [value]="category.categoryTypeId"
@@ -26,27 +22,27 @@
         <mat-error
           *ngIf="productForm.get('categoryTypeId')?.hasError('required')"
         >
-          Categoría requerido
+          {{ 'service_and_product.form.category_required' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Código del producto</mat-label>
+        <mat-label>{{ 'service_and_product.product_form.code_label' | translate }}</mat-label>
         <mat-icon matPrefix>qr_code</mat-icon>
         <input matInput formControlName="code" required appUppercase />
         <mat-error *ngIf="productForm.get('code')?.hasError('required')">
-          Código del producto requerido
+          {{ 'service_and_product.product_form.code_required' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Nombre del producto</mat-label>
+        <mat-label>{{ 'service_and_product.product_form.name_label' | translate }}</mat-label>
         <mat-icon matPrefix>inventory</mat-icon>
         <input matInput formControlName="name" required appUppercase />
         <mat-error *ngIf="productForm.get('name')?.hasError('required')">
-          Nombre del producto requerido
+          {{ 'service_and_product.product_form.name_required' | translate }}
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Unidades</mat-label>
+        <mat-label>{{ 'service_and_product.form.units' | translate }}</mat-label>
         <input
           matInput
           type="number"
@@ -57,16 +53,16 @@
         <mat-icon matSuffix>numbers</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Estado</mat-label>
+        <mat-label>{{ 'service_and_product.form.status' | translate }}</mat-label>
         <mat-select formControlName="isActive">
-          <mat-option [value]="true">Activo</mat-option>
-          <mat-option [value]="false">Inactivo</mat-option>
+          <mat-option [value]="true">{{ 'service_and_product.values.active' | translate }}</mat-option>
+          <mat-option [value]="false">{{ 'service_and_product.values.inactive' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
     </section>
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Precio de compra</mat-label>
+        <mat-label>{{ 'service_and_product.form.price_buy' | translate }}</mat-label>
         <input
           matInput
           formControlName="priceBuy"
@@ -76,7 +72,7 @@
         <mat-icon matSuffix>shopping_cart </mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Precio de venta</mat-label>
+        <mat-label>{{ 'service_and_product.form.price_sell' | translate }}</mat-label>
         <input
           matInput
           class="text-right"
@@ -86,7 +82,7 @@
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Unidad de medida</mat-label>
+        <mat-label>{{ 'service_and_product.form.unit_of_measure' | translate }}</mat-label>
         <mat-select formControlName="unitOfMeasureId">
           <mat-option
             *ngFor="let unit of unitOfMeasureTypes"
@@ -98,9 +94,9 @@
         <mat-icon matSuffix>straighten</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Tipo de impuesto</mat-label>
+        <mat-label>{{ 'service_and_product.form.tax_type' | translate }}</mat-label>
         <mat-select formControlName="taxeTypeId">
-          <mat-option [value]="null">Sin impuesto</mat-option>
+          <mat-option [value]="null">{{ 'service_and_product.form.no_tax' | translate }}</mat-option>
           <mat-option *ngFor="let tax of taxeTypes" [value]="tax.taxeTypeId">
             {{ tax.name }} ({{ tax.percentage }}%)
           </mat-option>
@@ -131,7 +127,7 @@
           class="!w-full"
           (click)="resetForm()"
         >
-          Cancelar
+          {{ 'service_and_product.form.cancel' | translate }}
         </button>
       </div>
     }
@@ -146,7 +142,7 @@
         [disabled]="isSaving"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-        {{ isEditMode ? 'Guardar cambios' : 'Crear producto' }}
+        {{ isEditMode ? ('service_and_product.form.save_changes' | translate) : ('service_and_product.product_form.create_btn' | translate) }}
       </button>
     </div>
   </div>

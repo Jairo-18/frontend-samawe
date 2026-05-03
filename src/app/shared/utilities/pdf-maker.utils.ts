@@ -10,10 +10,15 @@ async function ttfToBase64(path: string): Promise<string | null> {
       bin += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
     }
     return btoa(bin);
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-export async function loadPdfMake(): Promise<{ pdfMake: any; defaultFont: string }> {
+export async function loadPdfMake(): Promise<{
+  pdfMake: any;
+  defaultFont: string;
+}> {
   const [maker, fonts] = await Promise.all([
     import('pdfmake/build/pdfmake'),
     import('pdfmake/build/vfs_fonts')
@@ -22,7 +27,6 @@ export async function loadPdfMake(): Promise<{ pdfMake: any; defaultFont: string
   const vfs = ((fonts as any).default ?? fonts)?.pdfMake?.vfs;
   if (vfs) pdfMake.vfs = vfs;
 
-  // Roboto siempre debe estar explícitamente definido
   pdfMake.fonts = {
     Roboto: {
       normal: 'Roboto-Regular.ttf',
@@ -32,7 +36,6 @@ export async function loadPdfMake(): Promise<{ pdfMake: any; defaultFont: string
     }
   };
 
-  // Registrar Alegreya SC desde assets locales
   const [regular, bold, italic, boldItalic] = await Promise.all([
     ttfToBase64('/assets/fonts/AlegreyaSC-Regular.ttf'),
     ttfToBase64('/assets/fonts/AlegreyaSC-Bold.ttf'),

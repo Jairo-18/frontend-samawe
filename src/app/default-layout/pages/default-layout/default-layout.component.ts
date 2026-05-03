@@ -23,6 +23,7 @@ import { RelatedDataService } from '../../../shared/services/relatedData.service
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { FooterComponent } from '../../components/footer/footer.component';
 import { CookieConsentComponent } from '../../../shared/components/cookie-consent/cookie-consent.component';
+import { SidebarStateService } from '../../../shared/services/sidebar-state.service';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
@@ -49,10 +50,19 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   public readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _sidebarState: SidebarStateService =
+    inject(SidebarStateService);
   private _subscription: Subscription = new Subscription();
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
-  isCollapsedSideBar: boolean = true;
+
+  /** Lee el estado del servicio singleton para sobrevivir cambios de instancia del layout */
+  get isCollapsedSideBar(): boolean {
+    return this._sidebarState.isCollapsed;
+  }
+  set isCollapsedSideBar(value: boolean) {
+    this._sidebarState.isCollapsed = value;
+  }
   isPhone: boolean = false;
   user?: UserInterface;
   closeSideBar: boolean = false;
@@ -78,8 +88,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
     this._subscription.add(
       this._authService._isLoggedSubject.subscribe((isLogged) => {
         this.isLoggedUser = isLogged;
-        if (!isLogged) {
-          this.isCollapsedSideBar = true;
+        if (isLogged) {
+          this._sidebarState.isCollapsed = true;
+          this.closeSideBar = false;
+        } else {
+          this._sidebarState.isCollapsed = true;
           this.closeSideBar = false;
         }
         this.userInfo = this._localStorage.getUserData();
@@ -116,11 +129,22 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
           this._router.navigateByUrl('/complete-profile');
           return;
         }
+
+        const sideBarWasVisible = this.showSideBar;
+
+        const freshUserInfo = this._localStorage.getUserData();
+
+        if (freshUserInfo) {
+          this.userInfo = freshUserInfo;
+        }
         this.isLoggedUser = this._authService.isAuthenticated();
-        this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
         this.checkRolesForNavBar();
         this.checkSideBarVisibility();
+
+        if (sideBarWasVisible && this.showSideBar) {
+          this.closeSideBar = false;
+        }
       });
   }
 
@@ -177,7 +201,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   listenEvent(event: boolean): void {
-    this.isCollapsedSideBar = event;
+    this._sidebarState.isCollapsed = event;
     this.closeSideBar = false;
   }
   logout(): void {
@@ -201,13 +225,13 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       };
       this._authService.logout(sessionDataToLogout).subscribe({
         next: () => {
+          this._sidebarState.isCollapsed = true;
           this._authService.cleanStorageAndRedirectToLogin();
           this.user = undefined;
-          this.isCollapsedSideBar = true;
         },
         error: () => {
+          this._sidebarState.isCollapsed = true;
           this._authService.cleanStorageAndRedirectToLogin();
-          this.isCollapsedSideBar = true;
         }
       });
     }

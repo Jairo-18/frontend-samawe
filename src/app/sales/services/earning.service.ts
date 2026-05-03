@@ -1,6 +1,6 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import {
@@ -11,6 +11,9 @@ import {
   DashboardStateSummary
 } from '../interface/earning.interface';
 import { AuthService } from '../../auth/services/auth.service';
+
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,40 +21,58 @@ export class EarningService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _cache = new Map<string, { obs$: Observable<unknown>; ts: number }>();
+
+  constructor() {
+    this._authService._isLoggedSubject.subscribe(isLogged => {
+      if (!isLogged) this._cache.clear();
+    });
+  }
+
+  private _cached<T>(key: string, factory: () => Observable<T>): Observable<T> {
+    const cached = this._cache.get(key);
+    if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+      return cached.obs$ as Observable<T>;
+    }
+    const obs$ = factory().pipe(shareReplay(1));
+    this._cache.set(key, { obs$, ts: Date.now() });
+    return obs$;
+  }
+
   getGeneragetProductSummary(): Observable<ProductSummary> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
       ? `${environment.apiUrl}balance/product-summary?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/product-summary`;
-    return this._httpClient.get<ProductSummary>(url);
+    return this._cached('product-summary', () => this._httpClient.get<ProductSummary>(url));
   }
   getInvoiceBalance(): Observable<InvoiceBalance> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
       ? `${environment.apiUrl}balance/invoice-summary?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/invoice-summary`;
-    return this._httpClient.get<InvoiceBalance>(url);
+    return this._cached('invoice-summary', () => this._httpClient.get<InvoiceBalance>(url));
   }
   getTotalInventory(): Observable<TotalInventory> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
       ? `${environment.apiUrl}balance/total-stock?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/total-stock`;
-    return this._httpClient.get<TotalInventory>(url);
+    return this._cached('total-stock', () => this._httpClient.get<TotalInventory>(url));
   }
   getGroupedInvoices(): Observable<InvoiceSummaryGroupedResponse> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
       ? `${environment.apiUrl}balance/invoice-chart-list?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/invoice-chart-list`;
-    return this._httpClient.get<InvoiceSummaryGroupedResponse>(url);
+    return this._cached('invoice-chart-list', () => this._httpClient.get<InvoiceSummaryGroupedResponse>(url));
   }
   getDashboardGeneralSummary(): Observable<DashboardStateSummary> {
     const orgId = this._authService.getOrganizationalId();
     const url = orgId
       ? `${environment.apiUrl}balance/general?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/general`;
-    return this._httpClient.get<DashboardStateSummary>(url);
+    return this._cached('balance-general', () => this._httpClient.get<DashboardStateSummary>(url));
   }
   private downloadExcelFromResponse(
     response: HttpResponse<Blob>,

@@ -2,11 +2,13 @@ import { MenuInterface } from '../interfaces/menu.interface';
 export const MENU_CONST: MenuInterface[] = [
   {
     module: 'Panel de Recepcionista',
+    moduleKey: 'sidebar.module_receptionist',
     icon: 'view_list',
     order: 1,
     items: [
       {
         name: 'Inicio',
+        titleKey: 'sidebar.home',
         route: '/home',
         icon: 'home',
         order: 1,
@@ -14,6 +16,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Clientes',
+        titleKey: 'sidebar.clients',
         route: '/organizational/users/list',
         icon: 'supervised_user_circle',
         order: 2,
@@ -21,6 +24,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Productos y Servicios',
+        titleKey: 'sidebar.products_services',
         route: '/service-and-product/general',
         icon: 'add_shopping_cart',
         order: 3,
@@ -28,6 +32,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Menú',
+        titleKey: 'sidebar.menu_item',
         route: '/menus/general',
         icon: 'restaurant_menu',
         order: 4,
@@ -35,6 +40,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Recetas',
+        titleKey: 'sidebar.recipes',
         route: '/recipes/general',
         icon: 'menu_book',
         order: 5,
@@ -42,6 +48,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Restaurante',
+        titleKey: 'sidebar.restaurant',
         route: '/recipes/restaurant-order',
         icon: 'restaurant',
         order: 6,
@@ -49,6 +56,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Facturas',
+        titleKey: 'sidebar.invoices',
         route: '/invoice/invoices/list',
         icon: 'notes',
         order: 7,
@@ -56,6 +64,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Reportes / Ganancias',
+        titleKey: 'sidebar.reports',
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
         order: 8,
@@ -65,11 +74,13 @@ export const MENU_CONST: MenuInterface[] = [
   },
   {
     module: 'Panel de Chef / Mesero',
+    moduleKey: 'sidebar.module_chef',
     icon: 'room_service',
     order: 2,
     items: [
       {
         name: 'Inicio',
+        titleKey: 'sidebar.home',
         route: '/home',
         icon: 'home',
         order: 1,
@@ -77,6 +88,7 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Menú',
+        titleKey: 'sidebar.menu_item',
         route: '/menus/general',
         icon: 'restaurant_menu',
         order: 2,
@@ -84,14 +96,15 @@ export const MENU_CONST: MenuInterface[] = [
       },
       {
         name: 'Recetas',
+        titleKey: 'sidebar.recipes',
         route: '/recipes/general',
         icon: 'menu_book',
         order: 3,
         subItems: []
       },
-
       {
         name: 'Restaurante',
+        titleKey: 'sidebar.restaurant',
         route: '/recipes/restaurant-order',
         icon: 'restaurant',
         order: 3,
@@ -101,17 +114,20 @@ export const MENU_CONST: MenuInterface[] = [
   },
   {
     module: 'Panel de Administrador',
+    moduleKey: 'sidebar.module_admin',
     icon: 'work',
     order: 3,
     items: [
       {
         name: 'Gestión',
+        titleKey: 'sidebar.management',
         route: '/organizational/types/manage',
         icon: 'category',
         order: 1
       },
       {
         name: 'Aplicación',
+        titleKey: 'sidebar.application',
         route: '/organizational/application',
         icon: 'settings',
         order: 2

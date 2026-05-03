@@ -42,6 +42,7 @@ import { AccommodationsService } from '../../services/accommodations.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-see-accommodations',
   standalone: true,
@@ -61,7 +62,8 @@ import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
     MatTabGroup,
     SectionHeaderComponent,
     FormatCopPipe,
-    FormatPercentPipe
+    FormatPercentPipe,
+    TranslateModule
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'

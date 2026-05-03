@@ -182,7 +182,22 @@
     "loading_more": "Loading more notifications..."
   },
   "sidebar": {
-    "role": "Role"
+    "role": "Role",
+    "home": "Home",
+    "clients": "Clients",
+    "products_services": "Products & Services",
+    "services": "Services",
+    "menu_item": "Menu",
+    "recipes": "Recipes",
+    "restaurant": "Restaurant",
+    "invoices": "Invoices",
+    "reports": "Reports / Earnings",
+    "management": "Management",
+    "application": "Application",
+    "settings": "Settings",
+    "module_receptionist": "Receptionist Panel",
+    "module_chef": "Chef / Waiter Panel",
+    "module_admin": "Administrator Panel"
   },
   "sales": {
     "title": "Earnings Report",
@@ -844,8 +859,130 @@
       "disconnect": "Disconnect"
     },
     "card_types": {
-      "code_prefix": "Code / prefix:",
-      "name": "Name:"
+      "code_prefix": "Code / prefix",
+      "name": "Name",
+      "total": "Total",
+      "edit": "Edit"
+    }
+  },
+  "service_and_product": {
+    "tabs": {
+      "products": "Products",
+      "excursions": "Day Trips & Services",
+      "accommodations": "Accommodations",
+      "search": "Search",
+      "results": "Results"
+    },
+    "products": {
+      "title": "Manage products",
+      "subtitle": "Manage the products registered in your hotel",
+      "print": "Print products",
+      "not_found": "No products found"
+    },
+    "excursions": {
+      "title": "Manage day trips & services",
+      "subtitle": "Manage the day trips and services registered in your hotel",
+      "print": "Print day trips & services",
+      "not_found": "No day trips or services found"
+    },
+    "accommodations": {
+      "title": "Manage accommodations",
+      "subtitle": "Manage the accommodations registered in your hotel",
+      "not_found": "No accommodations found"
+    },
+    "table": {
+      "category": "Category",
+      "code": "Code",
+      "name": "Name",
+      "unit_of_measure": "Unit of Measure",
+      "units": "Units",
+      "status": "Status",
+      "price_buy": "Purchase price",
+      "price_sell": "Sale price",
+      "tax": "Tax",
+      "actions": "Actions",
+      "bed_type": "Bed type",
+      "jacuzzi": "Jacuzzi",
+      "rooms": "Rooms",
+      "min_persons": "Min. Persons",
+      "max_persons": "Max. persons",
+      "price_buy_short": "Buy price",
+      "price_sell_short": "Sale price",
+      "role": "Role"
+    },
+    "values": {
+      "no_category": "No category",
+      "no_status": "No status",
+      "no_beds": "No beds",
+      "active": "Active",
+      "inactive": "Inactive",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "actions": {
+      "clear_filters": "Clear filters",
+      "search": "Search"
+    },
+    "mobile_menu": {
+      "language": "Language",
+      "settings": "Settings"
+    },
+    "form": {
+      "category": "Category",
+      "select_category": "Select category",
+      "category_required": "Category required",
+      "state_type": "State type",
+      "select_state": "Select state type",
+      "state_required": "State type required",
+      "code": "Code",
+      "code_required": "Code required",
+      "description": "Description",
+      "description_max": "Maximum 500 characters",
+      "price_buy": "Purchase price",
+      "price_sell": "Sale price",
+      "tax_type": "Tax type",
+      "no_tax": "No tax",
+      "unit_of_measure": "Unit of measure",
+      "units": "Units",
+      "status": "Status",
+      "cancel": "Cancel",
+      "save_changes": "Save changes",
+      "bed_type": "Bed type",
+      "select_bed": "Select bed type",
+      "bed_required": "Bed type required",
+      "jacuzzi_question": "Has jacuzzi?",
+      "rooms": "Rooms",
+      "field_required": "Required field",
+      "min_persons": "Minimum persons",
+      "max_persons": "Maximum persons"
+    },
+    "product_form": {
+      "edit_title": "Edit product",
+      "create_title": "Create product",
+      "edit_subtitle": "Edit the fields you want",
+      "create_subtitle": "Here you can create products with their respective categories",
+      "code_label": "Product code",
+      "code_required": "Product code required",
+      "name_label": "Product name",
+      "name_required": "Product name required",
+      "create_btn": "Create product"
+    },
+    "excursion_form": {
+      "edit_title": "Edit day trip or service",
+      "create_title": "Create day trip or service",
+      "edit_subtitle": "Edit the fields you want",
+      "create_subtitle": "Here you can create day trips or services with their respective fields",
+      "name_label": "Day trip or service name",
+      "category_required": "Category required",
+      "create_btn": "Create"
+    },
+    "accommodation_form": {
+      "edit_title": "Edit accommodation",
+      "create_title": "Create accommodation",
+      "edit_subtitle": "Edit the fields you want",
+      "create_subtitle": "Here you can create accommodations with their respective fields",
+      "name_label": "Accommodation name",
+      "create_btn": "Create accommodation"
     }
   },
   "public": {

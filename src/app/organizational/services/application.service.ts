@@ -2,7 +2,7 @@ import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import {
   Organizational,
   OrganizationalMedia,
@@ -32,12 +32,28 @@ export class ApplicationService {
   private _currentOrgSubject = new BehaviorSubject<Organizational | null>(null);
   public currentOrg$ = this._currentOrgSubject.asObservable();
 
+  private _orgCache = new Map<string, Observable<ApiResponseInterface<Organizational>>>();
+  private _benefitCache = new Map<string, Observable<ApiResponseInterface<BenefitSection[]>>>();
+  private _legalCache = new Map<string, Observable<ApiResponseInterface<LegalSection[]>>>();
+  private _corporateCache = new Map<string, Observable<ApiResponseInterface<CorporateValue[]>>>();
+
   getOrganization(
-    id: string
+    id: string,
+    forceRefresh = false
   ): Observable<ApiResponseInterface<Organizational>> {
-    return this._http.get<ApiResponseInterface<Organizational>>(
-      `${environment.apiUrl}organizational/${id}`
-    );
+    if (forceRefresh || !this._orgCache.has(id)) {
+      this._orgCache.set(
+        id,
+        this._http.get<ApiResponseInterface<Organizational>>(
+          `${environment.apiUrl}organizational/${id}`
+        ).pipe(shareReplay(1))
+      );
+    }
+    return this._orgCache.get(id)!;
+  }
+
+  invalidateOrgCache(id: string): void {
+    this._orgCache.delete(id);
   }
 
   getOrganizationBySlug(
@@ -195,11 +211,22 @@ export class ApplicationService {
   }
 
   getCorporateValues(
-    id: string
+    id: string,
+    forceRefresh = false
   ): Observable<ApiResponseInterface<CorporateValue[]>> {
-    return this._http.get<ApiResponseInterface<CorporateValue[]>>(
-      `${environment.apiUrl}organizational/${id}/corporate-values`
-    );
+    if (forceRefresh || !this._corporateCache.has(id)) {
+      this._corporateCache.set(
+        id,
+        this._http.get<ApiResponseInterface<CorporateValue[]>>(
+          `${environment.apiUrl}organizational/${id}/corporate-values`
+        ).pipe(shareReplay(1))
+      );
+    }
+    return this._corporateCache.get(id)!;
+  }
+
+  invalidateCorporateCache(id: string): void {
+    this._corporateCache.delete(id);
   }
 
   createCorporateValue(
@@ -255,11 +282,22 @@ export class ApplicationService {
   }
 
   getBenefitSections(
-    organizationalId: string
+    organizationalId: string,
+    forceRefresh = false
   ): Observable<ApiResponseInterface<BenefitSection[]>> {
-    return this._http.get<ApiResponseInterface<BenefitSection[]>>(
-      `${environment.apiUrl}benefit-section/organizational/${organizationalId}`
-    );
+    if (forceRefresh || !this._benefitCache.has(organizationalId)) {
+      this._benefitCache.set(
+        organizationalId,
+        this._http.get<ApiResponseInterface<BenefitSection[]>>(
+          `${environment.apiUrl}benefit-section/organizational/${organizationalId}`
+        ).pipe(shareReplay(1))
+      );
+    }
+    return this._benefitCache.get(organizationalId)!;
+  }
+
+  invalidateBenefitCache(organizationalId: string): void {
+    this._benefitCache.delete(organizationalId);
   }
 
   createBenefitSection(
@@ -317,11 +355,22 @@ export class ApplicationService {
   }
 
   getLegalSections(
-    organizationalId: string
+    organizationalId: string,
+    forceRefresh = false
   ): Observable<ApiResponseInterface<LegalSection[]>> {
-    return this._http.get<ApiResponseInterface<LegalSection[]>>(
-      `${environment.apiUrl}legal/organizational/${organizationalId}`
-    );
+    if (forceRefresh || !this._legalCache.has(organizationalId)) {
+      this._legalCache.set(
+        organizationalId,
+        this._http.get<ApiResponseInterface<LegalSection[]>>(
+          `${environment.apiUrl}legal/organizational/${organizationalId}`
+        ).pipe(shareReplay(1))
+      );
+    }
+    return this._legalCache.get(organizationalId)!;
+  }
+
+  invalidateLegalCache(organizationalId: string): void {
+    this._legalCache.delete(organizationalId);
   }
 
   createLegalSection(

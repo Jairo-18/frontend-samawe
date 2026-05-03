@@ -1,7 +1,7 @@
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import {
   ApiResponseCreateInterface,
   ApiResponseInterface
@@ -25,6 +25,13 @@ export class UsersService {
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _userPanelCache = new Map<string, Observable<ApiResponseInterface<UserComplete>>>();
+
+  constructor() {
+    this._authService._isLoggedSubject.subscribe(isLogged => {
+      if (!isLogged) this._userPanelCache.clear();
+    });
+  }
 
   getUserWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
@@ -49,11 +56,18 @@ export class UsersService {
     );
   }
   getUserEditPanel(
-    userId: string
+    userId: string,
+    forceRefresh = false
   ): Observable<ApiResponseInterface<UserComplete>> {
-    return this._httpClient.get<ApiResponseInterface<UserComplete>>(
-      `${environment.apiUrl}user/${userId}`
-    );
+    if (forceRefresh || !this._userPanelCache.has(userId)) {
+      this._userPanelCache.set(
+        userId,
+        this._httpClient.get<ApiResponseInterface<UserComplete>>(
+          `${environment.apiUrl}user/${userId}`
+        ).pipe(shareReplay(1))
+      );
+    }
+    return this._userPanelCache.get(userId)!;
   }
   updateUserProfile(
     userId: string,

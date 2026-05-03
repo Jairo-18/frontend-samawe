@@ -5,16 +5,15 @@
       <section class="w-full flex justify-end">
         <button
           mat-icon-button
-          class="bg-[var(--primary-color)] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[var(--secondary-color)] transition-colors duration-300"
+          [matTooltip]="'organizational.card_types.edit' | translate"
+          (click)="edit.emit({ type: selectedType, id: item[getIdKey(item)] })"
         >
-          {{ 'organizational.card_types.manage_permissions' | translate }}
+          <mat-icon>edit</mat-icon>
         </button>
         <button
           mat-icon-button
           color="warn"
-          (click)="
-            remove.emit({ type: selectedType, id: item[getIdKey(item)] })
-          "
+          (click)="remove.emit({ type: selectedType, id: item[getIdKey(item)] })"
         >
           <mat-icon>delete</mat-icon>
         </button>

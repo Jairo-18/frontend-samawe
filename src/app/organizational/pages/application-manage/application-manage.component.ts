@@ -563,7 +563,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   loadCorporateValues(id: string): void {
-    this._applicationService.getCorporateValues(id).subscribe({
+    this._applicationService.getCorporateValues(id, true).subscribe({
       next: (res) => (this.corporateValues = res.data)
     });
   }
@@ -653,7 +653,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }
 
   loadBenefitSections(id: string): void {
-    this._applicationService.getBenefitSections(id).subscribe({
+    this._applicationService.getBenefitSections(id, true).subscribe({
       next: (res) => (this.benefitSections = res.data)
     });
   }
@@ -755,7 +755,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   loadLegalSections(): void {
     this._applicationService
-      .getLegalSections(this.organizationalId!)
+      .getLegalSections(this.organizationalId!, true)
       .subscribe({
         next: (res) => (this.legalSections = res.data)
       });

@@ -84,7 +84,7 @@
                   <span
                     *ngIf="!isCollapsed"
                     class="text-xs md:text-xs lg:text-sm 3xl:text-base"
-                    >{{ module.module }}</span
+                    >{{ module.moduleKey ? (module.moduleKey | translate) : module.module }}</span
                   >
                 </div>
               </div>
@@ -132,7 +132,7 @@
                       <span
                         *ngIf="!isCollapsed"
                         class="text-xs md:text-sm lg:text-sm 3xl:text-base"
-                        >{{ item.name }}</span
+                        >{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span
                       >
                     </div>
                   </button>

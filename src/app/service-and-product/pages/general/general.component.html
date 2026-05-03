@@ -1,6 +1,6 @@
 <app-base-page>
   <mat-tab-group (selectedTabChange)="onTabChange()">
-    <mat-tab label="Productos">
+    <mat-tab [label]="'service_and_product.tabs.products' | translate">
       <ng-template matTabContent>
         <app-create-or-edit-product
           [categoryTypes]="categoryTypes"
@@ -19,7 +19,7 @@
         ></app-see-products
       ></ng-template>
     </mat-tab>
-    <mat-tab label="Pasadías y Servicios">
+    <mat-tab [label]="'service_and_product.tabs.excursions' | translate">
       <ng-template matTabContent>
         <app-create-or-edit-excursion
           [categoryTypes]="categoryTypes"
@@ -38,7 +38,7 @@
         ></app-see-excursions
       ></ng-template>
     </mat-tab>
-    <mat-tab label="Hospedajes">
+    <mat-tab [label]="'service_and_product.tabs.accommodations' | translate">
       <ng-template matTabContent>
         <app-create-or-edit-accommodation
           [categoryTypes]="categoryTypes"

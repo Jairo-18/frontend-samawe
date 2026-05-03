@@ -40,6 +40,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-create-or-edit-excursion',
   standalone: true,
@@ -58,7 +59,8 @@ import { ImageItem } from '../../../shared/interfaces/image.interface';
     CurrencyFormatDirective,
     SectionHeaderComponent,
     UppercaseDirective,
-    ImageUploaderComponent
+    ImageUploaderComponent,
+    TranslateModule
   ],
   templateUrl: './create-or-edit-excursion.component.html',
   styleUrl: './create-or-edit-excursion.component.scss'

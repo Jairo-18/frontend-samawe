@@ -23,6 +23,7 @@ import {
   ROLE_PERMISSIONS,
   ALLOWED_MODULES_BY_ROLE
 } from '../../../shared/constants/menu.constants';
+import { LangService } from '../../../shared/services/lang.service';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -41,6 +42,7 @@ import {
 export class MobileMenuComponent implements OnInit, OnDestroy {
   private readonly _router: Router = inject(Router);
   private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  readonly langService: LangService = inject(LangService);
   private _routerSub = new Subscription();
 
   @Input() userInfo?: UserInterface;
@@ -118,11 +120,12 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       m.items.some((i) => i.name === 'Inicio')
     )?.items.find((i) => i.name === 'Inicio');
     if (homeItem) {
-      finalItems[2] = { ...homeItem };
+      finalItems[2] = { ...homeItem, titleKey: 'sidebar.home' };
     }
 
     finalItems[4] = {
       name: 'Ajustes',
+      titleKey: 'service_and_product.mobile_menu.settings',
       icon: 'settings',
       order: 99,
       subItems: []
@@ -134,16 +137,16 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
         (i) => i.name === 'Productos y Servicios'
       );
       const facturas = allItems.find((i) => i.name === 'Facturas');
-      if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes' };
-      if (servicios) finalItems[1] = { ...servicios, name: 'Servicios' };
-      if (facturas) finalItems[3] = facturas;
+      if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes', titleKey: 'sidebar.clients' };
+      if (servicios) finalItems[1] = { ...servicios, name: 'Servicios', titleKey: 'sidebar.services' };
+      if (facturas) finalItems[3] = { ...facturas, titleKey: 'sidebar.invoices' };
     } else if (roleName === 'CHEF' || roleName === 'MESERO') {
       const menu = allItems.find((i) => i.name === 'Menú');
       const recetas = allItems.find((i) => i.name === 'Recetas');
       const restaurante = allItems.find((i) => i.name === 'Restaurante');
-      if (menu) finalItems[0] = { ...menu, name: 'Menú' };
-      if (recetas) finalItems[1] = recetas;
-      if (restaurante) finalItems[3] = restaurante;
+      if (menu) finalItems[0] = { ...menu, name: 'Menú', titleKey: 'sidebar.menu_item' };
+      if (recetas) finalItems[1] = { ...recetas, titleKey: 'sidebar.recipes' };
+      if (restaurante) finalItems[3] = { ...restaurante, titleKey: 'sidebar.restaurant' };
     }
 
     this.loggedMenuItems = NAVBAR_LOGGED_CONST[roleName] || [];

@@ -33,6 +33,7 @@ import {
 } from '../../constants/searchFields.constants';
 import { ExcursionComplete } from '../../interface/excursion.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-general',
   standalone: true,
@@ -44,7 +45,8 @@ import { BasePageComponent } from '../../../shared/components/base-page/base-pag
     SeeExcursionsComponent,
     CreateOrEditAccommodationComponent,
     SeeAccommodationsComponent,
-    BasePageComponent
+    BasePageComponent,
+    TranslateModule
   ],
   templateUrl: './general.component.html',
   styleUrl: './general.component.scss'
