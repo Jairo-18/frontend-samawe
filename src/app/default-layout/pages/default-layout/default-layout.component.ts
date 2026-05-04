@@ -12,7 +12,7 @@ import { SideBarComponent } from '../../components/side-bar/side-bar.component';
 import { NavBarComponent } from '../../components/nav-bar/nav-bar.component';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
-import { filter, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
@@ -86,14 +86,12 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this._subscription.add(
-      this._authService._isLoggedSubject.subscribe((isLogged) => {
+      this._authService._isLoggedSubject.pipe(distinctUntilChanged()).subscribe((isLogged) => {
         this.isLoggedUser = isLogged;
         if (isLogged) {
-          this._sidebarState.isCollapsed = true;
-          this.closeSideBar = false;
+          this._sidebarState.openForSession();
         } else {
-          this._sidebarState.isCollapsed = true;
-          this.closeSideBar = false;
+          this._sidebarState.closeForLogout();
         }
         this.userInfo = this._localStorage.getUserData();
         this.checkRolesForNotifications();
@@ -225,12 +223,14 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
       };
       this._authService.logout(sessionDataToLogout).subscribe({
         next: () => {
-          this._sidebarState.isCollapsed = true;
+          this._sidebarState.closeForLogout();
+          this._sidebarState.clearCache();
           this._authService.cleanStorageAndRedirectToLogin();
           this.user = undefined;
         },
         error: () => {
-          this._sidebarState.isCollapsed = true;
+          this._sidebarState.closeForLogout();
+          this._sidebarState.clearCache();
           this._authService.cleanStorageAndRedirectToLogin();
         }
       });

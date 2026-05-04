@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   inject,
@@ -36,7 +37,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { UsersService } from '../../../organizational/services/users.service';
-import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApplicationService } from '../../../organizational/services/application.service';
 import { Subscription } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
@@ -59,7 +60,7 @@ import { SidebarStateService } from '../../../shared/services/sidebar-state.serv
     NgFor,
     MatTooltipModule,
     CommonModule,
-    LoaderComponent,
+    MatProgressSpinnerModule,
     NgOptimizedImage,
     CapitalizePipe,
     LangSwitcherComponent,
@@ -88,7 +89,7 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
     inject(ApplicationService);
   private readonly _sidebarState: SidebarStateService =
     inject(SidebarStateService);
-
+  private readonly _cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
   organizationalName: string = '';
   logoUrl: string = '';
 
@@ -107,28 +108,12 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   currentYear: number = new Date().getFullYear();
   openSubMenu: Record<string, boolean> = {};
   userComplete?: UserComplete;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   private _subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
     this.currentRoute = this._router.url;
     this.loadBranding();
-    if (this.userRole?.userId) {
-      this.isLoading = true;
-      this._usersService.getUserEditPanel(this.userRole.userId).subscribe({
-        next: (res) => {
-          this.userComplete = res.data;
-          this.filterMenuByRole();
-          this.isLoading = false;
-        },
-        error: () => {
-          this.menuWithItems = [];
-          this.isLoading = false;
-        }
-      });
-    } else {
-      this.menuWithItems = [];
-    }
   }
 
   private loadBranding(): void {
@@ -160,6 +145,45 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['closeSideBar'] && this.closeSideBar) {
       this.closeSideBarMethod();
     }
+    if (changes['userRole']) {
+      const prevId = changes['userRole'].previousValue?.userId;
+      const currId = changes['userRole'].currentValue?.userId;
+      if (currId && currId !== prevId) {
+        this.loadUserMenu(currId);
+      } else if (!currId) {
+        this.isLoading = false;
+      }
+    }
+  }
+
+  private loadUserMenu(userId: string): void {
+    const cached = this._sidebarState.getCachedUser(userId);
+    if (cached) {
+      this.userComplete = cached;
+      this.filterMenuByRole();
+      this.isLoading = false;
+      return;
+    }
+    this.isLoading = true;
+    this._cdRef.detectChanges();
+    const start = Date.now();
+    this._usersService.getUserEditPanel(userId).subscribe({
+      next: (res) => {
+        const remaining = Math.max(0, 600 - (Date.now() - start));
+        setTimeout(() => {
+          this.userComplete = res.data;
+          this._sidebarState.setCachedUser(userId, res.data);
+          this.filterMenuByRole();
+          this.isLoading = false;
+          this._cdRef.detectChanges();
+        }, remaining);
+      },
+      error: () => {
+        this.menuWithItems = [];
+        this.isLoading = false;
+        this._cdRef.detectChanges();
+      }
+    });
   }
 
   private filterMenuByRole(): void {

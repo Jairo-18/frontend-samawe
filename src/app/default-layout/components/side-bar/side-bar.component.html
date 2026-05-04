@@ -6,13 +6,8 @@
   }"
 >
   @if (isLoading) {
-    <div
-      [ngClass]="{
-        'w-full h-full flex items-center justify-center': true,
-        'p-2': !isCollapsed
-      }"
-    >
-      <app-loader class="max-w-12"></app-loader>
+    <div class="w-full h-full flex items-center justify-center">
+      <mat-spinner diameter="48" class="white-spinner"></mat-spinner>
     </div>
   } @else {
     <div
@@ -44,15 +39,17 @@
           !isCollapsed
       }"
     >
-      <img
-        [ngSrc]="logoUrl"
-        priority
-        width="150"
-        height="150"
-        alt="Logo Ecohotel Samawé"
-        class="w-[90px] md:w-[100px] 3xl:w-[150px] h-[90px] md:h-[100px] 3xl:h-[150px] border border-black rounded-full"
-        [ngClass]="{ 'img-logo-collapsed': isCollapsed }"
-      />
+      @if (logoUrl) {
+        <img
+          [ngSrc]="logoUrl"
+          priority
+          width="150"
+          height="150"
+          alt="Logo Ecohotel Samawé"
+          class="w-[90px] md:w-[100px] 3xl:w-[150px] h-[90px] md:h-[100px] 3xl:h-[150px] border border-black rounded-full"
+          [ngClass]="{ 'img-logo-collapsed': isCollapsed }"
+        />
+      }
     </div>
     <nav class="w-full h-full px-2 overflow-y-auto">
       <div class="mt-[10px] md:mt-0">
@@ -84,7 +81,11 @@
                   <span
                     *ngIf="!isCollapsed"
                     class="text-xs md:text-xs lg:text-sm 3xl:text-base"
-                    >{{ module.moduleKey ? (module.moduleKey | translate) : module.module }}</span
+                    >{{
+                      module.moduleKey
+                        ? (module.moduleKey | translate)
+                        : module.module
+                    }}</span
                   >
                 </div>
               </div>
@@ -132,7 +133,11 @@
                       <span
                         *ngIf="!isCollapsed"
                         class="text-xs md:text-sm lg:text-sm 3xl:text-base"
-                        >{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span
+                        >{{
+                          item.titleKey
+                            ? (item.titleKey | translate)
+                            : item.name
+                        }}</span
                       >
                     </div>
                   </button>

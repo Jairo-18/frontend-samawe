@@ -1,1 +1,5 @@
-
+.white-spinner {
+  ::ng-deep circle {
+    stroke: white !important;
+  }
+}
