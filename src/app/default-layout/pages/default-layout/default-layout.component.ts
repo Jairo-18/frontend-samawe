@@ -151,50 +151,33 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   }
 
   private checkRolesForNotifications() {
-    if (!this.userInfo?.roleType?.name) {
-      this.showNotificationsIcon = false;
-      return;
-    }
-
-    const roleName = this.userInfo.roleType.name.toUpperCase();
-    this.showNotificationsIcon = [
-      'ADMINISTRADOR',
-      'MESERO',
-      'CHEF',
-      'RECEPCIONISTA'
-    ].includes(roleName);
+    const code = this.userInfo?.roleType?.code;
+    this.showNotificationsIcon = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'].includes(code ?? '');
   }
 
   private checkRolesForNavBar() {
-    if (!this.userInfo?.roleType?.name) {
+    const code = this.userInfo?.roleType?.code;
+    if (!code) {
       this.showNavBar = true;
       this.showMobileMenu = false;
       return;
     }
-
-    const roleName = this.userInfo.roleType.name.toUpperCase();
-    const isCliente = roleName === 'CLIENTE';
-
+    const isCliente = code === 'USER';
     if (this.isPhone) {
       this.showNavBar = !this.isLoggedUser || isCliente;
       this.showMobileMenu = this.isLoggedUser && !isCliente;
       return;
     }
-
     this.showNavBar = isCliente;
     this.showMobileMenu = false;
   }
 
   private checkSideBarVisibility() {
+    const code = this.userInfo?.roleType?.code;
     this.showSideBar = !!(
       this.isLoggedUser &&
       !this.isPhone &&
-      (this.userInfo?.roleType?.name === 'Administrador' ||
-        this.userInfo?.roleType?.name === 'ADMINISTRADOR' ||
-        this.userInfo?.roleType?.name === 'Recepcionista' ||
-        this.userInfo?.roleType?.name === 'RECEPCIONISTA' ||
-        this.userInfo?.roleType?.name === 'MESERO' ||
-        this.userInfo?.roleType?.name === 'CHEF')
+      ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'].includes(code ?? '')
     );
   }
 

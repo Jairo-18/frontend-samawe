@@ -1,4 +1,9 @@
 import { DashboardCard } from '../interface/card.interface';
+
+const ADMIN_CODES = ['ADMIN', 'SUPERADMIN'];
+const RECEPTIONIST_CODES = ['ADMIN', 'SUPERADMIN', 'EMP'];
+const KITCHEN_CODES = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'];
+
 export const DASHBOARD_CARDS: DashboardCard[] = [
   {
     icon: 'person',
@@ -6,12 +11,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Administra usuarios, roles y permisos del sistema',
     route: '/organizational/users/list',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'store',
@@ -20,12 +20,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     route: '/service-and-product/general',
     queryParams: { editProduct: true },
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'hotel',
@@ -34,12 +29,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     route: '/service-and-product/general',
     queryParams: { editAccommodation: true },
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'tour',
@@ -48,12 +38,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     route: '/service-and-product/general',
     queryParams: { editExcursion: true },
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'restaurant_menu',
@@ -61,14 +46,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Administra el menú del restaurante',
     route: '/menus/general',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA',
-      'MESERO',
-      'CHEF'
-    ]
+    allowedRoles: KITCHEN_CODES
   },
   {
     icon: 'restaurant',
@@ -76,14 +54,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Crea tus recetas y administra tus recetas',
     route: '/recipes/general',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA',
-      'MESERO',
-      'CHEF'
-    ]
+    allowedRoles: KITCHEN_CODES
   },
   {
     icon: 'restaurant_menu',
@@ -91,16 +62,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Crea, edita y consulta órdenes de mesa',
     route: '/recipes/restaurant-order',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA',
-      'Mesero',
-      'MESERO',
-      'Chef',
-      'CHEF'
-    ]
+    allowedRoles: KITCHEN_CODES
   },
   {
     icon: 'note',
@@ -108,12 +70,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Genera y gestiona facturas, pagos y cobros',
     route: '/invoice/invoices/list',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'attach_money',
@@ -121,12 +78,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Analiza el rendimiento con reportes detallados',
     route: '/sales/earnings-sumary',
     iconNext: 'navigate_next',
-    allowedRoles: [
-      'Recepcionista',
-      'Administrador',
-      'ADMINISTRADOR',
-      'RECEPCIONISTA'
-    ]
+    allowedRoles: RECEPTIONIST_CODES
   },
   {
     icon: 'settings',
@@ -134,7 +86,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Configuración y administración del sistema',
     route: '/organizational/types/manage',
     iconNext: 'navigate_next',
-    allowedRoles: ['Administrador', 'ADMINISTRADOR']
+    allowedRoles: ADMIN_CODES
   },
   {
     icon: 'apps',
@@ -142,6 +94,6 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'Configuración y administración del sistema',
     route: '/organizational/application',
     iconNext: 'navigate_next',
-    allowedRoles: ['Administrador', 'ADMINISTRADOR']
+    allowedRoles: ADMIN_CODES
   }
 ];

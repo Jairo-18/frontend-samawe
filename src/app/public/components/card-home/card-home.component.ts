@@ -17,15 +17,14 @@ export class CardHomeComponent {
     inject(LocalStorageService);
   constructor() {
     const userData = this._localStorage.getUserData();
-    const userRole = userData?.roleType?.name;
+    const roleCode = userData?.roleType?.code;
     this.cards = DASHBOARD_CARDS.filter((card) =>
-      card.allowedRoles?.includes(userRole)
+      card.allowedRoles?.includes(roleCode)
     ).map((card) => {
-      if (card.title === 'Recetas' && userRole?.toUpperCase() === 'MESERO') {
+      if (card.title === 'Recetas' && roleCode === 'MES') {
         return {
           ...card,
-          description:
-            'Eres mesero, aquí podrás ver los platillos para mostrar a los clientes'
+          description: 'Eres mesero, aquí podrás ver los platillos para mostrar a los clientes'
         };
       }
       return card;

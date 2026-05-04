@@ -187,13 +187,13 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private filterMenuByRole(): void {
-    const roleName = this.userComplete?.roleType?.name;
-    if (!roleName) {
+    const roleCode = this.userComplete?.roleType?.code;
+    if (!roleCode) {
       this.menuWithItems = [];
       return;
     }
-    const allowedItems = ROLE_PERMISSIONS[roleName];
-    const allowedModules = ALLOWED_MODULES_BY_ROLE[roleName] || [];
+    const allowedItems = ROLE_PERMISSIONS[roleCode];
+    const allowedModules = ALLOWED_MODULES_BY_ROLE[roleCode] || [];
 
     this.menuWithItems = MENU_CONST.filter((module) =>
       allowedModules.includes(module.module)

@@ -1,33 +1,28 @@
-@if (
-  isLoggedUser &&
-  (userInfo?.roleType?.name === 'Administrador' ||
-    userInfo?.roleType?.name === 'ADMINISTRADOR' ||
-    userInfo?.roleType?.name === 'Recepcionista' ||
-    userInfo?.roleType?.name === 'RECEPCIONISTA' ||
-    userInfo?.roleType?.name === 'Mesero' ||
-    userInfo?.roleType?.name === 'MESERO' ||
-    userInfo?.roleType?.name === 'Chef' ||
-    userInfo?.roleType?.name === 'CHEF')
-) {
-  <app-base-page
-    [showBorder]="false"
-    [headerTitle]="'public.home.welcome_title' | translate"
-    [showContentTitle]="true"
-    [contentInfo]="'public.home.welcome_subtitle' | translate"
-    [showContentInfo]="true"
-    [pxMobile]="false"
-  >
-    <app-card-home></app-card-home>
-  </app-base-page>
-} @else {
-  <app-hero-section
-    [org]="org"
-    [isLoggedUser]="isLoggedUser"
-  ></app-hero-section>
-  <app-most-requested-section [org]="org"></app-most-requested-section>
-  <app-experience-section [org]="org"></app-experience-section>
-  <app-about-us-section [org]="org"></app-about-us-section>
-  <app-reservation-section [org]="org"></app-reservation-section>
-  <app-benefits-section [org]="org" [benefitSections]="benefitSections"></app-benefits-section>
-  <app-how-to-arrive-section [org]="org"></app-how-to-arrive-section>
+@defer (on immediate) {
+  @if (isStaffUser) {
+    <app-base-page
+      [showBorder]="false"
+      [headerTitle]="'public.home.welcome_title' | translate"
+      [showContentTitle]="true"
+      [contentInfo]="'public.home.welcome_subtitle' | translate"
+      [showContentInfo]="true"
+      [pxMobile]="false"
+    >
+      <app-card-home></app-card-home>
+    </app-base-page>
+  } @else {
+    <app-hero-section
+      [org]="org"
+      [isLoggedUser]="isLoggedUser"
+    ></app-hero-section>
+    <app-most-requested-section [org]="org"></app-most-requested-section>
+    <app-experience-section [org]="org"></app-experience-section>
+    <app-about-us-section [org]="org"></app-about-us-section>
+    <app-reservation-section [org]="org"></app-reservation-section>
+    <app-benefits-section
+      [org]="org"
+      [benefitSections]="benefitSections"
+    ></app-benefits-section>
+    <app-how-to-arrive-section [org]="org"></app-how-to-arrive-section>
+  }
 }

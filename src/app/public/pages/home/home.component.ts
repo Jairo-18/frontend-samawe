@@ -7,7 +7,10 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CardHomeComponent } from '../../components/card-home/card-home.component';
 import { ApplicationService } from '../../../organizational/services/application.service';
-import { BenefitSection, Organizational } from '../../../shared/interfaces/organizational.interface';
+import {
+  BenefitSection,
+  Organizational
+} from '../../../shared/interfaces/organizational.interface';
 import { SeoService } from '../../../shared/services/seo.service';
 import { HeroSectionComponent } from './components/hero-section/hero-section.component';
 import { ExperienceSectionComponent } from './components/experience-section/experience-section.component';
@@ -43,13 +46,26 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
   private readonly _router: Router = inject(Router);
-  private readonly _applicationService: ApplicationService = inject(ApplicationService);
+  private readonly _applicationService: ApplicationService =
+    inject(ApplicationService);
   private readonly _seoService: SeoService = inject(SeoService);
+  private static readonly STAFF_CODES = [
+    'ADMIN',
+    'SUPERADMIN',
+    'EMP',
+    'MES',
+    'CHE'
+  ];
 
   isLoggedUser: boolean = false;
   userInfo?: UserInterface;
   org: Organizational | null = null;
   benefitSections: BenefitSection[] = [];
+
+  get isStaffUser(): boolean {
+    const code = this.userInfo?.roleType?.code;
+    return this.isLoggedUser && HomeComponent.STAFF_CODES.includes(code ?? '');
+  }
 
   ngOnInit(): void {
     this._subscription.add(
@@ -79,14 +95,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
 
     this._subscription.add(
-      this._applicationService.currentOrg$.pipe(
-        filter((org) => !!org),
-        switchMap((org) =>
-          this._applicationService.getBenefitSections(org!.organizationalId)
+      this._applicationService.currentOrg$
+        .pipe(
+          filter((org) => !!org),
+          switchMap((org) =>
+            this._applicationService.getBenefitSections(org!.organizationalId)
+          )
         )
-      ).subscribe((res) => {
-        this.benefitSections = res.data ?? [];
-      })
+        .subscribe((res) => {
+          this.benefitSections = res.data ?? [];
+        })
     );
   }
 

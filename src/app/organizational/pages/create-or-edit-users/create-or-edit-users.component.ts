@@ -126,22 +126,12 @@ export class CreateOrEditUsersComponent implements OnInit {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
         const allRoles = res.data?.roleType || [];
-        const roleName = this.userLogged?.roleType?.name?.toUpperCase() || '';
+        const roleCode = this.userLogged?.roleType?.code || '';
 
-        if (
-          roleName === 'RECEPCIONISTA' ||
-          roleName === 'EMP' ||
-          roleName === 'EMPLEADO'
-        ) {
-          const allowedRoles = [
-            'CHEF',
-            'MESERO',
-            'CLIENTE',
-            'RECEPCIONISTA',
-            'PROVEEDOR'
-          ];
+        if (roleCode === 'EMP') {
+          const allowedCodes = ['CHE', 'MES', 'USER', 'EMP', 'PRO'];
           this.roleType = allRoles.filter((r) =>
-            allowedRoles.includes(r.name?.trim().toUpperCase() || '')
+            allowedCodes.includes(r.code?.trim() || '')
           );
         } else {
           this.roleType = allRoles;

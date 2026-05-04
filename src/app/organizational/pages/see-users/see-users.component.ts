@@ -7,7 +7,13 @@ import {
 } from './../../../shared/interfaces/relatedDataGeneral';
 import { SearchField } from './../../../shared/interfaces/search.interface';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  ViewChild
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
@@ -230,6 +236,13 @@ export class SeeUsersComponent implements OnInit {
   getRoleName(id: string): string {
     return this.roleType.find((r) => r.roleTypeId === id)?.name || '';
   }
+  private _getRoleCode(roleTypeId?: string, roleType?: { code?: string } | null): string {
+    if (roleType?.code) return roleType.code;
+    if (roleTypeId) {
+      return this.roleType.find((r) => r.roleTypeId === roleTypeId)?.code || '';
+    }
+    return '';
+  }
   getIdentificationTypeName(id: string): string {
     return (
       this.identificationType.find((t) => t.identificationTypeId === id)
@@ -314,38 +327,53 @@ export class SeeUsersComponent implements OnInit {
     });
   }
   canEditUser(user: UserComplete): boolean {
-    const loggedInRoleName = this.userLogged?.roleType?.name?.toUpperCase();
-    const userToActOnRoleName = user.roleType?.name?.toUpperCase();
+    const loggedCode = this._getRoleCode(
+      this.userLogged?.roleType?.roleTypeId,
+      this.userLogged?.roleType
+    );
+    const targetCode = this._getRoleCode(
+      (user as any).roleTypeId,
+      user.roleType
+    );
     const isCurrentUser = this.userLogged?.userId === user.userId;
-    if (loggedInRoleName === 'ADMINISTRADOR') {
+
+    // Superadmin y Admin pueden editar a cualquiera
+    if (loggedCode === 'SUPERADMIN' || loggedCode === 'ADMIN') {
       return true;
     }
-    if (loggedInRoleName === 'RECEPCIONISTA') {
-      return (
-        userToActOnRoleName === 'CLIENTE' ||
-        userToActOnRoleName === 'PROVEEDOR' ||
-        isCurrentUser
-      );
+    // Empleado/Recepcionista puede editar clientes, proveedores y a sí mismo
+    if (loggedCode === 'EMP') {
+      return targetCode === 'USER' || targetCode === 'PRO' || isCurrentUser;
     }
-    if (loggedInRoleName === 'CLIENTE' || loggedInRoleName === 'USUARIO') {
-      return isCurrentUser;
-    }
-    return false;
+    // Cualquier otro rol solo puede editarse a sí mismo
+    return isCurrentUser;
   }
   canDeleteUser(user: UserComplete): boolean {
-    const loggedInRoleName = this.userLogged?.roleType?.name?.toUpperCase();
-    const userToActOnRoleName = user.roleType?.name?.toUpperCase();
+    const loggedCode = this._getRoleCode(
+      this.userLogged?.roleType?.roleTypeId,
+      this.userLogged?.roleType
+    );
+    const targetCode = this._getRoleCode(
+      (user as any).roleTypeId,
+      user.roleType
+    );
     const isCurrentUser = this.userLogged?.userId === user.userId;
+
+    // Nadie puede eliminarse a sí mismo
     if (isCurrentUser) {
       return false;
     }
-    if (loggedInRoleName === 'ADMINISTRADOR') {
+    // Superadmin puede eliminar a cualquiera
+    if (loggedCode === 'SUPERADMIN') {
       return true;
     }
-    if (loggedInRoleName === 'RECEPCIONISTA') {
-      return (
-        userToActOnRoleName === 'CLIENTE' || userToActOnRoleName === 'PROVEEDOR'
-      );
+    // Admin puede eliminar a cualquiera excepto a otro admin o superadmin
+    if (loggedCode === 'ADMIN') {
+      return targetCode !== 'SUPERADMIN' && targetCode !== 'ADMIN';
+    }
+    // Empleado/Recepcionista puede eliminar clientes y proveedores
+    if (loggedCode === 'EMP') {
+      return targetCode === 'USER' || targetCode === 'PRO';
     }
     return false;
   }

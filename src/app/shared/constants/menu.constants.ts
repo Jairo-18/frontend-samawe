@@ -135,38 +135,44 @@ export const MENU_CONST: MenuInterface[] = [
     ]
   }
 ];
+const ADMIN_ITEMS = [
+  'Clientes',
+  'Productos y Servicios',
+  'Recetas',
+  'Menú',
+  'Gestión',
+  'Aplicación',
+  'Facturas',
+  'Reportes / Ganancias',
+  'Inicio',
+  'Restaurante'
+];
+const RECEPTIONIST_ITEMS = [
+  'Clientes',
+  'Productos y Servicios',
+  'Recetas',
+  'Menú',
+  'Facturas',
+  'Reportes / Ganancias',
+  'Inicio',
+  'Restaurante'
+];
+const KITCHEN_ITEMS = ['Recetas', 'Menú', 'Inicio', 'Restaurante'];
+
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
-  CLIENTE: [''],
-  RECEPCIONISTA: [
-    'Clientes',
-    'Productos y Servicios',
-    'Recetas',
-    'Menú',
-    'Facturas',
-    'Reportes / Ganancias',
-    'Inicio',
-    'Restaurante'
-  ],
-  ADMINISTRADOR: [
-    'Clientes',
-    'Productos y Servicios',
-    'Recetas',
-    'Menú',
-    'Gestión',
-    'Aplicación',
-    'Facturas',
-    'Reportes / Ganancias',
-    'Inicio',
-    'Restaurante'
-  ],
-  CHEF: ['Recetas', 'Menú', 'Inicio', 'Restaurante'],
-  MESERO: ['Recetas', 'Menú', 'Inicio', 'Restaurante']
+  USER: [''],
+  EMP: RECEPTIONIST_ITEMS,
+  ADMIN: ADMIN_ITEMS,
+  SUPERADMIN: ADMIN_ITEMS,
+  CHE: KITCHEN_ITEMS,
+  MES: KITCHEN_ITEMS
 };
 
 export const ALLOWED_MODULES_BY_ROLE: Record<string, string[]> = {
-  CLIENTE: [],
-  RECEPCIONISTA: ['Panel de Administrador', 'Panel de Recepcionista'],
-  CHEF: ['Panel de Chef / Mesero'],
-  MESERO: ['Panel de Chef / Mesero'],
-  ADMINISTRADOR: ['Panel de Administrador', 'Panel de Recepcionista']
+  USER: [],
+  EMP: ['Panel de Administrador', 'Panel de Recepcionista'],
+  CHE: ['Panel de Chef / Mesero'],
+  MES: ['Panel de Chef / Mesero'],
+  ADMIN: ['Panel de Administrador', 'Panel de Recepcionista'],
+  SUPERADMIN: ['Panel de Administrador', 'Panel de Recepcionista']
 };

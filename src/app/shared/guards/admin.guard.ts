@@ -1,13 +1,13 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../services/localStorage.service';
 import { inject } from '@angular/core';
-const KNOWN_ROLES = ['administrador', 'recepcionista', 'chef', 'mesero'];
+const STAFF_CODES = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'];
 export const adminGuard: CanActivateFn = () => {
   const localStorageService = inject(LocalStorageService);
   const router = inject(Router);
   const userData = localStorageService.getUserData();
-  const roleName = userData?.roleType?.name?.toLowerCase();
-  if (!roleName || !KNOWN_ROLES.includes(roleName)) {
+  const code = userData?.roleType?.code;
+  if (!code || !STAFF_CODES.includes(code)) {
     router.navigate(['/']);
     return false;
   }

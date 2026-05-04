@@ -1,16 +1,16 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { LocalStorageService } from '../services/localStorage.service';
 import { inject } from '@angular/core';
-const RESTAURANT_ROLES = ['administrador', 'recepcionista', 'chef', 'mesero'];
+const RESTAURANT_CODES = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'];
 
 export const restaurantGuard: CanActivateFn = () => {
   const localStorageService = inject(LocalStorageService);
   const router = inject(Router);
 
   const userData = localStorageService.getUserData();
-  const roleName = userData?.roleType?.name?.toLowerCase();
+  const code = userData?.roleType?.code;
 
-  if (!roleName || !RESTAURANT_ROLES.includes(roleName)) {
+  if (!code || !RESTAURANT_CODES.includes(code)) {
     router.navigate(['/home']);
     return false;
   }

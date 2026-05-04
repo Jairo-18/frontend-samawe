@@ -1,4 +1,10 @@
-import { Component, inject, Input, OnDestroy, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnDestroy,
+  PLATFORM_ID
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PublicAccommodationListItem } from '../../../service-and-product/interface/accommodation.interface';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
