@@ -25,6 +25,55 @@
     "rights": "All rights reserved.",
     "developed_by": "Developed by"
   },
+  "home": {
+    "cards": {
+      "clients": {
+        "title": "Clients",
+        "description": "Manage users, roles and system permissions"
+      },
+      "products": {
+        "title": "Products",
+        "description": "Inventory and product management"
+      },
+      "accommodations": {
+        "title": "Accommodations",
+        "description": "Room status and information"
+      },
+      "services": {
+        "title": "Day Trips & Services",
+        "description": "Create and manage your day trips or services"
+      },
+      "menu": {
+        "title": "Menu",
+        "description": "Manage the restaurant menu"
+      },
+      "recipes": {
+        "title": "Recipes",
+        "description": "Create and manage your recipes",
+        "waiter_description": "You are a waiter, here you can see the dishes to show to customers"
+      },
+      "restaurant": {
+        "title": "Restaurant",
+        "description": "Create, edit and consult table orders"
+      },
+      "invoicing": {
+        "title": "Invoicing",
+        "description": "Generate and manage invoices, payments and collections"
+      },
+      "reports": {
+        "title": "Reports / Earnings",
+        "description": "Analyze performance with detailed reports"
+      },
+      "management": {
+        "title": "General Management",
+        "description": "System configuration and administration"
+      },
+      "application": {
+        "title": "Application",
+        "description": "System configuration and administration"
+      }
+    }
+  },
   "auth": {
     "logout": "Sign Out",
     "profile": "Profile",
@@ -1115,23 +1164,23 @@
   },
   "user": {
     "profile": {
-      "title": "My Profile",
-      "loading": "Loading...",
-      "edit": "Edit profile",
+      "title": "Profile",
+      "loading": "Loading profile information...",
+      "edit": "Edit Profile",
       "cancel": "Cancel",
-      "save": "Save",
-      "avatar_alt": "Profile photo",
-      "first_name": "First name",
-      "last_name": "Last name",
-      "email": "Email address",
-      "id_type": "Identification type",
-      "id_number": "Identification number",
-      "phone_code": "Country code",
+      "save": "Save Changes",
+      "avatar_alt": "Profile picture",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email Address",
+      "id_type": "Identification Type",
+      "id_number": "Identification Number",
+      "phone_code": "Country Code",
       "phone": "Phone",
-      "person_type": "Person type",
-      "role": "Role",
-      "change_photo": "Change photo",
-      "delete_photo": "Delete photo"
+      "person_type": "Person Type",
+      "role": "Role / Position",
+      "change_photo": "Change Photo",
+      "delete_photo": "Delete Photo"
     }
   },
   "recipe": {

@@ -14,9 +14,9 @@
           }}</mat-icon>
         </div>
         <div class="flex flex-col w-[80%]">
-          <span class="text-sm md:text-lg font-semibold">{{ card.title }}</span>
+          <span class="text-sm md:text-lg font-semibold">{{ (card.title || '') | translate }}</span>
           <span class="text-xs md:text-sm text-gray-600">{{
-            card.description
+            (card.description || '') | translate
           }}</span>
         </div>
         <div class="flex items-center w-[10%]">

@@ -161,20 +161,21 @@ export class NavBarComponent implements OnInit, OnDestroy {
   updateLoggedMenu(): void {
     if (this.isLoggedUser) {
       const sessionUser = this._localStorage.getUserData();
-      const roleName = sessionUser?.roleType?.name?.toUpperCase() || '';
-      const roleCode = sessionUser?.roleType?.code?.toUpperCase() || '';
-      const rawItems =
-        NAVBAR_LOGGED_CONST[roleName] || NAVBAR_LOGGED_CONST[roleCode] || [];
+      const roleCode = sessionUser?.roleType?.code?.toUpperCase();
+      const roleName = sessionUser?.roleType?.name?.toUpperCase();
+
+      // Priorizamos el código del rol para buscar en las constantes
+      const rawItems = (roleCode ? NAVBAR_LOGGED_CONST[roleCode] : null) || 
+                       (roleName ? NAVBAR_LOGGED_CONST[roleName] : null) || [];
+
       this.loggedMenuItems = rawItems.map((item) => ({
         ...item,
-        title: item.title ? this._translate.instant(item.title) : item.title,
+        title: item.title, // El HTML ya aplica | translate
         route: item.route ? this._langService.route(item.route) : undefined,
         children: item.children
           ? item.children.map((child) => ({
               ...child,
-              title: child.title
-                ? this._translate.instant(child.title)
-                : child.title,
+              title: child.title, // El HTML ya aplica | translate
               route: child.route
                 ? this._langService.route(child.route)
                 : undefined

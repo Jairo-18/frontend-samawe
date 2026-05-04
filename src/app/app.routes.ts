@@ -61,8 +61,27 @@ export const routes: Routes = [
     canActivate: [langGuard],
     data: { lang: 'es' },
     children: [
-      { path: '', loadChildren: publicChildren },
-      ...sharedLangChildren
+      {
+        path: 'auth',
+        canActivate: [isLoggedGuard],
+        loadChildren: () =>
+          import('./auth/auth.routes').then((m) => m.authRoutes)
+      },
+      {
+        path: 'user',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('./user/user.routes').then((m) => m.userRoutes)
+      },
+      {
+        path: 'complete-profile',
+        canActivate: [pendingProfileGuard],
+        loadComponent: () =>
+          import(
+            './auth/pages/complete-profile/complete-profile.component'
+          ).then((m) => m.CompleteProfileComponent)
+      },
+      { path: '', loadChildren: publicChildren }
     ]
   },
 
@@ -72,8 +91,27 @@ export const routes: Routes = [
     canActivate: [langGuard],
     data: { lang: 'en' },
     children: [
-      { path: '', loadChildren: publicChildren },
-      ...sharedLangChildren
+      {
+        path: 'auth',
+        canActivate: [isLoggedGuard],
+        loadChildren: () =>
+          import('./auth/auth.routes').then((m) => m.authRoutes)
+      },
+      {
+        path: 'user',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('./user/user.routes').then((m) => m.userRoutes)
+      },
+      {
+        path: 'complete-profile',
+        canActivate: [pendingProfileGuard],
+        loadComponent: () =>
+          import(
+            './auth/pages/complete-profile/complete-profile.component'
+          ).then((m) => m.CompleteProfileComponent)
+      },
+      { path: '', loadChildren: publicChildren }
     ]
   },
 

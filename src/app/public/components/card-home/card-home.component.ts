@@ -1,13 +1,15 @@
-import { RouterLink } from '@angular/router';
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { DashboardCard } from '../../interface/card.interface';
 import { DASHBOARD_CARDS } from '../../constants/card.constants';
 import { MatIconModule } from '@angular/material/icon';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-card-home',
   standalone: true,
-  imports: [MatIconModule, RouterLink],
+  imports: [MatIconModule, RouterLink, TranslateModule],
   templateUrl: './card-home.component.html',
   styleUrl: './card-home.component.scss'
 })
@@ -19,12 +21,12 @@ export class CardHomeComponent {
     const userData = this._localStorage.getUserData();
     const roleCode = userData?.roleType?.code;
     this.cards = DASHBOARD_CARDS.filter((card) =>
-      card.allowedRoles?.includes(roleCode)
+      card.allowedRoles?.includes(roleCode || '')
     ).map((card) => {
-      if (card.title === 'Recetas' && roleCode === 'MES') {
+      if (card.title === 'home.cards.recipes.title' && roleCode === 'MES') {
         return {
           ...card,
-          description: 'Eres mesero, aquí podrás ver los platillos para mostrar a los clientes'
+          description: 'home.cards.recipes.waiter_description'
         };
       }
       return card;

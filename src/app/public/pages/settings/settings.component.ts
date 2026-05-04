@@ -7,14 +7,14 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
 import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
+import { LangService } from '../../../shared/services/lang.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 interface SettingsItem {
   label: string;
   icon: string;
   route: string;
 }
-
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -28,6 +28,8 @@ export class SettingsComponent implements OnInit {
   private readonly _router: Router = inject(Router);
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
+  private readonly _langService: LangService = inject(LangService);
+  private readonly _translate: TranslateService = inject(TranslateService);
 
   userInfo?: UserInterface;
   settingsItems: SettingsItem[] = [];
@@ -38,33 +40,28 @@ export class SettingsComponent implements OnInit {
   }
 
   private generateSettingsItems(): void {
-    const roleName = this.userInfo?.roleType?.name?.toLowerCase().trim() || '';
-    const roleCode = this.userInfo?.roleType?.code?.toLowerCase().trim() || '';
+    const roleCode = this.userInfo?.roleType?.code?.toUpperCase() || '';
 
     const profileItems: SettingsItem[] = [
-      { label: 'Ver Perfil', icon: 'person', route: '/user/profile' }
-      // {
-      //   label: 'Cambiar Contraseña',
-      //   icon: 'lock',
-      //   route: `/auth/${this.userInfo?.userId}/change-password`
-      // }
+      {
+        label: this._translate.instant('auth.profile'),
+        icon: 'person',
+        route: 'user/profile'
+      }
     ];
 
-    if (
-      roleName.includes('administrador') ||
-      roleCode.includes('administrador')
-    ) {
+    if (roleCode === 'ADMIN' || roleCode === 'SUPERADMIN') {
       this.settingsItems = [
         ...profileItems,
         {
-          label: 'Gestión',
+          label: this._translate.instant('sidebar.management'),
           icon: 'category',
-          route: '/organizational/types/manage'
+          route: 'organizational/types/manage'
         },
         {
-          label: 'Aplicación',
+          label: this._translate.instant('sidebar.application'),
           icon: 'settings_applications',
-          route: '/organizational/application'
+          route: 'organizational/application'
         }
       ];
     } else {
@@ -73,7 +70,7 @@ export class SettingsComponent implements OnInit {
   }
 
   navigateTo(route: string): void {
-    this._router.navigate([route]);
+    this._router.navigate([this._langService.route(route)]);
   }
 
   logout(): void {

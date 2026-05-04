@@ -17,7 +17,7 @@ import { filter } from 'rxjs/operators';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ItemInterface } from '../../../shared/interfaces/menu.interface';
 import { NavItem } from '../../../shared/interfaces/navBar.interface';
-import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.constants';
+import { MOBILE_LOGGED_CONST } from '../../../shared/constants/mobile-logged.constants';
 import {
   MENU_CONST,
   ROLE_PERMISSIONS,
@@ -89,14 +89,14 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
   }
 
   private filterMenuByRole(): void {
-    const roleName = this.userInfo?.roleType?.name?.toUpperCase();
-    if (!roleName) {
+    const roleCode = this.userInfo?.roleType?.code;
+    if (!roleCode) {
       this.menuItems = [null, null, null, null, null];
       return;
     }
 
-    const allowedItems = ROLE_PERMISSIONS[roleName] || [];
-    const allowedModules = ALLOWED_MODULES_BY_ROLE[roleName] || [];
+    const allowedItems = ROLE_PERMISSIONS[roleCode] || [];
+    const allowedModules = ALLOWED_MODULES_BY_ROLE[roleCode] || [];
 
     const allItems: ItemInterface[] = [];
     MENU_CONST.filter((module) =>
@@ -131,7 +131,7 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       subItems: []
     };
 
-    if (roleName === 'ADMINISTRADOR' || roleName === 'RECEPCIONISTA') {
+    if (roleCode === 'ADMIN' || roleCode === 'SUPERADMIN' || roleCode === 'EMP') {
       const usuarios = allItems.find((i) => i.name === 'Clientes');
       const servicios = allItems.find(
         (i) => i.name === 'Productos y Servicios'
@@ -140,7 +140,7 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes', titleKey: 'sidebar.clients' };
       if (servicios) finalItems[1] = { ...servicios, name: 'Servicios', titleKey: 'sidebar.services' };
       if (facturas) finalItems[3] = { ...facturas, titleKey: 'sidebar.invoices' };
-    } else if (roleName === 'CHEF' || roleName === 'MESERO') {
+    } else if (roleCode === 'CHE' || roleCode === 'MES') {
       const menu = allItems.find((i) => i.name === 'Menú');
       const recetas = allItems.find((i) => i.name === 'Recetas');
       const restaurante = allItems.find((i) => i.name === 'Restaurante');
@@ -149,7 +149,7 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       if (restaurante) finalItems[3] = { ...restaurante, titleKey: 'sidebar.restaurant' };
     }
 
-    this.loggedMenuItems = NAVBAR_LOGGED_CONST[roleName] || [];
+    this.loggedMenuItems = MOBILE_LOGGED_CONST[roleCode || ''] || [];
     this.menuItems = finalItems;
   }
 }

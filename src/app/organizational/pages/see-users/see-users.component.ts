@@ -236,7 +236,10 @@ export class SeeUsersComponent implements OnInit {
   getRoleName(id: string): string {
     return this.roleType.find((r) => r.roleTypeId === id)?.name || '';
   }
-  private _getRoleCode(roleTypeId?: string, roleType?: { code?: string } | null): string {
+  private _getRoleCode(
+    roleTypeId?: string,
+    roleType?: { code?: string } | null
+  ): string {
     if (roleType?.code) return roleType.code;
     if (roleTypeId) {
       return this.roleType.find((r) => r.roleTypeId === roleTypeId)?.code || '';
@@ -337,15 +340,14 @@ export class SeeUsersComponent implements OnInit {
     );
     const isCurrentUser = this.userLogged?.userId === user.userId;
 
-    // Superadmin y Admin pueden editar a cualquiera
     if (loggedCode === 'SUPERADMIN' || loggedCode === 'ADMIN') {
       return true;
     }
-    // Empleado/Recepcionista puede editar clientes, proveedores y a sí mismo
+
     if (loggedCode === 'EMP') {
       return targetCode === 'USER' || targetCode === 'PRO' || isCurrentUser;
     }
-    // Cualquier otro rol solo puede editarse a sí mismo
+
     return isCurrentUser;
   }
   canDeleteUser(user: UserComplete): boolean {
@@ -359,19 +361,18 @@ export class SeeUsersComponent implements OnInit {
     );
     const isCurrentUser = this.userLogged?.userId === user.userId;
 
-    // Nadie puede eliminarse a sí mismo
     if (isCurrentUser) {
       return false;
     }
-    // Superadmin puede eliminar a cualquiera
+
     if (loggedCode === 'SUPERADMIN') {
       return true;
     }
-    // Admin puede eliminar a cualquiera excepto a otro admin o superadmin
+
     if (loggedCode === 'ADMIN') {
       return targetCode !== 'SUPERADMIN' && targetCode !== 'ADMIN';
     }
-    // Empleado/Recepcionista puede eliminar clientes y proveedores
+
     if (loggedCode === 'EMP') {
       return targetCode === 'USER' || targetCode === 'PRO';
     }

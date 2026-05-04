@@ -25,6 +25,55 @@
     "rights": "Todos los derechos reservados.",
     "developed_by": "Desarrollado por"
   },
+  "home": {
+    "cards": {
+      "clients": {
+        "title": "Clientes",
+        "description": "Administra usuarios, roles y permisos del sistema"
+      },
+      "products": {
+        "title": "Productos",
+        "description": "Gestión de inventario y productos"
+      },
+      "accommodations": {
+        "title": "Hospedajes",
+        "description": "Estado de las habitaciones y su información"
+      },
+      "services": {
+        "title": "Pasadías y Servicios",
+        "description": "Crea tus pasadías o servicios y administralos"
+      },
+      "menu": {
+        "title": "Menú",
+        "description": "Administra el menú del restaurante"
+      },
+      "recipes": {
+        "title": "Recetas",
+        "description": "Crea tus recetas y administra tus recetas",
+        "waiter_description": "Eres mesero, aquí podrás ver los platillos para mostrar a los clientes"
+      },
+      "restaurant": {
+        "title": "Restaurante",
+        "description": "Crea, edita y consulta órdenes de mesa"
+      },
+      "invoicing": {
+        "title": "Facturación",
+        "description": "Genera y gestiona facturas, pagos y cobros"
+      },
+      "reports": {
+        "title": "Reportes / Ganancias",
+        "description": "Analiza el rendimiento con reportes detallados"
+      },
+      "management": {
+        "title": "Gestión general",
+        "description": "Configuración y administración del sistema"
+      },
+      "application": {
+        "title": "Aplicación",
+        "description": "Configuración y administración del sistema"
+      }
+    }
+  },
   "auth": {
     "logout": "Cerrar Sesión",
     "profile": "Perfil",
@@ -1115,23 +1164,23 @@
   },
   "user": {
     "profile": {
-      "title": "Mi Perfil",
-      "loading": "Cargando...",
-      "edit": "Editar perfil",
+      "title": "Perfil",
+      "loading": "Cargando información del perfil...",
+      "edit": "Editar Perfil",
       "cancel": "Cancelar",
-      "save": "Guardar",
+      "save": "Guardar Cambios",
       "avatar_alt": "Foto de perfil",
-      "first_name": "Nombre",
-      "last_name": "Apellido",
-      "email": "Correo electrónico",
-      "id_type": "Tipo de identificación",
-      "id_number": "Número de identificación",
-      "phone_code": "Indicativo",
+      "first_name": "Nombres",
+      "last_name": "Apellidos",
+      "email": "Correo Electrónico",
+      "id_type": "Tipo de Identificación",
+      "id_number": "Número de Identificación",
+      "phone_code": "Código de País",
       "phone": "Teléfono",
-      "person_type": "Tipo de persona",
-      "role": "Rol",
-      "change_photo": "Cambiar foto",
-      "delete_photo": "Eliminar foto"
+      "person_type": "Tipo de Persona",
+      "role": "Rol / Cargo",
+      "change_photo": "Cambiar Foto",
+      "delete_photo": "Eliminar Foto"
     }
   },
   "recipe": {
