@@ -73,6 +73,13 @@ export class SeoService {
     this._updateMeta('property', 'og:url', url);
   }
 
+  initRouteCanonical(): void {
+    const origin = this._document.location.origin;
+    const url = `${origin}${this._router.url}`;
+    this._updateCanonical(url);
+    this._updateHreflang(origin, this._router.url);
+  }
+
   private _updateMeta(
     attr: 'name' | 'property',
     key: string,
