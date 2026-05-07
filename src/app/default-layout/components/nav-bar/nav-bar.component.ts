@@ -162,7 +162,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     if (this.isLoggedUser) {
       const sessionUser = this._localStorage.getUserData();
       const roleCode = sessionUser?.roleType?.code?.toUpperCase();
-      const roleName = sessionUser?.roleType?.name?.toUpperCase();
+      const roleName = sessionUser?.roleType?.name?.['es']?.toUpperCase();
 
       // Priorizamos el código del rol para buscar en las constantes
       const rawItems = (roleCode ? NAVBAR_LOGGED_CONST[roleCode] : null) || 

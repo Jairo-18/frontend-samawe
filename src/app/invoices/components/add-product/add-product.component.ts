@@ -38,6 +38,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -57,7 +58,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDatepickerModule,
     MatNativeDateModule,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'

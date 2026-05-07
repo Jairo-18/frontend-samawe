@@ -32,24 +32,24 @@
         *ngFor="let accommodation of filteredAccommodations"
         [value]="accommodation"
       >
-        {{ accommodation.name }}
+        {{ accommodation.name | translated }}
         <span
           [ngClass]="{
             'text-green-600':
-              accommodation.stateType?.name === 'Disponible' ||
-              accommodation.stateType?.name === 'DISPONIBLE',
+              accommodation.stateType?.name?.['es'] === 'Disponible' ||
+              accommodation.stateType?.name?.['es'] === 'DISPONIBLE',
             'text-yellow-600':
-              accommodation.stateType?.name === 'Mantenimiento' ||
-              accommodation.stateType?.name === 'MANTENIMIENTO',
+              accommodation.stateType?.name?.['es'] === 'Mantenimiento' ||
+              accommodation.stateType?.name?.['es'] === 'MANTENIMIENTO',
             'text-red-600':
-              accommodation.stateType?.name === 'Fuera de Servicio' ||
-              accommodation.stateType?.name === 'FUERA DE SERVICIO',
+              accommodation.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+              accommodation.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
             'text-blue-600':
-              accommodation.stateType?.name === 'Ocupado' ||
-              accommodation.stateType?.name === 'OCUPADO'
+              accommodation.stateType?.name?.['es'] === 'Ocupado' ||
+              accommodation.stateType?.name?.['es'] === 'OCUPADO'
           }"
         >
-          - {{ accommodation.stateType?.name }}
+          - {{ accommodation.stateType?.name | translated }}
         </span>
       </mat-option>
     </mat-autocomplete>
@@ -206,7 +206,7 @@
     <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
-        {{ taxe.name }}
+        {{ taxe.name | translated }}
       </mat-option>
     </mat-select>
     <mat-icon matPrefix>calculate</mat-icon>

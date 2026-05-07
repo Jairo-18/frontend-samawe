@@ -55,6 +55,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -81,7 +82,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatNativeDateModule,
     MatInputModule,
     MatFormFieldModule,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
   templateUrl: './edit-invoice.component.html',

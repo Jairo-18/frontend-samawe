@@ -48,6 +48,7 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-create-invoice-dialog',
   standalone: true,
@@ -69,7 +70,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDatepickerModule,
     MatNativeDateModule,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './create-invoice-dialog.component.html',
   styleUrls: ['./create-invoice-dialog.component.scss']
@@ -126,7 +128,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
       ?.valueChanges.subscribe((isElectronic) => {
         if (isElectronic) {
           const transferType = this.payTypes.find((p) =>
-            p.name?.toLowerCase().includes('transfer')
+            p.name?.['es']?.toLowerCase().includes('transfer')
           );
           if (transferType) {
             this.form
@@ -146,7 +148,7 @@ export class CreateInvoiceDialogComponent implements OnInit {
 
   private isTransferPayType(payTypeId: number): boolean {
     const selected = this.payTypes.find((p) => p.payTypeId === payTypeId);
-    return !!selected?.name?.toLowerCase().includes('transfer');
+    return !!selected?.name?.['es']?.toLowerCase().includes('transfer');
   }
 
   private applyTransferRule(payTypeId: number): void {

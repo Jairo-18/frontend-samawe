@@ -47,6 +47,7 @@ import { RelatedDataService } from '../../../shared/services/relatedData.service
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-create-or-edit-order',
@@ -66,7 +67,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     UppercaseDirective,
     SectionHeaderComponent,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './create-or-edit-order.component.html',
   styleUrls: ['./create-or-edit-order.component.scss']
@@ -139,13 +141,13 @@ export class CreateOrEditOrderComponent implements OnInit {
     if (this.editMode) return;
 
     const defaultState = this.stateTypes.find(
-      (s) => s.name?.toUpperCase() === 'EN COCINA'
+      (s) => s.name?.['es']?.toUpperCase() === 'EN COCINA'
     );
     const defaultPaid = this.paidTypes.find(
-      (p) => p.name?.toUpperCase() === 'PENDIENTE'
+      (p) => p.name?.['es']?.toUpperCase() === 'PENDIENTE'
     );
     const defaultPay = this.payTypes.find(
-      (p) => p.name?.toUpperCase() === 'EFECTIVO'
+      (p) => p.name?.['es']?.toUpperCase() === 'EFECTIVO'
     );
 
     if (defaultState && !this.form.get('stateTypeId')?.value) {

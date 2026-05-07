@@ -28,6 +28,7 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-edit-order',
@@ -43,7 +44,8 @@ import { TranslateModule } from '@ngx-translate/core';
     AddExcursionComponent,
     LoaderComponent,
     MatTabsModule,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './edit-order.component.html',
   styleUrls: ['./edit-order.component.scss']

@@ -27,10 +27,15 @@
       <mat-error *ngIf="formType.get('code')"> {{ 'organizational.edit_type.code_required' | translate }} </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>{{ 'organizational.edit_type.name' | translate }}</mat-label>
-      <input matInput formControlName="name" required appUppercase />
-      <mat-icon matPrefix>person</mat-icon>
-      <mat-error *ngIf="formType.get('name')"> {{ 'organizational.edit_type.name_required' | translate }} </mat-error>
+      <mat-label>{{ 'organizational.edit_type.name_es' | translate }}</mat-label>
+      <input matInput formControlName="nameEs" required appUppercase />
+      <mat-icon matPrefix>translate</mat-icon>
+      <mat-error *ngIf="formType.get('nameEs')?.hasError('required')">{{ 'organizational.edit_type.name_required' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.edit_type.name_en' | translate }}</mat-label>
+      <input matInput formControlName="nameEn" appUppercase />
+      <mat-icon matPrefix>translate</mat-icon>
     </mat-form-field>
     <section
       actions

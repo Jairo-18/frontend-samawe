@@ -1,3 +1,5 @@
+import { TranslatedField } from '../types/translated-field.type';
+
 export interface UserInterface {
   userId: string;
   identificationTypeId: IdentificationType;
@@ -19,7 +21,7 @@ export interface UserInterface {
 export interface RoleType {
   roleTypeId: string;
   code?: string;
-  name?: string;
+  name?: TranslatedField | string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

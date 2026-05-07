@@ -43,7 +43,7 @@ export class MenuGeneralComponent implements OnInit {
 
   ngOnInit(): void {
     const userData = this._localStorage.getUserData();
-    const role = userData?.roleType?.name?.toUpperCase()?.trim() || '';
+    const role = userData?.roleType?.name?.['es']?.toUpperCase()?.trim() || '';
     this.isMesero = role === 'MESERO';
   }
 

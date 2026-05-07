@@ -5,7 +5,7 @@
 >
   <section class="flex content-between w-full items-center mb-2">
     <p class="text-xl font-bold" style="color: black; font-size: 1.25rem">
-      Lista de Pasadías y Servicios
+      {{ 'service_product.excursions.print_title' | translate }}
     </p>
   </section>
   <div class="w-full" *ngIf="excursions" style="width: 100%">
@@ -23,7 +23,7 @@
           font-size: 14px;
         "
       >
-        Categoría
+        {{ 'service_product.excursions.print_col_category' | translate }}
       </div>
       <div
         class="flex-[4] border text-sm p-1 font-bold text-center"
@@ -38,7 +38,7 @@
           font-size: 14px;
         "
       >
-        Nombre
+        {{ 'service_product.excursions.print_col_name' | translate }}
       </div>
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
@@ -53,7 +53,7 @@
           font-size: 14px;
         "
       >
-        P. Compra
+        {{ 'service_product.excursions.print_col_buy' | translate }}
       </div>
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
@@ -68,7 +68,7 @@
           font-size: 14px;
         "
       >
-        P. Venta
+        {{ 'service_product.excursions.print_col_sale' | translate }}
       </div>
     </div>
     <div
@@ -86,7 +86,7 @@
           font-size: 12px;
         "
       >
-        No hay pasadías o servicios registrados
+        {{ 'service_product.excursions.print_empty' | translate }}
       </div>
     </div>
     <div
@@ -104,7 +104,7 @@
           font-size: 12px;
         "
       >
-        {{ excursion.categoryType.name || 'N/A' }}
+        {{ excursion.categoryType.name | translated }}
       </div>
       <div
         class="flex-[4] border px-4 p-1 text-left text-xs"
@@ -116,7 +116,7 @@
           font-size: 12px;
         "
       >
-        {{ excursion.name || 'N/A' }}
+        {{ excursion.name | translated }}
       </div>
       <div
         class="flex-[2] border px-4 p-1 text-right text-xs font-bold text-red-700"

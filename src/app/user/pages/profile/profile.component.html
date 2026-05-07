@@ -90,12 +90,12 @@
                 track type.identificationTypeId
               ) {
                 <mat-option [value]="type.identificationTypeId">{{
-                  type.name
+                  type.name | translated
                 }}</mat-option>
               }
             </mat-select>
           } @else {
-            <input matInput [value]="user.identificationType.name" readonly />
+            <input matInput [value]="user.identificationType.name | translated" readonly />
           }
         </mat-form-field>
 
@@ -138,18 +138,18 @@
           @if (editMode) {
             <mat-select formControlName="personType">
               @for (pt of personTypes; track pt.personTypeId) {
-                <mat-option [value]="pt.personTypeId">{{ pt.name }}</mat-option>
+                <mat-option [value]="pt.personTypeId">{{ pt.name | translated }}</mat-option>
               }
             </mat-select>
           } @else {
-            <input matInput [value]="user.personType?.name || '—'" readonly />
+            <input matInput [value]="user.personType?.name | translated" readonly />
           }
         </mat-form-field>
 
         <!-- Solo lectura -->
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'user.profile.role' | translate }}</mat-label>
-          <input matInput [value]="user.roleType?.name" readonly />
+          <input matInput [value]="user.roleType?.name | translated" readonly />
         </mat-form-field>
       </form>
     </div>

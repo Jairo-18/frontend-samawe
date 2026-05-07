@@ -2,14 +2,16 @@ import { Component, inject, Input, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ExcursionComplete } from '../../../service-and-product/interface/excursion.interface';
 import { FormatCopPipe } from '../../pipes/format-cop.pipe';
+import { TranslatedPipe } from '../../pipes/translated.pipe';
 import { CommonModule } from '@angular/common';
 import { formatCop } from '../../utilities/currency.utilities.service';
 import { loadPdfMake } from '../../utilities/pdf-maker.utils';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-excursios-print',
   standalone: true,
-  imports: [FormatCopPipe, CommonModule],
+  imports: [FormatCopPipe, CommonModule, TranslatedPipe, TranslateModule],
   templateUrl: './excursios-print.component.html',
   styleUrl: './excursios-print.component.scss'
 })
@@ -24,7 +26,7 @@ export class ExcursiosPrintComponent {
     const headerStyle = { bold: true, color: '#ffffff', fontSize: 10, fillColor: color };
 
     const rows = this.excursions.map(e => [
-      { text: e.categoryType?.name || 'N/A', fontSize: 10 },
+      { text: e.categoryType?.name?.['es'] || 'N/A', fontSize: 10 },
       { text: e.name || 'N/A', fontSize: 10 },
       { text: formatCop(e.priceBuy ?? 0), fontSize: 10, alignment: 'right' },
       { text: formatCop(e.priceSale ?? 0), fontSize: 10, alignment: 'right' }

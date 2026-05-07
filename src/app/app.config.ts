@@ -16,7 +16,7 @@ import {
 import { ToastrModule } from 'ngx-toastr';
 import { routes } from './app.routes';
 import { MatPaginatorIntl } from '@angular/material/paginator';
-import { getMaterialPaginatorTranslations } from './shared/utilities/material-paginator-translations';
+import { TranslatedPaginatorIntl } from './shared/utilities/material-paginator-translations';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { TransformDateService } from './shared/services/transform-date.service';
@@ -55,7 +55,7 @@ export const appConfig: ApplicationConfig = {
         loader: { provide: TranslateLoader, useClass: InlineTranslateLoader }
       })
     ),
-    { provide: MatPaginatorIntl, useValue: getMaterialPaginatorTranslations() },
+    { provide: MatPaginatorIntl, useClass: TranslatedPaginatorIntl },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: { maxWidth: '700px', width: '95vw' }

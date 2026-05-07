@@ -94,14 +94,14 @@ export class GeneralComponent implements AfterViewInit, OnInit {
       'RESERVADO'
     ];
     return this.stateTypes.filter((s) =>
-      allowed.includes(s.name?.toUpperCase())
+      allowed.includes(s.name?.['es']?.toUpperCase())
     );
   }
 
   get stateTypesExcursion(): StateType[] {
     const allowed = ['DISPONIBLE', 'FUERA DE SERVICIO'];
     return this.stateTypes.filter((s) =>
-      allowed.includes(s.name?.toUpperCase())
+      allowed.includes(s.name?.['es']?.toUpperCase())
     );
   }
   ngOnInit(): void {
@@ -161,7 +161,7 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     const updateOptions = (
       searchFields: SearchField[],
       fieldName: string,
-      options: { value: number; label: string }[]
+      options: { value: number; label: string | Record<string, string> }[]
     ) => {
       const field = searchFields.find((f) => f.name === fieldName);
       if (field) {
@@ -173,13 +173,13 @@ export class GeneralComponent implements AfterViewInit, OnInit {
 
     const productCategoryOptions = this.categoryTypes
       .filter(
-        (type) => !PRODUCT_EXCLUDED_CATS.includes(type.name?.toUpperCase())
+        (type) => !PRODUCT_EXCLUDED_CATS.includes(type.name?.['es']?.toUpperCase())
       )
-      .map((type) => ({ value: type.categoryTypeId, label: type.name || '' }));
+      .map((type) => ({ value: type.categoryTypeId, label: type.name }));
 
     const excursionCategoryOptions = this.categoryTypes
-      .filter((type) => EXCURSION_CATS.includes(type.name?.toUpperCase()))
-      .map((type) => ({ value: type.categoryTypeId, label: type.name || '' }));
+      .filter((type) => EXCURSION_CATS.includes(type.name?.['es']?.toUpperCase()))
+      .map((type) => ({ value: type.categoryTypeId, label: type.name }));
 
     updateOptions(
       this.searchFieldsProducts,
@@ -193,13 +193,13 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     );
     const stateOptions = this.stateTypes.map((type) => ({
       value: type.stateTypeId,
-      label: type.name || ''
+      label: type.name
     }));
     updateOptions(this.searchFieldsExcursions, 'stateType', stateOptions);
     updateOptions(this.searchFieldsAccommodations, 'stateType', stateOptions);
     const bedOptions = this.bedTypes.map((type) => ({
       value: type.bedTypeId,
-      label: type.name || ''
+      label: type.name
     }));
     updateOptions(this.searchFieldsAccommodations, 'bedType', bedOptions);
   }

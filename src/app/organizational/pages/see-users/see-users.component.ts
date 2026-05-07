@@ -110,46 +110,46 @@ export class SeeUsersComponent implements OnInit {
   searchFields: SearchField[] = [
     {
       name: 'search',
-      label: 'Nombre, apellido o identificación',
+      label: 'organizational.see_users.search_name',
       type: 'text',
       placeholder: ' '
     },
     {
       name: 'roleType',
-      label: 'Rol',
+      label: 'organizational.see_users.search_role',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por rol'
+      placeholder: 'organizational.see_users.search_role_placeholder'
     },
     {
       name: 'identificationType',
-      label: 'Tipo de identificación',
+      label: 'organizational.see_users.search_id_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo de identificación'
+      placeholder: 'organizational.see_users.search_id_type_placeholder'
     },
     {
       name: 'phoneCode',
-      label: 'Nacionalidad',
+      label: 'organizational.see_users.search_nationality',
       type: 'select',
-      placeholder: 'Buscar por nacionalidad'
+      placeholder: 'organizational.see_users.search_nationality_placeholder'
     },
     {
       name: 'personType',
-      label: 'Tipo de persona',
+      label: 'organizational.see_users.search_person_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo de persona'
+      placeholder: 'organizational.see_users.search_person_type_placeholder'
     },
     {
       name: 'isActive',
-      label: 'Estado',
+      label: 'organizational.see_users.search_status',
       type: 'select',
       options: [
-        { value: true, label: 'Activo' },
-        { value: false, label: 'Inactivo' }
+        { value: true, label: 'organizational.see_users.search_status_active' },
+        { value: false, label: 'organizational.see_users.search_status_inactive' }
       ],
-      placeholder: 'Buscar por estado'
+      placeholder: 'organizational.see_users.search_status_placeholder'
     }
   ];
   ngOnInit(): void {
@@ -209,14 +209,14 @@ export class SeeUsersComponent implements OnInit {
     if (roleOption) {
       roleOption.options = role.map((r: any) => ({
         value: r.roleTypeId,
-        label: r.name || ''
+        label: r.name
       }));
     }
     if (identificationTypeOption) {
       identificationTypeOption.options = identificationType.map(
         (type: any) => ({
           value: type.identificationTypeId,
-          label: type.name || ''
+          label: type.name
         })
       );
     }
@@ -229,12 +229,12 @@ export class SeeUsersComponent implements OnInit {
     if (personTypeOption) {
       personTypeOption.options = personType.map((pt: any) => ({
         value: pt.personTypeId?.toString(),
-        label: pt.name || ''
+        label: pt.name
       }));
     }
   }
   getRoleName(id: string): string {
-    return this.roleType.find((r) => r.roleTypeId === id)?.name || '';
+    return this.roleType.find((r) => r.roleTypeId === id)?.name?.['es'] || '';
   }
   private _getRoleCode(
     roleTypeId?: string,
@@ -257,7 +257,7 @@ export class SeeUsersComponent implements OnInit {
     return phoneCode ? `${phoneCode.name} - ${phoneCode.code}` : '';
   }
   getPersonTypeName(id: number): string {
-    return this.personType.find((pt) => pt.personTypeId === id)?.name || '';
+    return this.personType.find((pt) => pt.personTypeId === id)?.name?.['es'] || '';
   }
   onSearchSubmit(values: any): void {
     this.params = values;

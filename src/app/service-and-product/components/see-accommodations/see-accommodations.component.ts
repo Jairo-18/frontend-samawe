@@ -43,6 +43,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-see-accommodations',
   standalone: true,
@@ -63,7 +64,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     FormatCopPipe,
     FormatPercentPipe,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'
@@ -127,14 +129,14 @@ export class SeeAccommodationsComponent implements OnInit {
   getBedTypeName(accommodation: AccommodationComplete): string {
     const bedTypeId = accommodation?.bedType?.bedTypeId;
     const stateType = this.bedTypes.find((r) => r.bedTypeId === bedTypeId);
-    return stateType?.name || 'N/A';
+    return stateType?.name?.['es'] || 'N/A';
   }
   getStateTypeName(accommodation: AccommodationComplete): string {
     const stateTypeId = accommodation?.stateType?.stateTypeId;
     const stateType = this.stateTypes.find(
       (r) => r.stateTypeId === stateTypeId
     );
-    return stateType?.name || 'N/A';
+    return stateType?.name?.['es'] || 'N/A';
   }
   onSearchSubmit(values: any): void {
     this.params = values;
@@ -223,7 +225,7 @@ export class SeeAccommodationsComponent implements OnInit {
     }
   }
   validateIfCanEditUserOrDelete(): boolean {
-    const roleName = this.userLogged?.roleType?.name?.toUpperCase();
+    const roleName = (this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() ?? '';
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
 }

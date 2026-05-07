@@ -88,7 +88,7 @@
               *ngFor="let type of stateTypes"
               [value]="type.stateTypeId"
             >
-              {{ type.name }}
+              {{ type.name | translated }}
             </mat-option>
           </mat-select>
           <mat-icon matPrefix>room_service</mat-icon>
@@ -101,7 +101,7 @@
           <mat-label>{{ 'recipe.create_edit_order.payment_type' | translate }}</mat-label>
           <mat-select formControlName="payTypeId" required>
             <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
-              {{ type.name }}
+              {{ type.name | translated }}
             </mat-option>
           </mat-select>
           <mat-icon matPrefix>credit_card</mat-icon>
@@ -115,7 +115,7 @@
               *ngFor="let type of paidTypes"
               [value]="type.paidTypeId"
             >
-              {{ type.name }}
+              {{ type.name | translated }}
             </mat-option>
           </mat-select>
           <mat-icon matPrefix>monetization_on</mat-icon>

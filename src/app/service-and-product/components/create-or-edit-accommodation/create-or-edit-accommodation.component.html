@@ -15,7 +15,7 @@
             *ngFor="let category of visibleCategoryTypes"
             [value]="category.categoryTypeId"
           >
-            {{ category.name }}
+            {{ category.name | translated }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
@@ -35,7 +35,7 @@
             *ngFor="let state of stateTypes"
             [value]="state.stateTypeId"
           >
-            {{ state.name }}
+            {{ state.name | translated }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>format_list_bulleted</mat-icon>
@@ -114,7 +114,7 @@
             {{ 'service_and_product.form.select_bed' | translate }}
           </mat-option>
           <mat-option *ngFor="let bed of bedTypes" [value]="bed.bedTypeId">
-            {{ bed.name }}
+            {{ bed.name | translated }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>bed</mat-icon>
@@ -166,7 +166,7 @@
         <mat-select formControlName="taxeTypeId">
           <mat-option [value]="null">{{ 'service_and_product.form.no_tax' | translate }}</mat-option>
           <mat-option *ngFor="let tax of taxeTypes" [value]="tax.taxeTypeId">
-            {{ tax.name }} ({{ tax.percentage }}%)
+            {{ tax.name | translated }} ({{ tax.percentage }}%)
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>receipt</mat-icon>

@@ -47,7 +47,7 @@ import {
   debounceTime,
   distinctUntilChanged
 } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -82,6 +82,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private readonly _dialog: MatDialog = inject(MatDialog);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _translate: TranslateService = inject(TranslateService);
 
   form: FormGroup;
   isLoading: boolean = true;
@@ -531,8 +532,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar imagen',
-        message: '¿Estás seguro de que deseas eliminar esta imagen?'
+        title: this._translate.instant('organizational.app_manage.delete_image_title'),
+        message: this._translate.instant('organizational.app_manage.delete_image_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
@@ -610,8 +611,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   deleteCorporateValue(valueId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar valor corporativo',
-        message: '¿Deseas eliminar este valor corporativo?'
+        title: this._translate.instant('organizational.app_manage.delete_corporate_value_title'),
+        message: this._translate.instant('organizational.app_manage.delete_corporate_value_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
@@ -640,8 +641,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   deleteCorporateValueImage(valueId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar imagen',
-        message: '¿Deseas eliminar la imagen de este valor corporativo?'
+        title: this._translate.instant('organizational.app_manage.delete_image_title'),
+        message: this._translate.instant('organizational.app_manage.delete_corporate_value_image_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
@@ -699,8 +700,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   deleteBenefitSection(sectionId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar sección',
-        message: '¿Deseas eliminar esta sección y todos sus items?'
+        title: this._translate.instant('organizational.app_manage.delete_section_title'),
+        message: this._translate.instant('organizational.app_manage.delete_section_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
@@ -743,7 +744,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   deleteBenefitItem(itemId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
-      data: { title: 'Eliminar item', message: '¿Deseas eliminar este item?' }
+      data: {
+        title: this._translate.instant('organizational.app_manage.delete_item_title'),
+        message: this._translate.instant('organizational.app_manage.delete_item_msg')
+      }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) return;
@@ -773,8 +777,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   deleteLegalSection(sectionId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar sección',
-        message: '¿Deseas eliminar esta sección y todos sus items?'
+        title: this._translate.instant('organizational.app_manage.delete_section_title'),
+        message: this._translate.instant('organizational.app_manage.delete_section_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
@@ -851,7 +855,10 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   deleteLegalItem(itemId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
-      data: { title: 'Eliminar item', message: '¿Deseas eliminar este item?' }
+      data: {
+        title: this._translate.instant('organizational.app_manage.delete_item_title'),
+        message: this._translate.instant('organizational.app_manage.delete_item_msg')
+      }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) return;
@@ -882,8 +889,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   deleteLegalChild(childId: string): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: 'Eliminar sub-item',
-        message: '¿Deseas eliminar este sub-item?'
+        title: this._translate.instant('organizational.app_manage.delete_subitem_title'),
+        message: this._translate.instant('organizational.app_manage.delete_subitem_msg')
       }
     });
     ref.afterClosed().subscribe((confirmed: boolean) => {

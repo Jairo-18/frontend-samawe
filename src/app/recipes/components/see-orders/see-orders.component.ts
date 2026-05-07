@@ -39,6 +39,7 @@ import { LocalStorageService } from '../../../shared/services/localStorage.servi
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-see-orders',
@@ -56,7 +57,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     InvoicePdfComponent,
     RelativeTimePipe,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './see-orders.component.html',
   styleUrls: ['./see-orders.component.scss']
@@ -104,35 +106,35 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
   searchFields: SearchField[] = [
     {
       name: 'search',
-      label: 'Código, Mesa',
+      label: 'recipe.see_orders.search_text',
       type: 'text',
       placeholder: ' '
     },
     {
       name: 'startDate',
-      label: 'Fecha de orden',
+      label: 'recipe.see_orders.search_date',
       type: 'date'
     },
     {
       name: 'stateTypeId',
-      label: 'Estado de la orden',
+      label: 'recipe.see_orders.search_order_status',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por estado'
+      placeholder: 'recipe.see_orders.search_order_status_ph'
     },
     {
       name: 'paidTypeId',
-      label: 'Estado de pago',
+      label: 'recipe.see_orders.search_paid_status',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por estado pago'
+      placeholder: 'recipe.see_orders.search_paid_status_ph'
     },
     {
       name: 'payTypeId',
-      label: 'Tipo pago',
+      label: 'recipe.see_orders.search_pay_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo pago'
+      placeholder: 'recipe.see_orders.search_pay_type_ph'
     }
   ];
 

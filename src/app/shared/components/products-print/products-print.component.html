@@ -5,7 +5,7 @@
 >
   <section class="flex content-between w-full items-center mb-2">
     <p class="text-xl font-bold" style="color: black; font-size: 1.25rem">
-      Lista de Productos, Bar, Mecato, Restaurante y Otros
+      {{ 'service_product.products.print_title' | translate }}
     </p>
   </section>
   <div class="w-full" *ngIf="products" style="width: 100%">
@@ -23,7 +23,7 @@
           font-size: 14px;
         "
       >
-        Categoría
+        {{ 'service_product.products.print_col_category' | translate }}
       </div>
       <div
         class="flex-[4] border text-sm p-1 font-bold text-center"
@@ -38,7 +38,7 @@
           font-size: 14px;
         "
       >
-        Nombre
+        {{ 'service_product.products.print_col_name' | translate }}
       </div>
       <div
         class="flex-1 border text-sm p-1 font-bold text-center"
@@ -53,7 +53,7 @@
           font-size: 14px;
         "
       >
-        UN
+        {{ 'service_product.products.print_col_unit' | translate }}
       </div>
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
@@ -68,7 +68,7 @@
           font-size: 14px;
         "
       >
-        P. Compra
+        {{ 'service_product.products.print_col_buy' | translate }}
       </div>
       <div
         class="flex-[2] border text-sm p-1 font-bold text-center"
@@ -83,7 +83,7 @@
           font-size: 14px;
         "
       >
-        P. Venta
+        {{ 'service_product.products.print_col_sale' | translate }}
       </div>
     </div>
     <div
@@ -101,7 +101,7 @@
           font-size: 12px;
         "
       >
-        No hay productos registrados
+        {{ 'service_product.products.print_empty' | translate }}
       </div>
     </div>
     <div
@@ -119,7 +119,7 @@
           font-size: 12px;
         "
       >
-        {{ product.categoryType.name || 'N/A' }}
+        {{ product.categoryType.name | translated }}
       </div>
       <div
         class="flex-[4] border px-4 p-1 text-left text-xs"
@@ -131,7 +131,7 @@
           font-size: 12px;
         "
       >
-        {{ product.name || 'N/A' }}
+        {{ product.name | translated }}
       </div>
       <div
         class="flex-1 border px-4 p-1 text-center text-xs font-bold"
@@ -188,7 +188,7 @@
           font-size: 12px;
         "
       >
-        Precio Total Del Inventario:
+        {{ 'service_product.products.print_total' | translate }}
       </div>
       <div
         class="flex-[2] border p-1 text-right text-xs"

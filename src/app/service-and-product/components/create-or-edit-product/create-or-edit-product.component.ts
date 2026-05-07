@@ -40,6 +40,7 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-create-or-edit-product',
   standalone: true,
@@ -58,7 +59,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     UppercaseDirective,
     ImageUploaderComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './create-or-edit-product.component.html',
   styleUrl: './create-or-edit-product.component.scss',
@@ -85,9 +87,9 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
           'OTROS',
           'ingrediente',
           'INGREDIENTE'
-        ].includes(c.name)
+        ].includes(c.name?.['es'] ?? '')
       )
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => (a.name?.['es'] ?? '').localeCompare(b.name?.['es'] ?? ''));
     if (this.currentProduct && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithProduct(this.currentProduct);
     }

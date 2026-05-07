@@ -8,10 +8,11 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-invoice-summary',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, FormatCopPipe, TranslateModule],
+  imports: [CommonModule, MatButtonModule, FormatCopPipe, TranslateModule, TranslatedPipe],
   templateUrl: './invoice-summary.component.html',
   styleUrl: './invoice-summary.component.scss'
 })

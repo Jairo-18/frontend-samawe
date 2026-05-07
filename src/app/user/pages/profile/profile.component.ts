@@ -26,6 +26,7 @@ import {
   PhoneCode
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-profile',
@@ -43,7 +44,8 @@ import { TranslateModule } from '@ngx-translate/core';
     NormalizeNameDirective,
     NoSpacesDirective,
     BasePageComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'

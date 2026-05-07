@@ -31,7 +31,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { SearchField } from '../../../shared/interfaces/search.interface';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-see-menus',
@@ -62,6 +62,7 @@ export class SeeMenusComponent implements OnInit {
   private readonly _menuService: MenuService = inject(MenuService);
   private readonly _dialog: MatDialog = inject(MatDialog);
   private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _translate: TranslateService = inject(TranslateService);
 
   menus: MenuResponse[] = [];
   loading: boolean = false;
@@ -82,7 +83,7 @@ export class SeeMenusComponent implements OnInit {
   searchFields: SearchField[] = [
     {
       name: 'search',
-      label: 'Nombre del menú',
+      label: 'menu.search_text',
       type: 'text',
       placeholder: ' '
     }
@@ -199,9 +200,8 @@ export class SeeMenusComponent implements OnInit {
   openDeleteDialog(menu: MenuResponse): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: `¿Eliminar menú "${menu.name}"?`,
-        message:
-          'Esta acción eliminará el menú completo. Las recetas individuales no serán afectadas.'
+        title: this._translate.instant('menu.delete_title'),
+        message: this._translate.instant('menu.delete_msg')
       }
     });
 
@@ -222,9 +222,8 @@ export class SeeMenusComponent implements OnInit {
   ): void {
     const ref = this._dialog.open(YesNoDialogComponent, {
       data: {
-        title: `¿Quitar "${productName}" del menú?`,
-        message:
-          'El platillo se removerá de este menú, pero no será eliminado del sistema.'
+        title: this._translate.instant('menu.remove_dish_title'),
+        message: this._translate.instant('menu.remove_dish_msg')
       }
     });
 

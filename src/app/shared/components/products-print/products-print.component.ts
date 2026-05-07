@@ -2,12 +2,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProductComplete } from './../../../service-and-product/interface/product.interface';
 import { Component, inject, Input, PLATFORM_ID } from '@angular/core';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { formatCop } from '../../utilities/currency.utilities.service';
 import { loadPdfMake } from '../../utilities/pdf-maker.utils';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-products-print',
-  imports: [FormatCopPipe, CommonModule],
+  imports: [FormatCopPipe, CommonModule, TranslatedPipe, TranslateModule],
   templateUrl: './products-print.component.html',
   styleUrl: './products-print.component.scss'
 })
@@ -34,7 +36,7 @@ export class ProductsPrintComponent {
     const headerStyle = { bold: true, color: '#ffffff', fontSize: 10, fillColor: color };
 
     const rows = this.products.map(p => [
-      { text: p.categoryType?.name || 'N/A', fontSize: 10 },
+      { text: p.categoryType?.name?.['es'] || 'N/A', fontSize: 10 },
       { text: p.name || 'N/A', fontSize: 10 },
       { text: String(p.amount ?? 0), fontSize: 10, alignment: 'center' },
       { text: formatCop(p.priceBuy ?? 0), fontSize: 10, alignment: 'right' },

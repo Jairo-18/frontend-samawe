@@ -27,7 +27,7 @@
                 *ngFor="let role of roleType"
                 [value]="role.roleTypeId"
               >
-                {{ role.name }}
+                {{ role.name | translated }}
               </mat-option>
             </mat-select>
             <mat-icon matPrefix>library_books</mat-icon>
@@ -45,7 +45,7 @@
                 *ngFor="let type of identificationType"
                 [value]="type.identificationTypeId.toString()"
               >
-                {{ type.name }}
+                {{ type.name | translated }}
               </mat-option>
             </mat-select>
             <mat-icon matPrefix>table_chart</mat-icon>
@@ -65,7 +65,7 @@
                 *ngFor="let pt of personType"
                 [value]="pt.personTypeId.toString()"
               >
-                {{ pt.name }}
+                {{ pt.name | translated }}
               </mat-option>
             </mat-select>
             <mat-icon matPrefix>business</mat-icon>

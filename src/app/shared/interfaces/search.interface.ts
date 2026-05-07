@@ -6,7 +6,7 @@ export type FieldType =
   | 'dateRange';
 export interface SelectOption {
   value: any;
-  label: string;
+  label: string | Record<string, string>;
 }
 export interface SearchField {
   name: string;

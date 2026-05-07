@@ -40,6 +40,7 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-create-or-edit-accommodation',
   standalone: true,
@@ -59,7 +60,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     UppercaseDirective,
     ImageUploaderComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './create-or-edit-accommodation.component.html',
   styleUrl: './create-or-edit-accommodation.component.scss'
@@ -78,8 +80,8 @@ export class CreateOrEditAccommodationComponent
   set categoryTypes(value: CategoryType[]) {
     this._categoryTypes = value;
     this.visibleCategoryTypes = value
-      .filter((c) => ['Hospedaje', 'HOSPEDAJE'].includes(c.name))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .filter((c) => ['Hospedaje', 'HOSPEDAJE'].includes(c.name?.['es'] ?? ''))
+      .sort((a, b) => (a.name?.['es'] ?? '').localeCompare(b.name?.['es'] ?? ''));
     if (this.currentAccommodation && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithAccommodation(this.currentAccommodation);
     }

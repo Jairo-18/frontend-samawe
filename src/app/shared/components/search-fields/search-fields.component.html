@@ -3,18 +3,18 @@
     @for (field of searchFields; track $index) { @if (field.type !==
     'dateRange') {
     <mat-form-field appearance="outline">
-      <mat-label>{{ field.label }}</mat-label>
+      <mat-label>{{ field.label | translate }}</mat-label>
       @if (field.type === 'text') {
       <input
         matInput
-        [placeholder]="field.placeholder || ''"
+        [placeholder]="(field.placeholder || '') | translate"
         [formControlName]="field.name"
       />
       } @if (field.type === 'select') {
       <mat-select [formControlName]="field.name">
         @for (option of field.options; track $index) {
         <mat-option [value]="option.value">
-          {{ option.label }}
+          {{ option.label | translated | translate }}
         </mat-option>
         }
       </mat-select>
@@ -52,7 +52,7 @@
     </mat-form-field>
     } @if (field.type === 'dateRange') {
     <mat-form-field appearance="outline">
-      <mat-label>{{ field.label }}</mat-label>
+      <mat-label>{{ field.label | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="picker">
         <input matStartDate [formControlName]="field.name + 'Init'" />
         <input matEndDate [formControlName]="field.name + 'End'" />

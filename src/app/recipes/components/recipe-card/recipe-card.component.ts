@@ -54,7 +54,7 @@ export class RecipeCardComponent implements OnInit {
 
   ngOnInit(): void {
     const userData = this._localStorage.getUserData();
-    const roleName = userData?.roleType?.name?.toUpperCase()?.trim() || '';
+    const roleName = userData?.roleType?.name?.['es']?.toUpperCase()?.trim() || '';
     this.isMesero = roleName === 'MESERO';
   }
 

@@ -56,7 +56,7 @@
               {{ 'service_and_product.table.category' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
-              {{ excursion?.categoryType?.name || ('service_and_product.values.no_category' | translate) }}
+              {{ excursion?.categoryType?.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
@@ -69,23 +69,23 @@
               *matCellDef="let excursion"
               [ngClass]="{
                 'text-yellow-700  ':
-                  excursion?.stateType?.name === 'Mantenimiento' ||
-                  excursion?.stateType?.name === 'MANTENIMIENTO',
+                  excursion?.stateType?.name?.['es'] === 'Mantenimiento' ||
+                  excursion?.stateType?.name?.['es'] === 'MANTENIMIENTO',
                 'text-[#06a606]  ':
-                  excursion?.stateType?.name === 'Disponible' ||
-                  excursion?.stateType?.name === 'DISPONIBLE',
+                  excursion?.stateType?.name?.['es'] === 'Disponible' ||
+                  excursion?.stateType?.name?.['es'] === 'DISPONIBLE',
                 'text-blue-700  ':
-                  excursion?.stateType?.name === 'Ocupado' ||
-                  excursion?.stateType?.name === 'OCUPADO',
+                  excursion?.stateType?.name?.['es'] === 'Ocupado' ||
+                  excursion?.stateType?.name?.['es'] === 'OCUPADO',
                 'text-red-700  ':
-                  excursion?.stateType?.name === 'Fuera de Servicio' ||
-                  excursion?.stateType?.name === 'FUERA DE SERVICIO',
+                  excursion?.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+                  excursion?.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
                 'text-purple-700  ':
-                  excursion?.stateType?.name === 'Reservado' ||
-                  excursion?.stateType?.name === 'RESERVADO'
+                  excursion?.stateType?.name?.['es'] === 'Reservado' ||
+                  excursion?.stateType?.name?.['es'] === 'RESERVADO'
               }"
             >
-              {{ excursion?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
+              {{ excursion?.stateType?.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
@@ -101,7 +101,7 @@
               {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
-              {{ excursion.name }}
+              {{ excursion.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="priceBuy">
@@ -234,7 +234,7 @@
                 {{ 'service_and_product.table.category' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
-                {{ excursion?.categoryType?.name || ('service_and_product.values.no_category' | translate) }}
+                {{ excursion?.categoryType?.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
@@ -247,23 +247,23 @@
                 class="font-bold"
                 [ngClass]="{
                   'text-yellow-700 ':
-                    excursion?.stateType?.name === 'Mantenimiento' ||
-                    excursion?.stateType?.name === 'MANTENIMIENTO',
+                    excursion?.stateType?.name?.['es'] === 'Mantenimiento' ||
+                    excursion?.stateType?.name?.['es'] === 'MANTENIMIENTO',
                   'text-[#06a606]  ':
-                    excursion?.stateType?.name === 'Disponible' ||
-                    excursion?.stateType?.name === 'DISPONIBLE',
+                    excursion?.stateType?.name?.['es'] === 'Disponible' ||
+                    excursion?.stateType?.name?.['es'] === 'DISPONIBLE',
                   'text-blue-700  ':
-                    excursion?.stateType?.name === 'Ocupado' ||
-                    excursion?.stateType?.name === 'OCUPADO',
+                    excursion?.stateType?.name?.['es'] === 'Ocupado' ||
+                    excursion?.stateType?.name?.['es'] === 'OCUPADO',
                   'text-red-700 ':
-                    excursion?.stateType?.name === 'Fuera de Servicio' ||
-                    excursion?.stateType?.name === 'FUERA DE SERVICIO',
+                    excursion?.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+                    excursion?.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
                   'text-purple-700  ':
-                    excursion?.stateType?.name === 'Reservado' ||
-                    excursion?.stateType?.name === 'RESERVADO'
+                    excursion?.stateType?.name?.['es'] === 'Reservado' ||
+                    excursion?.stateType?.name?.['es'] === 'RESERVADO'
                 }"
               >
-                {{ excursion?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
+                {{ excursion?.stateType?.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
@@ -279,7 +279,7 @@
                 {{ 'service_and_product.table.name' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
-                {{ excursion.name }}
+                {{ excursion.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="priceBuy">

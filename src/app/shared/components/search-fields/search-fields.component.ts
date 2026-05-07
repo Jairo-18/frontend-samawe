@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TranslatedPipe } from '../../pipes/translated.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-search-fields',
   standalone: true,
@@ -31,7 +33,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
-    NgIf
+    NgIf,
+    TranslatedPipe,
+    TranslateModule
   ],
   templateUrl: './search-fields.component.html',
   styleUrl: './search-fields.component.scss'

@@ -63,7 +63,7 @@
                     *ngFor="let type of identificationType"
                     [value]="type.identificationTypeId.toString()"
                   >
-                    {{ type.name | capitalize }}
+                    {{ type.name | translated | capitalize }}
                   </mat-option>
                 </mat-select>
                 <mat-icon matPrefix>table_chart</mat-icon>

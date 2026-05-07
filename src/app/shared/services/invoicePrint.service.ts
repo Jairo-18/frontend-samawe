@@ -253,7 +253,7 @@ async function buildInvoiceDoc(
         alignment: 'center' as const
       },
       {
-        text: `Estado pago: ${invoice.paidType?.name || ''} - Medio pago: ${invoice.payType?.name || ''}`,
+        text: `Estado pago: ${invoice.paidType?.name?.['es'] || ''} - Medio pago: ${invoice.payType?.name?.['es'] || ''}`,
         fontSize: 7
       },
       { text: '', fontSize: 7, alignment: 'center' as const },
@@ -278,7 +278,7 @@ async function buildInvoiceDoc(
   const totalIco8 = invoice.totalIco8 || 0;
   const totalIco5 = invoice.totalIco5 || 0;
   const totalIco = totalIco8 + totalIco5;
-  const paidName = invoice.paidType?.name || '';
+  const paidName = invoice.paidType?.name?.['es'] || '';
   const isPaid = paidName.toUpperCase().includes('PAGADO');
 
   const checkIn = accommodationDetail?.startDate || invoice.startDate;
@@ -396,9 +396,9 @@ async function buildInvoiceDoc(
               [
                 {
                   text: invoice.invoiceElectronic
-                    ? `${(invoice.invoiceType?.name || 'FACTURA DE VENTA').toUpperCase()}\nELECTRÓNICA`
+                    ? `${(invoice.invoiceType?.name?.['es'] || 'FACTURA DE VENTA').toUpperCase()}\nELECTRÓNICA`
                     : (
-                        invoice.invoiceType?.name || 'FACTURA DE VENTA'
+                        invoice.invoiceType?.name?.['es'] || 'FACTURA DE VENTA'
                       ).toUpperCase(),
                   bold: true,
                   fontSize: 9,
@@ -880,7 +880,7 @@ async function buildInvoiceDoc(
   content.push({
     stack: [
       {
-        text: `FORMA DE PAGO: ${invoice.paidType?.name || ''}, MEDIO DE PAGO: ${invoice.payType?.name || ''}`,
+        text: `FORMA DE PAGO: ${invoice.paidType?.name?.['es'] || ''}, MEDIO DE PAGO: ${invoice.payType?.name?.['es'] || ''}`,
         bold: true,
         fontSize: 8
       },

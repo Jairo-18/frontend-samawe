@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-card-types',
@@ -23,7 +24,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatButtonModule,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './card-types.component.html',
   styleUrls: ['./card-types.component.scss']

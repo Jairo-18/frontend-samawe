@@ -71,15 +71,15 @@ export class SeeTypesComponent implements OnInit {
   searchFields: SearchField[] = [
     {
       name: 'code',
-      label: 'Código',
+      label: 'organizational.see_types.search_code',
       type: 'text',
-      placeholder: 'Buscar por código'
+      placeholder: 'organizational.see_types.search_code_ph'
     },
     {
       name: 'name',
-      label: 'Nombre',
+      label: 'organizational.see_types.search_name',
       type: 'text',
-      placeholder: 'Buscar por nombre'
+      placeholder: 'organizational.see_types.search_name_ph'
     }
   ];
   ngOnInit(): void {
@@ -152,7 +152,8 @@ export class SeeTypesComponent implements OnInit {
               selectedType: event.type,
               id: event.id.toString(),
               code: data.code,
-              name: data.name
+              nameEs: (data.name as any)?.['es'] ?? data.name ?? '',
+              nameEn: (data.name as any)?.['en'] ?? ''
             }
           });
           dialogRef.afterClosed().subscribe((result) => {

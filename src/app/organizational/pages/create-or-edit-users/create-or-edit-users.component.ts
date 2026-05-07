@@ -34,6 +34,7 @@ import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directiv
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-create-or-edit-users',
@@ -56,7 +57,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     NoSpacesDirective,
     RouterLink,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './create-or-edit-users.component.html',
   styleUrl: './create-or-edit-users.component.scss'
@@ -219,12 +221,12 @@ export class CreateOrEditUsersComponent implements OnInit {
       (t) => t.identificationTypeId?.toString() === identificationTypeId
     );
     if (!selectedType) return;
-    const isNit = selectedType?.name?.toUpperCase().includes('NIT');
+    const isNit = selectedType?.name?.['es']?.toUpperCase().includes('NIT');
     if (isNit) {
       const juridica = this.personType.find(
         (pt) =>
-          pt.name?.toUpperCase().includes('JUR\u00CDDICA') ||
-          pt.name?.toUpperCase().includes('JURIDICA')
+          pt.name?.['es']?.toUpperCase().includes('JUR\u00CDDICA') ||
+          pt.name?.['es']?.toUpperCase().includes('JURIDICA')
       );
       if (juridica) {
         this.userForm.patchValue(
@@ -234,7 +236,7 @@ export class CreateOrEditUsersComponent implements OnInit {
       }
     } else {
       const natural = this.personType.find((pt) =>
-        pt.name?.toUpperCase().includes('NATURAL')
+        pt.name?.['es']?.toUpperCase().includes('NATURAL')
       );
       if (natural) {
         this.userForm.patchValue(

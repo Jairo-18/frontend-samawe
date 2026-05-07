@@ -43,6 +43,7 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ExcursiosPrintComponent } from '../../../shared/components/excursios-print/excursios-print.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-see-excursions',
   standalone: true,
@@ -64,7 +65,8 @@ import { TranslateModule } from '@ngx-translate/core';
     FormatCopPipe,
     FormatPercentPipe,
     ExcursiosPrintComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './see-excursions.component.html',
   styleUrl: './see-excursions.component.scss'
@@ -128,14 +130,14 @@ export class SeeExcursionsComponent implements OnInit {
     const category = this.categoryTypes.find(
       (r) => r.categoryTypeId === categoryTypeId
     );
-    return category?.name || 'N/A';
+    return category?.name?.['es'] || 'N/A';
   }
   getStateTypeName(excursion: ExcursionComplete): string {
     const stateTypeId = excursion?.stateType?.stateTypeId;
     const stateType = this.stateTypes.find(
       (r) => r.stateTypeId === stateTypeId
     );
-    return stateType?.name || 'N/A';
+    return stateType?.name?.['es'] || 'N/A';
   }
   onSearchSubmit(values: any): void {
     this.params = values;
@@ -229,7 +231,7 @@ export class SeeExcursionsComponent implements OnInit {
     }
   }
   validateIfCanEditUserOrDelete(): boolean {
-    const roleName = this.userLogged?.roleType?.name?.toUpperCase();
+    const roleName = (this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() ?? '';
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
   printExcursions(): void {
@@ -237,8 +239,8 @@ export class SeeExcursionsComponent implements OnInit {
       next: (res) => {
         this.allExcursions = (res.data?.excursions || []).sort(
           (a: ExcursionComplete, b: ExcursionComplete) => {
-            const catCompare = a.categoryType.name.localeCompare(
-              b.categoryType.name
+            const catCompare = (a.categoryType.name?.['es'] ?? '').localeCompare(
+              b.categoryType.name?.['es'] ?? ''
             );
             if (catCompare !== 0) return catCompare;
             return (a.name['es'] ?? Object.values(a.name)[0] ?? '').localeCompare(b.name['es'] ?? Object.values(b.name)[0] ?? '');

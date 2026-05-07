@@ -102,10 +102,10 @@
                 <span class="text-xs font-bold animate-pulse">{{ 'organizational.multimedia.uploading' | translate }}</span>
               </div>
               <div class="flex justify-between w-full items-center">
-                <span class="font-bold text-gray-800">{{ type.name }}</span>
+                <span class="font-bold text-gray-800">{{ type.name | translated }}</span>
                 <mat-icon
                   class="text-gray-400"
-                  [matTooltip]="('organizational.multimedia.image_for' | translate) + type.name"
+                  [matTooltip]="('organizational.multimedia.image_for' | translate) + (type.name | translated)"
                   >info</mat-icon
                 >
               </div>
@@ -119,7 +119,7 @@
                   [src]="
                     getMediaUrl(type.code) || 'assets/images/notFound.avif'
                   "
-                  [alt]="type.name"
+                  [alt]="type.name | translated"
                   class="w-full h-full object-cover"
                   (load)="onImgLoad(type.code)"
                   (error)="onImgError($event, type.code)"

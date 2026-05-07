@@ -41,6 +41,7 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-create-or-edit-excursion',
   standalone: true,
@@ -60,7 +61,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     UppercaseDirective,
     ImageUploaderComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './create-or-edit-excursion.component.html',
   styleUrl: './create-or-edit-excursion.component.scss'
@@ -77,9 +79,9 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     this._categoryTypes = value;
     this.visibleCategoryTypes = value
       .filter((c) =>
-        ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name)
+        ['Pasadía', 'Servicios', 'PASADIA', 'SERVICIOS'].includes(c.name?.['es'] ?? '')
       )
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => (a.name?.['es'] ?? '').localeCompare(b.name?.['es'] ?? ''));
     if (this.currentExcursion && this.visibleCategoryTypes.length > 0) {
       this.updateFormWithExcursion(this.currentExcursion);
     }

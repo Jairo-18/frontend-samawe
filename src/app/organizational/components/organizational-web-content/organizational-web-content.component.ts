@@ -27,6 +27,7 @@ import {
 } from '../../../shared/interfaces/organizational.interface';
 import { HOTEL_ICONS } from '../../constants/icons.constants';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-organizational-web-content',
@@ -40,7 +41,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './organizational-web-content.component.html',
   styleUrls: ['./organizational-web-content.component.scss']
@@ -127,7 +129,7 @@ export class OrganizationalWebContentComponent implements OnInit {
   startEditItem(item: BenefitItem, sectionId: string): void {
     this.activeSectionId = sectionId;
     this.editingItemId = item.benefitItemId;
-    this.itemForm.patchValue({ name: item.name, icon: item.icon });
+    this.itemForm.patchValue({ name: item.name?.['es'] ?? '', icon: item.icon });
     this.showIconPicker = false;
     this.iconSearch = '';
     this.filteredIcons = HOTEL_ICONS;

@@ -87,7 +87,7 @@ export class SeeRecipesComponent implements OnInit {
   searchFieldsRecipes: SearchField[] = [
     {
       name: 'search',
-      label: 'Nombre del platillo',
+      label: 'recipe.see_recipes.search_text',
       type: 'text',
       placeholder: ' '
     }

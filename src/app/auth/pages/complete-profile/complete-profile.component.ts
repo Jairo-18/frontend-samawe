@@ -203,15 +203,15 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
       (t) => t.identificationTypeId?.toString() === identificationTypeId
     );
     if (!selected) return;
-    const isNit = selected.name?.toUpperCase().includes('NIT');
+    const isNit = selected.name?.['es']?.toUpperCase().includes('NIT');
     const match = isNit
       ? this.personType.find(
           (p) =>
-            p.name?.toUpperCase().includes('JURDICA') ||
-            p.name?.toUpperCase().includes('JUR\u00CDDICA') ||
-            p.name?.toUpperCase().includes('JURIDICA')
+            p.name?.['es']?.toUpperCase().includes('JURDICA') ||
+            p.name?.['es']?.toUpperCase().includes('JUR\u00CDDICA') ||
+            p.name?.['es']?.toUpperCase().includes('JURIDICA')
         )
-      : this.personType.find((p) => p.name?.toUpperCase().includes('NATURAL'));
+      : this.personType.find((p) => p.name?.['es']?.toUpperCase().includes('NATURAL'));
     if (match) {
       this.form.patchValue(
         { personTypeId: match.personTypeId.toString() },

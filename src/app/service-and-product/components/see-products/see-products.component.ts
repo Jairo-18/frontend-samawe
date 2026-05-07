@@ -42,6 +42,7 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -63,7 +64,8 @@ import { TranslateModule } from '@ngx-translate/core';
     FormatCopPipe,
     FormatPercentPipe,
     ProductsPrintComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './see-products.component.html',
   styleUrl: './see-products.component.scss'
@@ -130,7 +132,7 @@ export class SeeProductsComponent implements OnInit {
     const category = this.categoryTypes.find(
       (r) => r.categoryTypeId === categoryTypeId
     );
-    return category?.name || 'N/A';
+    return category?.name?.['es'] || 'N/A';
   }
   onSearchSubmit(values: any): void {
     this.params = values;
@@ -217,7 +219,7 @@ export class SeeProductsComponent implements OnInit {
     }
   }
   validateIfCanEditUserOrDelete(): boolean {
-    const roleName = this.userLogged?.roleType?.name?.toUpperCase();
+    const roleName = (this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() ?? '';
     return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
   }
   printProducts(): void {
@@ -228,7 +230,7 @@ export class SeeProductsComponent implements OnInit {
           next: (res) => {
             this.allProducts = (res.data || []).sort(
               (a: ProductComplete, b: ProductComplete) => {
-                const catCompare = a.categoryType.name.localeCompare(b.categoryType.name);
+                const catCompare = (a.categoryType.name?.['es'] ?? '').localeCompare(b.categoryType.name?.['es'] ?? '');
                 if (catCompare !== 0) return catCompare;
                 return (a.name['es'] ?? Object.values(a.name)[0] ?? '').localeCompare(b.name['es'] ?? Object.values(b.name)[0] ?? '');
               }

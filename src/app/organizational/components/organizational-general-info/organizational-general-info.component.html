@@ -26,7 +26,7 @@
       <mat-label>{{ 'organizational.general_info.id_type' | translate }}</mat-label>
       <mat-select formControlName="identificationTypeId">
         <mat-option *ngFor="let type of identificationTypes" [value]="type.identificationTypeId">
-          {{ type.name }}
+          {{ type.name | translated }}
         </mat-option>
       </mat-select>
     </mat-form-field>

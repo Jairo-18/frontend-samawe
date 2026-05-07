@@ -2,79 +2,79 @@ import { SearchField } from '../../shared/interfaces/search.interface';
 export const searchFieldsProducts: SearchField[] = [
   {
     name: 'search',
-    label: 'Código, nombre, unidades o precios',
+    label: 'service_product.search.products_text',
     type: 'text',
     placeholder: ' '
   },
   {
     name: 'categoryType',
-    label: 'Categoría',
+    label: 'service_product.search.category',
     type: 'select',
     options: [],
-    placeholder: 'Buscar por categoría'
+    placeholder: 'service_product.search.category_placeholder'
   },
   {
     name: 'isActive',
-    label: 'Estado',
+    label: 'service_product.search.status',
     type: 'select',
     options: [
-      { value: true, label: 'Activo' },
-      { value: false, label: 'Inactivo' }
+      { value: true, label: 'service_product.search.status_active' },
+      { value: false, label: 'service_product.search.status_inactive' }
     ],
-    placeholder: 'Buscar por estado'
+    placeholder: 'service_product.search.status_placeholder'
   }
 ];
 export const searchFieldsAccommodations: SearchField[] = [
   {
     name: 'search',
-    label: 'Código, nombre, baños, habitaciones, capacidad o precios',
+    label: 'service_product.search.accommodations_text',
     type: 'text',
     placeholder: ' '
   },
   {
     name: 'bedType',
-    label: 'Camas',
+    label: 'service_product.search.bed',
     type: 'select',
     options: [],
-    placeholder: 'Buscar por camas'
+    placeholder: 'service_product.search.bed_placeholder'
   },
   {
     name: 'stateType',
-    label: 'Estado',
+    label: 'service_product.search.status',
     type: 'select',
     options: [],
-    placeholder: 'Buscar por estado'
+    placeholder: 'service_product.search.state_placeholder'
   },
   {
     name: 'jacuzzi',
-    label: 'Jacuzzi',
+    label: 'service_product.search.jacuzzi',
     type: 'select',
     options: [
-      { value: true, label: 'Sí' },
-      { value: false, label: 'No' }
+      { value: true, label: 'service_product.search.jacuzzi_yes' },
+      { value: false, label: 'service_product.search.jacuzzi_no' }
     ],
-    placeholder: 'Buscar por jacuzzi'
+    placeholder: 'service_product.search.jacuzzi_placeholder'
   }
 ];
 export const searchFieldsExcursions: SearchField[] = [
   {
     name: 'search',
-    label: 'Código, nombre, precios',
+    label: 'service_product.search.excursions_text',
     type: 'text',
     placeholder: ' '
   },
   {
     name: 'categoryType',
-    label: 'Categoría',
+    label: 'service_product.search.category',
     type: 'select',
     options: [],
-    placeholder: 'Buscar por categoría'
+    placeholder: 'service_product.search.category_placeholder'
   },
   {
     name: 'stateType',
-    label: 'Estado',
+    label: 'service_product.search.status',
     type: 'select',
     options: [],
-    placeholder: 'Buscar por estado'
+    placeholder: 'service_product.search.state_placeholder'
   }
 ];

@@ -29,26 +29,26 @@
     >
       <mat-option
         *ngFor="let excursion of filteredExcursions"
-        [value]="excursion.name"
+        [value]="excursion.name | translated"
       >
-        {{ excursion.name }}
+        {{ excursion.name | translated }}
         <span
           [ngClass]="{
             'text-green-600':
-              excursion.stateType?.name === 'Disponible' ||
-              excursion.stateType?.name === 'DISPONIBLE',
+              excursion.stateType?.name?.['es'] === 'Disponible' ||
+              excursion.stateType?.name?.['es'] === 'DISPONIBLE',
             'text-yellow-600':
-              excursion.stateType?.name === 'Mantenimiento' ||
-              excursion.stateType?.name === 'MANTENIMIENTO',
+              excursion.stateType?.name?.['es'] === 'Mantenimiento' ||
+              excursion.stateType?.name?.['es'] === 'MANTENIMIENTO',
             'text-red-600':
-              excursion.stateType?.name === 'Fuera de Servicio' ||
-              excursion.stateType?.name === 'FUERA DE SERVICIO',
+              excursion.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+              excursion.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
             'text-blue-600':
-              excursion.stateType?.name === 'Ocupado' ||
-              excursion.stateType?.name === 'OCUPADO'
+              excursion.stateType?.name?.['es'] === 'Ocupado' ||
+              excursion.stateType?.name?.['es'] === 'OCUPADO'
           }"
         >
-          - {{ excursion.stateType?.name }}
+          - {{ excursion.stateType?.name | translated }}
         </span>
       </mat-option>
     </mat-autocomplete>
@@ -114,7 +114,7 @@
     <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
-        {{ taxe.name }}
+        {{ taxe.name | translated }}
       </mat-option>
     </mat-select>
     <mat-icon matPrefix>calculate</mat-icon>

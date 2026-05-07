@@ -20,7 +20,7 @@
             <span class="text-xs md:text-xl font-extrabold">
               {{ 'recipe.edit_order.order_nr' | translate }} {{ invoiceData.code || '' }}
               <span class="text-gray-500 font-normal text-sm ml-2"
-                >- {{ invoiceData.stateType?.name || ('recipe.edit_order.new_state' | translate) }}</span
+                >- {{ invoiceData.stateType?.name | translated }}</span
               >
             </span>
             <section class="flex-row md:flex w-full mt-2">

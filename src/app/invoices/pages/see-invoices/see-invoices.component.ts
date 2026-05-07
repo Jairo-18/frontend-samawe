@@ -39,7 +39,8 @@ import { Invoice } from '../../interface/invoice.interface';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormGroup } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-see-invoices',
   standalone: true,
@@ -59,7 +60,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTooltipModule,
     InvoicePdfComponent,
     FormatCopPipe,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
@@ -74,6 +76,7 @@ export class SeeInvoicesComponent implements OnInit {
     inject(RelatedDataService);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _translate: TranslateService = inject(TranslateService);
   selectedInvoice: any = null;
   invoiceToPrintData?: Invoice;
   selectedInvoiceIds = new Set<number>();
@@ -118,59 +121,59 @@ export class SeeInvoicesComponent implements OnInit {
   searchFields: SearchField[] = [
     {
       name: 'search',
-      label: 'Código, nombre, identificación, total, sub',
+      label: 'invoice.list.search_text',
       type: 'text',
       placeholder: ' '
     },
     {
       name: 'startDate',
-      label: 'Fecha de creación',
+      label: 'invoice.list.search_date',
       type: 'date'
     },
     {
       name: 'invoiceTypeId',
-      label: 'Tipo de factura',
+      label: 'invoice.list.search_invoice_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo de factura'
+      placeholder: 'invoice.list.search_invoice_type_ph'
     },
     {
       name: 'paidTypeId',
-      label: 'Tipo estado pago',
+      label: 'invoice.list.search_paid_status',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo estado pago'
+      placeholder: 'invoice.list.search_paid_status_ph'
     },
     {
       name: 'payTypeId',
-      label: 'Tipo pago',
+      label: 'invoice.list.search_pay_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo pago'
+      placeholder: 'invoice.list.search_pay_type_ph'
     },
     {
       name: 'taxeTypeId',
-      label: 'Tipo impuesto',
+      label: 'invoice.list.search_tax_type',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por tipo de impuesto'
+      placeholder: 'invoice.list.search_tax_type_ph'
     },
     {
       name: 'stateTypeId',
-      label: 'Estado de la orden',
+      label: 'invoice.list.search_order_status',
       type: 'select',
       options: [],
-      placeholder: 'Buscar por estado de la orden'
+      placeholder: 'invoice.list.search_order_status_ph'
     },
     {
       name: 'invoiceElectronic',
-      label: 'Facturación electrónica',
+      label: 'invoice.list.search_electronic',
       type: 'select',
       options: [
-        { value: 'true', label: 'Sí' },
-        { value: 'false', label: 'No' }
+        { value: 'true', label: 'invoice.list.search_yes' },
+        { value: 'false', label: 'invoice.list.search_no' }
       ],
-      placeholder: 'Buscar por facturación electrónica'
+      placeholder: 'invoice.list.search_electronic_ph'
     }
   ];
   constructor(private _invoicePrintService: InvoicePrintService) {
@@ -339,7 +342,7 @@ export class SeeInvoicesComponent implements OnInit {
             ? `${invoice.employee.firstName} ${invoice.employee.lastName}`
             : '---',
           tableNumber: invoice.tableNumber ?? null,
-          stateType: invoice.stateType?.name ?? null,
+          stateType: invoice.stateType?.name?.['es'] ?? null,
           taxeType: invoice.invoiceDetails?.[0]?.taxeType || null,
           invoiceElectronic:
             invoice.invoiceElectronic === true ||
@@ -372,8 +375,8 @@ export class SeeInvoicesComponent implements OnInit {
   openDeleteInvoiceDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
-        title: '¿Deseas eliminar esta factura?',
-        message: 'Esta acción no se puede deshacer.'
+        title: this._translate.instant('invoice.list.delete_title'),
+        message: this._translate.instant('invoice.list.delete_msg')
       }
     });
     dialogRef.afterClosed().subscribe((confirm) => {
@@ -384,10 +387,10 @@ export class SeeInvoicesComponent implements OnInit {
   }
   validateIfCanEditUserOrDelete(user: UserComplete): boolean {
     return (
-      this.userLogged?.roleType?.name === 'Administrador' ||
-      (this.userLogged?.roleType?.name === 'ADMINISTRADOR' &&
-        user.roleType?.name === 'Cliente') ||
-      user.roleType?.name === 'CLIENTE'
+      (this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() === 'ADMINISTRADOR' ||
+      ((this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() === 'ADMINISTRADOR' &&
+        (user.roleType?.name as any)?.['es']?.toUpperCase() === 'CLIENTE') ||
+      (user.roleType?.name as any)?.['es']?.toUpperCase() === 'CLIENTE'
     );
   }
   async onPrintInvoice(invoiceId: number): Promise<void> {

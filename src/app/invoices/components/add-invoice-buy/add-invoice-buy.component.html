@@ -111,7 +111,7 @@
     <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
     <mat-select formControlName="taxeTypeId">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
-        {{ taxe.name }}
+        {{ taxe.name | translated }}
       </mat-option>
     </mat-select>
     <mat-icon matPrefix>calculate</mat-icon>

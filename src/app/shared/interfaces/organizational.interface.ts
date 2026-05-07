@@ -8,7 +8,7 @@ import { TranslatedField } from '../types/translated-field.type';
 export interface MediaType {
   mediaTypeId: number;
   code: string;
-  name: string;
+  name: TranslatedField;
 }
 
 export interface OrganizationalMedia {

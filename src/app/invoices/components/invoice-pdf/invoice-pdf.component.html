@@ -30,7 +30,7 @@
     <section class="flex flex-col w-[50%]">
       <div class="col">
         <span>
-          {{ invoiceData.invoiceType.name }} #:
+          {{ invoiceData.invoiceType.name | translated }} #:
           <span class="value">{{ invoiceData.code }}</span>
         </span>
       </div>
@@ -120,21 +120,21 @@
         <span
           class="status"
           [ngClass]="{
-            paid: invoiceData.paidType?.name?.toUpperCase()?.includes('PAGADO'),
+            paid: invoiceData.paidType?.name?.['es']?.toUpperCase()?.includes('PAGADO'),
             pending:
-              invoiceData.paidType?.name
+              invoiceData.paidType?.name?.['es']
                 ?.toUpperCase()
                 ?.includes('PENDIENTE') || ''
           }"
         >
-          {{ invoiceData.paidType?.name || '' }}
+          {{ invoiceData.paidType?.name | translated }}
         </span>
       </div>
     </div>
     <div class="row">
       <div class="col-left"><span class="label">{{ 'invoice.pdf.pay_type' | translate }}</span></div>
       <div class="col-right">
-        <span>{{ invoiceData.payType?.name || '' }}</span>
+        <span>{{ invoiceData.payType?.name | translated }}</span>
       </div>
     </div>
     <div class="row">

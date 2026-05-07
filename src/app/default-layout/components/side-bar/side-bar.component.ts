@@ -44,6 +44,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { SidebarStateService } from '../../../shared/services/sidebar-state.service';
 
 @Component({
@@ -64,7 +65,8 @@ import { SidebarStateService } from '../../../shared/services/sidebar-state.serv
     NgOptimizedImage,
     CapitalizePipe,
     LangSwitcherComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './side-bar.component.html',
   styleUrl: './side-bar.component.scss',

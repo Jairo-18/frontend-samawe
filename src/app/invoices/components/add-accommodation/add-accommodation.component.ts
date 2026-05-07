@@ -43,6 +43,7 @@ import { CurrencyFormatDirective } from '../../../shared/directives/currency-for
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-add-accommodation',
   standalone: true,
@@ -62,7 +63,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTimepickerModule,
     CurrencyFormatDirective,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatedPipe
   ],
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'

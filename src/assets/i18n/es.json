@@ -281,6 +281,7 @@
   "menu": {
     "see_title": "Ver Menús",
     "see_subtitle": "Consulta los menús con sus platillos e ingredientes",
+    "search_text": "Nombre del menú",
     "edit_title": "Editar Menú",
     "create_title": "Crear Menú",
     "edit_subtitle": "Modifica el nombre, descripción o platillos del menú",
@@ -304,7 +305,11 @@
     "action_edit": "Editar menú",
     "action_delete": "Eliminar menú",
     "no_dishes": "Este menú no tiene platillos asociados",
-    "not_found": "No se encontraron menús."
+    "not_found": "No se encontraron menús.",
+    "delete_title": "Eliminar menú",
+    "delete_msg": "Esta acción eliminará el menú completo. Las recetas individuales no serán afectadas.",
+    "remove_dish_title": "Quitar platillo del menú",
+    "remove_dish_msg": "El platillo se removerá de este menú, pero no será eliminado del sistema."
   },
   "invoice": {
     "common": {
@@ -456,7 +461,25 @@
       "action_edit": "Editar factura",
       "action_details": "Editar detalles",
       "action_download": "Descargar",
-      "action_delete": "Eliminar"
+      "action_delete": "Eliminar",
+      "search_text": "Código, nombre, identificación, total, sub",
+      "search_date": "Fecha de creación",
+      "search_invoice_type": "Tipo de factura",
+      "search_invoice_type_ph": "Buscar por tipo de factura",
+      "search_paid_status": "Tipo estado pago",
+      "search_paid_status_ph": "Buscar por tipo estado pago",
+      "search_pay_type": "Tipo pago",
+      "search_pay_type_ph": "Buscar por tipo pago",
+      "search_tax_type": "Tipo impuesto",
+      "search_tax_type_ph": "Buscar por tipo de impuesto",
+      "search_order_status": "Estado de la orden",
+      "search_order_status_ph": "Buscar por estado de la orden",
+      "search_electronic": "Facturación electrónica",
+      "search_electronic_ph": "Buscar por facturación electrónica",
+      "search_yes": "Sí",
+      "search_no": "No",
+      "delete_title": "¿Deseas eliminar esta factura?",
+      "delete_msg": "Esta acción no se puede deshacer."
     },
     "edit": {
       "page_title": "Sistema de Facturación de Hotel",
@@ -664,7 +687,11 @@
       "subtitle": "Crea y edita información de tu interés",
       "create_types": "Crear tipos",
       "types": "Tipos",
-      "no_content": "No hay contenido registrado aún."
+      "no_content": "No hay contenido registrado aún.",
+      "search_code": "Código",
+      "search_code_ph": "Buscar por código",
+      "search_name": "Nombre",
+      "search_name_ph": "Buscar por nombre"
     },
     "see_users": {
       "title": "Gestionar usuarios",
@@ -680,7 +707,20 @@
       "col_phone": "Teléfono",
       "col_status": "Estado",
       "col_actions": "Acciones",
-      "no_users_found": "No se encontraron usuarios."
+      "no_users_found": "No se encontraron usuarios.",
+      "search_name": "Nombre, apellido o identificación",
+      "search_role": "Rol",
+      "search_role_placeholder": "Buscar por rol",
+      "search_id_type": "Tipo de identificación",
+      "search_id_type_placeholder": "Buscar por tipo de identificación",
+      "search_nationality": "Nacionalidad",
+      "search_nationality_placeholder": "Buscar por nacionalidad",
+      "search_person_type": "Tipo de persona",
+      "search_person_type_placeholder": "Buscar por tipo de persona",
+      "search_status": "Estado",
+      "search_status_placeholder": "Buscar por estado",
+      "search_status_active": "Activo",
+      "search_status_inactive": "Inactivo"
     },
     "edit_user": {
       "edit_title": "Editar usuario",
@@ -721,8 +761,9 @@
       "type_required": "Tipo requerido",
       "code_prefix": "Código o prefijo",
       "code_required": "Código requerido",
-      "name": "Nombre",
-      "name_required": "Nombre requerido"
+      "name_es": "Nombre en Español",
+      "name_en": "Nombre en Inglés (opcional)",
+      "name_required": "Nombre en español requerido"
     },
     "app_manage": {
       "title": "Gestión de la Aplicación",
@@ -733,7 +774,18 @@
       "tab_web_content": "Contenido Web",
       "tab_legal": "Términos y Privacidad",
       "tab_multimedia": "Multimedia",
-      "tab_google": "Google Business"
+      "tab_google": "Google Business",
+      "delete_image_title": "Eliminar imagen",
+      "delete_image_msg": "¿Estás seguro de que deseas eliminar esta imagen?",
+      "delete_corporate_value_title": "Eliminar valor corporativo",
+      "delete_corporate_value_msg": "¿Deseas eliminar este valor corporativo?",
+      "delete_corporate_value_image_msg": "¿Deseas eliminar la imagen de este valor corporativo?",
+      "delete_section_title": "Eliminar sección",
+      "delete_section_msg": "¿Deseas eliminar esta sección y todos sus items?",
+      "delete_item_title": "Eliminar item",
+      "delete_item_msg": "¿Deseas eliminar este item?",
+      "delete_subitem_title": "Eliminar sub-item",
+      "delete_subitem_msg": "¿Deseas eliminar este sub-item?"
     },
     "general_info": {
       "hotel_name": "Nombre del hotel",
@@ -926,13 +978,27 @@
       "title": "Gestionar productos",
       "subtitle": "Gestiona los productos registrados en tu hotel",
       "print": "Imprimir productos",
-      "not_found": "No se encontraron productos"
+      "not_found": "No se encontraron productos",
+      "print_title": "Lista de Productos, Bar, Mecato, Restaurante y Otros",
+      "print_col_category": "Categoría",
+      "print_col_name": "Nombre",
+      "print_col_unit": "UN",
+      "print_col_buy": "P. Compra",
+      "print_col_sale": "P. Venta",
+      "print_total": "Precio Total Del Inventario:",
+      "print_empty": "No hay productos registrados"
     },
     "excursions": {
       "title": "Gestionar pasadías y servicios",
       "subtitle": "Gestiona las pasadías y servicios registrados en tu hotel",
       "print": "Imprimir pasadías y servicios",
-      "not_found": "No se encontraron pasadías o servicios"
+      "not_found": "No se encontraron pasadías o servicios",
+      "print_title": "Lista de Pasadías y Servicios",
+      "print_col_category": "Categoría",
+      "print_col_name": "Nombre",
+      "print_col_buy": "P. Compra",
+      "print_col_sale": "P. Venta",
+      "print_empty": "No hay pasadías o servicios registrados"
     },
     "accommodations": {
       "title": "Gestionar hospedajes",
@@ -1094,7 +1160,9 @@
       "sort_newest": "Más recientes",
       "sort_oldest": "Más antiguas",
       "first_review": "Sé el primero en dejar una reseña.",
-      "no_results": "No hay reseñas que coincidan con tu búsqueda."
+      "no_results": "No hay reseñas que coincidan con tu búsqueda.",
+      "confirm_delete_review": "¿Eliminar esta reseña?",
+      "confirm_delete_reply": "¿Eliminar esta respuesta?"
     },
     "benefits": {
       "label": "Servicios",
@@ -1268,12 +1336,21 @@
       "title": "Ver Recetas",
       "subtitle": "Consulta los ingredientes y costos de cada plato",
       "clear_filters": "Limpiar filtros",
-      "no_results": "No se encontraron recetas."
+      "no_results": "No se encontraron recetas.",
+      "search_text": "Nombre del platillo"
     },
     "see_orders": {
       "title": "Ver órdenes",
       "subtitle": "Aquí puedes ver las órdenes de restaurante",
       "clear_filters": "Limpiar filtros",
+      "search_text": "Código, Mesa",
+      "search_date": "Fecha de orden",
+      "search_order_status": "Estado de la orden",
+      "search_order_status_ph": "Buscar por estado",
+      "search_paid_status": "Estado de pago",
+      "search_paid_status_ph": "Buscar por estado pago",
+      "search_pay_type": "Tipo pago",
+      "search_pay_type_ph": "Buscar por tipo pago",
       "edit_invoice": "Editar factura",
       "edit_details": "Editar detalles",
       "print_invoice": "Imprimir factura",
@@ -1296,6 +1373,37 @@
       "ingredients_count": "ingredientes",
       "total_cost": "Costo total de la receta",
       "preview_alt": "Vista previa de receta"
+    }
+  },
+  "notification": {
+    "order_update_title": "Actualización de Orden"
+  },
+  "paginator": {
+    "items_per_page": "Mostrar",
+    "next_page": "Página siguiente",
+    "previous_page": "Página anterior",
+    "first_page": "Primera página",
+    "last_page": "Última página",
+    "of": "de"
+  },
+  "service_product": {
+    "search": {
+      "products_text": "Código, nombre, unidades o precios",
+      "category": "Categoría",
+      "category_placeholder": "Buscar por categoría",
+      "status": "Estado",
+      "status_placeholder": "Buscar por estado",
+      "status_active": "Activo",
+      "status_inactive": "Inactivo",
+      "accommodations_text": "Código, nombre, baños, habitaciones, capacidad o precios",
+      "bed": "Camas",
+      "bed_placeholder": "Buscar por camas",
+      "state_placeholder": "Buscar por estado",
+      "jacuzzi": "Jacuzzi",
+      "jacuzzi_placeholder": "Buscar por jacuzzi",
+      "jacuzzi_yes": "Sí",
+      "jacuzzi_no": "No",
+      "excursions_text": "Código, nombre, precios"
     }
   },
   "cookies": {

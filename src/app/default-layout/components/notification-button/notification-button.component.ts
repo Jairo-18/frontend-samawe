@@ -24,7 +24,7 @@ import { OrderUpdate } from '../../../shared/interfaces/order-socket.interface';
 import { OrderNotification } from '../../../shared/interfaces/order-notification.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { NotificationTabContentComponent } from '../notification-tab-content/notification-tab-content.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-notification-button',
@@ -51,6 +51,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   private readonly _elementRef: ElementRef = inject(ElementRef);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _router: Router = inject(Router);
+  private readonly _translate: TranslateService = inject(TranslateService);
   private _ordersSocket: OrdersSocketService = inject(OrdersSocketService);
   private _notificationApi: NotificationApiService = inject(
     NotificationApiService
@@ -259,7 +260,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
     const newNotif: OrderNotification = {
       notificationId: liveUpdate.notificationId || Math.random().toString(),
-      title: 'Actualización de Orden',
+      title: this._translate.instant('notification.order_update_title'),
       message:
         liveUpdate.message ??
         `Mesa ${liveUpdate.tableNumber || 'N/A'} · ${liveUpdate.state}.`,
@@ -299,7 +300,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
   }
 
   private checkRolesForNotifications() {
-    if (!this.userInfo?.roleType?.name || !this.showNotificationsIcon) {
+    if (!this.userInfo?.roleType?.code || !this.showNotificationsIcon) {
       this.hasLoadedNotifications = false;
       this.hasJoinedSocketRoom = false;
       return;

@@ -35,6 +35,7 @@ import { NormalizeNameDirective } from '../../../shared/directives/normalize-nam
 import { NoSpacesDirective } from '../../../shared/directives/no-spaces.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { LangService } from '../../../shared/services/lang.service';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -53,6 +54,7 @@ import { LangService } from '../../../shared/services/lang.service';
     NgOptimizedImage,
     ButtonLandingComponent,
     CapitalizePipe,
+    TranslatedPipe,
     NormalizeNameDirective,
     NoSpacesDirective,
     TranslateModule
@@ -229,15 +231,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
           (t) => t.identificationTypeId?.toString() === id
         );
         if (!selected) return;
-        const isNit = selected.name?.toUpperCase().includes('NIT');
+        const isNit = selected.name?.['es']?.toUpperCase().includes('NIT');
         const match = isNit
           ? this.personType.find(
               (p) =>
-                p.name?.toUpperCase().includes('JUR\u00CDDICA') ||
-                p.name?.toUpperCase().includes('JURIDICA')
+                p.name?.['es']?.toUpperCase().includes('JUR\u00CDDICA') ||
+                p.name?.['es']?.toUpperCase().includes('JURIDICA')
             )
           : this.personType.find((p) =>
-              p.name?.toUpperCase().includes('NATURAL')
+              p.name?.['es']?.toUpperCase().includes('NATURAL')
             );
         if (match) {
           this.formStep1.patchValue(

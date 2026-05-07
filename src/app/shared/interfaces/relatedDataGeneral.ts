@@ -1,8 +1,9 @@
 import { MediaType } from '../../shared/interfaces/organizational.interface';
+import { TranslatedField } from '../types/translated-field.type';
 
 export interface CreateType {
   code: string;
-  name: string;
+  name: string | Record<string, string>;
 }
 export interface TypeForEditResponse<T extends CreateType> {
   type: T;
@@ -10,7 +11,7 @@ export interface TypeForEditResponse<T extends CreateType> {
 export interface CategoryType {
   categoryTypeId: number;
   code?: string;
-  name: string;
+  name: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -18,7 +19,7 @@ export interface CategoryType {
 export interface StateType {
   stateTypeId: number;
   code?: string;
-  name: string;
+  name: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -26,7 +27,7 @@ export interface StateType {
 export interface BedType {
   bedTypeId: number;
   code?: string;
-  name: string;
+  name: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -34,7 +35,7 @@ export interface BedType {
 export interface RoleType {
   roleTypeId: string;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -50,7 +51,7 @@ export interface PhoneCode {
 export interface IdentificationType {
   identificationTypeId: string;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -58,7 +59,7 @@ export interface IdentificationType {
 export interface PersonType {
   personTypeId: number;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
@@ -66,7 +67,7 @@ export interface PersonType {
 export interface PayType {
   payTypeId: number;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -74,7 +75,7 @@ export interface PayType {
 export interface PaidType {
   paidTypeId: string;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -82,7 +83,7 @@ export interface PaidType {
 export interface InvoiceType {
   invoiceTypeId: string;
   code?: string;
-  name?: string;
+  name?: TranslatedField;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -102,7 +103,7 @@ export interface AllTypes {
 export interface TypeItem {
   id: string;
   code: string;
-  name: string;
+  name: TranslatedField | string;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -127,7 +128,7 @@ export interface DiscountType {
 }
 export interface TaxeType {
   taxeTypeId: number;
-  name?: string;
+  name?: TranslatedField;
   percentage?: number;
   createdAt: Date;
   updatedAt: Date;
@@ -136,7 +137,7 @@ export interface TaxeType {
 export interface UnitOfMeasure {
   unitOfMeasureId: number;
   code: string;
-  name: string;
+  name: TranslatedField;
 }
 export interface AppRelatedData {
   identificationType: IdentificationType[];

@@ -32,7 +32,7 @@ import {
 } from '../../../organizational/services/google-business.service';
 import { SeoService } from '../../../shared/services/seo.service';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-blog',
@@ -62,6 +62,7 @@ export class BlogComponent implements OnInit, OnDestroy {
   private readonly _googleBusinessService: GoogleBusinessService = inject(GoogleBusinessService);
   private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _translate: TranslateService = inject(TranslateService);
   private readonly _destroy$ = new Subject<void>();
   private readonly _searchSubject = new Subject<string>();
 
@@ -247,7 +248,7 @@ export class BlogComponent implements OnInit, OnDestroy {
 
   onDeleteReview(reviewId: number): void {
     if (!isPlatformBrowser(this._platformId)) return;
-    if (!confirm('¿Eliminar esta reseña?')) return;
+    if (!confirm(this._translate.instant('public.blog.confirm_delete_review'))) return;
     this._reviewService.remove(reviewId).subscribe({
       next: () => {
         this.reviews = this.reviews.filter((r) => r.reviewId !== reviewId);
@@ -282,7 +283,7 @@ export class BlogComponent implements OnInit, OnDestroy {
 
   onDeleteReply(event: { reviewId: number; replyId: number }): void {
     if (!isPlatformBrowser(this._platformId)) return;
-    if (!confirm('¿Eliminar esta respuesta?')) return;
+    if (!confirm(this._translate.instant('public.blog.confirm_delete_reply'))) return;
     this._reviewService.removeReply(event.reviewId, event.replyId).subscribe({
       next: () => {
         const review = this.reviews.find((r) => r.reviewId === event.reviewId);

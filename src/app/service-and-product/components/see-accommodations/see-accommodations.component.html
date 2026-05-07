@@ -45,7 +45,7 @@
               {{ 'service_and_product.table.bed_type' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
-              {{ accommodation?.bedType?.name || ('service_and_product.values.no_beds' | translate) }}
+              {{ accommodation?.bedType?.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
@@ -58,23 +58,23 @@
               *matCellDef="let accommodation"
               [ngClass]="{
                 'text-yellow-700  ':
-                  accommodation?.stateType?.name === 'Mantenimiento' ||
-                  accommodation?.stateType?.name === 'MANTENIMIENTO',
+                  accommodation?.stateType?.name?.['es'] === 'Mantenimiento' ||
+                  accommodation?.stateType?.name?.['es'] === 'MANTENIMIENTO',
                 'text-[#06a606]  ':
-                  accommodation?.stateType?.name === 'Disponible' ||
-                  accommodation?.stateType?.name === 'DISPONIBLE',
+                  accommodation?.stateType?.name?.['es'] === 'Disponible' ||
+                  accommodation?.stateType?.name?.['es'] === 'DISPONIBLE',
                 'text-blue-700 ':
-                  accommodation?.stateType?.name === 'Ocupado' ||
-                  accommodation?.stateType?.name === 'OCUPADO',
+                  accommodation?.stateType?.name?.['es'] === 'Ocupado' ||
+                  accommodation?.stateType?.name?.['es'] === 'OCUPADO',
                 'text-red-700 ':
-                  accommodation?.stateType?.name === 'Fuera de Servicio' ||
-                  accommodation?.stateType?.name === 'FUERA DE SERVICIO',
+                  accommodation?.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+                  accommodation?.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
                 'text-purple-700 ':
-                  accommodation?.stateType?.name === 'Reservado' ||
-                  accommodation?.stateType?.name === 'RESERVADO'
+                  accommodation?.stateType?.name?.['es'] === 'Reservado' ||
+                  accommodation?.stateType?.name?.['es'] === 'RESERVADO'
               }"
             >
-              {{ accommodation?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
+              {{ accommodation?.stateType?.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
@@ -90,7 +90,7 @@
               {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
-              {{ accommodation.name }}
+              {{ accommodation.name | translated }}
             </td>
           </ng-container>
           <ng-container matColumnDef="amountPerson">
@@ -266,7 +266,7 @@
                 {{ 'service_and_product.table.bed_type' | translate }}
               </th>
               <td mat-cell *matCellDef="let accommodation">
-                {{ accommodation?.bedType?.name || ('service_and_product.values.no_beds' | translate) }}
+                {{ accommodation?.bedType?.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
@@ -279,23 +279,23 @@
                 *matCellDef="let accommodation"
                 [ngClass]="{
                   'text-yellow-700 ':
-                    accommodation?.stateType?.name === 'Mantenimiento' ||
-                    accommodation?.stateType?.name === 'MANTENIMIENTO',
+                    accommodation?.stateType?.name?.['es'] === 'Mantenimiento' ||
+                    accommodation?.stateType?.name?.['es'] === 'MANTENIMIENTO',
                   'text-[#06a606] ':
-                    accommodation?.stateType?.name === 'Disponible' ||
-                    accommodation?.stateType?.name === 'DISPONIBLE',
+                    accommodation?.stateType?.name?.['es'] === 'Disponible' ||
+                    accommodation?.stateType?.name?.['es'] === 'DISPONIBLE',
                   'text-blue-700 ':
-                    accommodation?.stateType?.name === 'Ocupado' ||
-                    accommodation?.stateType?.name === 'OCUPADO',
+                    accommodation?.stateType?.name?.['es'] === 'Ocupado' ||
+                    accommodation?.stateType?.name?.['es'] === 'OCUPADO',
                   'text-red-700 ':
-                    accommodation?.stateType?.name === 'Fuera de Servicio' ||
-                    accommodation?.stateType?.name === 'FUERA DE SERVICIO',
+                    accommodation?.stateType?.name?.['es'] === 'Fuera de Servicio' ||
+                    accommodation?.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
                   'text-purple-700 ':
-                    accommodation?.stateType?.name === 'Reservado' ||
-                    accommodation?.stateType?.name === 'RESERVADO'
+                    accommodation?.stateType?.name?.['es'] === 'Reservado' ||
+                    accommodation?.stateType?.name?.['es'] === 'RESERVADO'
                 }"
               >
-                {{ accommodation?.stateType?.name || ('service_and_product.values.no_status' | translate) }}
+                {{ accommodation?.stateType?.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
@@ -311,7 +311,7 @@
                 {{ 'service_and_product.table.name' | translate }}
               </th>
               <td mat-cell *matCellDef="let accommodation">
-                {{ accommodation.name }}
+                {{ accommodation.name | translated }}
               </td>
             </ng-container>
             <ng-container matColumnDef="amountPerson">

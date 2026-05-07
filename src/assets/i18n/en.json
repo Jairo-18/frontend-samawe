@@ -281,6 +281,7 @@
   "menu": {
     "see_title": "View Menus",
     "see_subtitle": "Browse menus with their dishes and ingredients",
+    "search_text": "Menu name",
     "edit_title": "Edit Menu",
     "create_title": "Create Menu",
     "edit_subtitle": "Modify the name, description or dishes of the menu",
@@ -304,7 +305,11 @@
     "action_edit": "Edit menu",
     "action_delete": "Delete menu",
     "no_dishes": "This menu has no associated dishes",
-    "not_found": "No menus found."
+    "not_found": "No menus found.",
+    "delete_title": "Delete menu",
+    "delete_msg": "This action will delete the entire menu. Individual recipes will not be affected.",
+    "remove_dish_title": "Remove dish from menu",
+    "remove_dish_msg": "The dish will be removed from this menu, but will not be deleted from the system."
   },
   "invoice": {
     "common": {
@@ -456,7 +461,25 @@
       "action_edit": "Edit invoice",
       "action_details": "Edit details",
       "action_download": "Download",
-      "action_delete": "Delete"
+      "action_delete": "Delete",
+      "search_text": "Code, name, ID, total, subtotal",
+      "search_date": "Creation date",
+      "search_invoice_type": "Invoice type",
+      "search_invoice_type_ph": "Search by invoice type",
+      "search_paid_status": "Payment status",
+      "search_paid_status_ph": "Search by payment status",
+      "search_pay_type": "Payment type",
+      "search_pay_type_ph": "Search by payment type",
+      "search_tax_type": "Tax type",
+      "search_tax_type_ph": "Search by tax type",
+      "search_order_status": "Order status",
+      "search_order_status_ph": "Search by order status",
+      "search_electronic": "Electronic billing",
+      "search_electronic_ph": "Search by electronic billing",
+      "search_yes": "Yes",
+      "search_no": "No",
+      "delete_title": "Delete this invoice?",
+      "delete_msg": "This action cannot be undone."
     },
     "edit": {
       "page_title": "Hotel Billing System",
@@ -664,7 +687,11 @@
       "subtitle": "Create and edit information of your interest",
       "create_types": "Create types",
       "types": "Types",
-      "no_content": "No content registered yet."
+      "no_content": "No content registered yet.",
+      "search_code": "Code",
+      "search_code_ph": "Search by code",
+      "search_name": "Name",
+      "search_name_ph": "Search by name"
     },
     "see_users": {
       "title": "Manage users",
@@ -680,7 +707,20 @@
       "col_phone": "Phone",
       "col_status": "Status",
       "col_actions": "Actions",
-      "no_users_found": "No users found."
+      "no_users_found": "No users found.",
+      "search_name": "Name, surname or ID",
+      "search_role": "Role",
+      "search_role_placeholder": "Search by role",
+      "search_id_type": "ID type",
+      "search_id_type_placeholder": "Search by ID type",
+      "search_nationality": "Nationality",
+      "search_nationality_placeholder": "Search by nationality",
+      "search_person_type": "Person type",
+      "search_person_type_placeholder": "Search by person type",
+      "search_status": "Status",
+      "search_status_placeholder": "Search by status",
+      "search_status_active": "Active",
+      "search_status_inactive": "Inactive"
     },
     "edit_user": {
       "edit_title": "Edit user",
@@ -721,8 +761,9 @@
       "type_required": "Type required",
       "code_prefix": "Code or prefix",
       "code_required": "Code required",
-      "name": "Name",
-      "name_required": "Name required"
+      "name_es": "Name in Spanish",
+      "name_en": "Name in English (optional)",
+      "name_required": "Spanish name required"
     },
     "app_manage": {
       "title": "Application Management",
@@ -733,7 +774,18 @@
       "tab_web_content": "Web Content",
       "tab_legal": "Terms and Privacy",
       "tab_multimedia": "Multimedia",
-      "tab_google": "Google Business"
+      "tab_google": "Google Business",
+      "delete_image_title": "Delete image",
+      "delete_image_msg": "Are you sure you want to delete this image?",
+      "delete_corporate_value_title": "Delete corporate value",
+      "delete_corporate_value_msg": "Do you want to delete this corporate value?",
+      "delete_corporate_value_image_msg": "Do you want to delete the image of this corporate value?",
+      "delete_section_title": "Delete section",
+      "delete_section_msg": "Do you want to delete this section and all its items?",
+      "delete_item_title": "Delete item",
+      "delete_item_msg": "Do you want to delete this item?",
+      "delete_subitem_title": "Delete sub-item",
+      "delete_subitem_msg": "Do you want to delete this sub-item?"
     },
     "general_info": {
       "hotel_name": "Hotel name",
@@ -926,13 +978,27 @@
       "title": "Manage products",
       "subtitle": "Manage the products registered in your hotel",
       "print": "Print products",
-      "not_found": "No products found"
+      "not_found": "No products found",
+      "print_title": "Products, Bar, Snacks, Restaurant & Others List",
+      "print_col_category": "Category",
+      "print_col_name": "Name",
+      "print_col_unit": "Unit",
+      "print_col_buy": "Buy Price",
+      "print_col_sale": "Sale Price",
+      "print_total": "Total Inventory Value:",
+      "print_empty": "No products registered"
     },
     "excursions": {
       "title": "Manage day trips & services",
       "subtitle": "Manage the day trips and services registered in your hotel",
       "print": "Print day trips & services",
-      "not_found": "No day trips or services found"
+      "not_found": "No day trips or services found",
+      "print_title": "Day Trips & Services List",
+      "print_col_category": "Category",
+      "print_col_name": "Name",
+      "print_col_buy": "Buy Price",
+      "print_col_sale": "Sale Price",
+      "print_empty": "No day trips or services registered"
     },
     "accommodations": {
       "title": "Manage accommodations",
@@ -1094,7 +1160,9 @@
       "sort_newest": "Newest",
       "sort_oldest": "Oldest",
       "first_review": "Be the first to leave a review.",
-      "no_results": "No reviews match your search."
+      "no_results": "No reviews match your search.",
+      "confirm_delete_review": "Delete this review?",
+      "confirm_delete_reply": "Delete this reply?"
     },
     "benefits": {
       "label": "Services",
@@ -1268,12 +1336,21 @@
       "title": "See Recipes",
       "subtitle": "Consult the ingredients and costs of each dish",
       "clear_filters": "Clear filters",
-      "no_results": "No recipes found."
+      "no_results": "No recipes found.",
+      "search_text": "Dish name"
     },
     "see_orders": {
       "title": "See orders",
       "subtitle": "Here you can see restaurant orders",
       "clear_filters": "Clear filters",
+      "search_text": "Code, Table",
+      "search_date": "Order date",
+      "search_order_status": "Order status",
+      "search_order_status_ph": "Search by status",
+      "search_paid_status": "Payment status",
+      "search_paid_status_ph": "Search by payment status",
+      "search_pay_type": "Payment type",
+      "search_pay_type_ph": "Search by payment type",
       "edit_invoice": "Edit invoice",
       "edit_details": "Edit details",
       "print_invoice": "Print invoice",
@@ -1296,6 +1373,37 @@
       "ingredients_count": "ingredients",
       "total_cost": "Total recipe cost",
       "preview_alt": "Recipe preview"
+    }
+  },
+  "notification": {
+    "order_update_title": "Order Update"
+  },
+  "paginator": {
+    "items_per_page": "Show",
+    "next_page": "Next page",
+    "previous_page": "Previous page",
+    "first_page": "First page",
+    "last_page": "Last page",
+    "of": "of"
+  },
+  "service_product": {
+    "search": {
+      "products_text": "Code, name, units or prices",
+      "category": "Category",
+      "category_placeholder": "Search by category",
+      "status": "Status",
+      "status_placeholder": "Search by status",
+      "status_active": "Active",
+      "status_inactive": "Inactive",
+      "accommodations_text": "Code, name, bathrooms, rooms, capacity or prices",
+      "bed": "Beds",
+      "bed_placeholder": "Search by bed type",
+      "state_placeholder": "Search by status",
+      "jacuzzi": "Jacuzzi",
+      "jacuzzi_placeholder": "Search by jacuzzi",
+      "jacuzzi_yes": "Yes",
+      "jacuzzi_no": "No",
+      "excursions_text": "Code, name, prices"
     }
   },
   "cookies": {
