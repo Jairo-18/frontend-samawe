@@ -148,7 +148,7 @@ export class SeeMenusComponent implements OnInit {
       if (!map.has(pid)) {
         map.set(pid, {
           productId: pid,
-          productName: recipe.product.name,
+          productName: (recipe.product.name as any)?.['es'] ?? Object.values(recipe.product.name ?? {})[0] ?? '',
           imageUrl: recipe.product.images?.[0]?.imageUrl,
           ingredients: []
         });

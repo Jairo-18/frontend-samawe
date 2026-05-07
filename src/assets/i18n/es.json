@@ -1080,7 +1080,8 @@
       "code_required": "Código del producto requerido",
       "name_label": "Nombre del producto",
       "name_required": "Nombre del producto requerido",
-      "create_btn": "Crear producto"
+      "create_btn": "Crear producto",
+      "description_label": "Descripción del producto"
     },
     "excursion_form": {
       "edit_title": "Editar pasadía o servicio",

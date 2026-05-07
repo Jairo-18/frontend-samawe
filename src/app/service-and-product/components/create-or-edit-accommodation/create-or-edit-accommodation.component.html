@@ -1,12 +1,24 @@
 <app-section-header
-  [title]="(isEditMode ? 'service_and_product.accommodation_form.edit_title' : 'service_and_product.accommodation_form.create_title') | translate"
-  [subtitle]="(isEditMode ? 'service_and_product.accommodation_form.edit_subtitle' : 'service_and_product.accommodation_form.create_subtitle') | translate"
+  [title]="
+    (isEditMode
+      ? 'service_and_product.accommodation_form.edit_title'
+      : 'service_and_product.accommodation_form.create_title'
+    ) | translate
+  "
+  [subtitle]="
+    (isEditMode
+      ? 'service_and_product.accommodation_form.edit_subtitle'
+      : 'service_and_product.accommodation_form.create_subtitle'
+    ) | translate
+  "
 ></app-section-header>
 <form [formGroup]="accommodationForm" class="flex flex-col">
   <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.category' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.category' | translate
+        }}</mat-label>
         <mat-select formControlName="categoryTypeId" required>
           <mat-option value="" disabled selected>
             {{ 'service_and_product.form.select_category' | translate }}
@@ -26,7 +38,9 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.state_type' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.state_type' | translate
+        }}</mat-label>
         <mat-select formControlName="stateTypeId" required>
           <mat-option value="" disabled selected>
             {{ 'service_and_product.form.select_state' | translate }}
@@ -54,16 +68,35 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.accommodation_form.name_label' | translate }}</mat-label>
-        <mat-icon matPrefix>home</mat-icon>
-        <input matInput formControlName="name" required appUppercase />
-        <mat-error *ngIf="accommodationForm.get('name')?.hasError('required')">
+        <mat-label
+          >{{
+            'service_and_product.accommodation_form.name_label' | translate
+          }}
+          (Español)</mat-label
+        >
+        <mat-icon matPrefix>translate</mat-icon>
+        <input matInput formControlName="nameEs" required appUppercase />
+        <mat-error
+          *ngIf="accommodationForm.get('nameEs')?.hasError('required')"
+        >
           {{ 'service_and_product.form.code_required' | translate }}
         </mat-error>
       </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label
+          >{{
+            'service_and_product.accommodation_form.name_label' | translate
+          }}
+          (Inglés)</mat-label
+        >
+        <mat-icon matPrefix>translate</mat-icon>
+        <input matInput formControlName="nameEn" appUppercase />
+      </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.min_persons' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.min_persons' | translate
+        }}</mat-label>
         <input matInput formControlName="amountPerson" type="number" required />
         <mat-icon matSuffix>person</mat-icon>
         <mat-error
@@ -73,7 +106,9 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.max_persons' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.max_persons' | translate
+        }}</mat-label>
         <input
           matInput
           formControlName="amountBathroom"
@@ -88,19 +123,24 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.description' | translate }}</mat-label>
+        <mat-label
+          >{{
+            'service_and_product.form.description' | translate
+          }}
+          (Español)</mat-label
+        >
         <mat-icon matPrefix>description</mat-icon>
         <textarea
           matInput
-          formControlName="description"
+          formControlName="descriptionEs"
           rows="3"
           maxlength="500"
         ></textarea>
         <mat-hint align="end">
-          {{ accommodationForm.get('description')?.value?.length || 0 }}/500
+          {{ accommodationForm.get('descriptionEs')?.value?.length || 0 }}/500
         </mat-hint>
         <mat-error
-          *ngIf="accommodationForm.get('description')?.hasError('maxlength')"
+          *ngIf="accommodationForm.get('descriptionEs')?.hasError('maxlength')"
         >
           {{ 'service_and_product.form.description_max' | translate }}
         </mat-error>
@@ -108,7 +148,32 @@
     </section>
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.bed_type' | translate }}</mat-label>
+        <mat-label
+          >{{
+            'service_and_product.form.description' | translate
+          }}
+          (Inglés)</mat-label
+        >
+        <mat-icon matPrefix>description</mat-icon>
+        <textarea
+          matInput
+          formControlName="descriptionEn"
+          rows="3"
+          maxlength="500"
+        ></textarea>
+        <mat-hint align="end">
+          {{ accommodationForm.get('descriptionEn')?.value?.length || 0 }}/500
+        </mat-hint>
+        <mat-error
+          *ngIf="accommodationForm.get('descriptionEn')?.hasError('maxlength')"
+        >
+          {{ 'service_and_product.form.description_max' | translate }}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{
+          'service_and_product.form.bed_type' | translate
+        }}</mat-label>
         <mat-select formControlName="bedTypeId" required>
           <mat-option value="" disabled selected>
             {{ 'service_and_product.form.select_bed' | translate }}
@@ -125,14 +190,22 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.jacuzzi_question' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.jacuzzi_question' | translate
+        }}</mat-label>
         <mat-select formControlName="jacuzzi">
-          <mat-option [value]="true">{{ 'service_and_product.values.yes' | translate }}</mat-option>
-          <mat-option [value]="false">{{ 'service_and_product.values.no' | translate }}</mat-option>
+          <mat-option [value]="true">{{
+            'service_and_product.values.yes' | translate
+          }}</mat-option>
+          <mat-option [value]="false">{{
+            'service_and_product.values.no' | translate
+          }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.rooms' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.rooms' | translate
+        }}</mat-label>
         <input matInput formControlName="amountRoom" type="number" required />
         <mat-icon matSuffix>meeting_room</mat-icon>
         <mat-error
@@ -142,7 +215,9 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.price_buy' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.price_buy' | translate
+        }}</mat-label>
         <input
           matInput
           formControlName="priceBuy"
@@ -152,7 +227,9 @@
         <mat-icon matSuffix>shopping_cart</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.price_sell' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.price_sell' | translate
+        }}</mat-label>
         <input
           matInput
           formControlName="priceSale"
@@ -162,9 +239,13 @@
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'service_and_product.form.tax_type' | translate }}</mat-label>
+        <mat-label>{{
+          'service_and_product.form.tax_type' | translate
+        }}</mat-label>
         <mat-select formControlName="taxeTypeId">
-          <mat-option [value]="null">{{ 'service_and_product.form.no_tax' | translate }}</mat-option>
+          <mat-option [value]="null">{{
+            'service_and_product.form.no_tax' | translate
+          }}</mat-option>
           <mat-option *ngFor="let tax of taxeTypes" [value]="tax.taxeTypeId">
             {{ tax.name | translated }} ({{ tax.percentage }}%)
           </mat-option>
@@ -209,7 +290,11 @@
         [disabled]="isSaving"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-        {{ isEditMode ? ('service_and_product.form.save_changes' | translate) : ('service_and_product.accommodation_form.create_btn' | translate) }}
+        {{
+          isEditMode
+            ? ('service_and_product.form.save_changes' | translate)
+            : ('service_and_product.accommodation_form.create_btn' | translate)
+        }}
       </button>
     </div>
   </section>

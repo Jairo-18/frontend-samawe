@@ -25,9 +25,9 @@
     >
       <mat-option
         *ngFor="let product of filteredProducts"
-        [value]="product.name"
+        [value]="product.name | translated"
       >
-        {{ product.name }}
+        {{ product.name | translated }}
         <span [ngClass]="product.isActive ? 'text-green-600' : 'text-red-600'">
           - {{ product?.isActive ? ('invoice.common.active' | translate) : ('invoice.common.inactive' | translate) }}
         </span>

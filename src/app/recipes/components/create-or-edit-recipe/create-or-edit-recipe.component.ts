@@ -263,7 +263,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     if (!product.productId) return;
     this.ingredientsArray.at(index).patchValue({
       ingredientProductId: product.productId,
-      ingSearch: product.name
+      ingSearch: product.name?.['es'] ?? Object.values(product.name ?? {})[0] ?? ''
     });
     this.ingredientPriceMap[product.productId] = Number(product.priceBuy) || 0;
     this.ingredientUnitMap[product.productId] =

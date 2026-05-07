@@ -126,8 +126,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     this.productForm = this._fb.group({
       categoryTypeId: [null, [Validators.required]],
       code: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      description: ['', [Validators.maxLength(500)]],
+      nameEs: ['', [Validators.required]],
+      nameEn: [''],
+      descriptionEs: ['', [Validators.maxLength(500)]],
+      descriptionEn: ['', [Validators.maxLength(500)]],
       amount: [0, [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0)]],
       priceBuy: [
         0,
@@ -171,8 +173,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     this.productForm.patchValue({
       categoryTypeId: product.categoryType?.categoryTypeId,
       code: product.code,
-      name: product.name,
-      description: product.description,
+      nameEs: product.name?.['es'] ?? '',
+      nameEn: product.name?.['en'] ?? '',
+      descriptionEs: product.description?.['es'] ?? '',
+      descriptionEn: product.description?.['en'] ?? '',
       amount: product.amount ?? 0,
       priceBuy: product.priceBuy,
       priceSale: product.priceSale,
@@ -187,8 +191,10 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     this.productForm.reset({
       categoryTypeId: null,
       code: '',
-      name: '',
-      description: '',
+      nameEs: '',
+      nameEn: '',
+      descriptionEs: '',
+      descriptionEn: '',
       amount: 0,
       priceBuy: 0,
       priceSale: 0,
@@ -237,12 +243,19 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   save() {
     if (this.productForm.valid) {
       const formValue = this.productForm.value;
+      const nameObj: Record<string, string> = { es: formValue.nameEs };
+      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
+      let descriptionObj: Record<string, string> | undefined;
+      if (formValue.descriptionEs?.trim()) {
+        descriptionObj = { es: formValue.descriptionEs.trim() };
+        if (formValue.descriptionEn?.trim()) descriptionObj['en'] = formValue.descriptionEn.trim();
+      }
       const productSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : undefined,
         code: formValue.code,
         categoryTypeId: formValue.categoryTypeId,
-        name: formValue.name,
-        description: formValue.description,
+        name: nameObj,
+        description: descriptionObj,
         amount: Math.abs(Number(formValue.amount)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),

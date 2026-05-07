@@ -1080,7 +1080,8 @@
       "code_required": "Product code required",
       "name_label": "Product name",
       "name_required": "Product name required",
-      "create_btn": "Create product"
+      "create_btn": "Create product",
+      "description_label": "Product description"
     },
     "excursion_form": {
       "edit_title": "Edit day trip or service",

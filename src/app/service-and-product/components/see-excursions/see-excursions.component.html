@@ -141,7 +141,7 @@
               {{ 'service_and_product.table.actions' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion" class="center-text">
-              @if (!validateIfCanEditUserOrDelete()) {
+              @if (validateIfCanEditUserOrDelete()) {
                 <button
                   mat-icon-button
                   color="primary"

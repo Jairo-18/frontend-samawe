@@ -414,7 +414,7 @@ export class AddAccommodationComponent implements OnInit {
         const pendingItem: PendingInvoiceDetail = {
           id: crypto.randomUUID(),
           type: 'Hospedaje',
-          name: formValue.name?.name || 'Hospedaje',
+          name: (formValue.name?.name?.['es'] ?? String(formValue.name?.name ?? '')) || 'Hospedaje',
           payload: invoiceDetailPayload
         };
         this.pendingItem.emit(pendingItem);

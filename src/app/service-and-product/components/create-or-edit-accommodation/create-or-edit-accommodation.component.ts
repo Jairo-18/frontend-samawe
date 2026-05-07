@@ -119,8 +119,10 @@ export class CreateOrEditAccommodationComponent
       categoryTypeId: [null, Validators.required],
       bedTypeId: [null, Validators.required],
       code: ['', Validators.required],
-      name: ['', Validators.required],
-      description: ['', Validators.maxLength(500)],
+      nameEs: ['', Validators.required],
+      nameEn: [''],
+      descriptionEs: ['', Validators.maxLength(500)],
+      descriptionEn: ['', Validators.maxLength(500)],
       amountPerson: [
         1,
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(1)]
@@ -178,8 +180,10 @@ export class CreateOrEditAccommodationComponent
       categoryTypeId: accommodation.categoryType?.categoryTypeId,
       bedTypeId: accommodation.bedType?.bedTypeId,
       code: accommodation.code,
-      name: accommodation.name,
-      description: accommodation.description,
+      nameEs: accommodation.name?.['es'] ?? '',
+      nameEn: accommodation.name?.['en'] ?? '',
+      descriptionEs: accommodation.description?.['es'] ?? '',
+      descriptionEn: accommodation.description?.['en'] ?? '',
       amountPerson: accommodation.amountPerson ?? 1,
       jacuzzi: accommodation.jacuzzi ?? false,
       amountRoom: accommodation.amountRoom ?? 0,
@@ -198,8 +202,10 @@ export class CreateOrEditAccommodationComponent
       categoryTypeId: null,
       bedTypeId: null,
       code: '',
-      name: '',
-      description: '',
+      nameEs: '',
+      nameEn: '',
+      descriptionEs: '',
+      descriptionEn: '',
       amountPerson: 1,
       jacuzzi: false,
       amountRoom: 0,
@@ -255,11 +261,16 @@ export class CreateOrEditAccommodationComponent
   save() {
     if (this.accommodationForm.valid) {
       const formValue = this.accommodationForm.value;
+      const nameObj: Record<string, string> = { es: formValue.nameEs };
+      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
+      const descObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
+        ? { es: formValue.descriptionEs, ...(formValue.descriptionEn?.trim() ? { en: formValue.descriptionEn } : {}) }
+        : undefined;
       const accommodationSave: CreateAccommodationPanel = {
         accommodationId: this.isEditMode ? this.accommodationId : undefined,
         code: formValue.code,
-        name: formValue.name,
-        description: formValue.description,
+        name: nameObj,
+        description: descObj,
         amountPerson: Math.trunc(Number(formValue.amountPerson)),
         jacuzzi: formValue.jacuzzi,
         amountRoom: Math.trunc(Number(formValue.amountRoom)),

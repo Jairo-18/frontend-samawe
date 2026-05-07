@@ -26,6 +26,7 @@ import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-invoice-detaill',
   standalone: true,
@@ -37,7 +38,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     FormatCopPipe,
     MatTooltipModule,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './invoice-detaill.component.html',
   styleUrl: './invoice-detaill.component.scss'

@@ -231,8 +231,8 @@ export class SeeExcursionsComponent implements OnInit {
     }
   }
   validateIfCanEditUserOrDelete(): boolean {
-    const roleName = (this.userLogged?.roleType?.name as any)?.['es']?.toUpperCase() ?? '';
-    return roleName !== 'ADMINISTRADOR' && roleName !== 'RECEPCIONISTA';
+    const roleCode = (this.userLogged?.roleType?.code ?? '').toUpperCase();
+    return ['SUPERADMIN', 'ADMIN', 'EMP'].includes(roleCode);
   }
   printExcursions(): void {
     this._excursionService.getAllExcursions().subscribe({

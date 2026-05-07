@@ -117,8 +117,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     this.excursionForm = this._fb.group({
       categoryTypeId: [null, Validators.required],
       code: ['', Validators.required],
-      name: ['', Validators.required],
-      description: ['', Validators.maxLength(500)],
+      nameEs: ['', Validators.required],
+      nameEn: [''],
+      descriptionEs: ['', Validators.maxLength(500)],
+      descriptionEn: ['', Validators.maxLength(500)],
       priceBuy: [
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
@@ -160,8 +162,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     this.excursionForm.patchValue({
       categoryTypeId: excursion.categoryType?.categoryTypeId,
       code: excursion.code,
-      name: excursion.name,
-      description: excursion.description,
+      nameEs: excursion.name?.['es'] ?? '',
+      nameEn: excursion.name?.['en'] ?? '',
+      descriptionEs: excursion.description?.['es'] ?? '',
+      descriptionEn: excursion.description?.['en'] ?? '',
       priceBuy: excursion.priceBuy,
       priceSale: excursion.priceSale,
       stateTypeId: excursion.stateType?.stateTypeId,
@@ -174,8 +178,10 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     this.excursionForm.reset({
       categoryTypeId: null,
       code: '',
-      name: '',
-      description: '',
+      nameEs: '',
+      nameEn: '',
+      descriptionEs: '',
+      descriptionEn: '',
       priceBuy: 0,
       priceSale: 0,
       stateTypeId: null,
@@ -225,11 +231,16 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
   save() {
     if (this.excursionForm.valid) {
       const formValue = this.excursionForm.value;
+      const nameObj: Record<string, string> = { es: formValue.nameEs };
+      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
+      const descObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
+        ? { es: formValue.descriptionEs, ...(formValue.descriptionEn?.trim() ? { en: formValue.descriptionEn } : {}) }
+        : undefined;
       const excursionSave: CreateExcursionPanel = {
         excursionId: this.isEditMode ? this.excursionId : undefined,
         code: formValue.code,
-        name: formValue.name,
-        description: formValue.description,
+        name: nameObj,
+        description: descObj,
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
         categoryTypeId: formValue.categoryTypeId,

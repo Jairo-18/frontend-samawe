@@ -10,7 +10,7 @@
     <!-- Background image (full card) -->
     <img
       [src]="mainImage"
-      [alt]="accommodation.name"
+      [alt]="accommodation.name | translated"
       [class.opacity-0]="!visible"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-200 pointer-events-none"
     />
