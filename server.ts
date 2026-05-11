@@ -28,9 +28,11 @@ app.use((req, res, next) => {
   if (target) {
     return res.redirect(301, target);
   }
-  // www → non-www
+  // www → non-www (skip extra hop on root by going directly to /es)
   if (req.hostname.startsWith('www.')) {
-    return res.redirect(301, `https://${req.hostname.slice(4)}${req.url}`);
+    const newHost = req.hostname.slice(4);
+    const targetPath = req.path === '/' ? '/es' : req.url;
+    return res.redirect(301, `https://${newHost}${targetPath}`);
   }
   next();
 });

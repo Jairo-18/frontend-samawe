@@ -91,8 +91,21 @@
       }
       <span class="text-xs text-[var(--text-color)] ml-1 font-medium">{{ review.score }}</span>
     </div>
-    <h4 class="mt-1 text-base font-semibold text-[var(--title-color)]">{{ review.title }}</h4>
-    <p class="mt-1 text-sm text-[var(--text-color)] leading-relaxed">{{ review.comment }}</p>
+    <h4 class="mt-1 text-base font-semibold text-[var(--title-color)]">{{ translatedTitle ?? review.title }}</h4>
+    <p class="mt-1 text-sm text-[var(--text-color)] leading-relaxed">{{ translatedComment ?? review.comment }}</p>
+    <button
+      (click)="translateReview()"
+      [disabled]="translating"
+      class="mt-1 text-xs text-[var(--primary-color)] hover:underline disabled:opacity-50 transition"
+    >
+      @if (translating) {
+        {{ 'public.review.translating' | translate }}
+      } @else if (translatedTitle !== null) {
+        {{ 'public.review.show_original' | translate }}
+      } @else {
+        {{ 'public.review.translate' | translate }}
+      }
+    </button>
   }
 
   <!-- Pie: replies -->

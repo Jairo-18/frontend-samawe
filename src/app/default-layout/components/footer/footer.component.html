@@ -18,7 +18,7 @@
         </span>
       </div>
       <p class="text-sm leading-relaxed text-white/70">
-        {{ org?.description || ('footer.default_description' | translate) }}
+        {{ (org?.description | translated) || ('footer.default_description' | translate) }}
       </p>
       <!-- Redes sociales -->
       <div class="flex items-center gap-3 mt-1">

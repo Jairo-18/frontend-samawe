@@ -1,7 +1,7 @@
 <article class="relative w-full h-[60vh] overflow-hidden">
   <img
     src="assets/images/homenew.jpg"
-    [alt]="org?.homeTitle ?? 'Samawe'"
+    [alt]="(org?.homeTitle | translated) ?? 'Samawe'"
     class="absolute inset-0 w-full h-full object-cover z-0"
   />
   <div class="absolute inset-0 bg-black/40 z-0"></div>
@@ -14,11 +14,11 @@
     <h1
       class="text-xl md:text-4xl font-bold drop-shadow-md max-w-5xl leading-tight"
     >
-      {{ org?.homeTitle ?? '' }}
+      {{ org?.homeTitle | translated }}
     </h1>
     @if (org?.homeDescription) {
       <p class="mt-4 text-sm md:text-lg drop-shadow-md max-w-3xl opacity-90">
-        {{ org?.homeDescription }}
+        {{ org?.homeDescription | translated }}
       </p>
     }
     <section class="flex flex-wrap justify-center gap-4 mt-8">

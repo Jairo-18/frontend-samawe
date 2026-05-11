@@ -90,6 +90,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
             (e as NavigationEnd).urlAfterRedirects
           );
           this._buildNavItems();
+          this.isMobileMenuOpen = false;
         })
     );
 

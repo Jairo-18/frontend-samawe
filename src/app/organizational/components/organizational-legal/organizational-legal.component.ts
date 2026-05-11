@@ -32,6 +32,7 @@ import {
   LegalSection,
   LegalType
 } from '../../../shared/interfaces/organizational.interface';
+import { TranslatedInput } from '../../../shared/types/translated-field.type';
 import { BoldTextPipe } from '../../../shared/pipes/bold-text.pipe';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { TranslateModule } from '@ngx-translate/core';
@@ -67,14 +68,14 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
 
   @Output() addItemEvt = new EventEmitter<{
     sectionId: string;
-    title?: string;
-    description?: string;
+    title?: TranslatedInput;
+    description?: TranslatedInput;
     order: number;
   }>();
   @Output() updateItemEvt = new EventEmitter<{
     itemId: string;
-    title?: string;
-    description?: string;
+    title?: TranslatedInput;
+    description?: TranslatedInput;
   }>();
   @Output() deleteItemEvt = new EventEmitter<string>();
   @Output() reorderItemsEvt = new EventEmitter<{
@@ -84,12 +85,12 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
 
   @Output() addChildEvt = new EventEmitter<{
     itemId: string;
-    content: string;
+    content: TranslatedInput;
     order: number;
   }>();
   @Output() updateChildEvt = new EventEmitter<{
     childId: string;
-    content: string;
+    content: TranslatedInput;
   }>();
   @Output() deleteChildEvt = new EventEmitter<string>();
   @Output() reorderChildrenEvt = new EventEmitter<{
@@ -230,8 +231,8 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
     this.activeItemFormSectionId = sectionId;
     this.editingItemId = item.legalItemId;
     this.itemForm.patchValue({
-      title: item.title ?? '',
-      description: item.description ?? ''
+      title: (item.title as any)?.['es'] ?? '',
+      description: (item.description as any)?.['es'] ?? ''
     });
     this.closeChildForm();
     setTimeout(() => {
@@ -252,8 +253,8 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
   submitItem(section: LegalSection): void {
     const { title, description } = this.itemForm.getRawValue();
     const payload = {
-      title: title || undefined,
-      description: description || undefined
+      title: title ? { es: title as string } : undefined,
+      description: description ? { es: description as string } : undefined
     };
     if (this.editingItemId) {
       this.updateItemEvt.emit({ itemId: this.editingItemId, ...payload });
@@ -278,7 +279,7 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
   startEditChild(child: LegalItemChild, itemId: string): void {
     this.activeChildFormItemId = itemId;
     this.editingChildId = child.legalItemChildId;
-    this.childForm.patchValue({ content: child.content });
+    this.childForm.patchValue({ content: (child.content as any)?.['es'] ?? '' });
     this.cancelItemForm();
     setTimeout(() => {
       const el = this.childTextareaRef?.nativeElement;
@@ -302,12 +303,12 @@ export class OrganizationalLegalComponent implements OnInit, OnChanges {
     }
     const { content } = this.childForm.getRawValue();
     if (this.editingChildId) {
-      this.updateChildEvt.emit({ childId: this.editingChildId, content });
+      this.updateChildEvt.emit({ childId: this.editingChildId, content: { es: content as string } });
     } else {
       const nextOrder = item.children.length;
       this.addChildEvt.emit({
         itemId: item.legalItemId,
-        content,
+        content: { es: content as string },
         order: nextOrder
       });
     }

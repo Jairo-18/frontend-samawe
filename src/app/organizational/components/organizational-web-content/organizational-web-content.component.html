@@ -5,78 +5,38 @@
       <mat-icon class="text-[var(--primary-color)]">restaurant</mat-icon>
       {{ 'organizational.web_content.gastronomy' | translate }}
     </span>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="gastronomyTitle"
-          [placeholder]="'organizational.web_content.gastronomy_ph' | translate"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="gastronomyDescription"
-          rows="2"
-        ></textarea>
-      </mat-form-field>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.history_title' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="gastronomyHistoryTitle"
-          [placeholder]="'organizational.web_content.history_ph' | translate"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.history_description' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="gastronomyHistoryDescription"
-          rows="2"
-        ></textarea>
-      </mat-form-field>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.kitchen_title' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="gastronomyKitchenTitle"
-          [placeholder]="'organizational.web_content.kitchen_ph' | translate"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.kitchen_description' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="gastronomyKitchenDescription"
-          rows="2"
-        ></textarea>
-      </mat-form-field>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.ingredients_title' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="gastronomyIngredientsTitle"
-          [placeholder]="'organizational.web_content.ingredients_ph' | translate"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.ingredients_description' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="gastronomyIngredientsDescription"
-          rows="2"
-        ></textarea>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
+      <input matInput formControlName="gastronomyTitleEs" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
+      <textarea matInput formControlName="gastronomyDescriptionEs" rows="2"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.history_title' | translate }}</mat-label>
+      <input matInput formControlName="gastronomyHistoryTitleEs" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.history_description' | translate }}</mat-label>
+      <textarea matInput formControlName="gastronomyHistoryDescriptionEs" rows="2"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.kitchen_title' | translate }}</mat-label>
+      <input matInput formControlName="gastronomyKitchenTitleEs" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.kitchen_description' | translate }}</mat-label>
+      <textarea matInput formControlName="gastronomyKitchenDescriptionEs" rows="2"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.ingredients_title' | translate }}</mat-label>
+      <input matInput formControlName="gastronomyIngredientsTitleEs" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.ingredients_description' | translate }}</mat-label>
+      <textarea matInput formControlName="gastronomyIngredientsDescriptionEs" rows="2"></textarea>
+    </mat-form-field>
   </div>
 
   <!-- ACCOMMODATIONS -->
@@ -85,24 +45,14 @@
       <mat-icon class="text-[var(--primary-color)]">hotel</mat-icon>
       {{ 'organizational.web_content.accommodation' | translate }}
     </span>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="accommodationsTitle"
-          [placeholder]="'organizational.web_content.accommodation_ph' | translate"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="accommodationsDescription"
-          rows="3"
-        ></textarea>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.main_title' | translate }}</mat-label>
+      <input matInput formControlName="accommodationsTitleEs" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
+      <textarea matInput formControlName="accommodationsDescriptionEs" rows="3"></textarea>
+    </mat-form-field>
   </div>
 
   <!-- BENEFIT SECTIONS (read-only) -->
@@ -114,19 +64,12 @@
       </span>
       @for (section of benefitSections; track section.benefitSectionId) {
         <div class="flex flex-col gap-2">
-          <span class="font-semibold text-gray-700 text-sm">{{
-            section.title
-          }}</span>
+          <span class="font-semibold text-gray-700 text-sm">{{ section.title }}</span>
           @if (section.items.length > 0) {
             <div class="flex flex-wrap gap-2">
               @for (item of section.items; track item.benefitItemId) {
-                <div
-                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700"
-                >
-                  <mat-icon
-                    class="text-[var(--primary-color)] !text-base !w-4 !h-4"
-                    >{{ item.icon }}</mat-icon
-                  >
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700">
+                  <mat-icon class="text-[var(--primary-color)] !text-base !w-4 !h-4">{{ item.icon }}</mat-icon>
                   {{ item.name | translated }}
                 </div>
               }
@@ -145,47 +88,23 @@
     </span>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.general_description' | translate }}</mat-label>
-      <textarea
-        matInput
-        formControlName="howToArriveDescription"
-        rows="3"
-        [placeholder]="'organizational.web_content.arrive_ph' | translate"
-      ></textarea>
+      <textarea matInput formControlName="howToArriveDescriptionEs" rows="3"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.public_transport' | translate }}</mat-label>
-      <textarea
-        matInput
-        formControlName="howToArrivePublicTransportDescription"
-        rows="3"
-        [placeholder]="'organizational.web_content.public_transport_ph' | translate"
-      ></textarea>
+      <textarea matInput formControlName="howToArrivePublicTransportDescriptionEs" rows="3"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.private_transport' | translate }}</mat-label>
-      <textarea
-        matInput
-        formControlName="howToArrivePrivateTransportDescription"
-        rows="3"
-        [placeholder]="'organizational.web_content.private_transport_ph' | translate"
-      ></textarea>
+      <textarea matInput formControlName="howToArrivePrivateTransportDescriptionEs" rows="3"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.accessibility' | translate }}</mat-label>
-      <textarea
-        matInput
-        formControlName="accessibilityDescription"
-        rows="3"
-        [placeholder]="'organizational.web_content.accessibility_ph' | translate"
-      ></textarea>
+      <textarea matInput formControlName="accessibilityDescriptionEs" rows="3"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.google_maps_link' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="mapsUrl"
-        placeholder="https://maps.google.com/..."
-      />
+      <input matInput formControlName="mapsUrl" placeholder="https://maps.google.com/..." />
       <mat-icon matPrefix>location_on</mat-icon>
     </mat-form-field>
   </div>
@@ -503,7 +422,7 @@
         <!-- Imagen en flujo normal -->
         <img
           [src]="value.imageUrl || 'assets/images/notFound.avif'"
-          [alt]="value.title"
+          [alt]="value.title | translated"
           class="w-full h-[450px] md:h-[550px] object-fill block"
         />
 
@@ -570,10 +489,10 @@
 
         <!-- Texto (abajo) -->
         <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-1 text-center">
-          <p class="font-bold text-white drop-shadow">{{ value.title }}</p>
+          <p class="font-bold text-white drop-shadow">{{ value.title | translated }}</p>
           @if (value.description) {
             <p class="text-sm text-white/80 leading-relaxed">
-              {{ value.description }}
+              {{ value.description | translated }}
             </p>
           }
         </div>

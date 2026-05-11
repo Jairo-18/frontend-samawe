@@ -90,8 +90,8 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
     if (changes['currentMenu'] && this.currentMenu) {
       this.isEditMode = true;
       this.form.patchValue({
-        name: this.currentMenu.name,
-        description: this.currentMenu.description || ''
+        name: this.currentMenu.name?.['es'] ?? '',
+        description: this.currentMenu.description?.['es'] ?? ''
       });
 
       this.selectedRecipeIds = new Set<number>();
@@ -180,8 +180,8 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
     const productIds = Array.from(this.selectedRecipeIds);
 
     const dto = {
-      name,
-      description: description || undefined,
+      name: { es: name as string },
+      description: description ? { es: description as string } : undefined,
       productIds
     };
 

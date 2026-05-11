@@ -13,6 +13,7 @@ import {
   LegalType
 } from '../../shared/interfaces/organizational.interface';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
+import { TranslatedInput } from '../../shared/types/translated-field.type';
 import { BehaviorSubject, tap } from 'rxjs';
 import { SeoService } from '../../shared/services/seo.service';
 
@@ -302,7 +303,7 @@ export class ApplicationService {
 
   createBenefitSection(
     organizationalId: string,
-    data: { title: string; order?: number }
+    data: { title: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
       `${environment.apiUrl}benefit-section/organizational/${organizationalId}`,
@@ -312,7 +313,7 @@ export class ApplicationService {
 
   updateBenefitSection(
     sectionId: string,
-    data: { title?: string; order?: number }
+    data: { title?: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
       `${environment.apiUrl}benefit-section/${sectionId}`,
@@ -330,7 +331,7 @@ export class ApplicationService {
 
   addBenefitItem(
     sectionId: string,
-    data: { name: string; icon: string; order?: number }
+    data: { name: TranslatedInput; icon: string; order?: number }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
       `${environment.apiUrl}benefit-section/${sectionId}/items`,
@@ -340,7 +341,7 @@ export class ApplicationService {
 
   updateBenefitItem(
     itemId: string,
-    data: { name?: string; icon?: string; order?: number }
+    data: { name?: TranslatedInput; icon?: string; order?: number }
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
       `${environment.apiUrl}benefit-section/items/${itemId}`,
@@ -377,7 +378,7 @@ export class ApplicationService {
     organizationalId: string,
     data: {
       type: LegalType;
-      items?: { title?: string; content: string; order?: number }[];
+      items?: { title?: TranslatedInput; content: TranslatedInput; order?: number }[];
     }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
@@ -396,7 +397,7 @@ export class ApplicationService {
 
   addLegalItem(
     sectionId: string,
-    data: { title?: string; description?: string; order?: number }
+    data: { title?: TranslatedInput; description?: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
       `${environment.apiUrl}legal/${sectionId}/items`,
@@ -406,7 +407,7 @@ export class ApplicationService {
 
   updateLegalItem(
     itemId: string,
-    data: { title?: string; description?: string; order?: number }
+    data: { title?: TranslatedInput; description?: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
       `${environment.apiUrl}legal/items/${itemId}`,
@@ -422,7 +423,7 @@ export class ApplicationService {
 
   addLegalChild(
     itemId: string,
-    data: { content: string; order?: number }
+    data: { content: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<{ rowId: string }>> {
     return this._http.post<ApiResponseInterface<{ rowId: string }>>(
       `${environment.apiUrl}legal/items/${itemId}/children`,
@@ -432,7 +433,7 @@ export class ApplicationService {
 
   updateLegalChild(
     childId: string,
-    data: { content?: string; order?: number }
+    data: { content?: TranslatedInput; order?: number }
   ): Observable<ApiResponseInterface<void>> {
     return this._http.patch<ApiResponseInterface<void>>(
       `${environment.apiUrl}legal/children/${childId}`,

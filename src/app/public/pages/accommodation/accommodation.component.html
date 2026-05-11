@@ -3,7 +3,7 @@
   <div class="relative w-full h-[60vh] overflow-hidden">
     <img
       [src]="getMedia('ACCOMMODATIONS_IMAGE')"
-      [alt]="org?.accommodationsTitle ?? ('public.accommodation.label' | translate)"
+      [alt]="(org?.accommodationsTitle | translated) ?? ('public.accommodation.label' | translate)"
       class="absolute inset-0 w-full h-full object-cover z-0"
     />
     <div class="absolute inset-0 bg-black/40 z-0"></div>
@@ -18,11 +18,11 @@
       <h2
         class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
       >
-        {{ org?.accommodationsTitle ?? '' }}
+        {{ org?.accommodationsTitle | translated }}
       </h2>
       @if (org?.accommodationsDescription) {
         <p class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90">
-          {{ org?.accommodationsDescription }}
+          {{ org?.accommodationsDescription | translated }}
         </p>
       }
     </div>

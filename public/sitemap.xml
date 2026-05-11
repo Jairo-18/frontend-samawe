@@ -7,7 +7,7 @@
     <loc>https://ecohotelsamawe.com/es</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://ecohotelsamawe.com/es"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ecohotelsamawe.com/en"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://ecohotelsamawe.com/es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ecohotelsamawe.com/"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -15,7 +15,7 @@
     <loc>https://ecohotelsamawe.com/en</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://ecohotelsamawe.com/es"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ecohotelsamawe.com/en"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://ecohotelsamawe.com/es"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ecohotelsamawe.com/"/>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

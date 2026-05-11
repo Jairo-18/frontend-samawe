@@ -101,7 +101,8 @@ export class SeoService {
 
     this._setAlternateLink('es', `${origin}${esPath}`);
     this._setAlternateLink('en', `${origin}${enPath}`);
-    this._setAlternateLink('x-default', `${origin}${esPath}`);
+    // x-default apunta al dominio raíz (redirige automáticamente según idioma del usuario)
+    this._setAlternateLink('x-default', origin);
   }
 
   private _setAlternateLink(hreflang: string, href: string): void {

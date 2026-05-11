@@ -152,8 +152,7 @@ export class SeeTypesComponent implements OnInit {
               selectedType: event.type,
               id: event.id.toString(),
               code: data.code,
-              nameEs: (data.name as any)?.['es'] ?? data.name ?? '',
-              nameEn: (data.name as any)?.['en'] ?? ''
+              nameEs: (data.name as any)?.['es'] ?? data.name ?? ''
             }
           });
           dialogRef.afterClosed().subscribe((result) => {

@@ -61,7 +61,20 @@
         </div>
       </div>
     } @else {
-      <p class="mt-0.5 text-sm text-[var(--text-color)]">{{ reply.comment }}</p>
+      <p class="mt-0.5 text-sm text-[var(--text-color)]">{{ translatedComment ?? reply.comment }}</p>
+      <button
+        (click)="translateReply()"
+        [disabled]="translating"
+        class="mt-0.5 text-xs text-[var(--primary-color)] hover:underline disabled:opacity-50 transition"
+      >
+        @if (translating) {
+          {{ 'public.review.translating' | translate }}
+        } @else if (translatedComment !== null) {
+          {{ 'public.review.show_original' | translate }}
+        } @else {
+          {{ 'public.review.translate' | translate }}
+        }
+      </button>
     }
   </div>
 </div>

@@ -309,7 +309,8 @@
     "delete_title": "Delete menu",
     "delete_msg": "This action will delete the entire menu. Individual recipes will not be affected.",
     "remove_dish_title": "Remove dish from menu",
-    "remove_dish_msg": "The dish will be removed from this menu, but will not be deleted from the system."
+    "remove_dish_msg": "The dish will be removed from this menu, but will not be deleted from the system.",
+    "dishes_count": "dish(es)"
   },
   "invoice": {
     "common": {
@@ -1141,7 +1142,10 @@
       "no_replies": "No one has replied to this review yet.",
       "reply_placeholder": "Write your reply...",
       "edited": "edited",
-      "edit_reply": "Edit reply"
+      "edit_reply": "Edit reply",
+      "translate": "Translate",
+      "show_original": "Show original",
+      "translating": "Translating..."
     },
     "blog": {
       "community": "Community",

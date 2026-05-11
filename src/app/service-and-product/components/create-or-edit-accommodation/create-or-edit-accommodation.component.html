@@ -68,29 +68,12 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-          >{{
-            'service_and_product.accommodation_form.name_label' | translate
-          }}
-          (Español)</mat-label
-        >
+        <mat-label>{{ 'service_and_product.accommodation_form.name_label' | translate }}</mat-label>
         <mat-icon matPrefix>translate</mat-icon>
         <input matInput formControlName="nameEs" required appUppercase />
-        <mat-error
-          *ngIf="accommodationForm.get('nameEs')?.hasError('required')"
-        >
+        <mat-error *ngIf="accommodationForm.get('nameEs')?.hasError('required')">
           {{ 'service_and_product.form.code_required' | translate }}
         </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-          >{{
-            'service_and_product.accommodation_form.name_label' | translate
-          }}
-          (Inglés)</mat-label
-        >
-        <mat-icon matPrefix>translate</mat-icon>
-        <input matInput formControlName="nameEn" appUppercase />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full">
@@ -123,53 +106,16 @@
         </mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-          >{{
-            'service_and_product.form.description' | translate
-          }}
-          (Español)</mat-label
-        >
+        <mat-label>{{ 'service_and_product.form.description' | translate }}</mat-label>
         <mat-icon matPrefix>description</mat-icon>
-        <textarea
-          matInput
-          formControlName="descriptionEs"
-          rows="3"
-          maxlength="500"
-        ></textarea>
-        <mat-hint align="end">
-          {{ accommodationForm.get('descriptionEs')?.value?.length || 0 }}/500
-        </mat-hint>
-        <mat-error
-          *ngIf="accommodationForm.get('descriptionEs')?.hasError('maxlength')"
-        >
+        <textarea matInput formControlName="descriptionEs" rows="3" maxlength="500"></textarea>
+        <mat-hint align="end">{{ accommodationForm.get('descriptionEs')?.value?.length || 0 }}/500</mat-hint>
+        <mat-error *ngIf="accommodationForm.get('descriptionEs')?.hasError('maxlength')">
           {{ 'service_and_product.form.description_max' | translate }}
         </mat-error>
       </mat-form-field>
     </section>
     <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label
-          >{{
-            'service_and_product.form.description' | translate
-          }}
-          (Inglés)</mat-label
-        >
-        <mat-icon matPrefix>description</mat-icon>
-        <textarea
-          matInput
-          formControlName="descriptionEn"
-          rows="3"
-          maxlength="500"
-        ></textarea>
-        <mat-hint align="end">
-          {{ accommodationForm.get('descriptionEn')?.value?.length || 0 }}/500
-        </mat-hint>
-        <mat-error
-          *ngIf="accommodationForm.get('descriptionEn')?.hasError('maxlength')"
-        >
-          {{ 'service_and_product.form.description_max' | translate }}
-        </mat-error>
-      </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{
           'service_and_product.form.bed_type' | translate

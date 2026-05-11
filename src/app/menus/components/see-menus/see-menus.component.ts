@@ -154,8 +154,11 @@ export class SeeMenusComponent implements OnInit {
         });
       }
 
+      const ingName = (recipe.ingredient?.name as any)?.['es']
+        ?? Object.values(recipe.ingredient?.name ?? {})[0]
+        ?? 'N/A';
       map.get(pid)!.ingredients.push({
-        name: recipe.ingredient?.name || 'N/A',
+        name: ingName,
         quantity: Number(recipe.quantity),
         unit: recipe.ingredient?.unitOfMeasure?.code || 'und'
       });
@@ -213,6 +216,14 @@ export class SeeMenusComponent implements OnInit {
         });
       }
     });
+  }
+
+  menuName(menu: MenuResponse): string {
+    return (menu.name as any)?.['es'] ?? Object.values(menu.name ?? {})[0] ?? '';
+  }
+
+  menuDescription(menu: MenuResponse): string {
+    return (menu.description as any)?.['es'] ?? Object.values(menu.description ?? {})[0] ?? '';
   }
 
   openRemoveProductDialog(

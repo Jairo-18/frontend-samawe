@@ -120,9 +120,7 @@ export class CreateOrEditAccommodationComponent
       bedTypeId: [null, Validators.required],
       code: ['', Validators.required],
       nameEs: ['', Validators.required],
-      nameEn: [''],
       descriptionEs: ['', Validators.maxLength(500)],
-      descriptionEn: ['', Validators.maxLength(500)],
       amountPerson: [
         1,
         [Validators.required, Validators.pattern('^[0-9]+$'), Validators.min(1)]
@@ -181,9 +179,7 @@ export class CreateOrEditAccommodationComponent
       bedTypeId: accommodation.bedType?.bedTypeId,
       code: accommodation.code,
       nameEs: accommodation.name?.['es'] ?? '',
-      nameEn: accommodation.name?.['en'] ?? '',
       descriptionEs: accommodation.description?.['es'] ?? '',
-      descriptionEn: accommodation.description?.['en'] ?? '',
       amountPerson: accommodation.amountPerson ?? 1,
       jacuzzi: accommodation.jacuzzi ?? false,
       amountRoom: accommodation.amountRoom ?? 0,
@@ -203,9 +199,7 @@ export class CreateOrEditAccommodationComponent
       bedTypeId: null,
       code: '',
       nameEs: '',
-      nameEn: '',
       descriptionEs: '',
-      descriptionEn: '',
       amountPerson: 1,
       jacuzzi: false,
       amountRoom: 0,
@@ -262,9 +256,8 @@ export class CreateOrEditAccommodationComponent
     if (this.accommodationForm.valid) {
       const formValue = this.accommodationForm.value;
       const nameObj: Record<string, string> = { es: formValue.nameEs };
-      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
       const descObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
-        ? { es: formValue.descriptionEs, ...(formValue.descriptionEn?.trim() ? { en: formValue.descriptionEn } : {}) }
+        ? { es: formValue.descriptionEs.trim() }
         : undefined;
       const accommodationSave: CreateAccommodationPanel = {
         accommodationId: this.isEditMode ? this.accommodationId : undefined,

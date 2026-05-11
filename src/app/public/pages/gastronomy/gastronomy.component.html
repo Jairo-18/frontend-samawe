@@ -10,7 +10,7 @@
     <div class="relative w-full h-[60vh] overflow-hidden">
       <img
         [src]="getMedia('GASTRONOMY_IMAGE')"
-        [alt]="org.gastronomyTitle ?? ('public.gastronomy.label' | translate)"
+        [alt]="(org.gastronomyTitle | translated) ?? ('public.gastronomy.label' | translate)"
         class="absolute inset-0 w-full h-full object-cover z-0"
       />
       <div class="absolute inset-0 bg-black/40 z-0"></div>
@@ -25,13 +25,13 @@
         <h2
           class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
         >
-          {{ org.gastronomyTitle ?? '' }}
+          {{ org.gastronomyTitle | translated }}
         </h2>
         @if (org.gastronomyDescription) {
           <p
             class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90"
           >
-            {{ org.gastronomyDescription }}
+            {{ org.gastronomyDescription | translated }}
           </p>
         }
       </div>

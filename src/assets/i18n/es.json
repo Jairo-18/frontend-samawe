@@ -309,7 +309,8 @@
     "delete_title": "Eliminar menú",
     "delete_msg": "Esta acción eliminará el menú completo. Las recetas individuales no serán afectadas.",
     "remove_dish_title": "Quitar platillo del menú",
-    "remove_dish_msg": "El platillo se removerá de este menú, pero no será eliminado del sistema."
+    "remove_dish_msg": "El platillo se removerá de este menú, pero no será eliminado del sistema.",
+    "dishes_count": "platillo(s)"
   },
   "invoice": {
     "common": {
@@ -1141,7 +1142,10 @@
       "no_replies": "Nadie ha respondido a esta reseña.",
       "reply_placeholder": "Escribe tu respuesta...",
       "edited": "editado",
-      "edit_reply": "Editar respuesta"
+      "edit_reply": "Editar respuesta",
+      "translate": "Traducir",
+      "show_original": "Ver original",
+      "translating": "Traduciendo..."
     },
     "blog": {
       "community": "Comunidad",

@@ -8,6 +8,7 @@ import { ReservationSectionComponent } from '../home/components/reservation-sect
 import { HowToArriveSectionComponent } from '../home/components/how-to-arrive-section/how-to-arrive-section.component';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-how-to-arrive',
@@ -17,7 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     LoaderComponent,
     ReservationSectionComponent,
     HowToArriveSectionComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './how-to-arrive.component.html',
   styleUrl: './how-to-arrive.component.scss'

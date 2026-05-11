@@ -11,6 +11,7 @@ import { Organizational } from '../../../shared/interfaces/organizational.interf
 import { SeoService } from '../../../shared/services/seo.service';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-accommodation',
@@ -20,7 +21,8 @@ import { TranslateModule } from '@ngx-translate/core';
     CardAccommodationComponent,
     MatPaginatorModule,
     LoaderComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe,
   ],
   templateUrl: './accommodation.component.html',
   styleUrl: './accommodation.component.scss'

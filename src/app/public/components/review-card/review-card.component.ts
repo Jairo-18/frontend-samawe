@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,7 +10,7 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Review } from '../../../shared/interfaces/review.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ReviewReplyItemComponent } from '../review-reply-item/review-reply-item.component';
-
+import { ContentTranslateService } from '../../../shared/services/content-translate.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -34,6 +34,12 @@ export class ReviewCardComponent {
   @Input() review!: Review;
   @Input() isLoggedIn: boolean = false;
   @Input() currentUser: UserInterface | null = null;
+
+  private readonly _contentTranslate = inject(ContentTranslateService);
+
+  translatedTitle: string | null = null;
+  translatedComment: string | null = null;
+  translating: boolean = false;
 
   @Output() saveReview = new EventEmitter<{
     reviewId: number;
@@ -78,6 +84,23 @@ export class ReviewCardComponent {
         new Date(this.review.createdAt).getTime() >
       2000
     );
+  }
+
+  translateReview(): void {
+    if (this.translatedTitle !== null) {
+      this.translatedTitle = null;
+      this.translatedComment = null;
+      return;
+    }
+    this.translating = true;
+    Promise.all([
+      this._contentTranslate.translate(this.review.title).toPromise(),
+      this._contentTranslate.translate(this.review.comment).toPromise()
+    ]).then(([title, comment]) => {
+      this.translatedTitle = title ?? null;
+      this.translatedComment = comment ?? null;
+      this.translating = false;
+    }).catch(() => { this.translating = false; });
   }
 
   startEdit(): void {

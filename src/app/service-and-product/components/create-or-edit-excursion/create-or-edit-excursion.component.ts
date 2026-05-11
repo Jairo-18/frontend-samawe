@@ -118,9 +118,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       categoryTypeId: [null, Validators.required],
       code: ['', Validators.required],
       nameEs: ['', Validators.required],
-      nameEn: [''],
       descriptionEs: ['', Validators.maxLength(500)],
-      descriptionEn: ['', Validators.maxLength(500)],
       priceBuy: [
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
@@ -163,9 +161,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       categoryTypeId: excursion.categoryType?.categoryTypeId,
       code: excursion.code,
       nameEs: excursion.name?.['es'] ?? '',
-      nameEn: excursion.name?.['en'] ?? '',
       descriptionEs: excursion.description?.['es'] ?? '',
-      descriptionEn: excursion.description?.['en'] ?? '',
       priceBuy: excursion.priceBuy,
       priceSale: excursion.priceSale,
       stateTypeId: excursion.stateType?.stateTypeId,
@@ -179,9 +175,7 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       categoryTypeId: null,
       code: '',
       nameEs: '',
-      nameEn: '',
       descriptionEs: '',
-      descriptionEn: '',
       priceBuy: 0,
       priceSale: 0,
       stateTypeId: null,
@@ -232,9 +226,8 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
     if (this.excursionForm.valid) {
       const formValue = this.excursionForm.value;
       const nameObj: Record<string, string> = { es: formValue.nameEs };
-      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
       const descObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
-        ? { es: formValue.descriptionEs, ...(formValue.descriptionEn?.trim() ? { en: formValue.descriptionEn } : {}) }
+        ? { es: formValue.descriptionEs.trim() }
         : undefined;
       const excursionSave: CreateExcursionPanel = {
         excursionId: this.isEditMode ? this.excursionId : undefined,

@@ -28,7 +28,7 @@
                 class="text-sm uppercase tracking-widest font-semibold mb-4"
                 style="color: var(--title-color)"
               >
-                {{ section.title }}
+                {{ section.title | translated }}
               </h3>
             }
             <div class="grid grid-cols-2">
@@ -55,7 +55,7 @@
                     [ngClass]="i % 2 === 0 ? 'text-gray-800' : 'font-medium'"
                     [style.color]="i % 2 !== 0 ? 'var(--primary-color)' : null"
                   >
-                    {{ item.name }}
+                    {{ item.name | translated }}
                   </span>
                 </div>
               }

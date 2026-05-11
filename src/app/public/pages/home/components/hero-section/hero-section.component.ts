@@ -6,11 +6,12 @@ import { ButtonLandingComponent } from '../../../../../shared/components/button-
 import { LangService } from '../../../../../shared/services/lang.service';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [ButtonLandingComponent, CommonModule, TranslateModule],
+  imports: [ButtonLandingComponent, CommonModule, TranslateModule, TranslatedPipe],
   templateUrl: './hero-section.component.html',
   styleUrls: ['./hero-section.component.scss']
 })

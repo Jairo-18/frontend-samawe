@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { LangService } from '../../../shared/services/lang.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
   selector: 'app-footer',
@@ -22,7 +23,8 @@ import { TranslateModule } from '@ngx-translate/core';
     RouterLink,
     FontAwesomeModule,
     CapitalizePipe,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe
   ],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'

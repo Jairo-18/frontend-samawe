@@ -37,6 +37,7 @@ import {
   LegalSection,
   LegalType
 } from '../../../shared/interfaces/organizational.interface';
+import { TranslatedInput } from '../../../shared/types/translated-field.type';
 import {
   IdentificationType,
   PhoneCode
@@ -128,7 +129,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       address: [''],
       city: [''],
       department: [''],
-      description: [''],
+      descriptionEs: [''],
       primaryColor: [''],
       secondaryColor: [''],
       tertiaryColor: [''],
@@ -137,40 +138,40 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       subtitleColor: [''],
       bgPrimaryColor: [''],
       bgSecondaryColor: [''],
-      homeTitle: [''],
-      homeDescription: [''],
-      experienceTitle: [''],
-      experienceDescription: [''],
-      reservationTitle: [''],
-      reservationDescription: [''],
-      aboutUsTitle: [''],
-      aboutUsDescription: [''],
-      missionTitle: [''],
-      missionDescription: [''],
-      visionTitle: [''],
-      visionDescription: [''],
-      historyTitle: [''],
-      historyDescription: [''],
-      gastronomyTitle: [''],
-      gastronomyDescription: [''],
-      gastronomyHistoryTitle: [''],
-      gastronomyHistoryDescription: [''],
-      gastronomyKitchenTitle: [''],
-      gastronomyKitchenDescription: [''],
-      gastronomyIngredientsTitle: [''],
-      gastronomyIngredientsDescription: [''],
-      accommodationsTitle: [''],
-      accommodationsDescription: [''],
-      howToArriveDescription: [''],
-      howToArrivePublicTransportDescription: [''],
-      howToArrivePrivateTransportDescription: [''],
-      accessibilityDescription: [''],
+      homeTitleEs: [''],
+      homeDescriptionEs: [''],
+      experienceTitleEs: [''],
+      experienceDescriptionEs: [''],
+      reservationTitleEs: [''],
+      reservationDescriptionEs: [''],
+      aboutUsTitleEs: [''],
+      aboutUsDescriptionEs: [''],
+      missionTitleEs: [''],
+      missionDescriptionEs: [''],
+      visionTitleEs: [''],
+      visionDescriptionEs: [''],
+      historyTitleEs: [''],
+      historyDescriptionEs: [''],
+      gastronomyTitleEs: [''],
+      gastronomyDescriptionEs: [''],
+      gastronomyHistoryTitleEs: [''],
+      gastronomyHistoryDescriptionEs: [''],
+      gastronomyKitchenTitleEs: [''],
+      gastronomyKitchenDescriptionEs: [''],
+      gastronomyIngredientsTitleEs: [''],
+      gastronomyIngredientsDescriptionEs: [''],
+      accommodationsTitleEs: [''],
+      accommodationsDescriptionEs: [''],
+      howToArriveDescriptionEs: [''],
+      howToArrivePublicTransportDescriptionEs: [''],
+      howToArrivePrivateTransportDescriptionEs: [''],
+      accessibilityDescriptionEs: [''],
       mapsUrl: [''],
       videoUrl: [''],
       facebookUrl: [''],
       instagramUrl: [''],
-      metaTitle: [''],
-      metaDescription: ['']
+      metaTitleEs: [''],
+      metaDescriptionEs: ['']
     });
 
     this.corporateValueForm = this._fb.group({
@@ -382,7 +383,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       address: org.address,
       city: org.city,
       department: org.department,
-      description: org.description,
+      descriptionEs: org.description?.['es'] ?? '',
       primaryColor: org.primaryColor,
       secondaryColor: org.secondaryColor,
       tertiaryColor: org.tertiaryColor,
@@ -391,42 +392,40 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       subtitleColor: org.subtitleColor,
       bgPrimaryColor: org.bgPrimaryColor,
       bgSecondaryColor: org.bgSecondaryColor,
-      homeTitle: org.homeTitle,
-      homeDescription: org.homeDescription,
-      experienceTitle: org.experienceTitle,
-      experienceDescription: org.experienceDescription,
-      reservationTitle: org.reservationTitle,
-      reservationDescription: org.reservationDescription,
-      aboutUsTitle: org.aboutUsTitle,
-      aboutUsDescription: org.aboutUsDescription,
-      missionTitle: org.missionTitle,
-      missionDescription: org.missionDescription,
-      visionTitle: org.visionTitle,
-      visionDescription: org.visionDescription,
-      historyTitle: org.historyTitle,
-      historyDescription: org.historyDescription,
-      gastronomyTitle: org.gastronomyTitle,
-      gastronomyDescription: org.gastronomyDescription,
-      gastronomyHistoryTitle: org.gastronomyHistoryTitle,
-      gastronomyHistoryDescription: org.gastronomyHistoryDescription,
-      gastronomyKitchenTitle: org.gastronomyKitchenTitle,
-      gastronomyKitchenDescription: org.gastronomyKitchenDescription,
-      gastronomyIngredientsTitle: org.gastronomyIngredientsTitle,
-      gastronomyIngredientsDescription: org.gastronomyIngredientsDescription,
-      accommodationsTitle: org.accommodationsTitle,
-      accommodationsDescription: org.accommodationsDescription,
-      howToArriveDescription: org.howToArriveDescription,
-      howToArrivePublicTransportDescription:
-        org.howToArrivePublicTransportDescription,
-      howToArrivePrivateTransportDescription:
-        org.howToArrivePrivateTransportDescription,
-      accessibilityDescription: org.accessibilityDescription,
+      homeTitleEs: org.homeTitle?.['es'] ?? '',
+      homeDescriptionEs: org.homeDescription?.['es'] ?? '',
+      experienceTitleEs: org.experienceTitle?.['es'] ?? '',
+      experienceDescriptionEs: org.experienceDescription?.['es'] ?? '',
+      reservationTitleEs: org.reservationTitle?.['es'] ?? '',
+      reservationDescriptionEs: org.reservationDescription?.['es'] ?? '',
+      aboutUsTitleEs: org.aboutUsTitle?.['es'] ?? '',
+      aboutUsDescriptionEs: org.aboutUsDescription?.['es'] ?? '',
+      missionTitleEs: org.missionTitle?.['es'] ?? '',
+      missionDescriptionEs: org.missionDescription?.['es'] ?? '',
+      visionTitleEs: org.visionTitle?.['es'] ?? '',
+      visionDescriptionEs: org.visionDescription?.['es'] ?? '',
+      historyTitleEs: org.historyTitle?.['es'] ?? '',
+      historyDescriptionEs: org.historyDescription?.['es'] ?? '',
+      gastronomyTitleEs: org.gastronomyTitle?.['es'] ?? '',
+      gastronomyDescriptionEs: org.gastronomyDescription?.['es'] ?? '',
+      gastronomyHistoryTitleEs: org.gastronomyHistoryTitle?.['es'] ?? '',
+      gastronomyHistoryDescriptionEs: org.gastronomyHistoryDescription?.['es'] ?? '',
+      gastronomyKitchenTitleEs: org.gastronomyKitchenTitle?.['es'] ?? '',
+      gastronomyKitchenDescriptionEs: org.gastronomyKitchenDescription?.['es'] ?? '',
+      gastronomyIngredientsTitleEs: org.gastronomyIngredientsTitle?.['es'] ?? '',
+      gastronomyIngredientsDescriptionEs: org.gastronomyIngredientsDescription?.['es'] ?? '',
+      accommodationsTitleEs: org.accommodationsTitle?.['es'] ?? '',
+      accommodationsDescriptionEs: org.accommodationsDescription?.['es'] ?? '',
+      howToArriveDescriptionEs: org.howToArriveDescription?.['es'] ?? '',
+      howToArrivePublicTransportDescriptionEs: org.howToArrivePublicTransportDescription?.['es'] ?? '',
+      howToArrivePrivateTransportDescriptionEs: org.howToArrivePrivateTransportDescription?.['es'] ?? '',
+      accessibilityDescriptionEs: org.accessibilityDescription?.['es'] ?? '',
       mapsUrl: org.mapsUrl,
       videoUrl: org.videoUrl,
       facebookUrl: org.facebookUrl,
       instagramUrl: org.instagramUrl,
-      metaTitle: org.metaTitle,
-      metaDescription: org.metaDescription
+      metaTitleEs: org.metaTitle?.['es'] ?? '',
+      metaDescriptionEs: org.metaDescription?.['es'] ?? ''
     });
   }
 
@@ -444,15 +443,68 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       phoneCodeId,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       phoneCodeSearch: _phoneCodeSearch,
+      descriptionEs,
+      homeTitleEs, homeDescriptionEs,
+      experienceTitleEs, experienceDescriptionEs,
+      reservationTitleEs, reservationDescriptionEs,
+      aboutUsTitleEs, aboutUsDescriptionEs,
+      missionTitleEs, missionDescriptionEs,
+      visionTitleEs, visionDescriptionEs,
+      historyTitleEs, historyDescriptionEs,
+      gastronomyTitleEs, gastronomyDescriptionEs,
+      gastronomyHistoryTitleEs, gastronomyHistoryDescriptionEs,
+      gastronomyKitchenTitleEs, gastronomyKitchenDescriptionEs,
+      gastronomyIngredientsTitleEs, gastronomyIngredientsDescriptionEs,
+      accommodationsTitleEs, accommodationsDescriptionEs,
+      howToArriveDescriptionEs,
+      howToArrivePublicTransportDescriptionEs,
+      howToArrivePrivateTransportDescriptionEs,
+      accessibilityDescriptionEs,
+      metaTitleEs, metaDescriptionEs,
       ...rest
     } = rawValue;
+
+    const t = (es: string): TranslatedInput | undefined =>
+      es?.trim() ? { es: es.trim() } : undefined;
+
     const payload: Partial<Organizational> & {
       identificationType?: string;
       phoneCode?: string;
     } = {
       ...rest,
       identificationType: identificationTypeId,
-      phoneCode: phoneCodeId
+      phoneCode: phoneCodeId,
+      description: t(descriptionEs),
+      homeTitle: t(homeTitleEs),
+      homeDescription: t(homeDescriptionEs),
+      experienceTitle: t(experienceTitleEs),
+      experienceDescription: t(experienceDescriptionEs),
+      reservationTitle: t(reservationTitleEs),
+      reservationDescription: t(reservationDescriptionEs),
+      aboutUsTitle: t(aboutUsTitleEs),
+      aboutUsDescription: t(aboutUsDescriptionEs),
+      missionTitle: t(missionTitleEs),
+      missionDescription: t(missionDescriptionEs),
+      visionTitle: t(visionTitleEs),
+      visionDescription: t(visionDescriptionEs),
+      historyTitle: t(historyTitleEs),
+      historyDescription: t(historyDescriptionEs),
+      gastronomyTitle: t(gastronomyTitleEs),
+      gastronomyDescription: t(gastronomyDescriptionEs),
+      gastronomyHistoryTitle: t(gastronomyHistoryTitleEs),
+      gastronomyHistoryDescription: t(gastronomyHistoryDescriptionEs),
+      gastronomyKitchenTitle: t(gastronomyKitchenTitleEs),
+      gastronomyKitchenDescription: t(gastronomyKitchenDescriptionEs),
+      gastronomyIngredientsTitle: t(gastronomyIngredientsTitleEs),
+      gastronomyIngredientsDescription: t(gastronomyIngredientsDescriptionEs),
+      accommodationsTitle: t(accommodationsTitleEs),
+      accommodationsDescription: t(accommodationsDescriptionEs),
+      howToArriveDescription: t(howToArriveDescriptionEs),
+      howToArrivePublicTransportDescription: t(howToArrivePublicTransportDescriptionEs),
+      howToArrivePrivateTransportDescription: t(howToArrivePrivateTransportDescriptionEs),
+      accessibilityDescription: t(accessibilityDescriptionEs),
+      metaTitle: t(metaTitleEs),
+      metaDescription: t(metaDescriptionEs),
     };
 
     this._applicationService
@@ -572,8 +624,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   startEditValue(value: CorporateValue): void {
     this.editingValue = value;
     this.corporateValueForm.patchValue({
-      title: value.title,
-      description: value.description,
+      title: value.title?.['es'] ?? '',
+      description: value.description?.['es'] ?? '',
       order: value.order
     });
   }
@@ -585,7 +637,12 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   saveCorporateValue(): void {
     if (this.corporateValueForm.invalid || !this.organizationalId) return;
-    const data = this.corporateValueForm.getRawValue();
+    const raw = this.corporateValueForm.getRawValue();
+    const data = {
+      ...raw,
+      title: { es: raw.title },
+      description: raw.description ? { es: raw.description } : undefined
+    };
 
     if (this.editingValue) {
       this._applicationService
@@ -663,9 +720,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     if (this.benefitSectionForm.invalid || !this.organizationalId) return;
     const data = this.benefitSectionForm.getRawValue();
 
+    const payload = { title: { es: data.title as string }, order: data.order };
+
     if (this.editingSection) {
       this._applicationService
-        .updateBenefitSection(this.editingSection.benefitSectionId, data)
+        .updateBenefitSection(this.editingSection.benefitSectionId, payload)
         .subscribe({
           next: () => {
             this.loadBenefitSections(this.organizationalId!);
@@ -674,7 +733,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
         });
     } else {
       this._applicationService
-        .createBenefitSection(this.organizationalId, data)
+        .createBenefitSection(this.organizationalId!, payload)
         .subscribe({
           next: () => {
             this.loadBenefitSections(this.organizationalId!);
@@ -687,7 +746,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   startEditSection(section: BenefitSection): void {
     this.editingSection = section;
     this.benefitSectionForm.patchValue({
-      title: section.title,
+      title: (section.title as any)?.['es'] ?? section.title,
       order: section.order
     });
   }
@@ -719,7 +778,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }): void {
     this._applicationService
       .addBenefitItem(payload.sectionId, {
-        name: payload.name,
+        name: { es: payload.name },
         icon: payload.icon
       })
       .subscribe({
@@ -734,7 +793,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   }): void {
     this._applicationService
       .updateBenefitItem(payload.itemId, {
-        name: payload.name,
+        name: { es: payload.name },
         icon: payload.icon
       })
       .subscribe({
@@ -791,8 +850,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   addLegalItem(payload: {
     sectionId: string;
-    title?: string;
-    description?: string;
+    title?: TranslatedInput;
+    description?: TranslatedInput;
     order?: number;
   }): void {
     this._applicationService
@@ -808,8 +867,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   updateLegalItem(payload: {
     itemId: string;
-    title?: string;
-    description?: string;
+    title?: TranslatedInput;
+    description?: TranslatedInput;
     order?: number;
   }): void {
     this._applicationService
@@ -825,7 +884,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   addLegalChild(payload: {
     itemId: string;
-    content: string;
+    content: TranslatedInput;
     order?: number;
   }): void {
     this._applicationService
@@ -840,7 +899,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
 
   updateLegalChild(payload: {
     childId: string;
-    content: string;
+    content: TranslatedInput;
     order?: number;
   }): void {
     this._applicationService

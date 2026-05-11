@@ -131,7 +131,7 @@
               >
                 <img
                   [src]="value.imageUrl || 'assets/images/notFound.avif'"
-                  [alt]="value.title"
+                  [alt]="value.title | translated"
                   class="w-full h-[450px] md:h-[550px] object-fill block"
                 />
                 <div
@@ -157,11 +157,11 @@
                   class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-1 text-center"
                 >
                   <h3 class="text-lg font-bold text-white drop-shadow">
-                    {{ value.title }}
+                    {{ value.title | translated }}
                   </h3>
                   @if (value.description) {
                     <p class="text-sm text-white/80 leading-relaxed">
-                      {{ value.description }}
+                      {{ value.description | translated }}
                     </p>
                   }
                 </div>

@@ -1,7 +1,9 @@
+import { TranslatedField, TranslatedInput } from '../../shared/types/translated-field.type';
+
 export interface MenuResponse {
   menuId: number;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   recipes: MenuRecipeItem[];
   organizationalId?: string;
   createdAt: string;
@@ -12,7 +14,7 @@ export interface MenuRecipeItem {
   recipeId: number;
   product: {
     productId: number;
-    name: string;
+    name: TranslatedField;
     images?: {
       productImageId: number;
       imageUrl: string;
@@ -21,7 +23,7 @@ export interface MenuRecipeItem {
   };
   ingredient: {
     productId: number;
-    name: string;
+    name: TranslatedField;
     amount?: number;
     unitOfMeasure?: {
       code: string;
@@ -32,22 +34,19 @@ export interface MenuRecipeItem {
 }
 
 export interface CreateMenuDto {
-  name: string;
-  description?: string;
+  name: TranslatedInput;
+  description?: TranslatedInput;
   productIds: number[];
   organizationalId?: string;
 }
 
 export interface UpdateMenuDto {
-  name?: string;
-  description?: string;
+  name?: TranslatedInput;
+  description?: TranslatedInput;
   productIds?: number[];
   organizationalId?: string;
 }
 
-/**
- * Grouped recipe data for display in menu cards
- */
 export interface MenuRecipeGrouped {
   productId: number;
   productName: string;

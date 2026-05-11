@@ -61,24 +61,24 @@
                     >restaurant_menu</mat-icon
                   >
                   <span class="font-bold text-lg text-black">{{
-                    menu.name
+                    menuName(menu)
                   }}</span>
                 </div>
-                @if (menu.description) {
+                @if (menuDescription(menu); as desc) {
                   <span class="text-sm text-gray-500 ml-8 transition-all">
                     @if (
-                      menu.description.length > 100 &&
+                      desc.length > 100 &&
                       !expandedDescriptions.has(menu.menuId) &&
                       !allMenusExpanded
                     ) {
-                      {{ menu.description | slice: 0 : 100 }}...
+                      {{ desc | slice: 0 : 100 }}...
                       <span
                         class="text-[var(--primary-color)] font-medium hover:underline ml-1"
                         (click)="toggleDescription($event, menu.menuId)"
                         >{{ 'menu.see_more' | translate }}</span
                       >
-                    } @else if (menu.description.length > 100) {
-                      {{ menu.description }}
+                    } @else if (desc.length > 100) {
+                      {{ desc }}
                       @if (!allMenusExpanded) {
                         <span
                           class="text-[var(--primary-color)] font-medium hover:underline ml-1"
@@ -87,12 +87,12 @@
                         >
                       }
                     } @else {
-                      {{ menu.description }}
+                      {{ desc }}
                     }
                   </span>
                 }
                 <span class="text-xs text-gray-400 ml-8">
-                  {{ getGroupedRecipes(menu.recipes).length }} platillo(s)
+                  {{ getGroupedRecipes(menu.recipes).length }} {{ 'menu.dishes_count' | translate }}
                 </span>
               </div>
 

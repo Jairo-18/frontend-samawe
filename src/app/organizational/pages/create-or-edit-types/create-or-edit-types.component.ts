@@ -59,8 +59,7 @@ export class CreateOrEditTypesComponent {
     this.formType = this._fb.group({
       selectedType: [data?.selectedType || '', Validators.required],
       code: [data?.code || '', Validators.required],
-      nameEs: [data?.nameEs || '', Validators.required],
-      nameEn: [data?.nameEn || '']
+      nameEs: [data?.nameEs || '', Validators.required]
     });
     if (this.isEditMode) {
       this.formType.get('selectedType')?.disable();
@@ -77,11 +76,9 @@ export class CreateOrEditTypesComponent {
       this.formType.get('selectedType')?.setErrors({ required: true });
       return;
     }
-    const nameObj: Record<string, string> = { es: values.nameEs.trim() };
-    if (values.nameEn?.trim()) nameObj['en'] = values.nameEn.trim();
     const payload = {
       code: values.code.trim(),
-      name: nameObj
+      name: { es: values.nameEs.trim() }
     };
     let action$: Observable<any>;
     if (this.isEditMode && this._id) {

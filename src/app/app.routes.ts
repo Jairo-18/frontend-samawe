@@ -68,6 +68,13 @@ export const routes: Routes = [
           import('./auth/auth.routes').then((m) => m.authRoutes)
       },
       {
+        path: 'auth/:userId/change-password',
+        loadComponent: () =>
+          import('./auth/pages/change-password/change-password.component').then(
+            (m) => m.ChangePasswordComponent
+          )
+      },
+      {
         path: 'user',
         canActivate: [authGuard],
         loadChildren: () =>
@@ -96,6 +103,13 @@ export const routes: Routes = [
         canActivate: [isLoggedGuard],
         loadChildren: () =>
           import('./auth/auth.routes').then((m) => m.authRoutes)
+      },
+      {
+        path: 'auth/:userId/change-password',
+        loadComponent: () =>
+          import('./auth/pages/change-password/change-password.component').then(
+            (m) => m.ChangePasswordComponent
+          )
       },
       {
         path: 'user',

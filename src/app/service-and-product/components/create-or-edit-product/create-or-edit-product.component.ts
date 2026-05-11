@@ -127,9 +127,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       categoryTypeId: [null, [Validators.required]],
       code: ['', [Validators.required]],
       nameEs: ['', [Validators.required]],
-      nameEn: [''],
       descriptionEs: ['', [Validators.maxLength(500)]],
-      descriptionEn: ['', [Validators.maxLength(500)]],
       amount: [0, [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0)]],
       priceBuy: [
         0,
@@ -174,9 +172,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       categoryTypeId: product.categoryType?.categoryTypeId,
       code: product.code,
       nameEs: product.name?.['es'] ?? '',
-      nameEn: product.name?.['en'] ?? '',
       descriptionEs: product.description?.['es'] ?? '',
-      descriptionEn: product.description?.['en'] ?? '',
       amount: product.amount ?? 0,
       priceBuy: product.priceBuy,
       priceSale: product.priceSale,
@@ -192,9 +188,7 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       categoryTypeId: null,
       code: '',
       nameEs: '',
-      nameEn: '',
       descriptionEs: '',
-      descriptionEn: '',
       amount: 0,
       priceBuy: 0,
       priceSale: 0,
@@ -244,12 +238,9 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
     if (this.productForm.valid) {
       const formValue = this.productForm.value;
       const nameObj: Record<string, string> = { es: formValue.nameEs };
-      if (formValue.nameEn?.trim()) nameObj['en'] = formValue.nameEn.trim();
-      let descriptionObj: Record<string, string> | undefined;
-      if (formValue.descriptionEs?.trim()) {
-        descriptionObj = { es: formValue.descriptionEs.trim() };
-        if (formValue.descriptionEn?.trim()) descriptionObj['en'] = formValue.descriptionEn.trim();
-      }
+      const descriptionObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
+        ? { es: formValue.descriptionEs.trim() }
+        : undefined;
       const productSave: CreateProductPanel = {
         productId: this.isEditMode ? this.productId : undefined,
         code: formValue.code,
