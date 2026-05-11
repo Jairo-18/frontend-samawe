@@ -144,26 +144,14 @@
 
     <div class="flex flex-col gap-4">
       <span class="text-lg font-bold border-b pb-2">{{ 'organizational.appearance.seo_optimization' | translate }}</span>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'organizational.appearance.meta_title' | translate }} (Español)</mat-label>
-          <input matInput formControlName="metaTitleEs" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'organizational.appearance.meta_title' | translate }} (Inglés)</mat-label>
-          <input matInput formControlName="metaTitleEn" />
-        </mat-form-field>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'organizational.appearance.meta_description' | translate }} (Español)</mat-label>
-          <textarea matInput formControlName="metaDescriptionEs" rows="3"></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'organizational.appearance.meta_description' | translate }} (Inglés)</mat-label>
-          <textarea matInput formControlName="metaDescriptionEn" rows="3"></textarea>
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'organizational.appearance.meta_title' | translate }}</mat-label>
+        <input matInput formControlName="metaTitleEs" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'organizational.appearance.meta_description' | translate }}</mat-label>
+        <textarea matInput formControlName="metaDescriptionEs" rows="3"></textarea>
+      </mat-form-field>
     </div>
   </div>
 

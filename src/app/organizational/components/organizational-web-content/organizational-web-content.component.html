@@ -64,7 +64,7 @@
       </span>
       @for (section of benefitSections; track section.benefitSectionId) {
         <div class="flex flex-col gap-2">
-          <span class="font-semibold text-gray-700 text-sm">{{ section.title }}</span>
+          <span class="font-semibold text-gray-700 text-sm">{{ section.title | translated }}</span>
           @if (section.items.length > 0) {
             <div class="flex flex-wrap gap-2">
               @for (item of section.items; track item.benefitItemId) {
@@ -179,7 +179,7 @@
           <mat-icon class="text-[var(--primary-color)] text-base"
             >list</mat-icon
           >
-          {{ section.title }}
+          {{ section.title | translated }}
           <span class="text-xs text-gray-400 font-normal"
             >({{ section.items.length }} {{ 'organizational.common.items' | translate }})</span
           >
