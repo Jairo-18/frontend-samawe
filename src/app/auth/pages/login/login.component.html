@@ -1,29 +1,19 @@
 <div class="auth-content-center">
   <article
-    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto md:h-[600px] lg:h-[600px] xl:h-[600px] 2xl:h-[600px] 3xl:h-[750px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
-  >
-    <section
-      class="h-full w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4"
-    >
+    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] h-auto md:h-[600px] lg:h-[600px] xl:h-[600px] 2xl:h-[720px] 3xl:h-[720px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl">
+    <section class="h-full w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4">
       <div class="flex flex-col gap-0 md:gap-1.5 mb-1 md:mb-0">
         <span class="font-extrabold text-lg 2xl:text-xl">{{
           'login.title' | translate
-        }}</span>
+          }}</span>
         <span class="font-medium text-sm md:text-base">
           {{ 'login.subtitle' | translate }}
         </span>
       </div>
-      <form
-        [formGroup]="form"
-        class="flex flex-col w-full items-center gap-0 md:gap-1.5"
-      >
+      <form [formGroup]="form" class="flex flex-col w-full items-center gap-0 md:gap-1.5">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'login.email' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="email"
-            (input)="onEmailInput($event)"
-          />
+          <input matInput formControlName="email" (input)="onEmailInput($event)" />
           <mat-icon matPrefix>email</mat-icon>
           <mat-error *ngIf="form.get('email')?.hasError('required')">
             {{ 'login.email_required' | translate }}
@@ -34,19 +24,9 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'login.password' | translate }}</mat-label>
-          <input
-            [type]="!showPassword ? 'password' : 'text'"
-            matInput
-            formControlName="password"
-          />
+          <input [type]="!showPassword ? 'password' : 'text'" matInput formControlName="password" />
           <mat-icon matPrefix>lock</mat-icon>
-          <button
-            type="button"
-            matSuffix
-            mat-icon-button
-            (click)="showPassword = !showPassword"
-            class="mr-1"
-          >
+          <button type="button" matSuffix mat-icon-button (click)="showPassword = !showPassword" class="mr-1">
             <fa-icon [icon]="!showPassword ? eyeOpen : eyeClose"></fa-icon>
           </button>
           <mat-error *ngIf="form.get('password')?.hasError('required')">
@@ -54,90 +34,51 @@
           </mat-error>
         </mat-form-field>
         @if (loginError) {
-          <div
-            class="w-full flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm"
-          >
-            <span class="material-icons text-base">error_outline</span>
-            <span>{{ 'login.error_message' | translate }}</span>
-          </div>
-        }
         <div
-          class="flex flex-col w-full items-center justify-center gap-2 mt-2 md:mt-0"
-        >
-          <app-button-landing
-            [label]="
+          class="w-full flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm">
+          <span class="material-icons text-base">error_outline</span>
+          <span>{{ 'login.error_message' | translate }}</span>
+        </div>
+        }
+        <div class="flex flex-col w-full items-center justify-center gap-2 mt-2 md:mt-0">
+          <app-button-landing [label]="
               cooldownRemaining > 0
                 ? ('login.wait' | translate) + ' ' + cooldownRemaining + 's'
                 : ('login.submit' | translate)
-            "
-            variant="solid"
-            [disabled]="form.invalid || cooldownRemaining > 0"
-            (clicked)="login()"
-            class="w-full"
-          />
+            " variant="solid" [disabled]="form.invalid || cooldownRemaining > 0" (clicked)="login()" class="w-full" />
 
-          <app-button-landing
-            [label]="'login.google' | translate"
-            variant="transparent"
-            (clicked)="loginWithGoogle()"
-            class="w-full"
-          >
-            <svg
-              slot="icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 48 48"
-              class="w-[18px] h-[18px] shrink-0"
-            >
-              <path
-                fill="#EA4335"
-                d="M24 9.5c3.14 0 5.95 1.08 8.17 2.85l6.08-6.08C34.36 3.07 29.45 1 24 1 14.82 1 7.07 6.48 3.64 14.22l7.08 5.5C12.4 13.67 17.73 9.5 24 9.5z"
-              />
-              <path
-                fill="#4285F4"
-                d="M46.5 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.67c-.55 2.97-2.2 5.48-4.67 7.17l7.19 5.58C43.18 37.36 46.5 31.36 46.5 24.5z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M10.72 28.28A14.6 14.6 0 0 1 9.5 24c0-1.49.26-2.93.72-4.28l-7.08-5.5A23.94 23.94 0 0 0 0 24c0 3.88.93 7.55 2.58 10.78l8.14-6.5z"
-              />
-              <path
-                fill="#34A853"
-                d="M24 47c5.45 0 10.03-1.8 13.37-4.9l-7.19-5.58c-1.8 1.21-4.1 1.98-6.18 1.98-6.27 0-11.6-4.17-13.28-9.72l-8.14 6.5C7.07 41.52 14.82 47 24 47z"
-              />
+          <app-button-landing [label]="'login.google' | translate" variant="transparent" (clicked)="loginWithGoogle()"
+            class="w-full">
+            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-[18px] h-[18px] shrink-0">
+              <path fill="#EA4335"
+                d="M24 9.5c3.14 0 5.95 1.08 8.17 2.85l6.08-6.08C34.36 3.07 29.45 1 24 1 14.82 1 7.07 6.48 3.64 14.22l7.08 5.5C12.4 13.67 17.73 9.5 24 9.5z" />
+              <path fill="#4285F4"
+                d="M46.5 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.67c-.55 2.97-2.2 5.48-4.67 7.17l7.19 5.58C43.18 37.36 46.5 31.36 46.5 24.5z" />
+              <path fill="#FBBC05"
+                d="M10.72 28.28A14.6 14.6 0 0 1 9.5 24c0-1.49.26-2.93.72-4.28l-7.08-5.5A23.94 23.94 0 0 0 0 24c0 3.88.93 7.55 2.58 10.78l8.14-6.5z" />
+              <path fill="#34A853"
+                d="M24 47c5.45 0 10.03-1.8 13.37-4.9l-7.19-5.58c-1.8 1.21-4.1 1.98-6.18 1.98-6.27 0-11.6-4.17-13.28-9.72l-8.14 6.5C7.07 41.52 14.82 47 24 47z" />
             </svg>
           </app-button-landing>
           <div>
-            <a
-              class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
-              routerLink="../recovery-password"
-            >
+            <a class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
+              routerLink="../recovery-password">
               {{ 'login.forgot_password' | translate }}
             </a>
           </div>
-          <div
-            class="flex w-full content-between items-center justify-center gap-1"
-          >
+          <div class="flex w-full content-between items-center justify-center gap-1">
             <span class="font-medium text-sm md:text-base">{{
               'login.no_account' | translate
-            }}</span>
-            <a
-              routerLink="../register"
-              class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
-              >{{ 'login.register' | translate }}</a
-            >
+              }}</span>
+            <a routerLink="../register"
+              class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base">{{
+              'login.register' | translate }}</a>
           </div>
         </div>
       </form>
     </section>
     <section class="relative h-full w-full hidden md:flex flex-col bg-gray-100">
-      <img
-        *ngIf="loginBgUrl"
-        [ngSrc]="loginBgUrl"
-        priority
-        fill
-        alt="Login Background"
-        class="object-cover"
-      />
+      <img *ngIf="loginBgUrl" [ngSrc]="loginBgUrl" priority fill alt="Login Background" class="object-cover" />
     </section>
   </article>
 </div>

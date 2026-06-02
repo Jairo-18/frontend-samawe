@@ -1,22 +1,24 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 FROM deps AS builder-production
 WORKDIR /app
 COPY . .
-RUN npx ng build --configuration production && node scripts/fix-ssr-manifest.mjs
+RUN pnpm exec ng build --configuration production && node scripts/fix-ssr-manifest.mjs
 
 FROM deps AS builder-development
 WORKDIR /app
 COPY . .
-RUN npx ng build --configuration development && node scripts/fix-ssr-manifest.mjs
+RUN pnpm exec ng build --configuration development && node scripts/fix-ssr-manifest.mjs
 
 FROM node:22-alpine AS prod-deps
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps --omit=dev
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod
 
 FROM node:22-alpine AS production
 WORKDIR /app
