@@ -1,7 +1,7 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install
 
 FROM deps AS builder-production
@@ -17,7 +17,7 @@ RUN pnpm exec ng build --configuration development && node scripts/fix-ssr-manif
 FROM node:22-alpine AS prod-deps
 WORKDIR /app
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --prod
 
 FROM node:22-alpine AS production
