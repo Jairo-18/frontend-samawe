@@ -90,6 +90,13 @@ export class SeeInvoicesComponent implements OnInit {
   private categoryTypeCode = 'FV';
   /** Id del tipo de factura resuelto desde relatedData; filtra la lista. */
   private categoryTypeId: number | null = null;
+  /**
+   * Tipos de factura para el select del diálogo crear/editar. Se guarda aparte
+   * de `searchFields` porque el split retira el filtro `invoiceTypeId` de la
+   * barra de búsqueda (applyCategoryConfig) y antes el diálogo lo leía de ahí
+   * vía getOptions → quedaba vacío. Ahora viene directo de relatedData.
+   */
+  private invoiceTypeOptions: any[] = [];
   pageTitleKey = 'invoice.list.title_sales';
   pageSubtitleKey = 'invoice.list.subtitle_sales';
   selectedInvoice: any = null;
@@ -267,6 +274,7 @@ export class SeeInvoicesComponent implements OnInit {
         this.categoryTypeId = matchType
           ? Number(matchType.invoiceTypeId)
           : null;
+        this.invoiceTypeOptions = res.data.invoiceType || [];
         this.loadInvoices();
         const optionMap = {
           invoiceTypeId: res.data.invoiceType,
@@ -314,7 +322,7 @@ export class SeeInvoicesComponent implements OnInit {
         data: {
           editMode: false,
           relatedData: {
-            invoiceType: this.getOptions('invoiceTypeId'),
+            invoiceType: this.invoiceTypeOptions,
             payType: this.getOptions('payTypeId'),
             paidType: this.getOptions('paidTypeId'),
             stateType: this.getOptions('stateTypeId')
@@ -337,7 +345,7 @@ export class SeeInvoicesComponent implements OnInit {
           editMode: true,
           invoiceId: invoiceId,
           relatedData: {
-            invoiceType: this.getOptions('invoiceTypeId'),
+            invoiceType: this.invoiceTypeOptions,
             payType: this.getOptions('payTypeId'),
             paidType: this.getOptions('paidTypeId'),
             stateType: this.getOptions('stateTypeId')
