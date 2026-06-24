@@ -1,0 +1,29 @@
+<app-base-dialog
+  [title]="'invoice.issuer_dialog.title' | translate"
+  [description]="'invoice.issuer_dialog.message' | translate"
+>
+  <div actions class="w-full">
+    <section class="flex flex-col md:justify-between gap-3 w-full">
+      <!-- Organización: variante rellena (opción por defecto). -->
+      <button mat-fab extended="true" class="!w-full" (click)="choose('org')">
+        {{ 'invoice.issuer_dialog.org' | translate }}
+      </button>
+      <!-- Propietario: variante con contorno, claramente distinta. -->
+      <button
+        mat-stroked-button
+        extended="true"
+        class="!w-full"
+        (click)="choose('owner')"
+        [disabled]="!data.hasOwner"
+        [matTooltip]="
+          !data.hasOwner ? ('invoice.issuer_dialog.no_owner' | translate) : ''
+        "
+      >
+        {{
+          'invo
+        ice.issuer_dialog.owner' | translate
+        }}
+      </button>
+    </section>
+  </div>
+</app-base-dialog>

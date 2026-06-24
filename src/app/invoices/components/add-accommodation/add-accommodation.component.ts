@@ -44,6 +44,7 @@ import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 @Component({
   selector: 'app-add-accommodation',
   standalone: true,
@@ -64,7 +65,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     CurrencyFormatDirective,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    FormatCopPipe
   ],
   templateUrl: './add-accommodation.component.html',
   styleUrl: './add-accommodation.component.scss'

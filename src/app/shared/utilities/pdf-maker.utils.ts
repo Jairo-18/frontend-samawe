@@ -24,8 +24,14 @@ export async function loadPdfMake(): Promise<{
     import('pdfmake/build/vfs_fonts')
   ]);
   const pdfMake = (maker as any).default ?? maker;
-  const vfs = ((fonts as any).default ?? fonts)?.pdfMake?.vfs;
+  // pdfmake 0.2.x exporta el vfs como el objeto de fuentes directamente
+  // (module.exports = vfs). Versiones 0.1.x lo anidaban en .pdfMake.vfs.
+  // Cubrimos ambas formas y garantizamos que pdfMake.vfs nunca quede undefined
+  // (si no, escribir las fuentes AlegreyaSC abajo lanza TypeError).
+  const fontsMod = (fonts as any).default ?? fonts;
+  const vfs = fontsMod?.pdfMake?.vfs ?? fontsMod?.vfs ?? fontsMod;
   if (vfs) pdfMake.vfs = vfs;
+  if (!pdfMake.vfs) pdfMake.vfs = {};
 
   pdfMake.fonts = {
     Roboto: {

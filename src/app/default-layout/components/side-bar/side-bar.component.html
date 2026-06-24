@@ -148,7 +148,11 @@
                       <mat-icon class="text-[var(--primary-color)]">{{
                         subItem.icon
                       }}</mat-icon>
-                      <span>{{ subItem.name }}</span>
+                      <span>{{
+                        subItem.titleKey
+                          ? (subItem.titleKey | translate)
+                          : subItem.name
+                      }}</span>
                     </button>
                   </ng-container>
                 </mat-menu>
@@ -162,17 +166,31 @@
                   }"
                 >
                   <ul class="pl-5">
-                    <li *ngFor="let subItem of item.subItems" class="my-1">
-                      <button
-                        class="flex w-full items-center gap-x-2 text-black bg-white rounded-lg border border-black px-3 py-[5px] hover:bg-yellow-100"
-                        [routerLink]="subItem.route"
-                        (click)="removeFocus($event)"
-                      >
-                        <mat-icon class="text-[var(--primary-color)]">{{
-                          subItem.icon
-                        }}</mat-icon>
-                        <span>{{ subItem.name }}</span>
-                      </button>
+                    <li *ngFor="let subItem of item.subItems">
+                      <div class="flex justify-start py-[1.5px]">
+                        <button
+                          class="flex w-full items-center rounded-lg bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px] hover:bg-yellow-100"
+                          [routerLink]="subItem.route"
+                          (click)="removeFocus($event)"
+                        >
+                          <div class="flex items-center md:items-start">
+                            <mat-icon
+                              class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)] mx-[5px]"
+                              >{{ subItem.icon }}</mat-icon
+                            >
+                          </div>
+                          <div class="flex items-center">
+                            <span
+                              class="text-xs md:text-sm lg:text-sm 3xl:text-base"
+                              >{{
+                                subItem.titleKey
+                                  ? (subItem.titleKey | translate)
+                                  : subItem.name
+                              }}</span
+                            >
+                          </div>
+                        </button>
+                      </div>
                     </li>
                   </ul>
                 </div>

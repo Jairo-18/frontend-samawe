@@ -53,6 +53,10 @@ export interface Invoice {
   servedTime?: string;
   stateType?: StateType;
   organizationalId?: string;
+  factusNumber?: string;
+  factusCufe?: string;
+  factusQrCode?: string;
+  factusPublicUrl?: string;
 }
 export interface CreateInvoice {
   invoiceTypeId: number;
@@ -107,6 +111,10 @@ export interface InvoiceComplete {
   servedTime?: string;
   stateType?: StateType;
   organizationalId?: string;
+  factusNumber?: string;
+  factusCufe?: string;
+  factusQrCode?: string;
+  factusPublicUrl?: string;
 }
 export interface DialogData {
   editMode: boolean;

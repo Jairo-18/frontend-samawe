@@ -27,7 +27,7 @@
             *ngFor="let category of visibleCategoryTypes"
             [value]="category.categoryTypeId"
           >
-            {{ category.name | translated }}
+            {{ category.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
@@ -50,7 +50,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'service_and_product.product_form.name_label' | translate }}</mat-label>
         <mat-icon matPrefix>translate</mat-icon>
-        <input matInput formControlName="nameEs" required appUppercase />
+        <input matInput formControlName="nameEs" required appNormalizeTitle />
         <mat-error *ngIf="productForm.get('nameEs')?.hasError('required')">
           {{ 'service_and_product.product_form.name_required' | translate }}
         </mat-error>
@@ -122,7 +122,7 @@
             *ngFor="let unit of unitOfMeasureTypes"
             [value]="unit.unitOfMeasureId"
           >
-            {{ unit.name | translated }} ({{ unit.code }})
+            {{ unit.name | translated | capitalize }} ({{ unit.code }})
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>straighten</mat-icon>

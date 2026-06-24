@@ -14,6 +14,8 @@ export interface SearchField {
   type: FieldType;
   placeholder?: string;
   options?: SelectOption[];
+  /** Si es true, las opciones del select se muestran en Title Case (capitalize). */
+  capitalizeOptions?: boolean;
   validators?: any[];
   autocompleteOptions?: any[];
   defaultValue?: any;

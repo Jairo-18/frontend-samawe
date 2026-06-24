@@ -11,6 +11,7 @@ export const searchFieldsProducts: SearchField[] = [
     label: 'service_product.search.category',
     type: 'select',
     options: [],
+    capitalizeOptions: true,
     placeholder: 'service_product.search.category_placeholder'
   },
   {
@@ -36,6 +37,7 @@ export const searchFieldsAccommodations: SearchField[] = [
     label: 'service_product.search.bed',
     type: 'select',
     options: [],
+    capitalizeOptions: true,
     placeholder: 'service_product.search.bed_placeholder'
   },
   {
@@ -43,6 +45,7 @@ export const searchFieldsAccommodations: SearchField[] = [
     label: 'service_product.search.status',
     type: 'select',
     options: [],
+    capitalizeOptions: true,
     placeholder: 'service_product.search.state_placeholder'
   },
   {
@@ -68,6 +71,7 @@ export const searchFieldsExcursions: SearchField[] = [
     label: 'service_product.search.category',
     type: 'select',
     options: [],
+    capitalizeOptions: true,
     placeholder: 'service_product.search.category_placeholder'
   },
   {
@@ -75,6 +79,7 @@ export const searchFieldsExcursions: SearchField[] = [
     label: 'service_product.search.status',
     type: 'select',
     options: [],
+    capitalizeOptions: true,
     placeholder: 'service_product.search.state_placeholder'
   }
 ];

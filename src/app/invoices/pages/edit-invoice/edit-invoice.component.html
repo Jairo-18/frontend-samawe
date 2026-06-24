@@ -4,7 +4,7 @@
   [showBackButton]="true"
   [showBorder]="false"
   [pxMobile]="false"
-  backButtonRoute="/invoice/invoices/list"
+  [backButtonRoute]="backRoute"
   [backButtonText]="'invoice.edit.back' | translate"
   [backButtonTooltip]="'invoice.edit.back_tooltip' | translate"
 >
@@ -15,6 +15,15 @@
       </div>
     } @else {
       <div class="flex flex-col w-full gap-3">
+        @if (isLocked) {
+          <div class="flex items-center gap-3 rounded-xl bg-green-50 border border-green-400 px-4 py-3">
+            <mat-icon class="text-green-600">verified</mat-icon>
+            <div class="flex flex-col">
+              <span class="text-green-800 font-bold text-sm">{{ 'invoice.list.action_sent_factus' | translate }}</span>
+              <span class="text-green-700 text-xs">{{ 'invoice.list.factus_locked_edit' | translate }}</span>
+            </div>
+          </div>
+        }
         <section
           class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)]"
         >
@@ -50,7 +59,8 @@
                 class="w-full md:w-56 mt-2 md:mt-0"
                 *ngIf="
                   invoiceData.invoiceType.code === 'FV' ||
-                  invoiceData.invoiceType.code === 'CO'
+                  invoiceData.invoiceType.code === 'CO' ||
+                  invoiceData.invoiceType.code === 'FVE'
                 "
               >
                 <mat-label>{{ 'invoice.edit.invoice_date' | translate }}</mat-label>
@@ -97,8 +107,8 @@
               </div>
             </section>
           }
-          <mat-tab-group animationDuration="0ms">
-            @if (invoiceData?.invoiceType?.code === 'FV' || invoiceData?.invoiceType?.code === 'CO') {
+          <mat-tab-group animationDuration="0ms" *ngIf="!isLocked">
+            @if (invoiceData?.invoiceType?.code === 'FV' || invoiceData?.invoiceType?.code === 'CO' || invoiceData?.invoiceType?.code === 'FVE') {
               <mat-tab [label]="'invoice.edit.tab_product' | translate">
                 <ng-template matTabContent>
                   <app-add-product
@@ -174,7 +184,7 @@
             }
           </mat-tab-group>
         </section>
-        @if (pendingItems.length > 0) {
+        @if (pendingItems.length > 0 && !isLocked) {
           <app-pending-items-table
             [pendingItems]="pendingItems"
             [taxeTypes]="taxeTypes"
@@ -196,6 +206,7 @@
             [invoiceDetails]="invoiceData.invoiceDetails"
             [invoiceId]="invoiceId"
             [reload]="reloadInvoiceDetails"
+            [isLocked]="isLocked"
             (itemDelete)="onItemDeleted()"
           ></app-invoice-detaill>
         </section>
@@ -206,6 +217,7 @@
             *ngIf="invoiceData"
             [invoiceData]="invoiceData"
             [payTypes]="payTypes"
+            [isLocked]="isLocked"
             (downloadRequested)="downloadInvoice()"
             (editRequested)="openEditInvoiceDialog()"
             (toggleAllPaymentStatus)="toggleAllPayments($event)"

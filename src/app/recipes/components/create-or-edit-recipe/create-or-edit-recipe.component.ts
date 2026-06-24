@@ -40,6 +40,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -61,7 +63,9 @@ import { TranslateModule } from '@ngx-translate/core';
     SectionHeaderComponent,
     ImageUploaderComponent,
     FormatCopPipe,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './create-or-edit-recipe.component.html',
   styleUrl: './create-or-edit-recipe.component.scss',
@@ -201,7 +205,7 @@ export class CreateOrEditRecipeComponent implements OnChanges {
 
     this.form.patchValue({ productId: dish.productId });
     this.selectedProductId = dish.productId;
-    this.dishSearchControl.setValue(dish.name, { emitEvent: false });
+    this.dishSearchControl.setValue(this.displayFn(dish), { emitEvent: false });
 
     this.isEditMode = false;
     this.ingredientsArray.clear();
@@ -214,7 +218,9 @@ export class CreateOrEditRecipeComponent implements OnChanges {
     if (!product) return '';
     if (typeof product === 'string') return product;
     const n = product.name;
-    return typeof n === 'string' ? n : (n['es'] ?? Object.values(n)[0] ?? '');
+    const name =
+      typeof n === 'string' ? n : (n['es'] ?? Object.values(n)[0] ?? '');
+    return new CapitalizePipe().transform(name);
   }
 
   getIngSearchControl(index: number): FormControl {

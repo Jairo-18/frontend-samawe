@@ -19,7 +19,7 @@
             *ngFor="let type of invoiceTypes"
             [value]="type.invoiceTypeId"
           >
-            {{ type.name | translated }}
+            {{ type.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>description</mat-icon>
@@ -115,7 +115,7 @@
         <mat-label>{{ 'invoice.dialog.pay_type' | translate }}</mat-label>
         <mat-select formControlName="payTypeId" required>
           <mat-option *ngFor="let type of payTypes" [value]="type.payTypeId">
-            {{ type.name | translated }}
+            {{ type.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>credit_card</mat-icon>
@@ -124,7 +124,7 @@
         <mat-label>{{ 'invoice.dialog.paid_status' | translate }}</mat-label>
         <mat-select formControlName="paidTypeId" required>
           <mat-option *ngFor="let type of paidTypes" [value]="type.paidTypeId">
-            {{ type.name | translated }}
+            {{ type.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>monetization_on</mat-icon>
@@ -161,7 +161,7 @@
             *ngFor="let state of stateTypes"
             [value]="state.stateTypeId"
           >
-            {{ state.name | translated }}
+            {{ state.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>assignment_turned_in</mat-icon>

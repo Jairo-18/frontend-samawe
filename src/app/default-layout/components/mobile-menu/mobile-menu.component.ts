@@ -50,7 +50,10 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
   currentUrl: string = '';
   menuItems: (ItemInterface | null)[] = [null, null, null, null, null];
   loggedMenuItems: NavItem[] = [];
+  /** Sub-vistas de facturación mostradas en el popup del slot 'Facturación'. */
+  invoicingItems: NavItem[] = [];
   settingsMenuOpen: boolean = false;
+  invoicingMenuOpen: boolean = false;
 
   isItemActive(route: string | undefined): boolean {
     if (!route) return false;
@@ -67,6 +70,12 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       const route = item.route ?? item.children?.[0]?.route;
       return route ? this.isItemActive(route) : false;
     });
+  }
+
+  get isFacturacionActive(): boolean {
+    return this.invoicingItems.some((item) =>
+      item.route ? this.isItemActive(item.route) : false
+    );
   }
 
   ngOnInit(): void {
@@ -86,6 +95,12 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
 
   toggleSettingsMenu(): void {
     this.settingsMenuOpen = !this.settingsMenuOpen;
+    if (this.settingsMenuOpen) this.invoicingMenuOpen = false;
+  }
+
+  toggleInvoicingMenu(): void {
+    this.invoicingMenuOpen = !this.invoicingMenuOpen;
+    if (this.invoicingMenuOpen) this.settingsMenuOpen = false;
   }
 
   private filterMenuByRole(): void {
@@ -136,10 +151,46 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       const servicios = allItems.find(
         (i) => i.name === 'Productos y Servicios'
       );
-      const facturas = allItems.find((i) => i.name === 'Facturas');
+      // Facturación es un grupo de 4 vistas. En móvil el slot 4 abre un popup
+      // con las 4 (igual que Ajustes), si el rol tiene permiso de facturación.
+      const canInvoices = allowedItems.includes('Facturas de venta');
+      this.invoicingItems = canInvoices
+        ? [
+            {
+              title: 'sidebar.invoices_electronic',
+              route: '/invoice/invoices/electronic',
+              icon: 'receipt_long'
+            },
+            {
+              title: 'sidebar.invoices_sales',
+              route: '/invoice/invoices/sales',
+              icon: 'point_of_sale'
+            },
+            {
+              title: 'sidebar.invoices_purchases',
+              route: '/invoice/invoices/purchases',
+              icon: 'shopping_cart'
+            },
+            {
+              title: 'sidebar.invoices_quotes',
+              route: '/invoice/invoices/quotes',
+              icon: 'request_quote'
+            }
+          ]
+        : [];
+      const facturas: ItemInterface | undefined = canInvoices
+        ? {
+            name: 'Facturación',
+            titleKey: 'sidebar.invoices_group',
+            icon: 'description',
+            route: '',
+            order: 0,
+            subItems: []
+          }
+        : undefined;
       if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes', titleKey: 'sidebar.clients' };
       if (servicios) finalItems[1] = { ...servicios, name: 'Servicios', titleKey: 'sidebar.services' };
-      if (facturas) finalItems[3] = { ...facturas, titleKey: 'sidebar.invoices' };
+      if (facturas) finalItems[3] = facturas;
     } else if (roleCode === 'CHE' || roleCode === 'MES') {
       const menu = allItems.find((i) => i.name === 'Menú');
       const recetas = allItems.find((i) => i.name === 'Recetas');

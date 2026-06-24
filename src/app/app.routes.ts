@@ -181,6 +181,14 @@ export const routes: Routes = [
           import('./public/pages/settings/settings.component').then(
             (m) => m.SettingsComponent
           )
+      },
+      {
+        path: 'release-notes',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import(
+            './release-notes/pages/release-notes/release-notes.component'
+          ).then((m) => m.ReleaseNotesComponent)
       }
     ]
   },

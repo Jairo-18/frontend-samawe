@@ -48,6 +48,7 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
   @Input() invoiceDetails: InvoiceDetail[] = [];
   @Input() invoiceId?: number;
   @Input() reload: boolean = false;
+  @Input() isLocked: boolean = false;
   @Output() itemDelete = new EventEmitter<void>();
   @Output() allItemsSaved = new EventEmitter<void>();
   private readonly _matDialog: MatDialog = inject(MatDialog);

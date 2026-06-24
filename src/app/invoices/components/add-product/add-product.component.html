@@ -27,7 +27,9 @@
         *ngFor="let product of filteredProducts"
         [value]="product.name | translated"
       >
-        {{ product.name | translated }}
+        <span class="font-semibold text-gray-500">{{ product.code }}</span>
+        - {{ product.name | translated }}
+        <span class="text-gray-700">· {{ product.priceSale | formatCop }}</span>
         <span [ngClass]="product.isActive ? 'text-green-600' : 'text-red-600'">
           - {{ product?.isActive ? ('invoice.common.active' | translate) : ('invoice.common.inactive' | translate) }}
         </span>

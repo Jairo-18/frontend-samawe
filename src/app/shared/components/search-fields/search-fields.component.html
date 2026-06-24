@@ -14,7 +14,11 @@
       <mat-select [formControlName]="field.name">
         @for (option of field.options; track $index) {
         <mat-option [value]="option.value">
-          {{ option.label | translated | translate }}
+          @if (field.capitalizeOptions) {
+            {{ option.label | translated | translate | capitalize }}
+          } @else {
+            {{ option.label | translated | translate }}
+          }
         </mat-option>
         }
       </mat-select>

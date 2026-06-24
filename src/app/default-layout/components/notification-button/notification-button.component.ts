@@ -3,6 +3,7 @@ import {
   inject,
   NgZone,
   OnInit,
+  OnChanges,
   OnDestroy,
   Input,
   HostListener,
@@ -42,7 +43,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './notification-button.component.html',
   styleUrl: './notification-button.component.scss'
 })
-export class NotificationButtonComponent implements OnInit, OnDestroy {
+export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showNotificationsIcon: boolean = false;
   @Input() userInfo?: UserInterface;
 
@@ -104,6 +105,16 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     );
 
     this.setupAudioReminder();
+  }
+
+  // showNotificationsIcon y userInfo llegan de forma asíncrona desde el layout
+  // (suscripción a NavigationEnd), normalmente DESPUÉS de ngOnInit. Sin esto, el
+  // joinUserRoom nunca se ejecutaba y el usuario no recibía notificaciones en
+  // vivo aunque el backend sí las creara. Es idempotente por los flags internos.
+  ngOnChanges(): void {
+    if (this.showNotificationsIcon && this.userInfo) {
+      this.checkRolesForNotifications();
+    }
   }
 
   ngOnDestroy(): void {

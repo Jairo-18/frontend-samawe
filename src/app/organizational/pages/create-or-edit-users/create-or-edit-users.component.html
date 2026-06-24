@@ -1,242 +1,204 @@
 <app-base-page
   [headerTitle]="isEditMode ? ('organizational.edit_user.edit_title' | translate) : ('organizational.edit_user.create_title' | translate)"
-  [showContentTitle]="true"
-  [contentInfo]="
+  [showContentTitle]="true" [contentInfo]="
     isEditMode
       ? ('organizational.edit_user.edit_subtitle' | translate)
       : ('organizational.edit_user.create_subtitle' | translate)
-  "
-  [showBackButton]="true"
-  backButtonRoute="/organizational/users/list"
+  " [showBackButton]="true" backButtonRoute="/organizational/users/list"
   [backButtonText]="'organizational.common.back' | translate"
-  [backButtonTooltip]="'organizational.common.back_tooltip' | translate"
-  [showActions]="false"
-  [showContentInfo]="true"
->
+  [backButtonTooltip]="'organizational.common.back_tooltip' | translate" [showActions]="false" [showContentInfo]="true">
   @if (!loading) {
-    <form [formGroup]="userForm" class="flex flex-col">
-      <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
-        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.role' | translate }}</mat-label>
-            <mat-select formControlName="roleTypeId" required>
-              <mat-option value="" disabled selected
-                >{{ 'organizational.edit_user.select_role' | translate }}</mat-option
-              >
-              <mat-option
-                *ngFor="let role of roleType"
-                [value]="role.roleTypeId"
-              >
-                {{ role.name | translated }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matPrefix>library_books</mat-icon>
-            <mat-error *ngIf="userForm.get('roleTypeId')?.hasError('required')">
-              {{ 'organizational.edit_user.role_required' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.id_type' | translate }}</mat-label>
-            <mat-select formControlName="identificationTypeId" required>
-              <mat-option value="" disabled selected
-                >{{ 'organizational.edit_user.select_id_type' | translate }}</mat-option
-              >
-              <mat-option
-                *ngFor="let type of identificationType"
-                [value]="type.identificationTypeId.toString()"
-              >
-                {{ type.name | translated }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matPrefix>table_chart</mat-icon>
-            <mat-error
-              *ngIf="userForm.get('identificationTypeId')?.hasError('required')"
-            >
-              {{ 'organizational.edit_user.id_type_required' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.person_type' | translate }}</mat-label>
-            <mat-select formControlName="personTypeId">
-              <mat-option value="" disabled selected
-                >{{ 'organizational.edit_user.select_person_type' | translate }}</mat-option
-              >
-              <mat-option
-                *ngFor="let pt of personType"
-                [value]="pt.personTypeId.toString()"
-              >
-                {{ pt.name | translated }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matPrefix>business</mat-icon>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.id_number' | translate }}</mat-label>
-            <mat-icon matPrefix>credit_card</mat-icon>
-            <input
-              matInput
-              formControlName="identificationNumber"
-              required
-              appNoSpaces
-            />
-            <mat-error
-              *ngIf="userForm.get('identificationNumber')?.hasError('required')"
-            >
-              {{ 'organizational.edit_user.id_number_required' | translate }}
-            </mat-error>
-            <mat-error
-              *ngIf="userForm.get('identificationNumber')?.hasError('pattern')"
-            >
-              {{ 'organizational.edit_user.id_number_pattern' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.names' | translate }}</mat-label>
-            <input
-              matInput
-              formControlName="firstName"
-              required
-              appNormalizeName
-            />
-            <mat-icon matPrefix>person</mat-icon>
-            <mat-error
-              *ngIf="userForm.get('firstName')?.hasError('required')"
-            >
-              {{ 'organizational.edit_user.names_required' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.surnames' | translate }}</mat-label>
-            <input
-              matInput
-              formControlName="lastName"
-              required
-              appNormalizeName
-            />
-            <mat-icon matPrefix>people</mat-icon>
-            <mat-error
-              *ngIf="userForm.get('lastName')?.hasError('required')"
-            >
-              {{ 'organizational.edit_user.surnames_required' | translate }}
-            </mat-error>
-          </mat-form-field>
-        </section>
-        <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.email' | translate }}</mat-label>
-            <input
-              matInput
-              formControlName="email"
-              (input)="onEmailInput($event)"
-            />
-            <mat-icon matPrefix>email</mat-icon>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.common.search_country' | translate }}</mat-label>
-            <mat-icon matPrefix>flag</mat-icon>
-            <input
-              type="text"
-              matInput
-              formControlName="phoneCodeSearch"
-              [matAutocomplete]="autoPhoneCode"
-              [placeholder]="'organizational.common.type_to_search' | translate"
-              [readonly]="isPhoneCodeSelected"
-              required
-            />
-            <button
-              *ngIf="isPhoneCodeSelected"
-              matSuffix
-              mat-icon-button
-              type="button"
-              (click)="clearPhoneCodeSelection()"
-              [matTooltip]="'organizational.common.clear_selection' | translate"
-            >
-              <mat-icon>clear</mat-icon>
-            </button>
-            <mat-autocomplete
-              #autoPhoneCode="matAutocomplete"
-              [displayWith]="displayPhoneCode"
-              (optionSelected)="onPhoneCodeSelected($event.option.value)"
-            >
-              @if (loadingPhoneCodes) {
-                <mat-option disabled>
-                  <span>{{ 'organizational.common.searching' | translate }}</span>
-                </mat-option>
-              } @else if (filteredPhoneCodes.length === 0) {
-                <mat-option disabled>
-                  <span>{{ 'organizational.common.no_results' | translate }}</span>
-                </mat-option>
-              } @else {
-                @for (
-                  phoneCode of filteredPhoneCodes;
-                  track phoneCode.phoneCodeId
-                ) {
-                  <mat-option [value]="phoneCode">
-                    {{ phoneCode.name }} {{ phoneCode.code }}
-                  </mat-option>
-                }
-              }
-            </mat-autocomplete>
-            <mat-error
-              *ngIf="userForm.get('phoneCodeId')?.hasError('required')"
-            >
-              {{ 'organizational.edit_user.country_required' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.phone' | translate }}</mat-label>
-            <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
-            <mat-icon matPrefix>phone_iphone</mat-icon>
-            <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
-              {{ 'organizational.edit_user.phone_required' | translate }}
-            </mat-error>
-            <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">
-              {{ 'organizational.edit_user.phone_pattern' | translate }}
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{ 'organizational.edit_user.status' | translate }}</mat-label>
-            <mat-select formControlName="isActive">
-              <mat-option [value]="true">{{ 'organizational.common.active' | translate }}</mat-option>
-              <mat-option [value]="false">{{ 'organizational.common.inactive' | translate }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </section>
-      </div>
-      <div
-        class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full"
-      >
-        @if (isEditMode) {
-          <div class="w-full flex content-between md:w-[24%]">
-            <button
-              mat-fab
-              extended="true"
-              color="warn"
-              type="button"
-              [routerLink]="['/organizational/users/list']"
-              class="!w-full"
-            >
-              {{ 'organizational.common.cancel' | translate }}
-            </button>
-          </div>
-        }
-        <div class="w-full flex content-between md:w-[24%]">
-          <button
-            mat-fab
-            extended
-            color="primary"
-            type="button"
-            class="mt-2 md:mt-0 !w-full"
-            (click)="save()"
-            [disabled]="isSaving"
-          >
-            <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
-            {{ isEditMode ? ('organizational.common.save_changes' | translate) : ('organizational.edit_user.create_user_btn' | translate) }}
+  <form [formGroup]="userForm" class="flex flex-col">
+    <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
+      <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.role' | translate }}</mat-label>
+          <mat-select formControlName="roleTypeId" required>
+            <mat-option value="" disabled selected>{{ 'organizational.edit_user.select_role' | translate }}</mat-option>
+            <mat-option *ngFor="let role of roleType" [value]="role.roleTypeId">
+              {{ role.name | translated | capitalize }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>library_books</mat-icon>
+          <mat-error *ngIf="userForm.get('roleTypeId')?.hasError('required')">
+            {{ 'organizational.edit_user.role_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.id_type' | translate }}</mat-label>
+          <mat-select formControlName="identificationTypeId" required>
+            <mat-option value="" disabled selected>{{ 'organizational.edit_user.select_id_type' | translate
+              }}</mat-option>
+            <mat-option *ngFor="let type of identificationType" [value]="type.identificationTypeId.toString()">
+              {{ type.name | translated | capitalize }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>table_chart</mat-icon>
+          <mat-error *ngIf="userForm.get('identificationTypeId')?.hasError('required')">
+            {{ 'organizational.edit_user.id_type_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.person_type' | translate }}</mat-label>
+          <mat-select formControlName="personTypeId">
+            <mat-option value="" disabled selected>{{ 'organizational.edit_user.select_person_type' | translate
+              }}</mat-option>
+            <mat-option *ngFor="let pt of personType" [value]="pt.personTypeId.toString()">
+              {{ pt.name | translated | capitalize }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>business</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.id_number' | translate }}</mat-label>
+          <mat-icon matPrefix>credit_card</mat-icon>
+          <input matInput formControlName="identificationNumber" required appNoSpaces />
+          <mat-error *ngIf="userForm.get('identificationNumber')?.hasError('required')">
+            {{ 'organizational.edit_user.id_number_required' | translate }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('identificationNumber')?.hasError('pattern')">
+            {{ 'organizational.edit_user.id_number_pattern' | translate }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('identificationNumber')?.hasError('nitMissingDv')">
+            {{ 'organizational.edit_user.id_nit_missing_dv' | translate:{ dv:
+            userForm.get('identificationNumber')?.getError('nitMissingDv')?.dv } }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('identificationNumber')?.hasError('nitWrongDv')">
+            {{ 'organizational.edit_user.id_nit_wrong_dv' | translate:{ dv:
+            userForm.get('identificationNumber')?.getError('nitWrongDv')?.dv } }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.names' | translate }}</mat-label>
+          <input matInput formControlName="firstName" required appNormalizeName />
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">
+            {{ 'organizational.edit_user.names_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.surnames' | translate }}</mat-label>
+          <input matInput formControlName="lastName" required appNormalizeName />
+          <mat-icon matPrefix>people</mat-icon>
+          <mat-error *ngIf="userForm.get('lastName')?.hasError('required')">
+            {{ 'organizational.edit_user.surnames_required' | translate }}
+          </mat-error>
+        </mat-form-field> <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.email' | translate }}</mat-label>
+          <input matInput formControlName="email" (input)="onEmailInput($event)" />
+          <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+      </section>
+      <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.common.search_country' | translate }}</mat-label>
+          <mat-icon matPrefix>flag</mat-icon>
+          <input type="text" matInput formControlName="phoneCodeSearch" [matAutocomplete]="autoPhoneCode"
+            [placeholder]="'organizational.common.type_to_search' | translate" [readonly]="isPhoneCodeSelected"
+            required />
+          <button *ngIf="isPhoneCodeSelected" matSuffix mat-icon-button type="button"
+            (click)="clearPhoneCodeSelection()" [matTooltip]="'organizational.common.clear_selection' | translate">
+            <mat-icon>clear</mat-icon>
           </button>
-        </div>
+          <mat-autocomplete #autoPhoneCode="matAutocomplete" [displayWith]="displayPhoneCode"
+            (optionSelected)="onPhoneCodeSelected($event.option.value)">
+            @if (loadingPhoneCodes) {
+            <mat-option disabled>
+              <span>{{ 'organizational.common.searching' | translate }}</span>
+            </mat-option>
+            } @else if (filteredPhoneCodes.length === 0) {
+            <mat-option disabled>
+              <span>{{ 'organizational.common.no_results' | translate }}</span>
+            </mat-option>
+            } @else {
+            @for (
+            phoneCode of filteredPhoneCodes;
+            track phoneCode.phoneCodeId
+            ) {
+            <mat-option [value]="phoneCode">
+              {{ phoneCode.name | capitalize }} {{ phoneCode.code }}
+            </mat-option>
+            }
+            }
+          </mat-autocomplete>
+          <mat-error *ngIf="userForm.get('phoneCodeId')?.hasError('required')">
+            {{ 'organizational.edit_user.country_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.phone' | translate }}</mat-label>
+          <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
+          <mat-icon matPrefix>phone_iphone</mat-icon>
+          <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
+            {{ 'organizational.edit_user.phone_required' | translate }}
+          </mat-error>
+          <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">
+            {{ 'organizational.edit_user.phone_pattern' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.status' | translate }}</mat-label>
+          <mat-select formControlName="isActive">
+            <mat-option [value]="true">{{ 'organizational.common.active' | translate }}</mat-option>
+            <mat-option [value]="false">{{ 'organizational.common.inactive' | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.address' | translate }}</mat-label>
+          <input matInput formControlName="address" />
+          <mat-icon matPrefix>home</mat-icon>
+        </mat-form-field>
+        @if (showLocation) {
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.department' | translate }}</mat-label>
+          <mat-select formControlName="departmentId" [required]="showLocation">
+            <mat-option value="">{{ 'organizational.edit_user.select_department' | translate }}</mat-option>
+            <mat-option *ngFor="let department of departments" [value]="department.departmentId">
+              {{ department.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>map</mat-icon>
+          <mat-error *ngIf="userForm.get('departmentId')?.hasError('required')">
+            {{ 'organizational.edit_user.department_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.municipality' | translate }}</mat-label>
+          <mat-select formControlName="municipalityId" [required]="showLocation">
+            <mat-option value="">{{ 'organizational.edit_user.select_municipality' | translate }}</mat-option>
+            <mat-option *ngFor="let municipality of municipalities" [value]="municipality.municipalityId">
+              {{ municipality.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>location_city</mat-icon>
+          <mat-error *ngIf="userForm.get('municipalityId')?.hasError('required')">
+            {{ 'organizational.edit_user.municipality_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+        }
+      </section>
+    </div>
+    <div class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full">
+      @if (isEditMode) {
+      <div class="w-full flex content-between md:w-[24%]">
+        <button mat-fab extended="true" color="warn" type="button" [routerLink]="['/organizational/users/list']"
+          class="!w-full">
+          {{ 'organizational.common.cancel' | translate }}
+        </button>
       </div>
-    </form>
+      }
+      <div class="w-full flex content-between md:w-[24%]">
+        <button mat-fab extended color="primary" type="button" class="mt-2 md:mt-0 !w-full" (click)="save()"
+          [disabled]="isSaving">
+          <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
+          {{ isEditMode ? ('organizational.common.save_changes' | translate) :
+          ('organizational.edit_user.create_user_btn' | translate) }}
+        </button>
+      </div>
+    </div>
+  </form>
   } @else {
-    <app-loader></app-loader>
+  <app-loader></app-loader>
   }
 </app-base-page>

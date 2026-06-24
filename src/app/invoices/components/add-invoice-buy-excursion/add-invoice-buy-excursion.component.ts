@@ -39,6 +39,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 
 @Component({
   selector: 'app-add-invoice-buy-excursion',
@@ -57,7 +58,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     InvoiceCurrencyFormatDirective,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    FormatCopPipe
   ],
   templateUrl: './add-invoice-buy-excursion.component.html',
   styleUrl: './add-invoice-buy-excursion.component.scss'

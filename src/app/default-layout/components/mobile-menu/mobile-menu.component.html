@@ -42,6 +42,25 @@
               <mat-icon class="transition-transform">{{ item.icon }}</mat-icon>
               <span class="text-[11px]">{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
             </button>
+          } @else if (item.name === 'Facturación') {
+            <!-- Facturación: abre un popup con las 4 vistas -->
+            <button
+              (click)="toggleInvoicingMenu()"
+              class="flex flex-col items-center justify-center text-[11px] font-medium transition-all duration-300 gap-1 group active:scale-95"
+              [ngClass]="
+                isFacturacionActive
+                  ? 'text-[var(--primary-color)]'
+                  : 'text-[#797979]'
+              "
+            >
+              <mat-icon
+                class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
+                >{{ item.icon }}</mat-icon
+              >
+              <span class="text-[11px]">{{
+                item.titleKey ? (item.titleKey | translate) : item.name
+              }}</span>
+            </button>
           } @else {
             <!-- Other items (next to Inicio) -->
             <a
@@ -118,5 +137,36 @@
         <span>{{ 'service_and_product.mobile_menu.language' | translate }}: {{ langService.lang() === 'es' ? 'EN' : 'ES' }}</span>
       </button>
     </div>
+  </div>
+}
+
+<!-- Popup de Facturación - fijo sobre la barra inferior -->
+@if (invoicingMenuOpen) {
+  <div class="fixed inset-0 z-[1001]" (click)="invoicingMenuOpen = false"></div>
+  <div
+    class="fixed left-1/2 -translate-x-1/2 z-[1002] bg-white rounded-xl shadow-[0_-4px_20px_rgba(0,0,0,0.15)] min-w-[240px] overflow-hidden"
+    [style.bottom]="'calc(60px + env(safe-area-inset-bottom))'"
+  >
+    <div
+      class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100"
+    >
+      {{ 'sidebar.invoices_group' | translate }}
+    </div>
+    <button
+      *ngFor="let item of invoicingItems"
+      [routerLink]="item.route"
+      (click)="invoicingMenuOpen = false"
+      class="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-50 last:border-0"
+      [ngClass]="
+        isItemActive(item.route)
+          ? 'text-[var(--primary-color)] font-semibold'
+          : 'text-gray-700'
+      "
+    >
+      <mat-icon class="text-[var(--primary-color)] !text-[20px] !w-5 !h-5">{{
+        item.icon
+      }}</mat-icon>
+      <span>{{ (item.title ?? '') | translate }}</span>
+    </button>
   </div>
 }

@@ -31,7 +31,9 @@
         *ngFor="let excursion of filteredExcursions"
         [value]="excursion.name | translated"
       >
-        {{ excursion.name | translated }}
+        <span class="font-semibold text-gray-500">{{ excursion.code }}</span>
+        - {{ excursion.name | translated }}
+        <span class="text-gray-700">· {{ excursion.priceSale | formatCop }}</span>
         <span
           [ngClass]="{
             'text-green-600':

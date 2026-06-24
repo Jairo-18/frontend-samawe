@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CreateInvoiceDialogComponent } from '../../components/create-invoice-dialog/create-invoice-dialog.component';
+import { CreditNoteDialogComponent } from '../../components/credit-note-dialog/credit-note-dialog.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -31,7 +32,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
@@ -41,6 +42,8 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormGroup } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 @Component({
   selector: 'app-see-invoices',
   standalone: true,
@@ -61,7 +64,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     InvoicePdfComponent,
     FormatCopPipe,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './see-invoices.component.html',
   styleUrl: './see-invoices.component.scss'
@@ -77,10 +81,22 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _translate: TranslateService = inject(TranslateService);
+  private readonly _notifications: NotificationsService = inject(NotificationsService);
+  private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+
+  /** Vista actual: cada ruta del side fija una categoría de factura. */
+  category: 'electronic' | 'sales' | 'purchases' | 'quotes' = 'sales';
+  /** Código de tipo de factura asociado a la categoría (FVE/FV/FC). */
+  private categoryTypeCode = 'FV';
+  /** Id del tipo de factura resuelto desde relatedData; filtra la lista. */
+  private categoryTypeId: number | null = null;
+  pageTitleKey = 'invoice.list.title_sales';
+  pageSubtitleKey = 'invoice.list.subtitle_sales';
   selectedInvoice: any = null;
   invoiceToPrintData?: Invoice;
   selectedInvoiceIds = new Set<number>();
   downloadingExcel: boolean = false;
+  sendingFactusIds = new Set<number>();
 
   displayedColumns: string[] = [
     'select',
@@ -135,6 +151,7 @@ export class SeeInvoicesComponent implements OnInit {
       label: 'invoice.list.search_invoice_type',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'invoice.list.search_invoice_type_ph'
     },
     {
@@ -142,6 +159,7 @@ export class SeeInvoicesComponent implements OnInit {
       label: 'invoice.list.search_paid_status',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'invoice.list.search_paid_status_ph'
     },
     {
@@ -149,6 +167,7 @@ export class SeeInvoicesComponent implements OnInit {
       label: 'invoice.list.search_pay_type',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'invoice.list.search_pay_type_ph'
     },
     {
@@ -163,6 +182,7 @@ export class SeeInvoicesComponent implements OnInit {
       label: 'invoice.list.search_order_status',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'invoice.list.search_order_status_ph'
     },
     {
@@ -184,12 +204,70 @@ export class SeeInvoicesComponent implements OnInit {
     this.userLogged = this._authService.getUserLoggedIn();
   }
   ngOnInit(): void {
-    this.loadInvoices();
+    this.applyCategoryConfig();
+    // loadRelatedData resuelve el invoiceTypeId de la categoría y luego carga
+    // las facturas (necesita el id antes de filtrar). Si falla, se cargan igual.
     this.loadRelatedData();
+  }
+
+  /** Configura la vista según la categoría fijada por la ruta. */
+  private applyCategoryConfig(): void {
+    const CATEGORY = {
+      electronic: {
+        code: 'FVE',
+        title: 'invoice.list.title_electronic',
+        subtitle: 'invoice.list.subtitle_electronic'
+      },
+      sales: {
+        code: 'FV',
+        title: 'invoice.list.title_sales',
+        subtitle: 'invoice.list.subtitle_sales'
+      },
+      purchases: {
+        code: 'FC',
+        title: 'invoice.list.title_purchases',
+        subtitle: 'invoice.list.subtitle_purchases'
+      },
+      quotes: {
+        code: 'CO',
+        title: 'invoice.list.title_quotes',
+        subtitle: 'invoice.list.subtitle_quotes'
+      }
+    } as const;
+    const fromRoute = this._route.snapshot.data['category'] as
+      | 'electronic'
+      | 'sales'
+      | 'purchases'
+      | 'quotes'
+      | undefined;
+    this.category = fromRoute ?? 'sales';
+    const cfg = CATEGORY[this.category];
+    this.categoryTypeCode = cfg.code;
+    this.pageTitleKey = cfg.title;
+    this.pageSubtitleKey = cfg.subtitle;
+    // La categoría ya fija el tipo de factura: el filtro de tipo en la barra
+    // de búsqueda sería redundante, así que se retira de esta vista.
+    this.searchFields = this.searchFields.filter(
+      (f) => f.name !== 'invoiceTypeId'
+    );
+    // En la vista electrónica todas las facturas son electrónicas por
+    // definición, así que el filtro "electrónica sí/no" tampoco aporta.
+    if (this.category === 'electronic') {
+      this.searchFields = this.searchFields.filter(
+        (f) => f.name !== 'invoiceElectronic'
+      );
+    }
   }
   loadRelatedData(): void {
     this._relatedDataService.getRelatedData().subscribe({
       next: (res) => {
+        const matchType = (res.data.invoiceType || []).find(
+          (t: any) => t.code === this.categoryTypeCode
+        );
+        this.categoryTypeId = matchType
+          ? Number(matchType.invoiceTypeId)
+          : null;
+        this.loadInvoices();
         const optionMap = {
           invoiceTypeId: res.data.invoiceType,
           identificationTypeId: res.data.identificationType,
@@ -222,6 +300,7 @@ export class SeeInvoicesComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading related data', err);
+        this.loadInvoices();
       }
     });
   }
@@ -258,6 +337,7 @@ export class SeeInvoicesComponent implements OnInit {
           editMode: true,
           invoiceId: invoiceId,
           relatedData: {
+            invoiceType: this.getOptions('invoiceTypeId'),
             payType: this.getOptions('payTypeId'),
             paidType: this.getOptions('paidTypeId'),
             stateType: this.getOptions('stateTypeId')
@@ -269,6 +349,22 @@ export class SeeInvoicesComponent implements OnInit {
         if (result) this.loadInvoices();
       });
   }
+  openCreditNoteDialog(invoice: any): void {
+    if (!invoice?.factusNumber) return;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
+    this._matDialog.open(CreditNoteDialogComponent, {
+      width: isMobile ? '95vw' : '560px',
+      maxWidth: '95vw',
+      data: {
+        invoiceId: invoice.invoiceId,
+        invoiceCode: invoice.code,
+        factusNumber: invoice.factusNumber
+      }
+    });
+  }
+
   private getOptions(fieldName: string): any[] {
     const field = this.searchFields.find((f) => f.name === fieldName);
     return (
@@ -321,12 +417,16 @@ export class SeeInvoicesComponent implements OnInit {
   }
   loadInvoices(filter: string = ''): void {
     this.loading = true;
-    const query = {
+    const query: any = {
       page: this.paginationParams.page,
       perPage: this.paginationParams.perPage,
       search: filter,
       ...this.params
     };
+    // La categoría de la vista manda: siempre filtra por su tipo de factura.
+    if (this.categoryTypeId) {
+      query.invoiceTypeId = this.categoryTypeId;
+    }
     this._invoiceService.getInvoiceWithPagination(query).subscribe({
       next: (res) => {
         const transformedData = res.data.map((invoice: any) => ({
@@ -347,7 +447,8 @@ export class SeeInvoicesComponent implements OnInit {
           invoiceElectronic:
             invoice.invoiceElectronic === true ||
             invoice.invoiceElectronic === 'true' ||
-            invoice.invoiceElectronic === 1
+            invoice.invoiceElectronic === 1,
+          factusNumber: invoice.factusNumber ?? null
         }));
         this.dataSource.data = transformedData;
         this.paginationParams = res?.pagination;
@@ -400,13 +501,31 @@ export class SeeInvoicesComponent implements OnInit {
     this.invoiceToPrintData = res?.data;
     setTimeout(() => {
       if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
-        this._invoicePrintService.printInvoice(
-          this.invoiceToPrintData,
-          this.invoiceToPrintRef.nativeElement
-        );
+        this._invoicePrintService.promptAndPrint(this.invoiceToPrintData);
       }
     }, 300);
   }
+  sendInvoiceToFactus(invoice: any): void {
+    if (invoice.factusNumber || this.sendingFactusIds.has(invoice.invoiceId)) return;
+    this.sendingFactusIds.add(invoice.invoiceId);
+    this._invoiceService.sendToFactus(invoice.invoiceId).subscribe({
+      next: (res) => {
+        this.sendingFactusIds.delete(invoice.invoiceId);
+        invoice.factusNumber = res.data?.billNumber ?? res.data?.referenceCode ?? 'SENT';
+        this._notifications.showNotification(
+          'success',
+          'invoice.list.factus_success_msg',
+          'invoice.list.factus_success_title'
+        );
+      },
+      error: (err) => {
+        this.sendingFactusIds.delete(invoice.invoiceId);
+        const msg = err?.error?.message ?? 'invoice.list.factus_error_title';
+        this._notifications.showNotification('error', msg, 'invoice.list.factus_error_title');
+      }
+    });
+  }
+
   async onDownloadInvoice(invoiceId: number): Promise<void> {
     const res = await this._invoicePrintService['_invoiceService']
       .getInvoiceToEdit(invoiceId)
@@ -414,10 +533,7 @@ export class SeeInvoicesComponent implements OnInit {
     this.invoiceToPrintData = res?.data;
     setTimeout(() => {
       if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
-        this._invoicePrintService.downloadInvoice(
-          this.invoiceToPrintData,
-          this.invoiceToPrintRef.nativeElement
-        );
+        this._invoicePrintService.promptAndDownload(this.invoiceToPrintData);
       }
     }, 300);
   }

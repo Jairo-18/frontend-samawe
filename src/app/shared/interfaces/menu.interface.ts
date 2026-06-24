@@ -16,6 +16,7 @@ export interface ItemInterface {
 }
 export interface SubItemInterface {
   name: string;
+  titleKey?: string;
   icon: string;
   route: string;
 }

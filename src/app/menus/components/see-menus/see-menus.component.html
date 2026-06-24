@@ -172,7 +172,7 @@
                         }
                         <span
                           class="font-semibold text-sm text-black line-clamp-2"
-                          >{{ grouped.productName }}</span
+                          >{{ grouped.productName | capitalize }}</span
                         >
                       </div>
 
@@ -182,7 +182,7 @@
                             class="flex justify-between items-center text-xs"
                           >
                             <span class="text-gray-700 truncate mr-2">{{
-                              ing.name
+                              ing.name | capitalize
                             }}</span>
                             <span
                               class="text-gray-500 font-medium whitespace-nowrap"

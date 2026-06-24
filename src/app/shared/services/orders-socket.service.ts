@@ -29,6 +29,11 @@ export class OrdersSocketService {
   private _orderUpdated$ = new Subject<OrderUpdate>();
   private _invoiceItemAdded$ = new Subject<InvoiceItemUpdate>();
 
+  // Se recuerda el userId para re-unirse al room personal en cada (re)conexión.
+  // emitToUser del backend apunta a `user_<userId>`; si solo nos uniéramos una
+  // vez, tras un reconnect dejaríamos de recibir las notificaciones dirigidas.
+  private _userId: string | null = null;
+
   constructor() {
     if (!isPlatformBrowser(this._platformId)) return;
 
@@ -64,11 +69,11 @@ export class OrdersSocketService {
       });
 
       this.socket.on('connect', () => {
-        this.socket!.emit('joinOrders');
+        this._rejoinRooms();
       });
 
       this.socket.on('reconnect', () => {
-        this.socket!.emit('joinOrders');
+        this._rejoinRooms();
       });
 
       this.socket.on('orderUpdated', (data: OrderUpdate) => {
@@ -81,11 +86,20 @@ export class OrdersSocketService {
     });
   }
 
+  private _rejoinRooms(): void {
+    if (!this.socket) return;
+    this.socket.emit('joinOrders');
+    if (this._userId) {
+      this.socket.emit('joinUserRoom', { userId: this._userId });
+    }
+  }
+
   private _disconnect(): void {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
     }
+    this._userId = null;
   }
 
   public markAsRead() {
@@ -101,6 +115,10 @@ export class OrdersSocketService {
   }
 
   joinUserRoom(userId: string) {
+    // Se recuerda para re-unirse automáticamente en cada (re)conexión. Si el
+    // socket aún no está conectado, el emit se encola y se envía al conectar;
+    // _rejoinRooms() cubre además las reconexiones posteriores.
+    this._userId = userId;
     if (this.socket) {
       this.socket.emit('joinUserRoom', { userId });
     }

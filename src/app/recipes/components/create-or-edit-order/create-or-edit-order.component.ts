@@ -48,6 +48,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-create-or-edit-order',
@@ -68,7 +69,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     SectionHeaderComponent,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './create-or-edit-order.component.html',
   styleUrls: ['./create-or-edit-order.component.scss']

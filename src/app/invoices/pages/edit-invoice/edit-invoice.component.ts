@@ -222,10 +222,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     inject(InvoicePrintService);
   async downloadInvoice(): Promise<void> {
     if (this.invoiceData) {
-      await this._invoicePrintService.downloadInvoice(
-        this.invoiceData,
-        null as any
-      );
+      await this._invoicePrintService.promptAndDownload(this.invoiceData);
     }
   }
   onAllItemsSaved(): void {
@@ -301,6 +298,19 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     const month = (d.getMonth() + 1).toString().padStart(2, '0');
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
+  }
+
+  get isLocked(): boolean {
+    return !!this.invoiceData?.factusNumber;
+  }
+
+  /** Ruta de regreso a la lista correspondiente según el tipo de factura. */
+  get backRoute(): string {
+    const code = this.invoiceData?.invoiceType?.code;
+    if (code === 'FVE') return '/invoice/invoices/electronic';
+    if (code === 'FC') return '/invoice/invoices/purchases';
+    if (code === 'CO') return '/invoice/invoices/quotes';
+    return '/invoice/invoices/sales';
   }
 
   onInvoiceDateChange(event: MatDatepickerInputEvent<Date>): void {

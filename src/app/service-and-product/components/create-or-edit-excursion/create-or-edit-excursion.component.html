@@ -27,7 +27,7 @@
             *ngFor="let category of visibleCategoryTypes"
             [value]="category.categoryTypeId"
           >
-            {{ category.name | translated }}
+            {{ category.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
@@ -51,7 +51,7 @@
             *ngFor="let state of stateTypes"
             [value]="state.stateTypeId"
           >
-            {{ state.name | translated }}
+            {{ state.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>format_list_bulleted</mat-icon>
@@ -72,7 +72,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'service_and_product.excursion_form.name_label' | translate }}</mat-label>
         <mat-icon matPrefix>translate</mat-icon>
-        <input matInput formControlName="nameEs" required appUppercase />
+        <input matInput formControlName="nameEs" required appNormalizeTitle />
         <mat-error *ngIf="excursionForm.get('nameEs')?.hasError('required')">
           {{ 'service_and_product.form.code_required' | translate }}
         </mat-error>

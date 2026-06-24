@@ -42,6 +42,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 @Component({
   selector: 'app-add-excursion',
   standalone: true,
@@ -62,7 +63,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     MatTimepickerModule,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    FormatCopPipe
   ],
   templateUrl: './add-excursion.component.html',
   styleUrl: './add-excursion.component.scss'

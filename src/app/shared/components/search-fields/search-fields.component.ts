@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TranslatedPipe } from '../../pipes/translated.pipe';
+import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-search-fields',
@@ -35,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     NgIf,
     TranslatedPipe,
+    CapitalizePipe,
     TranslateModule
   ],
   templateUrl: './search-fields.component.html',

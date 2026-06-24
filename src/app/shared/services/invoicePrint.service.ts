@@ -1,11 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Las estructuras del documento pdfMake no tienen tipos usables aquí, por eso
+// se permite 'any' en este archivo (igual que en el generador del backend).
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { InvoiceService } from '../../invoices/services/invoice.service';
 import { Invoice } from '../../invoices/interface/invoice.interface';
 import { InvoiceDetail } from '../../invoices/interface/invoiceDetaill.interface';
+import {
+  InvoiceIssuer,
+  InvoiceIssuerDialogComponent
+} from '../../invoices/components/invoice-issuer-dialog/invoice-issuer-dialog.component';
 import { ApplicationService } from '../../organizational/services/application.service';
 import { Organizational } from '../interfaces/organizational.interface';
+import { NotificationsService } from './notifications.service';
 import { formatCop } from '../utilities/currency.utilities.service';
 import { loadPdfMake } from '../utilities/pdf-maker.utils';
 
@@ -37,47 +46,6 @@ async function imageUrlToBase64(url: string): Promise<string | null> {
   } catch {
     return null;
   }
-}
-
-function formatHotelDate(dateStr: string | undefined | null): string {
-  if (!dateStr) return '-';
-  try {
-    const d = new Date(dateStr);
-    const months = [
-      'ENE',
-      'FEB',
-      'MAR',
-      'ABR',
-      'MAY',
-      'JUN',
-      'JUL',
-      'AGO',
-      'SEP',
-      'OCT',
-      'NOV',
-      'DIC'
-    ];
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = months[d.getMonth()];
-    const year = d.getFullYear();
-    let hours = d.getHours();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    const mins = String(d.getMinutes()).padStart(2, '0');
-    return `${day} ${month}. ${year} ${String(hours).padStart(2, '0')}:${mins} ${ampm}`;
-  } catch {
-    return '-';
-  }
-}
-
-function calcNights(start?: string | null, end?: string | null): number {
-  if (!start || !end) return 0;
-  const d1 = new Date(start);
-  const d2 = new Date(end);
-  return Math.max(
-    0,
-    Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24))
-  );
 }
 
 function numberToWords(n: number): string {
@@ -170,10 +138,6 @@ function itemCargo(d: InvoiceDetail): number {
   return Number(d.priceWithTax || 0) * Number(d.amount || 0);
 }
 
-function itemTaxAmount(d: InvoiceDetail): number {
-  return (d.totalVat || 0) + (d.totalIco8 || 0) + (d.totalIco5 || 0);
-}
-
 function itemRef(d: InvoiceDetail): string {
   return (
     d.product?.code ||
@@ -183,29 +147,65 @@ function itemRef(d: InvoiceDetail): string {
   );
 }
 
+// El name de producto/alojamiento/excursión es un TranslatedField ({ es, en }),
+// no un string. pdfMake no renderiza objetos, así que extraemos el texto.
+function tField(v: unknown): string {
+  if (!v) return '';
+  if (typeof v === 'string') return v;
+  const obj = v as Record<string, string>;
+  return obj['es'] || obj['en'] || Object.values(obj)[0] || '';
+}
+
 function itemConcept(d: InvoiceDetail): string {
   return (
-    d.product?.name ||
-    (d.accommodation as any)?.name ||
-    d.excursion?.name ||
+    tField(d.product?.name) ||
+    tField((d.accommodation as any)?.name) ||
+    tField(d.excursion?.name) ||
     'N/A'
   );
+}
+
+/** Datos del propietario (persona natural) usados como emisor en la variante. */
+interface OwnerInfo {
+  name: string;
+  idTypeCode: string;
+  idNumber: string;
 }
 
 async function buildInvoiceDoc(
   invoice: Invoice,
   org: Organizational | null | undefined,
-  defaultFont = 'Roboto'
+  defaultFont = 'Roboto',
+  opts: { ownerMode?: boolean; owner?: OwnerInfo } = {}
 ): Promise<object> {
   const color = getColor(org);
+
+  // Modo propietario: factura a nombre del dueño (persona natural). Se cambia
+  // el emisor y se ocultan IVA/IPO (columnas y filas de total); el "valor unit."
+  // pasa a ser el precio CON impuesto incluido para que Unidad × Valor = Total
+  // y el total general quede idéntico.
+  const ownerMode = !!opts.ownerMode && !!opts.owner;
+  const issuerName = ownerMode
+    ? opts.owner!.name
+    : org?.legalName || org?.name || '';
+  const issuerIdLine = ownerMode
+    ? `${opts.owner!.idTypeCode || 'CC'} ${opts.owner!.idNumber}`
+    : `${org?.identificationType?.code || 'NIT'} ${org?.identificationNumber || ''}`;
 
   const logoMedia = org?.medias?.find((m) => m.mediaType?.code === 'LOGO');
   const logoBase64 = logoMedia?.url
     ? await imageUrlToBase64(logoMedia.url)
     : null;
 
+  // QR de la factura electrónica. factusQrCode es la URL oficial de validación
+  // DIAN (catalogo-vpfe...searchqr?documentkey=<CUFE>), que es justamente el
+  // contenido que debe codificar el QR. NO la descargamos como imagen (CORS la
+  // bloquea, 302 a la DIAN); generamos el QR localmente con el soporte nativo de
+  // pdfMake ({ qr }), que es escaneable y lleva a la validación DIAN.
+  const qrContent =
+    invoice.factusQrCode || invoice.factusPublicUrl || '';
+
   const printDate = new Date().toLocaleString('es-CO');
-  const printDateFormatted = formatHotelDate(new Date().toISOString());
   const hs = {
     bold: true,
     color: '#fff',
@@ -214,63 +214,62 @@ async function buildInvoiceDoc(
     alignment: 'center' as const
   };
 
-  const accommodationDetail = (invoice.invoiceDetails || []).find(
-    (d) => d.accommodation
-  );
-  const hasAccommodation = !!accommodationDetail;
 
-  let balance = 0;
-  const itemRows = (invoice.invoiceDetails || []).map((d, i) => {
-    const cargo = itemCargo(d);
-    const tax = itemTaxAmount(d);
-    const taxPct = d.taxeType?.percentage ?? 0;
-    const dateStr = d.startDate ? formatHotelDate(d.startDate) : '';
-    balance += cargo;
+  // Cada línea: unidad (cantidad), valor unitario (sin impuestos), IVA, IPO
+  // (Impuesto al Consumo) y total de la línea (con impuestos).
+  const itemRows = (invoice.invoiceDetails || [])
+    .filter((d) => !(d as any).deletedAt)
+    .map((d, i) => {
+    const unidad = Number(d.amount || 0);
+    const iva = Number(d.totalVat || 0);
+    const ipo = Number(d.totalIco8 || 0) + Number(d.totalIco5 || 0);
+    const totalLinea = itemCargo(d);
+    // En modo propietario el valor unitario incluye el impuesto (precio final),
+    // así Unidad × Valor = Total y no se muestran IVA/IPO.
+    const valorUnitario = ownerMode
+      ? Number(d.priceWithTax || 0)
+      : Number(d.priceWithoutTax || 0);
+    const baseCells = [
+      { text: String(i + 1), fontSize: 6.5, alignment: 'center' as const },
+      { text: itemRef(d), fontSize: 6.5, alignment: 'center' as const },
+      { text: itemConcept(d), fontSize: 6 },
+      {
+        text: String(Number(unidad.toFixed(2))),
+        fontSize: 6.5,
+        alignment: 'center' as const
+      },
+      {
+        text: formatCop(valorUnitario),
+        fontSize: 6.5,
+        alignment: 'right' as const
+      }
+    ];
+    const totalCell = {
+      text: formatCop(totalLinea),
+      fontSize: 6.5,
+      alignment: 'right' as const
+    };
+    if (ownerMode) {
+      return [...baseCells, totalCell];
+    }
     return [
-      { text: String(i + 1), fontSize: 7, alignment: 'center' as const },
-      { text: dateStr, fontSize: 7, alignment: 'center' as const },
-      { text: itemRef(d), fontSize: 7, alignment: 'center' as const },
-      { text: itemConcept(d), fontSize: 7 },
-      { text: `${taxPct},0`, fontSize: 7, alignment: 'center' as const },
-      { text: formatCop(tax), fontSize: 7, alignment: 'right' as const },
-      { text: formatCop(cargo), fontSize: 7, alignment: 'right' as const },
-      { text: formatCop(balance), fontSize: 7, alignment: 'right' as const }
+      ...baseCells,
+      { text: formatCop(iva), fontSize: 6.5, alignment: 'right' as const },
+      { text: formatCop(ipo), fontSize: 6.5, alignment: 'right' as const },
+      totalCell
     ];
   });
 
   const total = Number(invoice.total || 0);
-  if (total > 0) {
-    itemRows.push([
-      { text: '', fontSize: 7, alignment: 'center' as const },
-      {
-        text: printDate.split(',')[0],
-        fontSize: 7,
-        alignment: 'center' as const
-      },
-      {
-        text: invoice.payType?.code || '',
-        fontSize: 7,
-        alignment: 'center' as const
-      },
-      {
-        text: `Estado pago: ${invoice.paidType?.name?.['es'] || ''} - Medio pago: ${invoice.payType?.name?.['es'] || ''}`,
-        fontSize: 7
-      },
-      { text: '', fontSize: 7, alignment: 'center' as const },
-      { text: '', fontSize: 7, alignment: 'right' as const },
-      {
-        text: `(${formatCop(total)})`,
-        fontSize: 7,
-        alignment: 'right' as const
-      },
-      { text: formatCop(0), fontSize: 7, alignment: 'right' as const }
-    ] as any);
-  }
 
   const clientName =
     `${invoice.user?.firstName || ''} ${invoice.user?.lastName || ''}`.trim();
   const clientId = invoice.user?.identificationNumber || '';
   const clientIdType = (invoice.user as any)?.identificationType?.code || '';
+  const clientAddress = (invoice.user as any)?.address || '';
+  const clientDept = (invoice.user as any)?.department?.name || '';
+  const clientMuni = (invoice.user as any)?.municipality?.name || '';
+  const clientEmail = invoice.user?.email || '';
   const employeeName =
     `${invoice.employee?.firstName || ''} ${invoice.employee?.lastName || ''}`.trim();
   const subtotalWithoutTax = Number(invoice.subtotalWithoutTax || 0);
@@ -278,23 +277,13 @@ async function buildInvoiceDoc(
   const totalIco8 = invoice.totalIco8 || 0;
   const totalIco5 = invoice.totalIco5 || 0;
   const totalIco = totalIco8 + totalIco5;
-  const paidName = invoice.paidType?.name?.['es'] || '';
-  const isPaid = paidName.toUpperCase().includes('PAGADO');
 
-  const checkIn = accommodationDetail?.startDate || invoice.startDate;
-  const checkOut = accommodationDetail?.endDate || invoice.endDate;
-  const nights = calcNights(checkIn, checkOut);
-  const roomName = (accommodationDetail?.accommodation as any)?.name || '-';
-  const numPersons = accommodationDetail?.amount || '-';
-  const tarifa = accommodationDetail
-    ? formatCop(Number(accommodationDetail.priceWithoutTax || 0))
-    : '-';
-
+  const colCount = ownerMode ? 6 : 8;
   const minRows = 8;
   const emptyRowCount = Math.max(0, minRows - itemRows.length);
   const emptyRows = Array(emptyRowCount)
     .fill(null)
-    .map(() => Array(8).fill({ text: ' ', fontSize: 7 }));
+    .map(() => Array(colCount).fill({ text: ' ', fontSize: 7 }));
 
   // const legalText = `Yo, ${clientName} dejo constancia que recibí los servicios detallados en la presente factura. Esta factura es un título valor y como tal cumple con todos los requisitos del decreto ley 1231 de 2008. Autorizo expresamente para que en el caso de incumplimiento de esta obligación, sea reportado(a) al banco de datos de Fenalco (Procredito) o cualquier otra central de riesgo.\nFECHA DE VENCIMIENTO: ${invoice.endDate ? new Date(invoice.endDate + 'T12:00:00').toLocaleDateString('es-CO') : '-'}. A partir de esta fecha causarán intereses de mora a la tasa vigente, art 12, ley 446de 1998.`;
 
@@ -303,18 +292,18 @@ async function buildInvoiceDoc(
       columns: [
         logoBase64
           ? { image: logoBase64, width: 75, height: 75, margin: [0, 0, 8, 0] }
-          : { width: 75, text: org?.legalName || '', bold: true, fontSize: 10 },
+          : { width: 75, text: issuerName, bold: true, fontSize: 10 },
         {
           width: '*',
           stack: [
             {
-              text: (org?.legalName || org?.name || '').toUpperCase(),
+              text: issuerName.toUpperCase(),
               bold: true,
               fontSize: 12,
               alignment: 'center' as const
             },
             {
-              text: `${org?.identificationType?.code || 'NIT'} ${org?.identificationNumber || ''}`,
+              text: issuerIdLine,
               fontSize: 9,
               alignment: 'center' as const
             },
@@ -341,30 +330,12 @@ async function buildInvoiceDoc(
           ]
         },
         {
-          width: 75,
-          stack: [
-            {
-              canvas: [
-                {
-                  type: 'rect' as const,
-                  x: 0,
-                  y: 0,
-                  w: 70,
-                  h: 70,
-                  lineWidth: 1,
-                  lineColor: '#cccccc',
-                  dash: { length: 3 }
-                }
-              ]
-            },
-            {
-              text: 'QR',
-              fontSize: 7,
-              color: '#aaaaaa',
-              alignment: 'center' as const,
-              margin: [0, -43, 0, 0]
-            }
-          ],
+          // Solo se reserva el QR cuando existe (factura electrónica). En las no
+          // electrónicas no hay QR: se deja una celda vacía para no dibujar el
+          // placeholder, que con su margen negativo se desbordaba sobre la línea
+          // verde inferior.
+          width: 100,
+          stack: qrContent ? [{ qr: qrContent, fit: 100 }] : [{ text: '' }],
           margin: [8, 0, 0, 0]
         }
       ],
@@ -395,11 +366,11 @@ async function buildInvoiceDoc(
             body: [
               [
                 {
-                  text: invoice.invoiceElectronic
-                    ? `${(invoice.invoiceType?.name?.['es'] || 'FACTURA DE VENTA').toUpperCase()}\nELECTRÓNICA`
-                    : (
-                        invoice.invoiceType?.name?.['es'] || 'FACTURA DE VENTA'
-                      ).toUpperCase(),
+                  // El nombre del tipo de factura ya viene completo desde el
+                  // backend (p. ej. "Factura de Venta Electrónica" para FVE), así
+                  // que se renderiza tal cual (bilingüe) sin volver a anexar
+                  // "ELECTRÓNICA"/"(ELECTRONIC)".
+                  text: `${(invoice.invoiceType?.name?.['es'] || 'FACTURA DE VENTA').toUpperCase()}\n${(invoice.invoiceType?.name?.['en'] || 'SALES INVOICE').toUpperCase()}`,
                   bold: true,
                   fontSize: 9,
                   alignment: 'center' as const,
@@ -428,20 +399,33 @@ async function buildInvoiceDoc(
         {
           width: '*',
           stack: [
+            // El bloque "RESPONSABLE DEL IVA / Microempresa" no aplica al
+            // propietario (persona natural), así que se omite en esa variante.
+            ...(ownerMode
+              ? []
+              : [
+                  {
+                    text: 'RESPONSABLE DEL IVA / VAT Liable',
+                    bold: true,
+                    fontSize: 11,
+                    alignment: 'center' as const
+                  },
+                  {
+                    text: 'Microempresa / Micro-enterprise',
+                    fontSize: 8,
+                    italics: true,
+                    alignment: 'center' as const,
+                    color: '#555555'
+                  }
+                ]),
             {
-              text: 'RESPONSABLE DEL IVA',
-              bold: true,
-              fontSize: 11,
-              alignment: 'center' as const
-            },
-            {
-              text: `Generado por: ${org?.legalName}`,
+              text: `Generado por / Issued by: ${issuerName}`,
               fontSize: 8,
               alignment: 'center' as const,
               marginTop: 2
             },
             {
-              text: `Fecha de impresión: ${printDate}`,
+              text: `Fecha de impresión / Print date: ${printDate}`,
               fontSize: 8,
               alignment: 'center' as const
             }
@@ -459,7 +443,7 @@ async function buildInvoiceDoc(
         body: [
           [
             {
-              text: 'SERVICIO PRESTADO A / Services Rendered to',
+              text: 'FACTURA GENERADA POR / Issued by',
               bold: true,
               fontSize: 7,
               fillColor: color,
@@ -486,25 +470,62 @@ async function buildInvoiceDoc(
           ],
           [
             {
-              stack: [
-                { text: clientName, bold: true, fontSize: 9 },
-                clientIdType
-                  ? { text: `${clientIdType}: ${clientId}`, fontSize: 8 }
-                  : {},
-                !clientIdType && clientId
-                  ? { text: `ID: ${clientId}`, fontSize: 8 }
-                  : {}
-              ],
+              stack: [{ text: employeeName || '-', bold: true, fontSize: 9 }],
               margin: [3, 3, 3, 3]
             },
             {
               stack: [
-                { text: clientName, bold: true, fontSize: 9 },
-                clientIdType
-                  ? { text: `${clientIdType}: ${clientId}`, fontSize: 8 }
+                {
+                  text: [
+                    { text: 'Nombre / Name: ', bold: true },
+                    clientName || '-'
+                  ],
+                  fontSize: 8
+                },
+                clientIdType || clientId
+                  ? {
+                      text: [
+                        { text: 'Documento / ID: ', bold: true },
+                        `${clientIdType ? clientIdType + ' ' : ''}${clientId}`.trim()
+                      ],
+                      fontSize: 8
+                    }
                   : {},
-                !clientIdType && clientId
-                  ? { text: `ID: ${clientId}`, fontSize: 8 }
+                clientDept
+                  ? {
+                      text: [
+                        { text: 'Departamento / Department: ', bold: true },
+                        clientDept
+                      ],
+                      fontSize: 8
+                    }
+                  : {},
+                clientMuni
+                  ? {
+                      text: [
+                        { text: 'Municipio / Municipality: ', bold: true },
+                        clientMuni
+                      ],
+                      fontSize: 8
+                    }
+                  : {},
+                clientAddress
+                  ? {
+                      text: [
+                        { text: 'Dirección / Address: ', bold: true },
+                        clientAddress
+                      ],
+                      fontSize: 8
+                    }
+                  : {},
+                clientEmail
+                  ? {
+                      text: [
+                        { text: 'Correo / Email: ', bold: true },
+                        { text: clientEmail, color: '#1155cc' }
+                      ],
+                      fontSize: 8
+                    }
                   : {}
               ],
               margin: [3, 3, 3, 3]
@@ -522,191 +543,37 @@ async function buildInvoiceDoc(
       marginBottom: 4
     },
 
-    {
-      table: {
-        widths: ['*', '*', '*'],
-        body: [
-          [
-            {
-              text: 'FECHA Y HORA DE EXPEDICION\nDate & Time of Preparation',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'FECHA DE VENCIMIENTO\nExpiration date',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'No. TARJETA REGISTRO HOTELERO\nHotel Registry Card No.',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            }
-          ],
-          [
-            {
-              text: printDateFormatted,
-              fontSize: 8,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: invoice.endDate
-                ? formatHotelDate(invoice.endDate + 'T12:00:00')
-                : printDateFormatted,
-              fontSize: 8,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: invoice.tableNumber || '-',
-              fontSize: 8,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            }
-          ]
-        ]
-      },
-      layout: {
-        hLineWidth: () => 0.5,
-        vLineWidth: () => 0.5,
-        hLineColor: () => '#cccccc',
-        vLineColor: () => '#cccccc'
-      },
-      marginBottom: 4
-    }
   ];
 
-  if (hasAccommodation) {
-    content.push({
-      table: {
-        widths: [70, 45, '*', '*', 30, 60],
-        body: [
-          [
-            {
-              text: 'No. PERSONAS\nNumber of Guests',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'TARIFA\nRate',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'FECHA Y HORA DE ENTRADA\nDate & Time of Arrival',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'FECHA Y HORA DE SALIDA\nDate & Time of Departure',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'NOCHES\nNights',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            },
-            {
-              text: 'HABITACION / Room\nSALON / Meeting Room',
-              bold: true,
-              fontSize: 6.5,
-              alignment: 'center' as const,
-              fillColor: '#eeeeee',
-              margin: [2, 2, 2, 2]
-            }
-          ],
-          [
-            {
-              text: `Adultos/Adults\n${numPersons}`,
-              fontSize: 7.5,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: tarifa,
-              fontSize: 7.5,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: formatHotelDate(checkIn),
-              fontSize: 7.5,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: formatHotelDate(checkOut),
-              fontSize: 7.5,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: String(nights),
-              fontSize: 7.5,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            },
-            {
-              text: roomName,
-              bold: true,
-              fontSize: 11,
-              alignment: 'center' as const,
-              margin: [2, 3, 2, 3]
-            }
-          ]
-        ]
-      },
-      layout: {
-        hLineWidth: () => 0.5,
-        vLineWidth: () => 0.5,
-        hLineColor: () => '#cccccc',
-        vLineColor: () => '#cccccc'
-      },
-      marginBottom: 4
-    });
-  }
+  const tableWidths = ownerMode
+    ? [16, 50, '*', 36, 90, 90]
+    : [14, 44, '*', 32, 58, 52, 50, 60];
+  const headerCells = ownerMode
+    ? [
+        { text: '#\nItem', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'REFERENCIA\nReference', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'CONCEPTO\nConcept', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'UNIDAD\nQty', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'VALOR UNIT.\nUnit price', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'TOTAL', ...hs, margin: [1, 2, 1, 2] }
+      ]
+    : [
+        { text: '#\nItem', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'REFERENCIA\nReference', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'CONCEPTO\nConcept', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'UNIDAD\nQty', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'VALOR UNIT.\nUnit price', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'IVA', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'IPO\nINC', ...hs, margin: [1, 2, 1, 2] },
+        { text: 'TOTAL', ...hs, margin: [1, 2, 1, 2] }
+      ];
 
   content.push({
     table: {
       headerRows: 1,
-      widths: [14, 42, 38, '*', 20, 52, 52, 52],
+      widths: tableWidths,
       body: [
-        [
-          { text: '#\nItem', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'FECHA\nDate', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'REFERENCIA\nReference', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'CONCEPTOS\nConcepts', ...hs, margin: [1, 2, 1, 2] },
-          { text: '% Imp', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'Impuestos', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'CARGOS\nCharges', ...hs, margin: [1, 2, 1, 2] },
-          { text: 'SALDO\nBalance', ...hs, margin: [1, 2, 1, 2] }
-        ],
+        headerCells,
         ...itemRows.map((row) =>
           row.map((cell: any) => ({ ...cell, margin: [2, 2, 2, 2] }))
         ),
@@ -724,133 +591,72 @@ async function buildInvoiceDoc(
     marginBottom: 4
   });
 
+  // Totales en una columna a la derecha (flex-col) para mejor lectura.
+  const totalRow = (
+    label: string,
+    value: number,
+    opts: { bold?: boolean; color?: string } = {}
+  ) => [
+    {
+      text: label,
+      bold: !!opts.bold,
+      fontSize: 7,
+      color: opts.color,
+      fillColor: '#f2f4ef',
+      alignment: 'right' as const,
+      margin: [4, 2, 6, 2]
+    },
+    {
+      text: formatCop(value),
+      bold: !!opts.bold,
+      fontSize: 7,
+      color: opts.color,
+      alignment: 'right' as const,
+      margin: [4, 2, 4, 2]
+    }
+  ];
+
   content.push({
-    table: {
-      widths: [55, 45, 45, 45, 45, 55, '*'],
-      body: [
-        [
-          {
-            text: 'SUBTOTAL / Subtotal',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'TOTAL IVA / Taxes',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'TOTAL ICO / Taxes',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'Exentos / Untaxed',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'Propina/Tip',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'Retenciones/\nWithholding',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          },
-          {
-            text: 'VALOR TOTAL / Total',
-            bold: true,
-            fontSize: 6.5,
-            fillColor: '#eeeeee',
-            alignment: 'center' as const,
-            margin: [2, 2, 2, 1]
-          }
-        ],
-        [
-          {
-            text: formatCop(subtotalWithoutTax),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(totalVat),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(totalIco),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(0),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(0),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(0),
-            fontSize: 8,
-            alignment: 'right' as const,
-            margin: [2, 2, 4, 2]
-          },
-          {
-            text: formatCop(total),
-            fontSize: 8,
-            alignment: 'right' as const,
-            bold: true,
-            color,
-            margin: [2, 2, 4, 2]
-          }
-        ]
-      ]
-    },
-    layout: {
-      hLineWidth: () => 0.5,
-      vLineWidth: () => 0.5,
-      hLineColor: () => '#cccccc',
-      vLineColor: () => '#cccccc'
-    },
+    columns: [
+      { width: '*', text: '' },
+      {
+        width: 230,
+        table: {
+          widths: ['*', 100],
+          // En modo propietario solo va el TOTAL (sin subtotal/IVA/IPO).
+          body: ownerMode
+            ? [totalRow('VALOR TOTAL / Total', total, { bold: true, color })]
+            : [
+                totalRow('SUBTOTAL / Subtotal', subtotalWithoutTax),
+                totalRow('IVA', totalVat),
+                ...(totalIco > 0
+                  ? [totalRow('IPO (INC) / Consumption tax', totalIco)]
+                  : []),
+                totalRow('VALOR TOTAL / Total', total, { bold: true, color })
+              ]
+        },
+        layout: {
+          hLineWidth: () => 0.5,
+          vLineWidth: () => 0.5,
+          hLineColor: () => '#cccccc',
+          vLineColor: () => '#cccccc'
+        }
+      }
+    ],
     marginBottom: 2
   });
 
-  content.push({
-    text: '* Todos los precios incluyen impuestos.',
-    fontSize: 6.5,
-    italics: true,
-    color: '#555555',
-    alignment: 'right' as const,
-    marginBottom: 4
-  });
+  // La nota "los precios incluyen impuestos" no aplica al propietario.
+  if (!ownerMode) {
+    content.push({
+      text: '* Todos los precios incluyen impuestos. / All prices include taxes.',
+      fontSize: 6.5,
+      italics: true,
+      color: '#555555',
+      alignment: 'right' as const,
+      marginBottom: 4
+    });
+  }
 
   content.push({
     table: {
@@ -858,7 +664,7 @@ async function buildInvoiceDoc(
       body: [
         [
           {
-            text: `SON: ${numberToWords(total)}`,
+            text: `SON / Amount in words: ${numberToWords(total)}`,
             bold: true,
             fontSize: 7.5,
             margin: [3, 3, 3, 3],
@@ -880,18 +686,17 @@ async function buildInvoiceDoc(
   content.push({
     stack: [
       {
-        text: `FORMA DE PAGO: ${invoice.paidType?.name?.['es'] || ''}, MEDIO DE PAGO: ${invoice.payType?.name?.['es'] || ''}`,
+        text: `FORMA DE PAGO / Payment terms: ${invoice.paidType?.name?.['es'] || ''}, MEDIO DE PAGO / Payment method: ${invoice.payType?.name?.['es'] || ''}`,
         bold: true,
         fontSize: 8
       },
       ...(Number(invoice.cash) > 0
-        ? [{ text: `Efectivo: ${formatCop(Number(invoice.cash))}`, fontSize: 8 }]
+        ? [{ text: `Efectivo / Cash: ${formatCop(Number(invoice.cash))}`, fontSize: 8 }]
         : []),
       ...(Number(invoice.transfer) > 0
-        ? [{ text: `Transferencia: ${formatCop(Number(invoice.transfer))}`, fontSize: 8 }]
+        ? [{ text: `Transferencia / Transfer: ${formatCop(Number(invoice.transfer))}`, fontSize: 8 }]
         : [])
     ],
-    columnGap: 20,
     marginBottom: 6
   });
 
@@ -917,33 +722,42 @@ async function buildInvoiceDoc(
   //   marginBottom: 4
   // });
 
-  // if (invoice.invoiceElectronic) {
-  //   content.push({
-  //     stack: [
-  //       {
-  //         text: 'Representación impresa de la factura electrónica, Firma Electrónica y Cufe:',
-  //         fontSize: 7,
-  //         bold: true
-  //       },
-  //       {
-  //         text: `CUFE - Factura Nro. ${invoice.invoiceType?.code || ''} ${invoice.code}`,
-  //         fontSize: 6.5,
-  //         color: '#555555',
-  //         marginTop: 2
-  //       },
-  //       {
-  //         text: `Fecha Validación Dian - ${printDate}`,
-  //         fontSize: 6.5,
-  //         color: '#555555'
-  //       },
-  //       { text: 'FIRMA -', fontSize: 6.5, color: '#555555' }
-  //     ],
-  //     marginBottom: 4
-  //   });
-  // }
+  if (invoice.invoiceElectronic && invoice.factusCufe) {
+    content.push({
+      stack: [
+        {
+          text: 'Representación impresa de la Factura Electrónica de Venta / Printed representation of the Electronic Sales Invoice',
+          fontSize: 7,
+          bold: true
+        },
+        {
+          text: `CUFE: ${invoice.factusCufe}`,
+          fontSize: 6.5,
+          color: '#555555',
+          marginTop: 2
+        },
+        {
+          text: `Validación DIAN / DIAN validation: ${printDate}`,
+          fontSize: 6.5,
+          color: '#555555'
+        },
+        ...(invoice.factusPublicUrl
+          ? [
+              {
+                text: `Consulta tu factura / Check your invoice: ${invoice.factusPublicUrl}`,
+                fontSize: 6.5,
+                color: '#1155cc',
+                link: invoice.factusPublicUrl
+              }
+            ]
+          : [])
+      ],
+      marginBottom: 4
+    });
+  }
 
   content.push({
-    text: `"Gracias por su compañía - Documento generado por ${org?.legalName || ''}"`,
+    text: `"Gracias por su compañía / Thank you for your stay - Documento generado por / Document generated by ${issuerName}"`,
     alignment: 'center' as const,
     italics: true,
     fontSize: 8,
@@ -963,6 +777,9 @@ export class InvoicePrintService {
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
+  private readonly _matDialog: MatDialog = inject(MatDialog);
+  private readonly _notifications: NotificationsService =
+    inject(NotificationsService);
   private readonly _platformId = inject(PLATFORM_ID);
   private _org: Organizational | null = null;
 
@@ -972,20 +789,49 @@ export class InvoicePrintService {
     });
   }
 
-  async printInvoice(invoice: Invoice, _element: HTMLElement): Promise<void> {
+  /**
+   * Imprime preguntando el emisor cuando aplica (factura de venta normal):
+   * abre el diálogo samawe/propietario. Para los demás tipos imprime directo.
+   */
+  async promptAndPrint(invoice: Invoice): Promise<void> {
+    const issuer = await this.resolveIssuerChoice(invoice);
+    if (!issuer) return;
+    await this.printInvoice(invoice, issuer);
+  }
+
+  async promptAndDownload(invoice: Invoice): Promise<void> {
+    const issuer = await this.resolveIssuerChoice(invoice);
+    if (!issuer) return;
+    await this.downloadInvoice(invoice, issuer);
+  }
+
+  async printInvoice(
+    invoice: Invoice,
+    issuer: InvoiceIssuer = 'org'
+  ): Promise<void> {
     if (!isPlatformBrowser(this._platformId)) return;
+    const owner = await this.resolveOwnerFor(issuer);
+    if (issuer === 'owner' && !owner) return;
     const { pdfMake, defaultFont } = await loadPdfMake();
-    const doc = await buildInvoiceDoc(invoice, this._org, defaultFont);
+    const doc = await buildInvoiceDoc(invoice, this._org, defaultFont, {
+      ownerMode: issuer === 'owner',
+      owner: owner ?? undefined
+    });
     pdfMake.createPdf(doc).print();
   }
 
   async downloadInvoice(
     invoice: Invoice,
-    _element: HTMLElement
+    issuer: InvoiceIssuer = 'org'
   ): Promise<void> {
     if (!isPlatformBrowser(this._platformId)) return;
+    const owner = await this.resolveOwnerFor(issuer);
+    if (issuer === 'owner' && !owner) return;
     const { pdfMake, defaultFont } = await loadPdfMake();
-    const doc = await buildInvoiceDoc(invoice, this._org, defaultFont);
+    const doc = await buildInvoiceDoc(invoice, this._org, defaultFont, {
+      ownerMode: issuer === 'owner',
+      owner: owner ?? undefined
+    });
     const fecha = new Date().toLocaleDateString('es-CO').replace(/\//g, '-');
     pdfMake.createPdf(doc).download(`Factura_${invoice.code}_${fecha}.pdf`);
   }
@@ -995,6 +841,68 @@ export class InvoicePrintService {
     const res = await firstValueFrom(
       this._invoiceService.getInvoiceToEdit(invoiceId)
     );
-    if (res?.data) await this.downloadInvoice(res.data, null as any);
+    if (res?.data) await this.promptAndDownload(res.data);
+  }
+
+  /**
+   * Decide el emisor: solo las facturas de venta normales (FV, no electrónicas)
+   * preguntan; el resto siempre va con la organización.
+   */
+  private async resolveIssuerChoice(
+    invoice: Invoice
+  ): Promise<InvoiceIssuer | null> {
+    if (!isPlatformBrowser(this._platformId)) return 'org';
+    const isNormalSale =
+      invoice.invoiceType?.code === 'FV' &&
+      !invoice.invoiceElectronic &&
+      !invoice.factusNumber;
+    if (!isNormalSale) return 'org';
+    const owner = await this.resolveOwner();
+    const ref = this._matDialog.open(InvoiceIssuerDialogComponent, {
+      width: '520px',
+      maxWidth: '92vw',
+      data: { hasOwner: !!owner }
+    });
+    const choice = await firstValueFrom(ref.afterClosed());
+    return (choice as InvoiceIssuer) ?? null;
+  }
+
+  /** Resuelve los datos del propietario solo si el emisor es 'owner'. */
+  private async resolveOwnerFor(
+    issuer: InvoiceIssuer
+  ): Promise<OwnerInfo | null> {
+    if (issuer !== 'owner') return null;
+    const owner = await this.resolveOwner();
+    if (!owner) {
+      this._notifications.showNotification(
+        'error',
+        'invoice.issuer_dialog.no_owner',
+        'invoice.issuer_dialog.title'
+      );
+      return null;
+    }
+    return owner;
+  }
+
+  /** Trae el representante legal (propietario) vinculado a la organización. */
+  private async resolveOwner(): Promise<OwnerInfo | null> {
+    const orgId = this._org?.organizationalId;
+    if (!orgId) return null;
+    try {
+      const res = await firstValueFrom(
+        this._applicationService.getOrganization(orgId)
+      );
+      const rep = res?.data?.legalRepresentative;
+      if (!rep) return null;
+      const name = `${rep.firstName || ''} ${rep.lastName || ''}`.trim();
+      if (!name) return null;
+      return {
+        name,
+        idTypeCode: rep.identificationType?.code || 'CC',
+        idNumber: rep.identificationNumber || ''
+      };
+    } catch {
+      return null;
+    }
   }
 }

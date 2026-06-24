@@ -44,6 +44,7 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-see-accommodations',
   standalone: true,
@@ -65,7 +66,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     FormatCopPipe,
     FormatPercentPipe,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './see-accommodations.component.html',
   styleUrl: './see-accommodations.component.scss'

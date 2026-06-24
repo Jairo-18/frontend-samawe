@@ -120,6 +120,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       slug: ['', Validators.required],
       legalName: [''],
       identificationNumber: [''],
+      // Propietario / representante legal: userId de un User (persona natural).
+      legalRepresentativeUserId: [null],
       identificationTypeId: [null],
       email: ['', [Validators.email]],
       phone: [''],
@@ -374,6 +376,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       slug: org.slug,
       legalName: org.legalName,
       identificationNumber: org.identificationNumber,
+      legalRepresentativeUserId:
+        org.legalRepresentativeUserId ?? org.legalRepresentative?.userId ?? null,
       identificationTypeId: org.identificationType?.identificationTypeId,
       email: org.email,
       phone: org.phone,

@@ -43,7 +43,7 @@
             <ng-container matColumnDef="roleType">
               <th mat-header-cell *matHeaderCellDef class="center-text">{{ 'organizational.see_users.col_role' | translate }}</th>
               <td mat-cell *matCellDef="let userLogged">
-                {{ getRoleName(userLogged.roleTypeId) }}
+                {{ getRoleName(userLogged.roleTypeId) | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="personType">
@@ -51,7 +51,7 @@
                 {{ 'organizational.see_users.col_person_type' | translate }}
               </th>
               <td mat-cell *matCellDef="let userLogged" class="right-text">
-                {{ getPersonTypeName(userLogged.personTypeId) }}
+                {{ getPersonTypeName(userLogged.personTypeId) | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="identificationType">
@@ -75,7 +75,7 @@
                 {{ 'organizational.see_users.col_names' | translate }}
               </th>
               <td mat-cell *matCellDef="let userLogged">
-                {{ userLogged.firstName }}
+                {{ userLogged.firstName | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="lastName">
@@ -83,7 +83,15 @@
                 {{ 'organizational.see_users.col_surnames' | translate }}
               </th>
               <td mat-cell *matCellDef="let userLogged">
-                {{ userLogged.lastName }}
+                {{ userLogged.lastName | capitalize }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                {{ 'organizational.see_users.col_email' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let userLogged">
+                {{ userLogged.email || '—' }}
               </td>
             </ng-container>
             <ng-container matColumnDef="phoneCode">
@@ -91,7 +99,7 @@
                 {{ 'organizational.see_users.col_country' | translate }}
               </th>
               <td mat-cell *matCellDef="let userLogged">
-                {{ getPhoneCodeDisplay(userLogged.phoneCodeId) }}
+                {{ getPhoneCodeDisplay(userLogged.phoneCodeId) | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="phone">
@@ -212,7 +220,7 @@
                   {{ 'organizational.see_users.col_role' | translate }}
                 </th>
                 <td mat-cell *matCellDef="let userLogged">
-                  {{ getRoleName(userLogged.roleTypeId) }}
+                  {{ getRoleName(userLogged.roleTypeId) | capitalize }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="personType">
@@ -220,7 +228,7 @@
                   {{ 'organizational.see_users.col_person_type' | translate }}
                 </th>
                 <td mat-cell *matCellDef="let userLogged" class="right-text">
-                  {{ getPersonTypeName(userLogged.personTypeId) }}
+                  {{ getPersonTypeName(userLogged.personTypeId) | capitalize }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="identificationType">
@@ -246,7 +254,7 @@
                   {{ 'organizational.see_users.col_names' | translate }}
                 </th>
                 <td mat-cell *matCellDef="let userLogged">
-                  {{ userLogged.firstName }}
+                  {{ userLogged.firstName | capitalize }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="lastName">
@@ -254,7 +262,15 @@
                   {{ 'organizational.see_users.col_surnames' | translate }}
                 </th>
                 <td mat-cell *matCellDef="let userLogged">
-                  {{ userLogged.lastName }}
+                  {{ userLogged.lastName | capitalize }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  {{ 'organizational.see_users.col_email' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let userLogged">
+                  {{ userLogged.email || '—' }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="phoneCode">
@@ -262,7 +278,7 @@
                   {{ 'organizational.see_users.col_country' | translate }}
                 </th>
                 <td mat-cell *matCellDef="let userLogged">
-                  {{ getPhoneCodeDisplay(userLogged.phoneCodeId) }}
+                  {{ getPhoneCodeDisplay(userLogged.phoneCodeId) | capitalize }}
                 </td>
               </ng-container>
               <ng-container matColumnDef="phone">

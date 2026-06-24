@@ -58,7 +58,13 @@
             </section>
           }
 
-          <mat-tab-group animationDuration="0ms" class="mt-4">
+          @if (isLocked) {
+            <div class="flex items-center gap-3 rounded-xl bg-green-50 border border-green-400 px-4 py-3 mt-4">
+              <mat-icon class="text-green-600">verified</mat-icon>
+              <span class="text-green-800 font-bold text-sm">{{ 'invoice.list.action_sent_factus' | translate }}</span>
+            </div>
+          }
+          <mat-tab-group animationDuration="0ms" class="mt-4" *ngIf="!isLocked">
             <mat-tab [label]="'recipe.edit_order.tab_products' | translate">
               <ng-template matTabContent>
                 <app-add-product
@@ -120,6 +126,7 @@
             [invoiceDetails]="invoiceData.invoiceDetails"
             [invoiceId]="orderId"
             [reload]="reloadInvoiceDetails"
+            [isLocked]="isLocked"
             (itemDelete)="onItemDeleted()"
           ></app-invoice-detaill>
         </section>
@@ -131,6 +138,7 @@
             *ngIf="invoiceData"
             [invoiceData]="invoiceData"
             [payTypes]="payTypes"
+            [isLocked]="isLocked"
             (editRequested)="openEditInvoiceDialog()"
             (toggleAllPaymentStatus)="toggleAllPayments($event)"
           ></app-invoice-summary>

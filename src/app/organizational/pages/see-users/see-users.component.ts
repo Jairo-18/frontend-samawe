@@ -40,6 +40,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-see-users',
@@ -59,7 +60,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatTab,
     MatTabGroup,
     BasePageComponent,
-    TranslateModule
+    TranslateModule,
+    CapitalizePipe
   ],
   templateUrl: './see-users.component.html',
   styleUrl: './see-users.component.scss'
@@ -79,6 +81,7 @@ export class SeeUsersComponent implements OnInit {
     'identificationNumber',
     'firstName',
     'lastName',
+    'email',
     'roleType',
     'personType',
     'phoneCode',
@@ -115,10 +118,17 @@ export class SeeUsersComponent implements OnInit {
       placeholder: ' '
     },
     {
+      name: 'email',
+      label: 'organizational.see_users.search_email',
+      type: 'text',
+      placeholder: ' '
+    },
+    {
       name: 'roleType',
       label: 'organizational.see_users.search_role',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'organizational.see_users.search_role_placeholder'
     },
     {
@@ -126,12 +136,14 @@ export class SeeUsersComponent implements OnInit {
       label: 'organizational.see_users.search_id_type',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'organizational.see_users.search_id_type_placeholder'
     },
     {
       name: 'phoneCode',
       label: 'organizational.see_users.search_nationality',
       type: 'select',
+      capitalizeOptions: true,
       placeholder: 'organizational.see_users.search_nationality_placeholder'
     },
     {
@@ -139,6 +151,7 @@ export class SeeUsersComponent implements OnInit {
       label: 'organizational.see_users.search_person_type',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'organizational.see_users.search_person_type_placeholder'
     },
     {

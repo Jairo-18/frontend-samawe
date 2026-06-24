@@ -18,8 +18,29 @@ export const invoicesRoutes: Routes = [
             component: EditInvoiceComponent
           },
           {
+            path: 'electronic',
+            component: SeeInvoicesComponent,
+            data: { category: 'electronic' }
+          },
+          {
+            path: 'sales',
+            component: SeeInvoicesComponent,
+            data: { category: 'sales' }
+          },
+          {
+            path: 'purchases',
+            component: SeeInvoicesComponent,
+            data: { category: 'purchases' }
+          },
+          {
+            path: 'quotes',
+            component: SeeInvoicesComponent,
+            data: { category: 'quotes' }
+          },
+          {
             path: 'list',
-            component: SeeInvoicesComponent
+            redirectTo: 'sales',
+            pathMatch: 'full'
           }
         ]
       }

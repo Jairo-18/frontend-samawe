@@ -102,7 +102,10 @@
                 <mat-icon class="blue-color">edit_document</mat-icon>
                 <span>{{ 'recipe.see_orders.edit_invoice' | translate }}</span>
               </button>
-              <button mat-menu-item (click)="openEditDialog(order.invoiceId)">
+              <button
+                mat-menu-item
+                (click)="openEditDialog(order.invoiceId)"
+              >
                 <mat-icon class="blue-color">edit</mat-icon>
                 <span>{{ 'recipe.see_orders.edit_details' | translate }}</span>
               </button>
@@ -115,7 +118,8 @@
               </button>
               <button
                 mat-menu-item
-                (click)="openDeleteOrderDialog(order.invoiceId)"
+                [disabled]="!!order.factusNumber"
+                (click)="!order.factusNumber && openDeleteOrderDialog(order.invoiceId)"
               >
                 <mat-icon class="red-color">delete</mat-icon>
                 <span>{{ 'recipe.see_orders.delete' | translate }}</span>

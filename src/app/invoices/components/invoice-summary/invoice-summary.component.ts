@@ -6,13 +6,14 @@ import {
 import { Invoice } from '../../interface/invoice.interface';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-invoice-summary',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, FormatCopPipe, TranslateModule, TranslatedPipe],
+  imports: [CommonModule, MatButtonModule, MatTooltipModule, FormatCopPipe, TranslateModule, TranslatedPipe],
   templateUrl: './invoice-summary.component.html',
   styleUrl: './invoice-summary.component.scss'
 })
@@ -20,6 +21,7 @@ export class InvoiceSummaryComponent {
   @Input() invoiceData!: Invoice;
   @Input() paidTypes: PaidType[] = [];
   @Input() payTypes: PayType[] = [];
+  @Input() isLocked: boolean = false;
   @Output() printRequested = new EventEmitter<void>();
   @Output() downloadRequested = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();

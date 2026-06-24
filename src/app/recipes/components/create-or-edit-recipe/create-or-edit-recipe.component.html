@@ -38,7 +38,7 @@
     >
       @for (dish of filteredDishes; track dish.productId) {
         <mat-option [value]="dish">
-          {{ dish.name }}
+          {{ dish.name | translated | capitalize }}
         </mat-option>
       }
     </mat-autocomplete>
@@ -112,7 +112,7 @@
                         track ing.productId
                       ) {
                         <mat-option [value]="ing">
-                          {{ ing.name }}
+                          {{ ing.name | translated | capitalize }}
                           <span>({{ ing.unitOfMeasure?.code || 'u' }})</span>
                         </mat-option>
                       }

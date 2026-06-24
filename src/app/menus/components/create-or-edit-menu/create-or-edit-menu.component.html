@@ -17,6 +17,7 @@
           matInput
           formControlName="name"
           [placeholder]="'menu.name_placeholder' | translate"
+          appNormalizeTitle
         />
         @if (
           form.get('name')?.hasError('required') && form.get('name')?.touched
@@ -79,7 +80,7 @@
       <div class="flex flex-wrap gap-2">
         @for (id of Array.from(selectedRecipeIds); track id) {
           <mat-chip-row (removed)="removeRecipe(id)">
-            {{ getRecipeName(id) }}
+            {{ getRecipeName(id) | capitalize }}
             <button matChipRemove>
               <mat-icon>cancel</mat-icon>
             </button>
@@ -94,7 +95,7 @@
   <!-- Recipes Grid -->
   @if (loadingRecipes) {
     <div class="flex justify-center py-8">
-      <mat-spinner diameter="40"></mat-spinner>
+      <app-loader></app-loader>
     </div>
   } @else if (filteredRecipes.length > 0) {
     <div
@@ -133,7 +134,7 @@
 
             <div class="flex-1 min-w-0">
               <span class="font-semibold text-sm text-black truncate block">{{
-                recipe.productName
+                recipe.productName | capitalize
               }}</span>
               <span class="text-xs text-gray-500"
                 >{{ recipe.ingredients.length }} ingrediente(s)</span
@@ -149,7 +150,7 @@
                 track ing.ingredientProductId
               ) {
                 <span class="text-xs text-gray-500 block truncate"
-                  >• {{ ing.ingredientProductName }}</span
+                  >• {{ ing.ingredientProductName | capitalize }}</span
                 >
               }
               @if (recipe.ingredients.length > 3) {

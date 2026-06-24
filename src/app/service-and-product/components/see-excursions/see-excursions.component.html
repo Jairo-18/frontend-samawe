@@ -56,7 +56,7 @@
               {{ 'service_and_product.table.category' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
-              {{ excursion?.categoryType?.name | translated }}
+              {{ excursion?.categoryType?.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
@@ -85,7 +85,7 @@
                   excursion?.stateType?.name?.['es'] === 'RESERVADO'
               }"
             >
-              {{ excursion?.stateType?.name | translated }}
+              {{ excursion?.stateType?.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
@@ -101,7 +101,7 @@
               {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let excursion">
-              {{ excursion.name | translated }}
+              {{ excursion.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="priceBuy">
@@ -234,7 +234,7 @@
                 {{ 'service_and_product.table.category' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
-                {{ excursion?.categoryType?.name | translated }}
+                {{ excursion?.categoryType?.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
@@ -263,7 +263,7 @@
                     excursion?.stateType?.name?.['es'] === 'RESERVADO'
                 }"
               >
-                {{ excursion?.stateType?.name | translated }}
+                {{ excursion?.stateType?.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
@@ -279,7 +279,7 @@
                 {{ 'service_and_product.table.name' | translate }}
               </th>
               <td mat-cell *matCellDef="let excursion">
-                {{ excursion.name | translated }}
+                {{ excursion.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="priceBuy">

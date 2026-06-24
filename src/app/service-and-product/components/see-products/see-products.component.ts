@@ -43,6 +43,7 @@ import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ProductsPrintComponent } from '../../../shared/components/products-print/products-print.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -65,7 +66,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     FormatPercentPipe,
     ProductsPrintComponent,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './see-products.component.html',
   styleUrl: './see-products.component.scss'

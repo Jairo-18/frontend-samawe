@@ -71,6 +71,16 @@ export interface Organizational {
   legalName?: string;
   slug: string;
   identificationNumber?: string;
+  /** Propietario / representante legal: User (persona natural) vinculado. */
+  legalRepresentativeUserId?: string | null;
+  legalRepresentative?: {
+    userId: string;
+    firstName?: string;
+    lastName?: string;
+    identificationNumber?: string;
+    email?: string;
+    identificationType?: { code?: string; name?: TranslatedField } | null;
+  } | null;
   email?: string;
   phone?: string;
   website?: string;

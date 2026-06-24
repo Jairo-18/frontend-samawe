@@ -32,7 +32,9 @@
         *ngFor="let accommodation of filteredAccommodations"
         [value]="accommodation"
       >
-        {{ accommodation.name | translated }}
+        <span class="font-semibold text-gray-500">{{ accommodation.code }}</span>
+        - {{ accommodation.name | translated }}
+        <span class="text-gray-700">· {{ accommodation.priceSale | formatCop }}</span>
         <span
           [ngClass]="{
             'text-green-600':

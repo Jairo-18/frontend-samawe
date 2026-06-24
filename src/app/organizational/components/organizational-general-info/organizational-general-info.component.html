@@ -38,6 +38,40 @@
     </mat-form-field>
   </div>
 
+  <!-- Propietario / representante legal: persona NATURAL (User existente).
+       Distinto de los datos de la jurídica de arriba. -->
+  <div class="flex flex-col gap-2">
+    <div class="flex items-baseline gap-2 flex-wrap">
+      <span class="text-lg font-bold">{{ 'organizational.general_info.legal_rep_title' | translate }}</span>
+      <span class="text-xs text-gray-500">{{ 'organizational.general_info.legal_rep_hint' | translate }}</span>
+    </div>
+    <mat-form-field appearance="outline" class="w-full md:w-1/2">
+      <mat-label>{{ 'organizational.general_info.legal_rep' | translate }}</mat-label>
+      <mat-icon matPrefix>person</mat-icon>
+      <input type="text" matInput [formControl]="legalRepSearchControl" [matAutocomplete]="autoLegalRep"
+        (focus)="onLegalRepFocus()"
+        [placeholder]="'organizational.general_info.legal_rep_ph' | translate" [readonly]="isLegalRepSelected" />
+      <button *ngIf="isLegalRepSelected" matSuffix mat-icon-button type="button" (click)="clearLegalRep()"
+        [matTooltip]="'organizational.common.clear_selection' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+      <mat-autocomplete #autoLegalRep="matAutocomplete" [displayWith]="displayRep"
+        (optionSelected)="onLegalRepSelected($event)">
+        @if (isLoadingReps) {
+          <mat-option disabled><span>{{ 'organizational.common.searching' | translate }}</span></mat-option>
+        } @else if (filteredReps.length === 0) {
+          <mat-option disabled><span>{{ 'organizational.common.no_results' | translate }}</span></mat-option>
+        } @else {
+          @for (rep of filteredReps; track rep.userId) {
+            <mat-option [value]="rep">
+              {{ rep.firstName }} {{ rep.lastName }} ({{ rep.identificationNumber }})
+            </mat-option>
+          }
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.general_info.email' | translate }}</mat-label>

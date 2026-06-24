@@ -17,6 +17,7 @@ import { RelatedDataService } from '../../../shared/services/relatedData.service
 import { CreateInvoiceDialogComponent } from '../../../invoices/components/create-invoice-dialog/create-invoice-dialog.component';
 import { PendingInvoiceDetail } from '../../../invoices/interface/pending-item.interface';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import {
   CategoryType,
   TaxeType,
@@ -44,6 +45,7 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     AddExcursionComponent,
     LoaderComponent,
     MatTabsModule,
+    MatIconModule,
     TranslateModule,
     TranslatedPipe
   ],
@@ -56,6 +58,10 @@ export class EditOrderComponent implements OnInit {
   pendingItems: PendingInvoiceDetail[] = [];
 
   initialLoading: boolean = true;
+
+  get isLocked(): boolean {
+    return !!this.invoiceData?.factusNumber;
+  }
   reloadInvoiceDetails: boolean = false;
   isSavingItems: boolean = false;
 

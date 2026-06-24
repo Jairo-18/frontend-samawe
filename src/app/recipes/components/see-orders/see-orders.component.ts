@@ -120,6 +120,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
       label: 'recipe.see_orders.search_order_status',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'recipe.see_orders.search_order_status_ph'
     },
     {
@@ -127,6 +128,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
       label: 'recipe.see_orders.search_paid_status',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'recipe.see_orders.search_paid_status_ph'
     },
     {
@@ -134,6 +136,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
       label: 'recipe.see_orders.search_pay_type',
       type: 'select',
       options: [],
+      capitalizeOptions: true,
       placeholder: 'recipe.see_orders.search_pay_type_ph'
     }
   ];
@@ -324,10 +327,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
     this.invoiceToPrintData = res?.data;
     setTimeout(() => {
       if (this.invoiceToPrintRef?.nativeElement && this.invoiceToPrintData) {
-        this._invoicePrintService.downloadInvoice(
-          this.invoiceToPrintData as any,
-          this.invoiceToPrintRef.nativeElement
-        );
+        this._invoicePrintService.downloadInvoice(this.invoiceToPrintData);
       }
     }, 300);
   }

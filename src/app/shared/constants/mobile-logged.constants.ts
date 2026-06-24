@@ -23,6 +23,11 @@ export const MOBILE_LOGGED_CONST: Record<string, NavItem[]> = {
       icon: 'attach_money'
     },
     {
+      title: 'sidebar.release_notes',
+      route: '/release-notes',
+      icon: 'new_releases'
+    },
+    {
       title: 'auth.settings',
       route: '/settings',
       icon: 'settings'
@@ -48,6 +53,11 @@ export const MOBILE_LOGGED_CONST: Record<string, NavItem[]> = {
       title: 'auth.reports',
       route: '/sales/earnings-sumary',
       icon: 'attach_money'
+    },
+    {
+      title: 'sidebar.release_notes',
+      route: '/release-notes',
+      icon: 'new_releases'
     },
     {
       title: 'auth.settings',
@@ -77,6 +87,11 @@ export const MOBILE_LOGGED_CONST: Record<string, NavItem[]> = {
       icon: 'attach_money'
     },
     {
+      title: 'sidebar.release_notes',
+      route: '/release-notes',
+      icon: 'new_releases'
+    },
+    {
       title: 'auth.settings',
       route: '/settings',
       icon: 'settings'
@@ -84,12 +99,22 @@ export const MOBILE_LOGGED_CONST: Record<string, NavItem[]> = {
   ],
   CHE: [
     {
+      title: 'sidebar.release_notes',
+      route: '/release-notes',
+      icon: 'new_releases'
+    },
+    {
       title: 'auth.settings',
       route: '/settings',
       icon: 'settings'
     }
   ],
   MES: [
+    {
+      title: 'sidebar.release_notes',
+      route: '/release-notes',
+      icon: 'new_releases'
+    },
     {
       title: 'auth.settings',
       route: '/settings',

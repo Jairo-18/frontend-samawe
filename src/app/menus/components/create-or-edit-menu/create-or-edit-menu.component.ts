@@ -24,7 +24,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MenuService } from '../../services/menu.service';
 import { MenuResponse } from '../../interfaces/menu.interface';
@@ -33,6 +32,9 @@ import { RecipeWithDetails } from '../../../recipes/interfaces/recipe.interface'
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { TranslateModule } from '@ngx-translate/core';
+import { NormalizeTitleDirective } from '../../../shared/directives/normalize-title.directive';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 
 @Component({
   selector: 'app-create-or-edit-menu',
@@ -47,11 +49,13 @@ import { TranslateModule } from '@ngx-translate/core';
     MatIconModule,
     MatChipsModule,
     MatTooltipModule,
-    MatProgressSpinnerModule,
     MatCheckboxModule,
     SectionHeaderComponent,
     TextFieldModule,
-    TranslateModule
+    TranslateModule,
+    NormalizeTitleDirective,
+    CapitalizePipe,
+    LoaderComponent
   ],
   templateUrl: './create-or-edit-menu.component.html',
   styleUrl: './create-or-edit-menu.component.scss',

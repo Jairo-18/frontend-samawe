@@ -44,6 +44,7 @@ import { FormatPercentPipe } from '../../../shared/pipes/format-percent.pipe';
 import { ExcursiosPrintComponent } from '../../../shared/components/excursios-print/excursios-print.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-see-excursions',
   standalone: true,
@@ -66,7 +67,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     FormatPercentPipe,
     ExcursiosPrintComponent,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './see-excursions.component.html',
   styleUrl: './see-excursions.component.scss'

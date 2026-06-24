@@ -68,7 +68,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     icon: 'note',
     title: 'home.cards.invoicing.title',
     description: 'home.cards.invoicing.description',
-    route: '/invoice/invoices/list',
+    route: '/invoice/invoices/sales',
     iconNext: 'navigate_next',
     allowedRoles: RECEPTIONIST_CODES
   },

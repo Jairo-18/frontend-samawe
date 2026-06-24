@@ -158,6 +158,27 @@
       </div>
     </div>
   </section>
+  @if (invoiceData.factusNumber) {
+    <div class="separator"></div>
+    <section class="flex flex-row items-center gap-4 py-2">
+      <div class="flex flex-col flex-1 text-[9px] gap-1">
+        <span><strong>{{ 'invoice.pdf.factus_number' | translate }}:</strong> {{ invoiceData.factusNumber }}</span>
+        @if (invoiceData.factusPublicUrl) {
+          <span><strong>{{ 'invoice.pdf.factus_url' | translate }}:</strong> {{ invoiceData.factusPublicUrl }}</span>
+        }
+        @if (invoiceData.factusCufe) {
+          <span class="break-all"><strong>CUFE:</strong> {{ invoiceData.factusCufe }}</span>
+        }
+      </div>
+      @if (invoiceData.factusQrCode) {
+        <img
+          [src]="invoiceData.factusQrCode"
+          alt="QR DIAN"
+          class="w-20 h-20 object-contain"
+        />
+      }
+    </section>
+  }
   <footer>
     <span>
       "{{ 'invoice.pdf.footer' | translate }}

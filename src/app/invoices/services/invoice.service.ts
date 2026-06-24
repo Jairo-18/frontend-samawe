@@ -12,6 +12,11 @@ import {
   InvoiceComplete
 } from '../interface/invoice.interface';
 import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
+import {
+  CreateCreditNotePayload,
+  CreditNote,
+  CreditNoteResult
+} from '../interface/creditNote.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import {
   PaginationInterface,
@@ -69,6 +74,31 @@ export class InvoiceService {
   deleteInvoice(invoiceId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}invoices/${invoiceId}`
+    );
+  }
+
+  sendToFactus(invoiceId: number): Observable<{ success: boolean; data: any }> {
+    return this._httpClient.post<{ success: boolean; data: any }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/send`,
+      {}
+    );
+  }
+
+  createCreditNote(
+    invoiceId: number,
+    body: CreateCreditNotePayload
+  ): Observable<{ success: boolean; data: CreditNoteResult }> {
+    return this._httpClient.post<{ success: boolean; data: CreditNoteResult }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/credit-notes`,
+      body
+    );
+  }
+
+  getCreditNotes(
+    invoiceId: number
+  ): Observable<{ success: boolean; data: CreditNote[] }> {
+    return this._httpClient.get<{ success: boolean; data: CreditNote[] }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/credit-notes`
     );
   }
 

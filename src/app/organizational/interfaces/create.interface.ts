@@ -19,6 +19,10 @@ export interface CreateUserPanel {
   roleType?: string;
   personType?: string;
   organizationalId?: string;
+  // Dirección y ubicación DANE (solo Colombia; null/omitido para extranjeros).
+  address?: string;
+  departmentId?: number | null;
+  municipalityId?: number | null;
 }
 export interface UserComplete {
   userId: string;
@@ -36,6 +40,13 @@ export interface UserComplete {
   isActive: boolean;
   avatarUrl?: string;
   organizationalId?: string;
+  address?: string;
+  department?: { departmentId: number; code: string; name: string } | null;
+  municipality?: {
+    municipalityId: number;
+    code: string;
+    name: string;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

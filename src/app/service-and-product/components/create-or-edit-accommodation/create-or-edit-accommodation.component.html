@@ -27,7 +27,7 @@
             *ngFor="let category of visibleCategoryTypes"
             [value]="category.categoryTypeId"
           >
-            {{ category.name | translated }}
+            {{ category.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>category</mat-icon>
@@ -49,7 +49,7 @@
             *ngFor="let state of stateTypes"
             [value]="state.stateTypeId"
           >
-            {{ state.name | translated }}
+            {{ state.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>format_list_bulleted</mat-icon>
@@ -70,7 +70,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'service_and_product.accommodation_form.name_label' | translate }}</mat-label>
         <mat-icon matPrefix>translate</mat-icon>
-        <input matInput formControlName="nameEs" required appUppercase />
+        <input matInput formControlName="nameEs" required appNormalizeTitle />
         <mat-error *ngIf="accommodationForm.get('nameEs')?.hasError('required')">
           {{ 'service_and_product.form.code_required' | translate }}
         </mat-error>
@@ -125,7 +125,7 @@
             {{ 'service_and_product.form.select_bed' | translate }}
           </mat-option>
           <mat-option *ngFor="let bed of bedTypes" [value]="bed.bedTypeId">
-            {{ bed.name | translated }}
+            {{ bed.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>bed</mat-icon>

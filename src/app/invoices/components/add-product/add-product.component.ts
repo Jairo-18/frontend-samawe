@@ -39,6 +39,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 @Component({
   selector: 'app-add-product',
   standalone: true,
@@ -59,7 +60,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     MatNativeDateModule,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    FormatCopPipe
   ],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss'

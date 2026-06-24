@@ -49,6 +49,7 @@ import { UppercaseDirective } from '../../../shared/directives/uppercase.directi
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-create-invoice-dialog',
   standalone: true,
@@ -71,7 +72,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     MatNativeDateModule,
     TranslateModule,
     MatTooltipModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './create-invoice-dialog.component.html',
   styleUrls: ['./create-invoice-dialog.component.scss']
@@ -119,24 +121,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
       allowedStateTypes.includes(Number(state.stateTypeId))
     );
 
-    this.form.get('payTypeId')?.valueChanges.subscribe((payTypeId) => {
-      this.applyTransferRule(payTypeId);
-    });
-
-    this.form
-      .get('invoiceElectronic')
-      ?.valueChanges.subscribe((isElectronic) => {
-        if (isElectronic) {
-          const transferType = this.payTypes.find((p) =>
-            p.name?.['es']?.toLowerCase().includes('transfer')
-          );
-          if (transferType) {
-            this.form
-              .get('payTypeId')
-              ?.setValue(transferType.payTypeId, { emitEvent: false });
-          }
-        }
-      });
+    // 'Factura electrónica' y 'tipo de pago' son independientes: el usuario
+    // elige cada uno libremente. El tipo de pago se manda según corresponda y
+    // NO altera el valor de invoiceElectronic (antes una regla lo acoplaba a
+    // 'transferencia' y reseteaba la elección del usuario).
 
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
@@ -146,21 +134,6 @@ export class CreateInvoiceDialogComponent implements OnInit {
     }
   }
 
-  private isTransferPayType(payTypeId: number): boolean {
-    const selected = this.payTypes.find((p) => p.payTypeId === payTypeId);
-    return !!selected?.name?.['es']?.toLowerCase().includes('transfer');
-  }
-
-  private applyTransferRule(payTypeId: number): void {
-    const electronicControl = this.form.get('invoiceElectronic');
-    if (this.isTransferPayType(payTypeId)) {
-      electronicControl?.setValue(true, { emitEvent: false });
-      electronicControl?.disable({ emitEvent: false });
-    } else {
-      electronicControl?.setValue(false, { emitEvent: false });
-      electronicControl?.enable({ emitEvent: false });
-    }
-  }
   private loadInvoiceData(invoiceId: number): void {
     this.isLoading = true;
     this._invoiceService.getInvoiceToEdit(invoiceId).subscribe({
@@ -187,9 +160,10 @@ export class CreateInvoiceDialogComponent implements OnInit {
       cash: invoice.cash,
       transfer: invoice.transfer,
       stateTypeId: invoice.stateType?.stateTypeId
-    });
-    if (invoice.payType?.payTypeId) {
-      this.applyTransferRule(invoice.payType.payTypeId);
+    }, { emitEvent: false });
+    if (invoice.factusNumber) {
+      this.form.get('invoiceElectronic')?.disable({ emitEvent: false });
+      this.form.get('payTypeId')?.disable({ emitEvent: false });
     }
     if (invoice.user) {
       const clientForDisplay: Partial<CreateUserPanel> = {

@@ -37,10 +37,12 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
+import { NormalizeTitleDirective } from '../../../shared/directives/normalize-title.directive';
 import { ImageUploaderComponent } from '../../../shared/components/image-uploader/image-uploader.component';
 import { ImageItem } from '../../../shared/interfaces/image.interface';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 @Component({
   selector: 'app-create-or-edit-accommodation',
   standalone: true,
@@ -59,9 +61,11 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     CurrencyFormatDirective,
     SectionHeaderComponent,
     UppercaseDirective,
+    NormalizeTitleDirective,
     ImageUploaderComponent,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './create-or-edit-accommodation.component.html',
   styleUrl: './create-or-edit-accommodation.component.scss'

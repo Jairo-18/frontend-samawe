@@ -17,6 +17,7 @@ import {
 } from '../../interfaces/recipe.interface';
 import { UnitFormatPipe } from '../../../shared/pipes/unit-format.pipe';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -31,6 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatMenuModule,
     UnitFormatPipe,
     FormatCopPipe,
+    CapitalizePipe,
     DecimalPipe,
     NgOptimizedImage,
     TranslateModule

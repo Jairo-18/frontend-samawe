@@ -45,7 +45,7 @@
               {{ 'service_and_product.table.bed_type' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
-              {{ accommodation?.bedType?.name | translated }}
+              {{ accommodation?.bedType?.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="stateType">
@@ -74,7 +74,7 @@
                   accommodation?.stateType?.name?.['es'] === 'RESERVADO'
               }"
             >
-              {{ accommodation?.stateType?.name | translated }}
+              {{ accommodation?.stateType?.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="code">
@@ -90,7 +90,7 @@
               {{ 'service_and_product.table.name' | translate }}
             </th>
             <td mat-cell *matCellDef="let accommodation">
-              {{ accommodation.name | translated }}
+              {{ accommodation.name | translated | capitalize }}
             </td>
           </ng-container>
           <ng-container matColumnDef="amountPerson">
@@ -266,7 +266,7 @@
                 {{ 'service_and_product.table.bed_type' | translate }}
               </th>
               <td mat-cell *matCellDef="let accommodation">
-                {{ accommodation?.bedType?.name | translated }}
+                {{ accommodation?.bedType?.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="stateType">
@@ -295,7 +295,7 @@
                     accommodation?.stateType?.name?.['es'] === 'RESERVADO'
                 }"
               >
-                {{ accommodation?.stateType?.name | translated }}
+                {{ accommodation?.stateType?.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="code">
@@ -311,7 +311,7 @@
                 {{ 'service_and_product.table.name' | translate }}
               </th>
               <td mat-cell *matCellDef="let accommodation">
-                {{ accommodation.name | translated }}
+                {{ accommodation.name | translated | capitalize }}
               </td>
             </ng-container>
             <ng-container matColumnDef="amountPerson">

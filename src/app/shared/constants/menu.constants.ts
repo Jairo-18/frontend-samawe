@@ -55,12 +55,36 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
-        name: 'Facturas',
-        titleKey: 'sidebar.invoices',
-        route: '/invoice/invoices/list',
-        icon: 'notes',
+        name: 'Facturación',
+        titleKey: 'sidebar.invoices_group',
+        icon: 'description',
         order: 7,
-        subItems: []
+        subItems: [
+          {
+            name: 'Facturación electrónica',
+            titleKey: 'sidebar.invoices_electronic',
+            route: '/invoice/invoices/electronic',
+            icon: 'receipt_long'
+          },
+          {
+            name: 'Facturas de venta',
+            titleKey: 'sidebar.invoices_sales',
+            route: '/invoice/invoices/sales',
+            icon: 'point_of_sale'
+          },
+          {
+            name: 'Facturas de compra',
+            titleKey: 'sidebar.invoices_purchases',
+            route: '/invoice/invoices/purchases',
+            icon: 'shopping_cart'
+          },
+          {
+            name: 'Cotizaciones',
+            titleKey: 'sidebar.invoices_quotes',
+            route: '/invoice/invoices/quotes',
+            icon: 'request_quote'
+          }
+        ]
       },
       {
         name: 'Reportes / Ganancias',
@@ -68,6 +92,14 @@ export const MENU_CONST: MenuInterface[] = [
         route: '/sales/earnings-sumary',
         icon: 'attach_money',
         order: 8,
+        subItems: []
+      },
+      {
+        name: 'Notas de versión',
+        titleKey: 'sidebar.release_notes',
+        route: '/release-notes',
+        icon: 'new_releases',
+        order: 9,
         subItems: []
       }
     ]
@@ -109,6 +141,14 @@ export const MENU_CONST: MenuInterface[] = [
         icon: 'restaurant',
         order: 3,
         subItems: []
+      },
+      {
+        name: 'Notas de versión',
+        titleKey: 'sidebar.release_notes',
+        route: '/release-notes',
+        icon: 'new_releases',
+        order: 4,
+        subItems: []
       }
     ]
   },
@@ -142,22 +182,38 @@ const ADMIN_ITEMS = [
   'Menú',
   'Gestión',
   'Aplicación',
-  'Facturas',
+  'Facturación',
+  'Facturación electrónica',
+  'Facturas de venta',
+  'Facturas de compra',
+  'Cotizaciones',
   'Reportes / Ganancias',
   'Inicio',
-  'Restaurante'
+  'Restaurante',
+  'Notas de versión'
 ];
 const RECEPTIONIST_ITEMS = [
   'Clientes',
   'Productos y Servicios',
   'Recetas',
   'Menú',
-  'Facturas',
+  'Facturación',
+  'Facturación electrónica',
+  'Facturas de venta',
+  'Facturas de compra',
+  'Cotizaciones',
   'Reportes / Ganancias',
   'Inicio',
-  'Restaurante'
+  'Restaurante',
+  'Notas de versión'
 ];
-const KITCHEN_ITEMS = ['Recetas', 'Menú', 'Inicio', 'Restaurante'];
+const KITCHEN_ITEMS = [
+  'Recetas',
+  'Menú',
+  'Inicio',
+  'Restaurante',
+  'Notas de versión'
+];
 
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   USER: [''],

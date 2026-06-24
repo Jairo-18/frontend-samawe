@@ -93,14 +93,14 @@
     </div>
     <div class="flex flex-col items-start gap-1">
       <span class="font-bold text-black text-[10px] md:text-sm flex items-center gap-1">
-        {{ recipe.productName }}
+        {{ recipe.productName | capitalize }}
       </span>
       <span class="inline-flex items-center text-[9px] md:text-xs font-semibold rounded-full">
         {{ recipe.availablePortions ?? 0 }} {{ 'recipe.card.portions' | translate }}
       </span>
       @if (hasCriticalIngredients) {
         <span class="text-[9px] md:text-xs text-red-900 leading-tight">
-          {{ 'recipe.card.critical_ingredients' | translate }} <strong>{{ criticalIngredientsNames }}</strong>
+          {{ 'recipe.card.critical_ingredients' | translate }} <strong>{{ criticalIngredientsNames | capitalize }}</strong>
         </span>
       }
     </div>
@@ -126,7 +126,7 @@
                 getPortionColor(getIngPortions(ing)) === 'success'
             }"
           >
-            {{ ing.ingredientProductName }}
+            {{ ing.ingredientProductName | capitalize }}
           </span>
           <span class="text-[9px] md:text-xs text-gray-500">
             {{ ing.quantity | unitFormat: ing.unit : 'qty' | number: '1.0-3' }}

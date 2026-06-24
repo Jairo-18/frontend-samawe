@@ -31,6 +31,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { SearchField } from '../../../shared/interfaces/search.interface';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -47,7 +48,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     LoaderComponent,
     SectionHeaderComponent,
     SearchFieldsComponent,
-    TranslateModule
+    TranslateModule,
+    CapitalizePipe
   ],
   templateUrl: './see-menus.component.html',
   styleUrl: './see-menus.component.scss',
