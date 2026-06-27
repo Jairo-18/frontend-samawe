@@ -146,7 +146,11 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       subItems: []
     };
 
-    if (roleCode === 'ADMIN' || roleCode === 'SUPERADMIN' || roleCode === 'EMP') {
+    if (
+      roleCode === 'ADMIN' ||
+      roleCode === 'SUPERADMIN' ||
+      roleCode === 'EMP'
+    ) {
       const usuarios = allItems.find((i) => i.name === 'Clientes');
       const servicios = allItems.find(
         (i) => i.name === 'Productos y Servicios'
@@ -156,11 +160,11 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       const canInvoices = allowedItems.includes('Facturas de venta');
       this.invoicingItems = canInvoices
         ? [
-            {
-              title: 'sidebar.invoices_electronic',
-              route: '/invoice/invoices/electronic',
-              icon: 'receipt_long'
-            },
+            // {
+            //   title: 'sidebar.invoices_electronic',
+            //   route: '/invoice/invoices/electronic',
+            //   icon: 'receipt_long'
+            // },
             {
               title: 'sidebar.invoices_sales',
               route: '/invoice/invoices/sales',
@@ -188,16 +192,32 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
             subItems: []
           }
         : undefined;
-      if (usuarios) finalItems[0] = { ...usuarios, name: 'Clientes', titleKey: 'sidebar.clients' };
-      if (servicios) finalItems[1] = { ...servicios, name: 'Servicios', titleKey: 'sidebar.services' };
+      if (usuarios)
+        finalItems[0] = {
+          ...usuarios,
+          name: 'Clientes',
+          titleKey: 'sidebar.clients'
+        };
+      if (servicios)
+        finalItems[1] = {
+          ...servicios,
+          name: 'Servicios',
+          titleKey: 'sidebar.services'
+        };
       if (facturas) finalItems[3] = facturas;
     } else if (roleCode === 'CHE' || roleCode === 'MES') {
       const menu = allItems.find((i) => i.name === 'Menú');
       const recetas = allItems.find((i) => i.name === 'Recetas');
       const restaurante = allItems.find((i) => i.name === 'Restaurante');
-      if (menu) finalItems[0] = { ...menu, name: 'Menú', titleKey: 'sidebar.menu_item' };
+      if (menu)
+        finalItems[0] = {
+          ...menu,
+          name: 'Menú',
+          titleKey: 'sidebar.menu_item'
+        };
       if (recetas) finalItems[1] = { ...recetas, titleKey: 'sidebar.recipes' };
-      if (restaurante) finalItems[3] = { ...restaurante, titleKey: 'sidebar.restaurant' };
+      if (restaurante)
+        finalItems[3] = { ...restaurante, titleKey: 'sidebar.restaurant' };
     }
 
     this.loggedMenuItems = MOBILE_LOGGED_CONST[roleCode || ''] || [];

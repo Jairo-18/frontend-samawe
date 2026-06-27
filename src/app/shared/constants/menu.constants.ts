@@ -60,12 +60,12 @@ export const MENU_CONST: MenuInterface[] = [
         icon: 'description',
         order: 7,
         subItems: [
-          {
-            name: 'Facturación electrónica',
-            titleKey: 'sidebar.invoices_electronic',
-            route: '/invoice/invoices/electronic',
-            icon: 'receipt_long'
-          },
+          // {
+          //   name: 'Facturación electrónica',
+          //   titleKey: 'sidebar.invoices_electronic',
+          //   route: '/invoice/invoices/electronic',
+          //   icon: 'receipt_long'
+          // },
           {
             name: 'Facturas de venta',
             titleKey: 'sidebar.invoices_sales',
