@@ -143,11 +143,25 @@ export const MENU_CONST: MenuInterface[] = [
         subItems: []
       },
       {
+        name: 'Facturación',
+        titleKey: 'sidebar.invoices_group',
+        icon: 'description',
+        order: 4,
+        subItems: [
+          {
+            name: 'Facturación electrónica',
+            titleKey: 'sidebar.invoices_electronic',
+            route: '/invoice/invoices/electronic',
+            icon: 'receipt_long'
+          }
+        ]
+      },
+      {
         name: 'Notas de versión',
         titleKey: 'sidebar.release_notes',
         route: '/release-notes',
         icon: 'new_releases',
-        order: 4,
+        order: 5,
         subItems: []
       }
     ]
@@ -212,6 +226,11 @@ const KITCHEN_ITEMS = [
   'Menú',
   'Inicio',
   'Restaurante',
+  // Chef y mesero solo acceden a la vista de facturación electrónica
+  // (consulta); el resto de vistas de facturación siguen siendo de
+  // administrador y recepcionista.
+  'Facturación',
+  'Facturación electrónica',
   'Notas de versión'
 ];
 

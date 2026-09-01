@@ -96,9 +96,15 @@ export class ApplicationService {
       next: (res) => {
         if (res.data) {
           const org = res.data;
+          // applyFromOrg escribe el title/description GENÉRICOS de la
+          // organización, así que va antes de publicar el org: las páginas
+          // suscritas a currentOrg$ llaman updatePage() con su propio
+          // title/description y deben ser las últimas en escribir. Al revés
+          // (next → applyFromOrg) lo genérico pisaba lo específico y las
+          // cuatro páginas terminaban con el mismo title en el HTML.
+          this._seoService.applyFromOrg(org);
           this._currentOrgSubject.next(org);
           this.updateMediaFromOrg(org);
-          this._seoService.applyFromOrg(org);
           if (isPlatformBrowser(this._platformId)) {
             if (org.primaryColor) {
               document.documentElement.style.setProperty(

@@ -6,6 +6,7 @@ import { filter } from 'rxjs';
 import { Organizational } from '../interfaces/organizational.interface';
 import { TranslatedField } from '../types/translated-field.type';
 import { LangService } from './lang.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
@@ -15,16 +16,72 @@ export class SeoService {
   private readonly _router: Router = inject(Router);
   private readonly _lang: LangService = inject(LangService);
 
+  /**
+   * Origen canónico fijo. Antes se leía de `document.location`, pero en SSR eso
+   * devuelve el host interno del servidor de render (p. ej. http://localhost:4000),
+   * así que el HTML que recibía Googlebot llevaba canonical y hreflang apuntando
+   * a un dominio inexistente.
+   */
+  private readonly _origin = environment.siteUrl.replace(/\/+$/, '');
+
+  /** Evita duplicar la suscripción a NavigationEnd si applyFromOrg se llama más de una vez. */
+  private _urlSyncStarted = false;
+
   private _resolve(field: TranslatedField | undefined): string {
     if (!field) return '';
     const lang = this._lang.lang();
     return field[lang] ?? field['es'] ?? Object.values(field)[0] ?? '';
   }
 
+  /**
+   * Los títulos por página del panel son encabezados de display ("Sabores de
+   * la Tierra", "Tu Refugio Privado"): sin marca no compiten por búsquedas del
+   * hotel. Se les añade el nombre del sitio salvo que ya lo mencionen.
+   */
+  private _withBrand(title: string): string {
+    const clean = title.trim();
+    if (!clean) return '';
+    const lower = clean.toLowerCase();
+    const mentionsBrand = lower.includes('samawe') || lower.includes('samawé');
+    return mentionsBrand ? clean : `${clean} | Eco Hotel Samawé`;
+  }
+
+  /** Ruta actual sin query ni fragmento, siempre con barra inicial. */
+  private _currentPath(): string {
+    const path = this._router.url.split(/[?#]/)[0];
+    return path.startsWith('/') ? path : `/${path}`;
+  }
+
+  /** URL absoluta canónica de la ruta actual (sin barra final salvo la raíz). */
+  private _absoluteUrl(path = this._currentPath()): string {
+    const clean = path === '/' ? '' : path.replace(/\/+$/, '');
+    return `${this._origin}${clean}`;
+  }
+
+  /**
+   * Escribe canonical + hreflang + og:url de la ruta actual. Se dispara en cada
+   * NavigationEnd para que el valor corresponda a la URL ya resuelta: llamarlo
+   * desde un guard lo ejecutaba antes de que el router actualizara `url`, y
+   * todas las páginas terminaban declarando la raíz como canónica.
+   */
+  private _syncUrls(): void {
+    const url = this._absoluteUrl();
+    this._updateCanonical(url);
+    this._updateMeta('property', 'og:url', url);
+    this._updateHreflang(this._currentPath());
+  }
+
+  private _startUrlSync(): void {
+    if (this._urlSyncStarted) return;
+    this._urlSyncStarted = true;
+    this._router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => this._syncUrls());
+  }
+
   applyFromOrg(org: Organizational): void {
     const title = this._resolve(org.metaTitle).trim() || org.name;
     const description = this._resolve(org.metaDescription).trim() || this._resolve(org.description);
-    const pageUrl = this._document.location.href;
     const image = this._resolveOgImage(org);
 
     this._title.setTitle(title);
@@ -32,27 +89,18 @@ export class SeoService {
     this._updateMeta('name', 'theme-color', org.primaryColor || '#2E7D32');
     this._updateMeta('property', 'og:title', title);
     this._updateMeta('property', 'og:description', description);
-    this._updateMeta('property', 'og:url', pageUrl);
     this._updateMeta('property', 'og:image', image);
     this._updateMeta('property', 'og:site_name', org.name);
     this._updateMeta('name', 'twitter:title', title);
     this._updateMeta('name', 'twitter:description', description);
     this._updateMeta('name', 'twitter:image', image);
-    this._updateCanonical(pageUrl);
-    this._updateHreflang(this._document.location.origin, this._router.url);
-
-    this._router.events
-      .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => {
-        const url = `${this._document.location.origin}${this._router.url}`;
-        this._updateCanonical(url);
-        this._updateMeta('property', 'og:url', url);
-        this._updateHreflang(this._document.location.origin, this._router.url);
-      });
+    this._syncUrls();
+    this._startUrlSync();
   }
 
   updatePage(title: TranslatedField | string | undefined, description: TranslatedField | string | undefined): void {
-    const resolvedTitle = title ? (typeof title === 'string' ? title : this._resolve(title)) : '';
+    const rawTitle = title ? (typeof title === 'string' ? title : this._resolve(title)) : '';
+    const resolvedTitle = this._withBrand(rawTitle);
     const resolvedDesc = description ? (typeof description === 'string' ? description : this._resolve(description)) : '';
     if (resolvedTitle) {
       this._title.setTitle(resolvedTitle);
@@ -67,17 +115,20 @@ export class SeoService {
   }
 
   updatePageCanonical(path: string): void {
-    const origin = this._document.location.origin;
-    const url = path ? `${origin}/${path}` : origin;
+    const clean = path ? (path.startsWith('/') ? path : `/${path}`) : '/';
+    const url = this._absoluteUrl(clean);
     this._updateCanonical(url);
     this._updateMeta('property', 'og:url', url);
+    this._updateHreflang(clean);
   }
 
+  /**
+   * Se invoca desde el langGuard, que corre ANTES de que el router publique la
+   * URL nueva. Por eso aquí solo se deja armada la sincronización por
+   * NavigationEnd: escribir el canonical en este punto lo fijaba en la raíz.
+   */
   initRouteCanonical(): void {
-    const origin = this._document.location.origin;
-    const url = `${origin}${this._router.url}`;
-    this._updateCanonical(url);
-    this._updateHreflang(origin, this._router.url);
+    this._startUrlSync();
   }
 
   private _updateMeta(
@@ -94,15 +145,27 @@ export class SeoService {
     }
   }
 
-  private _updateHreflang(origin: string, routerUrl: string): void {
-    const path = routerUrl.split('?')[0];
-    const esPath = path.startsWith('/en/') ? path.replace(/^\/en\//, '/es/') : path.startsWith('/en') ? '/es' : path;
-    const enPath = path.startsWith('/es/') ? path.replace(/^\/es\//, '/en/') : path.startsWith('/es') ? '/en' : path;
+  private _updateHreflang(routerPath: string): void {
+    const path = routerPath.split(/[?#]/)[0];
 
-    this._setAlternateLink('es', `${origin}${esPath}`);
-    this._setAlternateLink('en', `${origin}${enPath}`);
-    // x-default apunta al dominio raíz (redirige automáticamente según idioma del usuario)
-    this._setAlternateLink('x-default', origin);
+    // Ruta sin prefijo de idioma ('' para la portada), para reconstruir cada
+    // variante. Si la ruta no lleva prefijo no es una página pública
+    // traducible, así que no se anuncian alternativas.
+    const match = /^\/(es|en)(\/.*)?$/.exec(path);
+    if (!match) return;
+
+    const rest = match[2] ?? '';
+    const esUrl = this._absoluteUrl(`/es${rest}`);
+    const enUrl = this._absoluteUrl(`/en${rest}`);
+
+    this._setAlternateLink('es', esUrl);
+    this._setAlternateLink('en', enUrl);
+    // x-default debe apuntar a una URL que responda 200. Antes apuntaba al
+    // dominio raíz, que hace 301 hacia /es: Google descarta los hreflang que
+    // resuelven en redirección y terminaba eligiendo su propia canónica
+    // (el caso de /en/accommodation en Search Console). Además así coincide
+    // con lo que declara sitemap.xml para las páginas internas.
+    this._setAlternateLink('x-default', esUrl);
   }
 
   private _setAlternateLink(hreflang: string, href: string): void {

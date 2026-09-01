@@ -52,6 +52,11 @@ export const routes: Routes = [
   { path: 'gastronomy', redirectTo: '/es/gastronomy', pathMatch: 'full' },
   { path: 'how-to-arrive', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
   { path: 'blog', redirectTo: '/es/blog', pathMatch: 'full' },
+  // Espejo de los 301 de servidor (server.ts / nginx.conf) para la navegación
+  // en cliente; sin esto caerían en '**' y acabarían en la portada.
+  { path: 'cabanas', redirectTo: '/es/accommodation', pathMatch: 'full' },
+  { path: 'camping', redirectTo: '/es/accommodation', pathMatch: 'full' },
+  { path: 'senderos-cascada', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
 
   { path: '', redirectTo: () => `/${inject(LangService).detectPreferred()}`, pathMatch: 'full' },
 
