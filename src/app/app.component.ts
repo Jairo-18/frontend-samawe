@@ -41,8 +41,13 @@ export class AppComponent implements OnDestroy {
     }
     this._setMaterialOutlinedIconsDefault();
     this._listenRouterChanges();
+    // El branding también se carga en el servidor: de él salen el title y la
+    // meta description de cada página. Cuando solo se pedía en el navegador,
+    // el HTML renderizado en SSR (el que ve Googlebot) se quedaba con el
+    // title/description estáticos de index.html, idénticos en todas las rutas.
+    // La respuesta viaja al cliente por transfer-state, así que no se repite.
+    this._loadInitialBranding();
     if (isPlatformBrowser(this.platformId)) {
-      this._loadInitialBranding();
       this._relatedDataService.getRelatedData().subscribe();
       this._authService.scheduleTokenRefresh();
     }

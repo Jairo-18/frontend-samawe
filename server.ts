@@ -21,6 +21,13 @@ const legacyRedirects: Record<string, string> = {
   '/gastronomy':  '/es/gastronomy',
   '/how-to-arrive': '/es/how-to-arrive',
   '/blog':        '/es/blog',
+  // URLs del sitio anterior que Google sigue rastreando (Search Console).
+  // Sin entrada propia caían en el comodín '**' y terminaban redirigidas a la
+  // portada, que Google interpreta como soft 404; se mandan a la página
+  // equivalente para conservar la señal del enlace entrante.
+  '/cabanas':          '/es/accommodation',
+  '/camping':          '/es/accommodation',
+  '/senderos-cascada': '/es/how-to-arrive',
 };
 
 app.use((req, res, next) => {
