@@ -216,9 +216,24 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   openMobileMenu(): void {
     this.isMobileMenuOpen = true;
+    this._lockBodyScroll(true);
   }
   closeMobileMenu(): void {
     this.isMobileMenuOpen = false;
+    this._lockBodyScroll(false);
+  }
+
+  /**
+   * Bloquea el scroll de la página mientras el menú está abierto.
+   *
+   * Sin esto la página de detrás seguía desplazándose bajo el panel, y en esta
+   * barra tenía un efecto extra: el `@HostListener('window:scroll')` seguía
+   * recalculando `isScrolled` / `isPastHero`, así que el navbar cambiaba de
+   * color y de sombra por debajo del menú abierto.
+   */
+  private _lockBodyScroll(lock: boolean): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+    document.body.style.overflow = lock ? 'hidden' : '';
   }
 
   logout(): void {
@@ -244,5 +259,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
+    // Si el componente se destruye con el menú abierto (p. ej. al navegar a una
+    // ruta con otro layout), el body se quedaría bloqueado para siempre.
+    this._lockBodyScroll(false);
   }
 }
