@@ -160,11 +160,11 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       const canInvoices = allowedItems.includes('Facturas de venta');
       this.invoicingItems = canInvoices
         ? [
-            // {
-            //   title: 'sidebar.invoices_electronic',
-            //   route: '/invoice/invoices/electronic',
-            //   icon: 'receipt_long'
-            // },
+            {
+              title: 'sidebar.invoices_electronic',
+              route: '/invoice/invoices/electronic',
+              icon: 'receipt_long'
+            },
             {
               title: 'sidebar.invoices_sales',
               route: '/invoice/invoices/sales',

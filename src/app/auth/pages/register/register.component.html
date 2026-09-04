@@ -1,10 +1,13 @@
 <div class="auth-content-center my-4 md:my-8 2xl:my-8 3xl:my-0">
+  <!-- Mismo criterio que login: techo en px, `min-h` en vez de `h`, y la imagen
+       solo desde lg para que en tablet vertical el formulario tenga el ancho
+       entero. Es más ancha que login porque el stepper necesita sitio. -->
   <article
-    class="relative w-[90%] md:w-[80%] lg:w-[70%] xl:w-[70%] 2xl:w-[60%] h-auto md:h-[680px] lg:h-[680px] xl:h-[680px] 2xl:h-[680px] 3xl:h-[750px] flex content-between justify-center items-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] max-w-[520px] lg:max-w-[1040px] h-auto lg:min-h-[680px] 3xl:min-h-[750px] flex items-stretch justify-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
   >
     @if (registered) {
       <section
-        class="h-full w-full flex flex-col items-center justify-center text-center gap-5 p-8"
+        class="w-full flex flex-col items-center justify-center text-center gap-5 p-8"
       >
         <span class="material-icons text-6xl text-[var(--primary-color)]"
           >mark_email_read</span
@@ -25,7 +28,7 @@
     }
     @if (!registered) {
       <section
-        class="relative h-full w-full hidden md:flex flex-col bg-gray-100"
+        class="relative w-full hidden lg:flex flex-col bg-gray-100"
       >
         <img
           *ngIf="registerBgUrl"
@@ -37,7 +40,7 @@
         />
       </section>
       <section
-        class="h-full w-full flex flex-col text-center py-5 gap-0 md:gap-1"
+        class="w-full flex flex-col text-center py-5 gap-0 md:gap-1"
       >
         <div class="flex flex-col gap-1.5">
           <span class="font-extrabold text-lg 2xl:text-xl">{{
@@ -47,7 +50,9 @@
             'register.subtitle' | translate
           }}</span>
         </div>
-        <mat-horizontal-stepper [linear]="true" #stepper class="w-full h-full">
+        <!-- `flex-1` y no `h-full`: la sección ya no tiene altura definida
+             (la da `items-stretch`) y un porcentaje resolvería a auto. -->
+        <mat-horizontal-stepper [linear]="true" #stepper class="w-full flex-1">
           <mat-step [stepControl]="formStep1">
             <form [formGroup]="formStep1" class="flex flex-col mt-5">
               <ng-template matStepLabel>{{

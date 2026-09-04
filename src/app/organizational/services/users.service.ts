@@ -1,7 +1,7 @@
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, Subject, shareReplay, tap } from 'rxjs';
 import {
   ApiResponseCreateInterface,
   ApiResponseInterface
@@ -73,10 +73,12 @@ export class UsersService {
     userId: string,
     body: Partial<CreateUserPanel>
   ): Observable<ApiResponseInterface<void>> {
-    return this._httpClient.patch<ApiResponseInterface<void>>(
-      `${environment.apiUrl}user/${userId}`,
-      body
-    );
+    return this._httpClient
+      .patch<ApiResponseInterface<void>>(
+        `${environment.apiUrl}user/${userId}`,
+        body
+      )
+      .pipe(tap(() => this.invalidateUserPanelCache(userId)));
   }
   createUser(user: CreateUserPanel): Observable<ApiResponseCreateInterface> {
     const orgId = this._authService.getOrganizationalId();
@@ -101,18 +103,45 @@ export class UsersService {
     return this._httpClient.delete(`${environment.apiUrl}user/${userId}`);
   }
 
+  /**
+   * Descarta la respuesta cacheada de `getUserEditPanel` para ese usuario.
+   * Hay que llamarlo tras cualquier mutación: el caché usa `shareReplay(1)`, así
+   * que sin invalidarlo una recarga posterior devuelve los datos viejos (era la
+   * razón de que el avatar recién subido no se viera).
+   */
+  invalidateUserPanelCache(userId: string): void {
+    this._userPanelCache.delete(userId);
+  }
+
+  /**
+   * Emite el id del usuario cuyos datos (o avatar) acaban de cambiar. El navbar
+   * carga al usuario una sola vez al arrancar, así que sin este aviso seguía
+   * mostrando la foto anterior hasta recargar la página entera.
+   */
+  private readonly _userUpdated = new Subject<string>();
+  readonly userUpdated$: Observable<string> = this._userUpdated.asObservable();
+
+  notifyUserUpdated(userId: string): void {
+    this.invalidateUserPanelCache(userId);
+    this._userUpdated.next(userId);
+  }
+
   uploadAvatar(userId: string, file: File): Observable<ApiResponseInterface<void>> {
     const formData = new FormData();
     formData.append('file', file);
-    return this._httpClient.patch<ApiResponseInterface<void>>(
-      `${environment.apiUrl}user/${userId}/avatar`,
-      formData
-    );
+    return this._httpClient
+      .patch<ApiResponseInterface<void>>(
+        `${environment.apiUrl}user/${userId}/avatar`,
+        formData
+      )
+      .pipe(tap(() => this.invalidateUserPanelCache(userId)));
   }
 
   deleteAvatar(userId: string): Observable<ApiResponseInterface<void>> {
-    return this._httpClient.delete<ApiResponseInterface<void>>(
-      `${environment.apiUrl}user/${userId}/avatar`
-    );
+    return this._httpClient
+      .delete<ApiResponseInterface<void>>(
+        `${environment.apiUrl}user/${userId}/avatar`
+      )
+      .pipe(tap(() => this.invalidateUserPanelCache(userId)));
   }
 }

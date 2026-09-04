@@ -11,7 +11,7 @@
     </div>
   } @else {
     <div
-      class="flex"
+      class="flex shrink-0"
       [ngClass]="{
         'mt-3 md:mt-6 justify-center': isCollapsed,
         'justify-start': !isCollapsed
@@ -31,10 +31,16 @@
         <mat-icon *ngIf="!isCollapsed">close</mat-icon>
       </button>
     </div>
+    <!--
+      Alto por contenido, no por porcentaje del alto de pantalla. Tenía
+      `h-[25%] lg:h-[30%] xl:h-[35%]`: en un portátil de 720px de alto eso
+      reservaba 250px para un logo de 100px y le robaba el sitio al menú; en un
+      monitor grande se iba a 500px. `shrink-0` para que no lo aplaste el nav.
+    -->
     <div
-      class="overflow-hidden h-[25%] md:h-[25%] lg:h-[30%] xl:h-[35%]"
+      class="overflow-hidden shrink-0"
       [ngClass]="{
-        'scale-0 opacity-0 h-[150px] hidden': isCollapsed,
+        'scale-0 opacity-0 hidden': isCollapsed,
         'scale-100 opacity-100 mt-5 md:mt-3 flex w-full justify-center items-center delay-[100ms] transition-opacity duration-300':
           !isCollapsed
       }"
@@ -51,7 +57,16 @@
         />
       }
     </div>
-    <nav class="w-full h-full px-2 overflow-y-auto">
+    <!--
+      `flex-1 min-h-0` en vez de `h-full`. Con `h-full` el nav pedía el 100% del
+      alto del aside estando en una columna donde los hermanos ya ocupaban un
+      35% y un 10%: sumaba más del 145% y el navegador repartía el sobrante
+      encogiendo cada bloque, así que en pantallas bajas —portátiles— el menú
+      salía aplastado y el botón de salir se iba fuera. `min-h-0` es
+      imprescindible: sin él un hijo flex no puede bajar de su alto de
+      contenido y `overflow-y-auto` nunca llega a hacer scroll.
+    -->
+    <nav class="w-full flex-1 min-h-0 px-2 overflow-y-auto">
       <div class="mt-[10px] md:mt-0">
         <ul class="flex flex-col">
           <ng-container *ngFor="let module of menuWithItems">
@@ -201,7 +216,7 @@
       </div>
     </nav>
     <div
-      class="flex flex-col w-full text-start text-white font-medium text-sm md:text-lg px-2"
+      class="flex flex-col shrink-0 w-full text-start text-white font-medium text-sm md:text-lg px-2"
       [ngClass]="{
         flex: !isCollapsed,
         hidden: isCollapsed
@@ -218,7 +233,7 @@
       >
     </div>
     <div
-      class="flex flex-col justify-center h-[10%] w-full items-center gap-y-2 px-2 mt-0 md:mt-3"
+      class="flex flex-col shrink-0 justify-center w-full items-center gap-y-2 px-2 py-3 mt-0 md:mt-3"
     >
       <!-- Lang switcher — solo visible cuando el sidebar está expandido -->
       <div *ngIf="!isCollapsed" class="flex w-full justify-start px-1">

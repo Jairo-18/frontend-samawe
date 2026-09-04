@@ -26,6 +26,19 @@ export const publicRoutes: Routes = [
           )
       },
       {
+        // El segmento es `:slug` y no `:id` porque la URL lleva
+        // "6-cabana-1": el id delante para resolver, el resto solo para que
+        // sea legible y para SEO. El id es el mismo en ES y EN, así que el
+        // par de hreflang sale directo sin traducir slugs.
+        // Pública a propósito: sin sesión también se ve. El login se pide
+        // recién al reservar.
+        path: 'accommodation/:slug',
+        loadComponent: () =>
+          import(
+            './pages/accommodation-detail/accommodation-detail.component'
+          ).then((m) => m.AccommodationDetailComponent)
+      },
+      {
         path: 'gastronomy',
         data: { reuse: true },
         loadComponent: () =>

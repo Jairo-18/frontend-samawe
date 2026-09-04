@@ -1,0 +1,68 @@
+<div class="flex flex-col items-center gap-4 p-4">
+  <!-- `aspect-square` + `h-auto` en vez de alto fijo: con `w-[220px] h-[220px]`
+       más un `max-width`, en pantallas angostas el ancho se encogía y el alto
+       no, y el círculo salía ovalado. Así el alto siempre sigue al ancho. -->
+  <img
+    [src]="imageUrl"
+    [alt]="'user.profile.avatar_alt' | translate"
+    class="w-[220px] max-w-[70vw] aspect-square h-auto rounded-full object-cover border-2 border-[var(--primary-color)]"
+  />
+
+  @if (data.name) {
+    <p class="text-sm text-[var(--text-color)] text-center break-words">
+      {{ data.name }}
+    </p>
+  }
+
+  <!--
+    Mismos botones que el pie de la ficha de usuario: `mat-fab extended` a ancho
+    completo. Siempre en columna, no `md:flex-row`: el diálogo mide 380px, así
+    que el breakpoint md nunca se cumplía dentro y la fila era inalcanzable.
+    Orden de arriba abajo: acción principal, destructiva, salida.
+  -->
+  <div class="flex flex-col gap-2 w-full">
+    @if (data.allowManage) {
+      <button
+        mat-fab
+        extended
+        color="primary"
+        type="button"
+        class="!w-full"
+        (click)="change()"
+      >
+        <mat-icon>photo_camera</mat-icon>
+        {{ 'user.profile.change_photo' | translate }}
+      </button>
+
+      @if (data.canRemove) {
+        <button
+          mat-fab
+          extended
+          color="warn"
+          type="button"
+          class="!w-full"
+          (click)="remove()"
+        >
+          <mat-icon>delete</mat-icon>
+          {{ 'user.profile.delete_photo' | translate }}
+        </button>
+      }
+    }
+
+    <!--
+      Contorneado y no relleno, igual que "Imprimir productos": un `mat-fab`
+      sin `color` hereda el primario, así que Cambiar y Cerrar salían los dos
+      verdes y competían. Rojo tampoco, que es el de Eliminar.
+    -->
+    <button
+      mat-stroked-button
+      color="primary"
+      type="button"
+      class="!w-full"
+      (click)="close()"
+    >
+      <mat-icon>close</mat-icon>
+      {{ 'user.profile.close' | translate }}
+    </button>
+  </div>
+</div>

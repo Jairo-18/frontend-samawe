@@ -44,8 +44,27 @@
   align-items: center;
 }
 
+// Altura que la barra reserva en el flujo. El <nav> de dentro es `fixed`, así
+// que no ocupa espacio: quien lo reserva es `.brand-nav-bar`. Si las dos dejan
+// de coincidir, la barra se come el principio del contenido.
+// Tres tramos, alineados con los de `navbar-desktop.component.html`:
+//   <1024px  → hamburguesa: una fila, logo de 56px          → 72px
+//   1024–1535 → dos filas: marca+acciones arriba, enlaces abajo → 104px
+//   >=1536px → una fila con el logo grande de 70px          → 86px
+:root {
+  --nav-bar-height: #{$heigth-nav-bar};
+
+  @media (max-width: 1023.98px) {
+    --nav-bar-height: 72px;
+  }
+
+  @media (min-width: 1024px) and (max-width: 1535.98px) {
+    --nav-bar-height: 104px;
+  }
+}
+
 .auth-content-center {
-  min-height: calc(100svh - $heigth-nav-bar);
+  min-height: calc(100svh - var(--nav-bar-height));
   width: 100%;
   display: flex;
   justify-content: center;
@@ -59,13 +78,24 @@
 .brand-nav-bar {
   width: 100%;
   z-index: 100;
-  height: $heigth-nav-bar;
+  height: var(--nav-bar-height);
   position: sticky;
   top: 0;
+}
 
-  @media (max-width: 768px) {
-    height: 72px;
-  }
+// Visor de fotos del `image-uploader`. Van aquí y no en el scss del componente
+// porque el diálogo se monta en el contenedor del CDK, colgado del <body>, así
+// que los estilos encapsulados del componente no lo alcanzan.
+.image-preview-panel .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.image-preview-backdrop {
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(2px);
 }
 
 .brand-footer {

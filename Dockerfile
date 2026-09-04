@@ -1,6 +1,8 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
-RUN npm install -g pnpm
+# Version fijada: sin ella el build tomaba el pnpm mas reciente y un cambio de
+# comportamiento de pnpm rompia la imagen sin tocar el repositorio.
+RUN npm install -g pnpm@10
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install
 
@@ -16,7 +18,9 @@ RUN pnpm exec ng build --configuration development && node scripts/fix-ssr-manif
 
 FROM node:22-alpine AS prod-deps
 WORKDIR /app
-RUN npm install -g pnpm
+# Version fijada: sin ella el build tomaba el pnpm mas reciente y un cambio de
+# comportamiento de pnpm rompia la imagen sin tocar el repositorio.
+RUN npm install -g pnpm@10
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --prod
 

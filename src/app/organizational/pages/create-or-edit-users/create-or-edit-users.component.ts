@@ -1,4 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DEFAULT_AVATAR } from '../../../shared/constants/avatar.constants';
+import { AvatarPreviewDialogComponent } from '../../../shared/components/avatar-preview-dialog/avatar-preview-dialog.component';
 import { CommonModule, NgFor } from '@angular/common';
 import {
   AbstractControl,
@@ -72,7 +82,7 @@ import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
   templateUrl: './create-or-edit-users.component.html',
   styleUrl: './create-or-edit-users.component.scss'
 })
-export class CreateOrEditUsersComponent implements OnInit {
+export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
@@ -80,6 +90,9 @@ export class CreateOrEditUsersComponent implements OnInit {
   private readonly _router: Router = inject(Router);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _locationService: LocationService = inject(LocationService);
+  private readonly _matDialog: MatDialog = inject(MatDialog);
+
+  @ViewChild('avatarFileInput') avatarFileInput?: ElementRef<HTMLInputElement>;
 
   // Códigos de documento colombianos: solo para estos aplica la ubicación DANE
   // (departamento/municipio). Para extranjeros (CE, PAS) queda vacío.
@@ -89,6 +102,16 @@ export class CreateOrEditUsersComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   userId: string = '';
+
+  // ── Moderación de la foto del usuario ────────────────────────────────────
+  // Mismo criterio que el perfil propio: no se sube ni se borra al instante,
+  // se deja pendiente y se aplica al guardar junto con el resto de los datos.
+  readonly defaultAvatar = DEFAULT_AVATAR;
+  currentAvatarUrl: string | null = null;
+  pendingAvatarFile: File | null = null;
+  pendingAvatarPreview: string | null = null;
+  pendingAvatarRemoved: boolean = false;
+
   identificationType: IdentificationType[] = [];
   roleType: RoleType[] = [];
   personType: PersonType[] = [];
@@ -400,6 +423,86 @@ export class CreateOrEditUsersComponent implements OnInit {
       }
     }
   }
+  /** Lo que se pinta: primero la pendiente, luego la guardada, luego genérica. */
+  get displayAvatarUrl(): string {
+    if (this.pendingAvatarPreview) return this.pendingAvatarPreview;
+    if (this.pendingAvatarRemoved) return DEFAULT_AVATAR;
+    return this.currentAvatarUrl || DEFAULT_AVATAR;
+  }
+
+  get hasPendingAvatarChange(): boolean {
+    return !!this.pendingAvatarFile || this.pendingAvatarRemoved;
+  }
+
+  /** Abre el visor con opciones de moderación (cambiar / eliminar la foto). */
+  openAvatarPreview(): void {
+    const ref = this._matDialog.open(AvatarPreviewDialogComponent, {
+      data: {
+        avatarUrl: this.pendingAvatarPreview ?? this.currentAvatarUrl,
+        name: `${this.userForm.get('firstName')?.value ?? ''} ${
+          this.userForm.get('lastName')?.value ?? ''
+        }`.trim(),
+        allowManage: true,
+        canRemove: !!this.currentAvatarUrl && !this.pendingAvatarRemoved
+      },
+      // Igual que en el listado: sin `width` explícito hereda el 95vw global.
+      // Un poco más ancho porque aquí sí salen los botones de moderación.
+      width: '380px',
+      maxWidth: '92vw'
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result?.action === 'change') this.avatarFileInput?.nativeElement.click();
+      if (result?.action === 'remove') this.markAvatarForRemoval();
+    });
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    this._revokeAvatarPreview();
+    this.pendingAvatarFile = file;
+    this.pendingAvatarRemoved = false;
+    this.pendingAvatarPreview = URL.createObjectURL(file);
+  }
+
+  markAvatarForRemoval(): void {
+    this._revokeAvatarPreview();
+    this.pendingAvatarFile = null;
+    this.pendingAvatarRemoved = true;
+  }
+
+  private _revokeAvatarPreview(): void {
+    if (this.pendingAvatarPreview) {
+      URL.revokeObjectURL(this.pendingAvatarPreview);
+      this.pendingAvatarPreview = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this._revokeAvatarPreview();
+  }
+
+  /** Aplica la foto pendiente tras guardar los datos; luego continúa el flujo. */
+  private _applyPendingAvatar(userId: string, done: () => void): void {
+    if (this.pendingAvatarFile) {
+      this._usersService
+        .uploadAvatar(userId, this.pendingAvatarFile)
+        .subscribe({ next: done, error: done });
+      return;
+    }
+    if (this.pendingAvatarRemoved) {
+      this._usersService
+        .deleteAvatar(userId)
+        .subscribe({ next: done, error: done });
+      return;
+    }
+    done();
+  }
+
   private getUserToEdit(userId: string): void {
     this.loading = true;
     this._usersService.getUserEditPanel(userId).subscribe({
@@ -432,6 +535,8 @@ export class CreateOrEditUsersComponent implements OnInit {
         this.userForm
           .get('municipalityId')
           ?.setValue(muniId ?? '', { emitEvent: false });
+
+        this.currentAvatarUrl = user.avatarUrl ?? null;
 
         if (this.userLogged?.userId === user.userId) {
           this.userForm.get('roleTypeId')?.disable();
@@ -485,8 +590,12 @@ export class CreateOrEditUsersComponent implements OnInit {
         this.isSaving = true;
         this._usersService.updateUser(this.userId, userSave).subscribe({
           next: () => {
-            this.isSaving = false;
-            this._router.navigateByUrl('/organizational/users/list');
+            // La foto se aplica después de los datos y solo entonces se sale.
+            this._applyPendingAvatar(this.userId, () => {
+              this._usersService.notifyUserUpdated(this.userId);
+              this.isSaving = false;
+              this._router.navigateByUrl('/organizational/users/list');
+            });
           },
           error: (error) => {
             this.isSaving = false;

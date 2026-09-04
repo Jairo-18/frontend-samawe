@@ -1,0 +1,84 @@
+<div class="flex flex-col gap-3">
+  <div class="flex items-center justify-between gap-2">
+    <h2 class="text-base font-bold">
+      {{ 'public.availability.title' | translate }}
+    </h2>
+    @if (startDate) {
+      <button
+        type="button"
+        (click)="clear()"
+        class="text-xs text-gray-500 hover:text-[var(--primary-color)] inline-flex items-center gap-1"
+      >
+        <mat-icon class="!text-[16px] !w-[16px] !h-[16px]">close</mat-icon>
+        {{ 'public.availability.clear' | translate }}
+      </button>
+    }
+  </div>
+
+  <div
+    class="availability-calendar rounded-[4px] border border-[var(--primary-color)] overflow-hidden"
+    [class.opacity-50]="loading"
+  >
+    <mat-calendar
+      [selected]="selectedRange"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [dateFilter]="dateFilter"
+      [dateClass]="dateClass"
+      (selectedChange)="onDateSelected($event)"
+    />
+  </div>
+
+  <ul class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
+    <li class="flex items-center gap-1.5">
+      <span class="w-3 h-3 rounded-full bg-[var(--primary-color)]"></span>
+      {{ 'public.availability.legend_selected' | translate }}
+    </li>
+    <li class="flex items-center gap-1.5">
+      <span class="w-3 h-3 rounded-full bg-red-100 border border-red-300"></span>
+      {{ 'public.availability.legend_occupied' | translate }}
+    </li>
+  </ul>
+
+  @if (failed) {
+    <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-[4px] px-3 py-2">
+      {{ 'public.availability.load_failed' | translate }}
+    </p>
+  }
+
+  @if (crossedOccupied) {
+    <p class="text-xs text-red-700 bg-red-50 border border-red-200 rounded-[4px] px-3 py-2">
+      {{ 'public.availability.crosses_occupied' | translate }}
+    </p>
+  }
+
+  @if (startDate && !endDate) {
+    <p class="text-xs text-gray-600">
+      {{ 'public.availability.pick_checkout' | translate }}
+    </p>
+  }
+
+  @if (nights > 0) {
+    <div class="rounded-[4px] bg-gray-50 border px-3 py-2 flex flex-col gap-1 text-sm">
+      <div class="flex justify-between">
+        <span>{{ 'public.availability.check_in' | translate }}</span>
+        <strong>{{ startDate | date: 'mediumDate' }}</strong>
+      </div>
+      <div class="flex justify-between">
+        <span>{{ 'public.availability.check_out' | translate }}</span>
+        <strong>{{ endDate | date: 'mediumDate' }}</strong>
+      </div>
+      <div class="flex justify-between border-t pt-1 mt-1">
+        <span>
+          {{ nights }}
+          {{
+            nights === 1
+              ? ('public.availability.night' | translate)
+              : ('public.availability.nights' | translate)
+          }}
+        </span>
+        <strong>COP {{ total | number: '1.0-0' }}</strong>
+      </div>
+    </div>
+  }
+</div>

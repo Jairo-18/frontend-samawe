@@ -88,7 +88,7 @@
               <app-button-landing
                 [label]="'public.most_requested.reserve' | translate"
                 variant="solid"
-                (clicked)="navigate()"
+                (clicked)="navigateToDetail(acc)"
                 class="w-full"
               />
             </div>
@@ -102,6 +102,8 @@
             (mousedown)="onMouseDown($event, acc)"
             (touchstart)="onTouchStart($event)"
             (touchend)="onTouchEnd($event, acc)"
+            (mouseenter)="onHoverStart(acc)"
+            (mouseleave)="onHoverEnd(acc)"
           >
             <img
               [src]="getImage(acc)"

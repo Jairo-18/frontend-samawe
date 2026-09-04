@@ -11,6 +11,15 @@
     "lint": "ng lint"
   },
   "private": true,
+  "pnpm": {
+    "//": "pnpm 10+ no ejecuta scripts de instalacion salvo que se declaren aqui, y aborta con ERR_PNPM_IGNORED_BUILDS si no hay decision explicita. esbuild es imprescindible para compilar Angular; los otros tres son dependencias nativas de rendimiento.",
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@parcel/watcher",
+      "lmdb",
+      "msgpackr-extract"
+    ]
+  },
   "dependencies": {
     "@angular/animations": "19.2.18",
     "@angular/cdk": "19.2.18",

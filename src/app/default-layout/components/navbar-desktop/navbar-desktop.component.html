@@ -4,20 +4,30 @@
   [ngClass]="{
     'bg-white': !isScrolled || isPastHero || !isHomePage,
     'shadow-lg': isScrolled,
-    'md:bg-transparent md:shadow-none md:backdrop-blur-sm':
+    'lg:bg-transparent lg:shadow-none lg:backdrop-blur-sm':
       isScrolled && !isPastHero && isHomePage
   }"
 >
-  <article class="flex px-6 items-center w-full">
+  <!--
+    Hasta 2xl (<1536px) los 7 enlaces + logo + login + idioma no caben en una
+    sola fila: necesitan ~1240px y se apelotonan en cualquier portátil. Con
+    `flex-wrap` y el `w-full` de la sección de enlaces, estos bajan a una
+    segunda fila y arriba quedan solo marca y acciones. Los `order-*` son los
+    que mantienen el orden visual marca · enlaces · acciones en 2xl, donde
+    vuelve a ser una sola fila.
+    Si se cambia el punto de corte, hay que mover con él `--nav-bar-height`
+    en `global.scss`, o la barra tapará el contenido.
+  -->
+  <article class="flex flex-wrap 2xl:flex-nowrap gap-y-1 px-6 items-center w-full">
     <!-- Branding -->
     <section
-      class="flex flex-1 items-center gap-x-3 transition-colors duration-300"
+      class="order-1 flex flex-1 items-center gap-x-3 transition-colors duration-300"
     >
       <img
         routerLink="/"
         [src]="logoUrl"
         [alt]="organizationalName"
-        class="h-14 w-14 md:h-[70px] md:w-[70px] cursor-pointer transition-all duration-300"
+        class="h-14 w-14 2xl:h-[70px] 2xl:w-[70px] cursor-pointer transition-all duration-300"
       />
       <span
         class="hidden lg:block text-base 2xl:text-base 3xl:text-lg font-semibold transition-colors duration-300"
@@ -33,7 +43,7 @@
 
     <!-- Links de navegación -->
     <section
-      class="hidden md:flex flex-none items-center justify-center gap-x-1 lg:gap-x-1 2xl:gap-x-1 3xl:gap-x-4 transition-colors duration-300"
+      class="order-3 2xl:order-2 hidden lg:flex w-full 2xl:w-auto flex-none items-center justify-center gap-x-1 lg:gap-x-2 2xl:gap-x-1 3xl:gap-x-4 transition-colors duration-300"
       [ngClass]="
         isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-800'
       "
@@ -54,9 +64,11 @@
     </section>
 
     <!-- Acciones: login / usuario + hamburguesa -->
-    <section class="flex flex-1 items-center justify-end gap-x-3">
+    <section
+      class="order-2 2xl:order-3 flex flex-1 items-center justify-end gap-x-4 2xl:gap-x-3"
+    >
       <!-- Desktop: login o menú usuario -->
-      <div class="hidden md:flex">
+      <div class="hidden lg:flex">
         @if (isBrowser) {
           @if (!isLoggedUser) {
             @if (loginItem) {
@@ -73,16 +85,13 @@
               variant="transparent"
               [matMenuTriggerFor]="userMenu"
             >
-              @if (userInfo?.avatarUrl) {
-                <img
-                  slot="icon"
-                  [src]="userInfo?.avatarUrl"
-                  alt="avatar"
-                  class="w-7 h-7 rounded-full object-cover border border-[var(--primary-color)]"
-                />
-              } @else {
-                <mat-icon slot="icon">account_circle</mat-icon>
-              }
+              <!-- Sin avatar propio se usa la imagen genérica, no el icono -->
+              <img
+                slot="icon"
+                [src]="userInfo?.avatarUrl || defaultAvatar"
+                alt="avatar"
+                class="w-7 h-7 min-w-7 shrink-0 rounded-full object-cover border border-[var(--primary-color)]"
+              />
               <mat-icon
                 slot="suffix"
                 class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px]"
@@ -143,7 +152,7 @@
 
       <!-- Lang switcher -->
       <app-lang-switcher
-        class="hidden md:flex"
+        class="hidden lg:flex"
         [ngClass]="
           isScrolled && !isPastHero && isHomePage
             ? 'text-white'
@@ -153,7 +162,7 @@
 
       <!-- Mobile: hamburguesa -->
       <button
-        class="flex md:hidden p-1 transition-colors"
+        class="flex lg:hidden p-1 transition-colors"
         [attr.aria-label]="'nav.open_menu' | translate"
         (click)="openMenu.emit()"
       >

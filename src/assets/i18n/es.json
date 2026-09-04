@@ -367,6 +367,9 @@
       "no_results_clients": "No se encontraron clientes",
       "search_product": "Buscar Producto",
       "search_accommodation": "Buscar Hospedaje",
+      "accommodation_unavailable": "Ese hospedaje ya está reservado en esas fechas. Elige otro o cambia las fechas.",
+      "accommodation_already_in_invoice": "Ya agregaste ese hospedaje en esas mismas fechas a esta factura.",
+      "accommodation_invalid_range": "La fecha de salida debe ser posterior a la de entrada.",
       "search_excursion": "Buscar pasadía o servicio",
       "unit_price_sale": "Precio Unitario (Venta)",
       "unit_price_buy": "Precio Unitario (Compra)",
@@ -789,7 +792,8 @@
       "search_status": "Estado",
       "search_status_placeholder": "Buscar por estado",
       "search_status_active": "Activo",
-      "search_status_inactive": "Inactivo"
+      "search_status_inactive": "Inactivo",
+      "col_photo": "Foto"
     },
     "edit_user": {
       "edit_title": "Editar usuario",
@@ -1258,7 +1262,28 @@
       "jacuzzi": "Jacuzzi",
       "per_night": "Por noche",
       "reserve": "Reservar",
-      "photo": "Foto"
+      "photo": "Foto",
+      "view_availability": "Ver disponibilidad"
+    },
+    "accommodation_detail": {
+      "not_found": "No encontramos este hospedaje",
+      "back_to_list": "Ver todos los hospedajes",
+      "availability_note": "Te confirmamos disponibilidad por WhatsApp.",
+      "whatsapp_message": "¡Hola! Quiero reservar {{name}}. ¿Tienen disponibilidad?",
+      "whatsapp_message_dates": "¡Hola! Quiero reservar {{name}} del {{checkIn}} al {{checkOut}} ({{nights}} noches). ¿Está disponible?"
+    },
+    "availability": {
+      "title": "Disponibilidad",
+      "clear": "Limpiar",
+      "legend_selected": "Tu estancia",
+      "legend_occupied": "Ocupado",
+      "pick_checkout": "Ahora elige la fecha de salida.",
+      "crosses_occupied": "Ese rango pasa por noches ocupadas. Empezamos de nuevo desde la fecha que elegiste.",
+      "load_failed": "No pudimos cargar la disponibilidad. Escríbenos y te confirmamos.",
+      "check_in": "Entrada",
+      "check_out": "Salida",
+      "night": "noche",
+      "nights": "noches"
     },
     "about_us": {
       "who_we_are": "Quiénes somos",
@@ -1334,7 +1359,13 @@
       "person_type": "Tipo de Persona",
       "role": "Rol / Cargo",
       "change_photo": "Cambiar Foto",
-      "delete_photo": "Eliminar Foto"
+      "delete_photo": "Eliminar Foto",
+      "unsaved_changes": "Tienes cambios sin guardar",
+      "not_set_municipality": "Aún no asignas un municipio",
+      "not_set_department": "Aún no asignas un departamento",
+      "not_set_country": "Aún no asignas un país",
+      "not_set_generic": "Sin asignar",
+      "close": "Cerrar"
     }
   },
   "recipe": {

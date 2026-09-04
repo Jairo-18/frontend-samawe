@@ -193,6 +193,20 @@ export class NavBarComponent implements OnInit, OnDestroy {
             }
           })
         );
+        // Al editar el perfil (o cambiar la foto) se vuelve a leer: si no, el
+        // navbar seguía mostrando el avatar viejo hasta recargar la página.
+        this._subscription.add(
+          this._usersService.userUpdated$.subscribe((changedUserId) => {
+            if (changedUserId !== userId) return;
+            this._usersService
+              .getUserEditPanel(userId, true)
+              .subscribe({
+                next: (res) => {
+                  this.userInfo = res.data as unknown as UserInterface;
+                }
+              });
+          })
+        );
       }
     } else {
       this.userInfo = undefined;

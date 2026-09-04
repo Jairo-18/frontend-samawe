@@ -1,5 +1,15 @@
+# Se declaran las dos claves a propósito: `allowBuilds` es la de pnpm 11 (la que
+# usa el entorno local) y `onlyBuiltDependencies` la de pnpm 10 (la versión
+# fijada en el Dockerfile). Con una sola, la otra versión vuelve a preguntar y
+# el build falla con ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
   lmdb: true
   msgpackr-extract: true
+
+onlyBuiltDependencies:
+  - esbuild
+  - '@parcel/watcher'
+  - lmdb
+  - msgpackr-extract

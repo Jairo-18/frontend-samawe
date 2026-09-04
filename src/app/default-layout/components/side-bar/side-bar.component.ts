@@ -227,6 +227,13 @@ export class SideBarComponent implements OnInit, OnChanges, OnDestroy {
   closeSideBarMethod(): void {
     this.isCollapsed = true;
     this.closeAllSubMenus();
+    // Faltaba emitir. `toggleSidebar` sí lo hacía, pero al cerrarse por el
+    // input `closeSideBar` el padre nunca ejecutaba `listenEvent`, así que su
+    // bandera `closeSideBar` se quedaba en true: como el siguiente cambio a
+    // true es el mismo valor, `ngOnChanges` ya no disparaba y el sidebar no
+    // volvía a cerrarse. El ancho no se descuadraba de milagro, porque ambos
+    // leen `isCollapsed` del mismo servicio singleton.
+    this.collapsed.emit(true);
   }
 
   closeAllSubMenus(): void {

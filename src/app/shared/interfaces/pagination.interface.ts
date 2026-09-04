@@ -28,6 +28,12 @@ export interface BasePaginationParams {
   clientName?: string;
   categoryTypeCode?: string;
   excludeWithRecipe?: boolean;
+  /**
+   * Rango ISO para filtrar hospedajes por disponibilidad. Si se mandan las dos,
+   * el backend excluye los que ya tienen una reserva solapada.
+   */
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface UserPaginationParams extends BasePaginationParams {

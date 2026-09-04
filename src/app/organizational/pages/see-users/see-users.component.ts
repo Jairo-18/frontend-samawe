@@ -29,6 +29,8 @@ import {
 } from '@angular/material/paginator';
 import { finalize } from 'rxjs';
 import { UserComplete } from '../../interfaces/create.interface';
+import { DEFAULT_AVATAR } from '../../../shared/constants/avatar.constants';
+import { AvatarPreviewDialogComponent } from '../../../shared/components/avatar-preview-dialog/avatar-preview-dialog.component';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
@@ -76,7 +78,10 @@ export class SeeUsersComponent implements OnInit {
   private readonly _platformId = inject(PLATFORM_ID);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
+  readonly defaultAvatar = DEFAULT_AVATAR;
+
   displayedColumns: string[] = [
+    'avatar',
     'identificationType',
     'identificationNumber',
     'firstName',
@@ -248,6 +253,26 @@ export class SeeUsersComponent implements OnInit {
   }
   getRoleName(id: string): string {
     return this.roleType.find((r) => r.roleTypeId === id)?.name?.['es'] || '';
+  }
+
+  /**
+   * Visor de la foto desde el listado: solo lectura. La moderación (cambiar o
+   * eliminar) vive en la pantalla de edición del usuario.
+   */
+  openAvatarPreview(user: UserComplete): void {
+    this._matDialog.open(AvatarPreviewDialogComponent, {
+      data: {
+        avatarUrl: user.avatarUrl,
+        name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
+        allowManage: false
+      },
+      // `width` hay que fijarlo sí o sí: la config global de diálogos
+      // (app.config.ts) impone `width: 95vw`, así que para una foto de 220px se
+      // abría un panel de casi toda la pantalla. Y el `maxWidth: 92vw` que
+      // había aquí lo empeoraba, porque anulaba el tope global de 700px.
+      width: '340px',
+      maxWidth: '92vw'
+    });
   }
   private _getRoleCode(
     roleTypeId?: string,

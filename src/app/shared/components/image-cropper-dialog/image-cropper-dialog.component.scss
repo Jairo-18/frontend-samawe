@@ -64,3 +64,18 @@
     gap: 0.4rem;
   }
 }
+
+// Chip de proporción activo. Va en SCSS y no como clase de Tailwind en un
+// `[class.…]`: Tailwind extrae las clases leyendo el código fuente como texto,
+// y una clase arbitraria con corchetes anidados dentro de un binding
+// (`[class.!bg-[var(--primary-color)]]`) no la reconoce, así que no llegaba a
+// generarse y el botón activo se veía igual que los demás.
+.ratio-selected {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+
+  .mat-icon {
+    color: #fff !important;
+  }
+}

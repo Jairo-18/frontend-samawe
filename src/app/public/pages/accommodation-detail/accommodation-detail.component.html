@@ -1,0 +1,214 @@
+<!--
+  Ancho mayor que el resto de páginas públicas: aquí conviven galería,
+  información y calendario, y con 1200px la columna derecha quedaba tan
+  estrecha que el calendario alargaba la página y dejaba medio hueco vacío
+  bajo las miniaturas.
+-->
+<section class="w-full max-w-[1400px] 3xl:max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-10">
+  @if (loading) {
+    <div class="flex justify-center py-24"><app-loader /></div>
+  } @else if (notFound) {
+    <!-- Estado explícito en vez de una página en blanco: una ficha vacía la
+         lee Google como soft 404, que es justo lo que costó indexación con
+         /cabanas y /camping. -->
+    <div class="flex flex-col items-center text-center gap-4 py-24">
+      <mat-icon class="!w-12 !h-12 !text-[48px] text-[var(--primary-color)]"
+        >search_off</mat-icon
+      >
+      <h1 class="text-xl font-bold">
+        {{ 'public.accommodation_detail.not_found' | translate }}
+      </h1>
+      <a
+        [routerLink]="listRoute"
+        class="text-[var(--primary-color)] font-medium hover-underline-animation"
+      >
+        {{ 'public.accommodation_detail.back_to_list' | translate }}
+      </a>
+    </div>
+  } @else if (accommodation) {
+    <nav class="mb-4 text-sm">
+      <!-- Misma animación de subrayado que los enlaces del navbar. La clase ya
+           aplica `position: relative`, y el `::after` cubre también el icono
+           porque el enlace es un solo `inline-flex`. -->
+      <a
+        [routerLink]="listRoute"
+        class="hover-underline-animation text-gray-500 hover:text-[var(--primary-color)] inline-flex items-center gap-1 transition-colors duration-200"
+      >
+        <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">arrow_back</mat-icon>
+        {{ 'public.accommodation_detail.back_to_list' | translate }}
+      </a>
+    </nav>
+
+    <!--
+      `items-start` es imprescindible: sin él las columnas se estiran a la
+      misma altura y la caja de reserva no puede quedarse pegada al hacer
+      scroll.
+    -->
+    <div
+      class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-start"
+    >
+      <!-- Izquierda: galería + toda la información -->
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-3">
+          <!--
+            La caja mantiene proporción fija (evita saltos de maquetación al
+            cargar), pero la foto va con `object-contain`: desde que el
+            recortador permite cuadrada, vertical o libre, un `object-cover`
+            recortaba arriba y abajo las que no fueran apaisadas.
+            El fondo es la misma foto ampliada y desenfocada, para rellenar los
+            laterales sin las bandas grises de un `contain` pelado.
+          -->
+          <div
+            class="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-[4px] border border-[var(--primary-color)] overflow-hidden bg-gray-100 transition-[aspect-ratio] duration-300"
+            [style.aspect-ratio]="mainImageRatio"
+          >
+            <img
+              [src]="mainImage"
+              alt=""
+              aria-hidden="true"
+              class="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-40"
+            />
+            <img
+              [src]="mainImage"
+              [alt]="accommodation.name | translated"
+              class="relative w-full h-full object-contain"
+              (load)="onMainImageLoad($event)"
+            />
+          </div>
+          @if (images.length > 1) {
+            <ul class="flex gap-2 overflow-x-auto pb-1">
+              @for (img of images; track $index) {
+                <li class="shrink-0">
+                  <button
+                    type="button"
+                    (click)="selectImage($index)"
+                    [attr.aria-label]="
+                      ('public.card_accommodation.photo' | translate) +
+                      ' ' +
+                      ($index + 1)
+                    "
+                    class="block rounded-[4px] overflow-hidden border-2 transition-colors"
+                    [class.border-transparent]="currentImageIndex !== $index"
+                    [style.border-color]="
+                      currentImageIndex === $index ? 'var(--primary-color)' : ''
+                    "
+                  >
+                    <img
+                      [src]="img.imageUrl"
+                      alt=""
+                      class="w-20 h-16 md:w-24 md:h-20 object-cover"
+                    />
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          @if (accommodation.categoryType) {
+            <span class="text-xs text-gray-500">
+              {{ accommodation.categoryType.name | translated | capitalize }}
+            </span>
+          }
+          <h1 class="text-2xl md:text-3xl font-extrabold leading-tight">
+            {{ accommodation.name | translated | capitalize }}
+          </h1>
+        </div>
+
+        <ul class="flex flex-wrap gap-2 text-sm">
+          <li
+            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+          >
+            <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">person</mat-icon>
+            {{ accommodation.amountPerson }}
+            {{
+              accommodation.amountPerson !== 1
+                ? ('public.common.person_plural' | translate)
+                : ('public.common.person_singular' | translate)
+            }}
+          </li>
+          <li
+            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+          >
+            <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">bed</mat-icon>
+            {{ accommodation.amountRoom }}
+            {{ 'public.common.room_singular' | translate }}
+          </li>
+          <li
+            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+          >
+            <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">bathroom</mat-icon>
+            {{ accommodation.amountBathroom }}
+            {{
+              accommodation.amountBathroom !== 1
+                ? ('public.common.room_plural' | translate)
+                : ('public.common.room_singular' | translate)
+            }}
+          </li>
+          @if (accommodation.bedType) {
+            <li
+              class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+            >
+              <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">king_bed</mat-icon>
+              {{ accommodation.bedType.name | translated | capitalize }}
+            </li>
+          }
+          @if (accommodation.jacuzzi) {
+            <li
+              class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+            >
+              <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">hot_tub</mat-icon>
+              {{ 'public.card_accommodation.jacuzzi' | translate }}
+            </li>
+          }
+        </ul>
+
+        @if (accommodation.description | translated) {
+          <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+            {{ accommodation.description | translated }}
+          </p>
+        }
+      </div>
+
+      <!--
+        Caja de reserva. Pegajosa desde lg para que el calendario y el precio
+        sigan a la vista mientras se lee la descripción. El desplazamiento
+        superior usa la misma variable que reserva la barra fija, así no hay
+        que recalcularlo si cambia la altura del navbar.
+      -->
+      <aside
+        class="lg:sticky lg:top-[calc(var(--nav-bar-height)+1rem)] flex flex-col gap-4 border border-[var(--primary-color)] rounded-[4px] p-4 md:p-5 shadow-sm bg-white"
+      >
+        <app-availability-calendar
+          [accommodationId]="accommodation.accommodationId"
+          [pricePerNight]="accommodation.priceSale"
+          (stayChange)="onStayChange($event)"
+        />
+
+        <div class="border-t pt-4 flex flex-col gap-3">
+          <div>
+            <span class="text-xs text-gray-500">
+              {{ 'public.card_accommodation.per_night' | translate }}
+            </span>
+            <p class="text-2xl font-bold">
+              COP {{ accommodation.priceSale | number: '1.0-0' }}
+            </p>
+          </div>
+
+          @if (canRequestBooking) {
+            <app-button-landing
+              [label]="'public.card_accommodation.reserve' | translate"
+              variant="solid"
+              (clicked)="requestBooking()"
+              class="w-full"
+            />
+            <span class="text-xs text-gray-500 text-center">
+              {{ 'public.accommodation_detail.availability_note' | translate }}
+            </span>
+          }
+        </div>
+      </aside>
+    </div>
+  }
+</section>

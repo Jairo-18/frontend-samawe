@@ -8,7 +8,9 @@ import {
   OnInit,
   OnChanges,
   PLATFORM_ID,
-  SimpleChanges
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -22,8 +24,13 @@ import {
 } from '../../services/image.service';
 import { ImageItem, RawImageItem } from '../../interfaces/image.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { ImageCropperDialogComponent } from '../image-cropper-dialog/image-cropper-dialog.component';
 import { lastValueFrom } from 'rxjs';
@@ -36,7 +43,8 @@ import { lastValueFrom } from 'rxjs';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './image-uploader.component.html',
   styleUrls: ['./image-uploader.component.scss']
@@ -176,9 +184,13 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   private openCropper(file: File): Promise<Blob | null> {
     const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth < 768 : false;
     const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
-      data: { file },
-      width: isMobile ? '95vw' : '500px',
-      maxWidth: isMobile ? '95vw' : '500px',
+      // `entityType` decide la proporción con la que se abre el recorte:
+      // cuadrada para productos, apaisada para hospedajes y pasadías.
+      data: { file, entityType: this.entityType },
+      // 640 y no 500: con proporciones apaisadas o panorámicas, en 500px el
+      // recuadro quedaba tan bajo que no se veía qué se estaba recortando.
+      width: isMobile ? '95vw' : '640px',
+      maxWidth: isMobile ? '95vw' : '640px',
       maxHeight: '90vh',
       disableClose: true
     });
@@ -277,11 +289,32 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.toDeleteImages.push(image);
     this.cdr.detectChanges();
   }
+  @ViewChild('previewTpl') private previewTpl!: TemplateRef<unknown>;
+  private _previewRef?: MatDialogRef<unknown>;
+
   openPreview(imageUrl: string) {
     this.previewImageUrl = imageUrl;
+    this._previewRef = this.dialog.open(this.previewTpl, {
+      // El `$implicit` del contexto es lo que recibe el `let-url` de la
+      // plantilla.
+      data: imageUrl,
+      // Hay que fijar los tres: la configuración global de diálogos
+      // (app.config.ts) impone `width: 95vw` y `maxWidth: 700px`, que para un
+      // visor de fotos recortaría la imagen.
+      width: 'auto',
+      maxWidth: '96vw',
+      maxHeight: '96vh',
+      panelClass: 'image-preview-panel',
+      backdropClass: 'image-preview-backdrop',
+      autoFocus: false
+    });
+    this._previewRef.afterClosed().subscribe(() => {
+      this.previewImageUrl = null;
+      this._previewRef = undefined;
+    });
   }
   closePreview() {
-    this.previewImageUrl = null;
+    this._previewRef?.close();
   }
   private checkUploadComplete(completed: number, total: number) {
     if (completed === total) {

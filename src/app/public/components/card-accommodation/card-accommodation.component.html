@@ -1,6 +1,12 @@
 @if (accommodation) {
+  <!--
+    La altura sube con cada breakpoint, pero no de golpe: al pasar a 3 y 4
+    columnas la tarjeta se estrecha, y una altura fija grande la convertiría en
+    una torre. En xl estaba en 450px —más baja que en móvil— porque ahí son 4
+    columnas; se sube a 560 manteniendo una proporción de retrato.
+  -->
   <article
-    class="relative rounded-[4px] shadow-md overflow-hidden select-none min-h-[500px] xl:min-h-[450px] 3xl:min-h-[600px] border-[1px] border-[var(--primary-color)]"
+    class="relative rounded-[4px] shadow-md overflow-hidden select-none min-h-[500px] sm:min-h-[520px] lg:min-h-[540px] xl:min-h-[560px] 3xl:min-h-[640px] border-[1px] border-[var(--primary-color)]"
     [class.cursor-grabbing]="isDragging"
     [class.cursor-grab]="!isDragging && validImages.length > 1"
     (mousedown)="onMouseDown($event)"
@@ -48,9 +54,15 @@
     <div
       class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-2 pointer-events-auto"
     >
-      <h3 class="text-base font-bold text-white leading-snug drop-shadow">
-        {{ accommodation.name | translated | capitalize }}
-      </h3>
+      <!-- El título enlaza, y no la tarjeta entera, porque el fondo captura
+           mousedown/touch para el carrusel: un routerLink en el <article>
+           dispararía la navegación al arrastrar entre fotos. -->
+      <a
+        [routerLink]="detailRoute"
+        class="text-base font-bold text-white leading-snug drop-shadow hover:underline"
+      >
+        <h3>{{ accommodation.name | translated | capitalize }}</h3>
+      </a>
 
       @if (shortDescription) {
         <p class="text-xs text-white/80 leading-relaxed">
@@ -106,7 +118,12 @@
             COP {{ accommodation.priceSale | number: '1.0-0' }}
           </p>
         </div>
-        <app-button-landing [label]="'public.card_accommodation.reserve' | translate" variant="solid" />
+        <!-- Antes este botón no hacía nada: no tenía routerLink ni handler. -->
+        <app-button-landing
+          [label]="'public.card_accommodation.view_availability' | translate"
+          variant="solid"
+          [routerLink]="detailRoute"
+        />
       </div>
     </div>
   </article>

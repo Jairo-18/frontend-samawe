@@ -157,22 +157,30 @@
     </div>
   </div>
 </div>
-<div
-  *ngIf="previewImageUrl"
-  class="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300"
-  (click)="closePreview()"
->
-  <button
-    mat-icon-button
-    class="!absolute top-4 right-4 text-white hover:bg-white/10"
-    (click)="closePreview()"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
-  <img
-    [src]="previewImageUrl"
-    class="max-w-full max-h-[90vh] rounded-lg shadow-2xl animate-in zoom-in-95 duration-300 ring-1 ring-white/20"
-    alt="Vista previa de imagen"
-    (click)="$event.stopPropagation()"
-  />
-</div>
+<!--
+  El visor va por MatDialog y no como un `<div class="fixed inset-0 z-[1000]">`
+  dentro de la plantilla. Estos formularios viven dentro de un `mat-tab-group`,
+  y `.mat-mdc-tab-body` aplica `transform` para animar el deslizado entre
+  pestañas. Un `transform` en un ancestro hace dos cosas: crea contexto de
+  apilamiento —así que el z-index 1000 quedaba encerrado dentro de la pestaña y
+  el sidebar (z-50) le pasaba por encima— y ancla el `position: fixed` a ese
+  ancestro en vez de a la pantalla. MatDialog monta el contenido en el
+  contenedor del CDK, que cuelga del <body>, fuera de todo eso.
+-->
+<ng-template #previewTpl let-url>
+  <div class="relative flex items-center justify-center">
+    <button
+      mat-icon-button
+      class="!absolute top-2 right-2 text-white bg-black/40 hover:bg-black/60"
+      [attr.aria-label]="'user.profile.close' | translate"
+      (click)="closePreview()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    <img
+      [src]="url"
+      class="max-w-full max-h-[88vh] rounded-lg shadow-2xl ring-1 ring-white/20"
+      alt="Vista previa de imagen"
+    />
+  </div>
+</ng-template>

@@ -11,11 +11,11 @@
       }
       <image-cropper
         [imageFile]="imageFile"
-        [maintainAspectRatio]="true"
-        [aspectRatio]="1 / 1"
+        [maintainAspectRatio]="maintainAspectRatio"
+        [aspectRatio]="aspectRatio"
         [canvasRotation]="rotation"
         [transform]="{ scale: zoomFactor }"
-        [containWithinAspectRatio]="true"
+        [containWithinAspectRatio]="maintainAspectRatio"
         [resizeToWidth]="1200"
         [imageQuality]="98"
         format="webp"
@@ -26,6 +26,32 @@
         class="w-full"
         [class.hidden]="isLoading"
       ></image-cropper>
+    </div>
+
+    <!--
+      Proporción del recorte. Antes estaba fija en 1/1 para todo: un producto se
+      fotografía cuadrado, pero un hospedaje es apaisado o vertical y había que
+      sacrificar parte de la foto. Ahora se abre en la proporción típica de lo
+      que se está editando y se puede cambiar, incluida la libre.
+    -->
+    <div class="flex flex-wrap justify-center gap-2 w-full">
+      @for (ratio of ratios; track ratio.key) {
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          [class.ratio-selected]="selectedRatio.key === ratio.key"
+          class="!rounded-full !px-3 !text-xs"
+          [matTooltip]="ratio.label"
+          [attr.aria-pressed]="selectedRatio.key === ratio.key"
+          (click)="selectRatio(ratio)"
+        >
+          <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">{{
+            ratio.icon
+          }}</mat-icon>
+          {{ ratio.label }}
+        </button>
+      }
     </div>
 
     <div

@@ -97,6 +97,21 @@ export interface PublicAccommodationListItem {
   images: { accommodationImageId: number; imageUrl: string; publicId: string }[];
 }
 
+/** Ficha pública: lo mismo que el listado más el `code`. */
+export interface PublicAccommodationDetail
+  extends PublicAccommodationListItem {
+  code?: string;
+}
+
+/**
+ * Tramo ocupado, en ISO. Intervalo SEMIABIERTO: el día de `endDate` ya está
+ * libre para una nueva entrada.
+ */
+export interface AccommodationOccupiedRange {
+  startDate: string;
+  endDate: string;
+}
+
 export interface CreateAccommodationRelatedData {
   categoryType: CategoryType[];
   bedType: BedType[];

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { DEFAULT_AVATAR } from '../../../shared/constants/avatar.constants';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +31,8 @@ import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/
   styleUrls: ['./navbar-desktop.component.scss']
 })
 export class NavbarDesktopComponent {
+  readonly defaultAvatar = DEFAULT_AVATAR;
+
   @Input() navBarItems: NavItem[] = [];
   @Input() loginItem?: NavItem;
   @Input() isLoggedUser: boolean = false;

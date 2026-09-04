@@ -367,6 +367,9 @@
       "no_results_clients": "No clients found",
       "search_product": "Search Product",
       "search_accommodation": "Search Accommodation",
+      "accommodation_unavailable": "That accommodation is already booked for those dates. Pick another one or change the dates.",
+      "accommodation_already_in_invoice": "You already added that accommodation for those same dates to this invoice.",
+      "accommodation_invalid_range": "The check-out date must be later than the check-in date.",
       "search_excursion": "Search day trip or service",
       "unit_price_sale": "Unit Price (Sale)",
       "unit_price_buy": "Unit Price (Purchase)",
@@ -789,7 +792,8 @@
       "search_status": "Status",
       "search_status_placeholder": "Search by status",
       "search_status_active": "Active",
-      "search_status_inactive": "Inactive"
+      "search_status_inactive": "Inactive",
+      "col_photo": "Photo"
     },
     "edit_user": {
       "edit_title": "Edit user",
@@ -1258,7 +1262,28 @@
       "jacuzzi": "Jacuzzi",
       "per_night": "Per night",
       "reserve": "Book",
-      "photo": "Photo"
+      "photo": "Photo",
+      "view_availability": "See availability"
+    },
+    "accommodation_detail": {
+      "not_found": "We couldn't find this accommodation",
+      "back_to_list": "See all accommodations",
+      "availability_note": "We'll confirm availability over WhatsApp.",
+      "whatsapp_message": "Hi! I'd like to book {{name}}. Do you have availability?",
+      "whatsapp_message_dates": "Hi! I'd like to book {{name}} from {{checkIn}} to {{checkOut}} ({{nights}} nights). Is it available?"
+    },
+    "availability": {
+      "title": "Availability",
+      "clear": "Clear",
+      "legend_selected": "Your stay",
+      "legend_occupied": "Booked",
+      "pick_checkout": "Now pick your check-out date.",
+      "crosses_occupied": "That range runs through booked nights. Starting over from the date you picked.",
+      "load_failed": "We couldn't load availability. Message us and we'll confirm.",
+      "check_in": "Check-in",
+      "check_out": "Check-out",
+      "night": "night",
+      "nights": "nights"
     },
     "about_us": {
       "who_we_are": "Who we are",
@@ -1334,7 +1359,13 @@
       "person_type": "Person Type",
       "role": "Role / Position",
       "change_photo": "Change Photo",
-      "delete_photo": "Delete Photo"
+      "delete_photo": "Delete Photo",
+      "unsaved_changes": "You have unsaved changes",
+      "not_set_municipality": "You haven't set a municipality yet",
+      "not_set_department": "You haven't set a department yet",
+      "not_set_country": "You haven't set a country yet",
+      "not_set_generic": "Not set",
+      "close": "Close"
     }
   },
   "recipe": {

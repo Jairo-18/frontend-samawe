@@ -3,7 +3,9 @@ import {
   AccommodationComplete,
   CreateAccommodationPanel,
   GetAccommodationPaginatedList,
+  AccommodationOccupiedRange,
   MostRequestedAccommodation,
+  PublicAccommodationDetail,
   PublicAccommodationListItem
 } from '../interface/accommodation.interface';
 import {
@@ -94,5 +96,26 @@ export class AccommodationsService {
       pagination: PaginationInterface;
       data: PublicAccommodationListItem[];
     }>(`${environment.apiUrl}accommodation/public/list`, { params });
+  }
+
+  /** Ficha pública. No requiere sesión: la página es indexable. */
+  getPublicAccommodationDetail(
+    accommodationId: number
+  ): Observable<ApiResponseInterface<PublicAccommodationDetail>> {
+    return this._httpClient.get<ApiResponseInterface<PublicAccommodationDetail>>(
+      `${environment.apiUrl}accommodation/public/${accommodationId}`
+    );
+  }
+
+  /** Fechas ocupadas para el calendario. Solo devuelve rangos, sin datos del huésped. */
+  getAccommodationAvailability(
+    accommodationId: number,
+    months = 12
+  ): Observable<ApiResponseInterface<AccommodationOccupiedRange[]>> {
+    return this._httpClient.get<
+      ApiResponseInterface<AccommodationOccupiedRange[]>
+    >(`${environment.apiUrl}accommodation/public/${accommodationId}/availability`, {
+      params: { months }
+    });
   }
 }

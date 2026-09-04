@@ -1,0 +1,28 @@
+// Los días ocupados llegan deshabilitados por `dateFilter`, así que Material ya
+// los pinta en gris claro. Aquí se les añade color para que se lean como
+// "tomado" y no como "fuera del rango del calendario", que es lo que parece con
+// el gris por defecto. `::ng-deep` es necesario porque las celdas las genera
+// `mat-calendar` fuera de la encapsulación de este componente.
+:host ::ng-deep {
+  .availability-occupied .mat-calendar-body-cell-content {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
+    text-decoration: line-through;
+  }
+
+  // Material baja la opacidad de las celdas deshabilitadas; sin esto el rojo
+  // queda tan lavado que no se distingue de un día normal.
+  .availability-occupied.mat-calendar-body-disabled
+    > .mat-calendar-body-cell-content {
+    opacity: 1;
+  }
+
+  .mat-calendar-body-in-range::before {
+    background-color: color-mix(
+      in srgb,
+      var(--primary-color) 18%,
+      transparent
+    );
+  }
+}

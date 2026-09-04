@@ -41,7 +41,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
 import { InvoiceDetaillService } from '../../services/invoiceDetaill.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -77,6 +78,12 @@ export class AddAccommodationComponent implements OnInit {
   @Input() additionalTypes: AdditionalType[] = [];
   @Input() discountTypes: DiscountType[] = [];
   @Input() saveToBackend: boolean = true;
+  /**
+   * Ítems ya añadidos a esta factura y todavía sin guardar. El backend no puede
+   * validarlos porque aún no existen en base de datos, así que el choque de dos
+   * líneas de la misma factura sobre la misma cabaña se comprueba aquí.
+   */
+  @Input() pendingItems: PendingInvoiceDetail[] = [];
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
   private readonly _accommodationsService: AccommodationsService = inject(
@@ -89,6 +96,10 @@ export class AddAccommodationComponent implements OnInit {
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
+  private readonly _notificationsService: NotificationsService =
+    inject(NotificationsService);
+  private readonly _translateService: TranslateService =
+    inject(TranslateService);
   form: FormGroup;
   isLoading: boolean = false;
   filteredAccommodations: AddedAccommodationInvoiceDetaill[] = [];
@@ -131,10 +142,45 @@ export class AddAccommodationComponent implements OnInit {
       }
     );
   }
+  /** Horas de hotel por defecto: entrada 15:00, salida 12:00. */
+  private static readonly CHECK_IN_HOUR = 15;
+  private static readonly CHECK_OUT_HOUR = 12;
+
+  /** No se permite elegir fechas pasadas en el calendario. */
+  readonly today: Date = AddAccommodationComponent.atHour(new Date(), 0);
+
+  /** Salida siempre posterior a la entrada; el datepicker lo impide. */
+  get minEndDate(): Date {
+    const start = this.form?.get('startDate')?.value;
+    return start ? new Date(start) : this.today;
+  }
+
+  private static atHour(date: Date, hour: number): Date {
+    const d = new Date(date);
+    d.setHours(hour, 0, 0, 0);
+    return d;
+  }
+
+  private static addDays(date: Date, days: number): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
   constructor() {
-    const now = new Date();
-    const endTime = new Date(now);
-    endTime.setMinutes(endTime.getMinutes() + 5);
+    // Antes el valor por defecto era "ahora" y "ahora + 5 minutos": si el
+    // recepcionista cambiaba las fechas pero no las horas, la estancia se
+    // quedaba con la hora a la que estaba escribiendo. Como `startDate` y
+    // `endDate` son `timestamp` en la BD, esa hora entra en el cálculo de
+    // solape y dos reservas del mismo día podían no detectarse como choque.
+    const startDefault = AddAccommodationComponent.atHour(
+      new Date(),
+      AddAccommodationComponent.CHECK_IN_HOUR
+    );
+    const endDefault = AddAccommodationComponent.atHour(
+      AddAccommodationComponent.addDays(new Date(), 1),
+      AddAccommodationComponent.CHECK_OUT_HOUR
+    );
     this.form = this._fb.group({
       name: ['', Validators.required],
       accommodationId: [null, Validators.required],
@@ -144,10 +190,10 @@ export class AddAccommodationComponent implements OnInit {
       amount: [1, [Validators.required, Validators.min(1)]],
       amountPerson: [0],
       amountBathroom: [0],
-      startDate: [now, Validators.required],
-      startTime: [now, Validators.required],
-      endDate: [now, Validators.required],
-      endTime: [endTime, Validators.required],
+      startDate: [startDefault, Validators.required],
+      startTime: [startDefault, Validators.required],
+      endDate: [endDefault, Validators.required],
+      endTime: [endDefault, Validators.required],
       startDateTime: [null, Validators.required],
       endDateTime: [null, Validators.required],
       discountTypeId: [null],
@@ -163,13 +209,79 @@ export class AddAccommodationComponent implements OnInit {
           if (typeof name !== 'string') return of({ data: [] });
           if (!name || name.trim().length < 2) return of({ data: [] });
           return this._accommodationsService.getAccommodationWithPagination({
-            name
+            name,
+            ...this.availabilityRange()
           });
         })
       )
       .subscribe((res) => {
         this.filteredAccommodations = res.data ?? [];
       });
+
+    // Al cambiar cualquiera de las cuatro fechas cambia la disponibilidad: se
+    // refresca la lista y, si el que estaba elegido ya no está libre, se quita
+    // la selección en vez de dejar que llegue al backend y falle al guardar.
+    ['startDate', 'startTime', 'endDate', 'endTime'].forEach((field) => {
+      this.form
+        .get(field)
+        ?.valueChanges.pipe(debounceTime(300))
+        .subscribe(() => this.onDateRangeChanged());
+    });
+  }
+
+  /**
+   * Rango en el formato que espera el backend, o `{}` si aún no está completo
+   * o es incoherente (fin anterior o igual al inicio). Devolver `{}` desactiva
+   * el filtro de disponibilidad en lugar de mandar un rango inválido.
+   */
+  private availabilityRange(): { startDate?: string; endDate?: string } {
+    const v = this.form?.getRawValue();
+    if (!v?.startDate || !v?.startTime || !v?.endDate || !v?.endTime) return {};
+    const start = this.combineDateAndTime(v.startDate, v.startTime);
+    const end = this.combineDateAndTime(v.endDate, v.endTime);
+    if (!(start < end)) return {};
+    return { startDate: start.toISOString(), endDate: end.toISOString() };
+  }
+
+  private onDateRangeChanged(): void {
+    const range = this.availabilityRange();
+    const selectedId = this.form.get('accommodationId')?.value;
+
+    this._accommodationsService
+      .getAccommodationWithPagination({ ...range, perPage: 200 })
+      .subscribe((res) => {
+        const available = res.data ?? [];
+        if (
+          selectedId &&
+          Object.keys(range).length > 0 &&
+          !available.some((a) => a.accommodationId === selectedId)
+        ) {
+          this.form.patchValue(
+            { name: '', accommodationId: null },
+            { emitEvent: false }
+          );
+          this.form.get('name')?.setErrors({ unavailable: true });
+        }
+        this._cdr.detectChanges();
+      });
+  }
+
+  /**
+   * Choque contra las líneas de esta misma factura todavía sin guardar. El
+   * backend no las ve porque aún no existen. Mismo criterio de solape que en
+   * servidor: intervalos semiabiertos, el día de salida queda libre.
+   */
+  private overlapsPendingItems(
+    accommodationId: number,
+    start: string,
+    end: string
+  ): boolean {
+    return this.pendingItems.some((item) => {
+      const p = item.payload;
+      if (!p || p.accommodationId !== accommodationId) return false;
+      if (!p.startDate || !p.endDate) return false;
+      return p.startDate < end && p.endDate > start;
+    });
   }
   displayAccommodation(acc?: AddedAccommodationInvoiceDetaill): string {
     if (!acc) return '';
@@ -177,7 +289,23 @@ export class AddAccommodationComponent implements OnInit {
     return typeof n === 'string' ? n : (n['es'] ?? Object.values(n)[0] ?? '');
   }
   resetForm() {
-    const now = new Date();
+    // Se conservan las fechas ya elegidas: al añadir varias cabañas para la
+    // misma estancia, volver a "hoy" obligaba a reescribirlas en cada línea.
+    const startDefault =
+      this.form?.get('startDate')?.value ??
+      AddAccommodationComponent.atHour(
+        new Date(),
+        AddAccommodationComponent.CHECK_IN_HOUR
+      );
+    const endDefault =
+      this.form?.get('endDate')?.value ??
+      AddAccommodationComponent.atHour(
+        AddAccommodationComponent.addDays(new Date(), 1),
+        AddAccommodationComponent.CHECK_OUT_HOUR
+      );
+    const startTime =
+      this.form?.get('startTime')?.value ?? startDefault;
+    const endTime = this.form?.get('endTime')?.value ?? endDefault;
     this.form.reset(
       {
         name: '',
@@ -185,10 +313,10 @@ export class AddAccommodationComponent implements OnInit {
         taxeTypeId: 2,
         amount: 1,
         priceWithoutTax: 0,
-        startDate: now,
-        startTime: now,
-        endDate: now,
-        endTime: now,
+        startDate: startDefault,
+        startTime: startTime,
+        endDate: endDefault,
+        endTime: endTime,
         finalPrice: 0,
         unitPrice: 0,
         discountTypeId: null,
@@ -348,7 +476,7 @@ export class AddAccommodationComponent implements OnInit {
   onAccommodationFocus() {
     if (!this.filteredAccommodations.length) {
       this._accommodationsService
-        .getAccommodationWithPagination({})
+        .getAccommodationWithPagination({ ...this.availabilityRange() })
         .subscribe((res) => {
           this.filteredAccommodations = res.data ?? [];
         });
@@ -397,6 +525,37 @@ export class AddAccommodationComponent implements OnInit {
     }
     if (this.form.valid) {
       const formValue = this.form.getRawValue();
+
+      // La salida tiene que ser posterior a la entrada. Sin esto se podía
+      // guardar un rango invertido, que además nunca solapa con nada y se
+      // saltaba en la práctica el control de doble reserva.
+      const range = this.availabilityRange();
+      if (!range.startDate || !range.endDate) {
+        this._notificationsService.showNotification(
+          'error',
+          this._translateService.instant(
+            'invoice.common.accommodation_invalid_range'
+          )
+        );
+        return;
+      }
+
+      if (
+        this.overlapsPendingItems(
+          formValue.accommodationId,
+          range.startDate,
+          range.endDate
+        )
+      ) {
+        this._notificationsService.showNotification(
+          'error',
+          this._translateService.instant(
+            'invoice.common.accommodation_already_in_invoice'
+          )
+        );
+        return;
+      }
+
       const priceToSend =
         this.subtotal && !isNaN(this.subtotal) && this.subtotal > 0
           ? this.subtotal
@@ -409,8 +568,8 @@ export class AddAccommodationComponent implements OnInit {
         priceBuy: Number(formValue.priceBuy) || 0,
         priceSale: Number(priceToSend),
         taxeTypeId: formValue.taxeTypeId,
-        startDate: new Date(formValue.startDateTime).toISOString(),
-        endDate: new Date(formValue.endDateTime).toISOString()
+        startDate: range.startDate,
+        endDate: range.endDate
       };
       if (!this.saveToBackend) {
         const pendingItem: PendingInvoiceDetail = {

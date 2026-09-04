@@ -59,7 +59,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private _fb: FormBuilder) {
     this.form = this._fb.group({
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^\S+$/)]],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.pattern(/^\S+$/)]
+      ],
       password: ['', [Validators.required]]
     });
   }
@@ -112,7 +115,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     const input = event.target as HTMLInputElement;
     this.form
       .get('email')
-      ?.setValue(input.value.toLowerCase().replace(/\s/g, ''), { emitEvent: false });
+      ?.setValue(input.value.toLowerCase().replace(/\s/g, ''), {
+        emitEvent: false
+      });
   }
 
   login(): void {
@@ -125,7 +130,11 @@ export class LoginComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.loginError = false;
         const msg: string = error?.error?.message || error?.message || '';
-        if (msg.includes('suspendida') || msg.includes('expiró') || msg.includes('verificar')) {
+        if (
+          msg.includes('suspendida') ||
+          msg.includes('expiró') ||
+          msg.includes('verificar')
+        ) {
           this._notificationsService.showNotification('error', msg);
         } else {
           this.loginError = true;
