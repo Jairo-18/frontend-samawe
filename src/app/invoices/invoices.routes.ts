@@ -33,6 +33,11 @@ export const invoicesRoutes: Routes = [
             data: { category: 'purchases' }
           },
           {
+            path: 'support-documents',
+            component: SeeInvoicesComponent,
+            data: { category: 'support' }
+          },
+          {
             path: 'quotes',
             component: SeeInvoicesComponent,
             data: { category: 'quotes' }

@@ -84,6 +84,19 @@ export class InvoiceService {
     );
   }
 
+  /**
+   * Emite el documento soporte de una factura de compra. Al validarlo la DIAN,
+   * el backend reclasifica la factura de FC a DSE.
+   */
+  emitSupportDocument(
+    invoiceId: number
+  ): Observable<{ success: boolean; data: any }> {
+    return this._httpClient.post<{ success: boolean; data: any }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/support-document`,
+      {}
+    );
+  }
+
   createCreditNote(
     invoiceId: number,
     body: CreateCreditNotePayload

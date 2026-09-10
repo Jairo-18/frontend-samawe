@@ -269,6 +269,15 @@
                   <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
                 </button>
                 }
+                @if (canEmitSupportDocument(invoice)) {
+                <button mat-menu-item [disabled]="sendingFactusIds.has(invoice.invoiceId)"
+                  (click)="emitSupportDocument(invoice)">
+                  <mat-icon class="blue-color">receipt</mat-icon>
+                  <span>{{ (sendingFactusIds.has(invoice.invoiceId)
+                    ? 'invoice.list.support_sending'
+                    : 'invoice.list.action_support_document') | translate }}</span>
+                </button>
+                }
                 @if (!invoice.factusNumber) {
                 <button mat-menu-item (click)="openDeleteInvoiceDialog(invoice.invoiceId)">
                   <mat-icon class="red-color">delete</mat-icon>
@@ -565,6 +574,15 @@
                   <button mat-menu-item (click)="openCreditNoteDialog(selectedInvoice)">
                     <mat-icon class="blue-color">note_alt</mat-icon>
                     <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
+                  </button>
+                  }
+                  @if (canEmitSupportDocument(selectedInvoice)) {
+                  <button mat-menu-item [disabled]="sendingFactusIds.has(selectedInvoice?.invoiceId)"
+                    (click)="emitSupportDocument(selectedInvoice)">
+                    <mat-icon class="blue-color">receipt</mat-icon>
+                    <span>{{ (sendingFactusIds.has(selectedInvoice?.invoiceId)
+                      ? 'invoice.list.support_sending'
+                      : 'invoice.list.action_support_document') | translate }}</span>
                   </button>
                   }
                   @if (!selectedInvoice?.factusNumber) {

@@ -3,6 +3,7 @@ import { SeeUsersComponent } from './pages/see-users/see-users.component';
 import { SeeTypesComponent } from './pages/see-types/see-types.component';
 import { CreateOrEditUsersComponent } from './pages/create-or-edit-users/create-or-edit-users.component';
 import { ApplicationManageComponent } from './pages/application-manage/application-manage.component';
+import { FactusNumberingComponent } from './pages/factus-numbering/factus-numbering.component';
 export const organizationalRoutes: Routes = [
   {
     path: '',
@@ -15,6 +16,10 @@ export const organizationalRoutes: Routes = [
       {
         path: 'application',
         component: ApplicationManageComponent
+      },
+      {
+        path: 'numbering',
+        component: FactusNumberingComponent
       },
       {
         path: 'users',

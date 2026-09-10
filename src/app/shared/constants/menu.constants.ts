@@ -79,6 +79,12 @@ export const MENU_CONST: MenuInterface[] = [
             icon: 'shopping_cart'
           },
           {
+            name: 'Documentos soporte',
+            titleKey: 'sidebar.invoices_support',
+            route: '/invoice/invoices/support-documents',
+            icon: 'receipt'
+          },
+          {
             name: 'Cotizaciones',
             titleKey: 'sidebar.invoices_quotes',
             route: '/invoice/invoices/quotes',
@@ -185,6 +191,13 @@ export const MENU_CONST: MenuInterface[] = [
         route: '/organizational/application',
         icon: 'settings',
         order: 2
+      },
+      {
+        name: 'Numeración DIAN',
+        titleKey: 'sidebar.numbering',
+        route: '/organizational/numbering',
+        icon: 'confirmation_number',
+        order: 3
       }
     ]
   }
@@ -196,10 +209,14 @@ const ADMIN_ITEMS = [
   'Menú',
   'Gestión',
   'Aplicación',
+  // La vista es de consulta para ADMIN; el backend solo deja CAMBIAR el rango
+  // elegido a SUPERADMIN.
+  'Numeración DIAN',
   'Facturación',
   'Facturación electrónica',
   'Facturas de venta',
   'Facturas de compra',
+  'Documentos soporte',
   'Cotizaciones',
   'Reportes / Ganancias',
   'Inicio',

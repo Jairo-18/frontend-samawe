@@ -85,7 +85,8 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
 
   /** Vista actual: cada ruta del side fija una categoría de factura. */
-  category: 'electronic' | 'sales' | 'purchases' | 'quotes' = 'sales';
+  category: 'electronic' | 'sales' | 'purchases' | 'support' | 'quotes' =
+    'sales';
   /** Código de tipo de factura asociado a la categoría (FVE/FV/FC). */
   private categoryTypeCode = 'FV';
   /** Id del tipo de factura resuelto desde relatedData; filtra la lista. */
@@ -235,6 +236,11 @@ export class SeeInvoicesComponent implements OnInit {
         title: 'invoice.list.title_purchases',
         subtitle: 'invoice.list.subtitle_purchases'
       },
+      support: {
+        code: 'DSE',
+        title: 'invoice.list.title_support',
+        subtitle: 'invoice.list.subtitle_support'
+      },
       quotes: {
         code: 'CO',
         title: 'invoice.list.title_quotes',
@@ -245,6 +251,7 @@ export class SeeInvoicesComponent implements OnInit {
       | 'electronic'
       | 'sales'
       | 'purchases'
+      | 'support'
       | 'quotes'
       | undefined;
     this.category = fromRoute ?? 'sales';
@@ -530,6 +537,54 @@ export class SeeInvoicesComponent implements OnInit {
         this.sendingFactusIds.delete(invoice.invoiceId);
         const msg = err?.error?.message ?? 'invoice.list.factus_error_title';
         this._notifications.showNotification('error', msg, 'invoice.list.factus_error_title');
+      }
+    });
+  }
+
+  /**
+   * ¿Se le puede emitir documento soporte a esta factura? Solo compras (FC) y
+   * documentos soporte aún sin emitir.
+   *
+   * OJO: el documento soporte es para compras a proveedores **no obligados a
+   * facturar**. Si el proveedor emite factura electrónica, lo que corresponde
+   * es recibir su factura, no emitirle un documento soporte. Esa parte la
+   * decide quien factura; aquí solo se ofrece la acción.
+   */
+  canEmitSupportDocument(invoice: any): boolean {
+    const code = invoice?.invoiceType?.code;
+    return (code === 'FC' || code === 'DSE') && !invoice?.factusNumber;
+  }
+
+  emitSupportDocument(invoice: any): void {
+    if (
+      !this.canEmitSupportDocument(invoice) ||
+      this.sendingFactusIds.has(invoice.invoiceId)
+    ) {
+      return;
+    }
+    this.sendingFactusIds.add(invoice.invoiceId);
+    this._invoiceService.emitSupportDocument(invoice.invoiceId).subscribe({
+      next: (res) => {
+        this.sendingFactusIds.delete(invoice.invoiceId);
+        invoice.factusNumber = res.data?.number ?? res.data?.referenceCode;
+        this._notifications.showNotification(
+          'success',
+          'invoice.list.support_success_msg',
+          'invoice.list.support_success_title'
+        );
+        // El tipo cambió de FC a DSE en el backend, así que la factura ya no
+        // pertenece a esta lista: se recarga para que no quede una fila
+        // fantasma con datos viejos.
+        this.loadInvoices();
+      },
+      error: (err) => {
+        this.sendingFactusIds.delete(invoice.invoiceId);
+        const msg = err?.error?.message ?? 'invoice.list.support_error_title';
+        this._notifications.showNotification(
+          'error',
+          msg,
+          'invoice.list.support_error_title'
+        );
       }
     });
   }

@@ -40,3 +40,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+# Graphify (grafo de conocimiento del codigo, regenerable con `graphify update src`)
+graphify-out/
