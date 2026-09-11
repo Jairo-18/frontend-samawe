@@ -27,6 +27,18 @@ export class SeoService {
   /** Evita duplicar la suscripción a NavigationEnd si applyFromOrg se llama más de una vez. */
   private _urlSyncStarted = false;
 
+  /**
+   * Ruta para la que una página ya fijó su propio título/descripción.
+   *
+   * `applyFromOrg` (datos de la organización) y `updatePage` (datos de la
+   * página) escriben las mismas etiquetas, y ambas dependen de respuestas HTTP:
+   * durante el SSR el orden es impredecible y ganaba la última en llegar. El
+   * resultado era que la ficha de un alojamiento salía unas veces con su título
+   * —"Cabaña de piedra · Alojamiento en Mocoa"— y otras con el genérico del
+   * hotel, sin patrón aparente. Con esta marca, lo específico siempre gana.
+   */
+  private _pageTitlePath: string | null = null;
+
   private _resolve(field: TranslatedField | undefined): string {
     if (!field) return '';
     const lang = this._lang.lang();
@@ -84,16 +96,22 @@ export class SeoService {
     const description = this._resolve(org.metaDescription).trim() || this._resolve(org.description);
     const image = this._resolveOgImage(org);
 
-    this._title.setTitle(title);
-    this._updateMeta('name', 'description', description);
+    // Lo que no depende de la página se escribe siempre.
     this._updateMeta('name', 'theme-color', org.primaryColor || '#2E7D32');
-    this._updateMeta('property', 'og:title', title);
-    this._updateMeta('property', 'og:description', description);
     this._updateMeta('property', 'og:image', image);
     this._updateMeta('property', 'og:site_name', org.name);
-    this._updateMeta('name', 'twitter:title', title);
-    this._updateMeta('name', 'twitter:description', description);
     this._updateMeta('name', 'twitter:image', image);
+
+    // Título y descripción solo si la página no puso ya los suyos.
+    if (this._pageTitlePath !== this._currentPath()) {
+      this._title.setTitle(title);
+      this._updateMeta('name', 'description', description);
+      this._updateMeta('property', 'og:title', title);
+      this._updateMeta('property', 'og:description', description);
+      this._updateMeta('name', 'twitter:title', title);
+      this._updateMeta('name', 'twitter:description', description);
+    }
+
     this._syncUrls();
     this._startUrlSync();
   }
@@ -103,6 +121,9 @@ export class SeoService {
     const resolvedTitle = this._withBrand(rawTitle);
     const resolvedDesc = description ? (typeof description === 'string' ? description : this._resolve(description)) : '';
     if (resolvedTitle) {
+      // Marca la ruta como "ya tiene título propio" para que los datos de la
+      // organización no lo pisen si llegan después.
+      this._pageTitlePath = this._currentPath();
       this._title.setTitle(resolvedTitle);
       this._updateMeta('property', 'og:title', resolvedTitle);
       this._updateMeta('name', 'twitter:title', resolvedTitle);

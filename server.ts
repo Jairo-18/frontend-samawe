@@ -13,14 +13,54 @@ app.disable('x-powered-by');
 // Compresión gzip/brotli de todo lo que sirve el SSR: el HTML renderizado y los
 // bundles de `express.static`.
 //
-// Va lo primero para envolver a los middlewares posteriores. Sin esto el
-// arranque en frío se lleva los ~2,1 MB del bundle inicial en crudo; el
-// "estimated transfer size" que reporta `ng build` (~465 kB) da por hecho que
-// el servidor comprime, cosa que este no hacía. Es el mayor ahorro de red de
-// toda la aplicación, y lo paga cada visitante del sitio público.
+// Va lo primero para envolver a los middlewares posteriores. Ojo con la
+// expectativa: Cloudflare ya sirve brotli al visitante, así que esto NO cambia
+// lo que descarga el usuario final; ahorra ancho de banda en el tramo
+// origen → CDN y cubre el caso de que algo no pase por Cloudflare.
 app.use(compression({ threshold: 1024 }));
 
-const angularApp = new AngularNodeAppEngine();
+/**
+ * Estas dos piezas —`trustProxyHeaders` y el middleware de abajo— son las que
+ * hacen que el SSR funcione DETRÁS DE TRAEFIK. Sin ellas el servidor responde
+ * 200 con `index.csr.html` y `<app-root></app-root>` vacío en lugar del HTML
+ * renderizado.
+ *
+ * El fallo era invisible desde el navegador (la app hidrata igual) pero
+ * Googlebot, Bing y los previsualizadores de enlaces recibían una página en
+ * blanco, y con ella se perdía todo lo que hace `SeoService`: title por página,
+ * canonical y hreflang. En los logs del contenedor solo se veía
+ * "Received x-forwarded-server header but trustProxyHeaders was not set up".
+ *
+ * Angular descarta cualquier `X-Forwarded-*` que no tenga autorizada, y al
+ * hacerlo deja de renderizar. Traefik manda cinco (`proto`, `host`, `for`,
+ * `port`, `server`), así que se confía en todas: el único cliente que llega a
+ * este proceso es Traefik, que las reescribe en cada salto, y el contenedor no
+ * está expuesto directamente a internet.
+ */
+const angularApp = new AngularNodeAppEngine({
+  trustProxyHeaders: true,
+});
+
+/**
+ * `X-Forwarded-Server` es la excepción: **tumba el render aunque
+ * `trustProxyHeaders` sea `true`**. Se aisló probando las cinco cabeceras una a
+ * una contra el build de producción:
+ *
+ *   sin cabeceras / proto / host / for / port  → renderiza
+ *   + x-forwarded-server                       → NO renderiza
+ *
+ * Falla con cualquier valor, incluido un host que sí está en `allowedHosts`, o
+ * sea que no es validación de host: Angular no la admite y punto. Como no
+ * aporta nada al render —solo dice qué proxy atendió la petición— se descarta
+ * antes de llegar al engine.
+ *
+ * Se hace aquí y no con un middleware de Traefik para que el arreglo viaje con
+ * el repositorio y no dependa de la configuración de Dokploy.
+ */
+app.use((req, _res, next) => {
+  delete req.headers['x-forwarded-server'];
+  next();
+});
 
 const legacyRedirects: Record<string, string> = {
   '/nosotros':    '/es/about-us',

@@ -136,13 +136,36 @@ export class AccommodationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Título y descripción de la ficha, con contexto geográfico.
+   *
+   * Los alojamientos se llaman "CABAÑA 1", "SUITE PAREJA"… y nadie busca eso en
+   * Google. Con el nombre pelado, el título quedaba "Cabaña 1 | Eco Hotel
+   * Samawé" y la página no competía por nada. Añadiendo el lugar pasa a
+   * responder a las búsquedas que sí existen —"cabaña en Mocoa", "alojamiento
+   * en Putumayo"— sin tener que renombrar los alojamientos, que se usan también
+   * en facturación y en el calendario de reservas.
+   *
+   * La descripción propia del alojamiento manda cuando existe; el añadido solo
+   * cubre el caso de que esté vacía, para no dejar a todas las fichas con la
+   * misma descripción genérica.
+   */
   private _applySeo(): void {
     if (!this.accommodation) return;
+
+    const lang = this.langService.lang();
+    const place =
+      lang === 'en'
+        ? 'Lodging in Mocoa, Putumayo'
+        : 'Alojamiento en Mocoa, Putumayo';
+    const title = `${this._name()} · ${place}`;
+
     const description =
       this.accommodation.description ??
       this.org?.accommodationsDescription ??
       undefined;
-    this._seoService.updatePage(this.accommodation.name, description);
+
+    this._seoService.updatePage(title, description);
   }
 
   private _name(): string {

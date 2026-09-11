@@ -56,7 +56,20 @@ async function waitForServer() {
       );
     }
     try {
-      const res = await fetch(`http://localhost:${PORT}${PATH_TO_CHECK}`);
+      // Se piden las cabeceras `X-Forwarded-*` a propósito, porque es como
+      // llega la petición en producción a través de Traefik. Sin ellas este
+      // verificador daba OK mientras el sitio real servía el shell: Angular
+      // rechaza esas cabeceras si `trustProxyHeaders` no está configurado y
+      // deja de renderizar. Probar sin ellas es no probar el caso real.
+      const res = await fetch(`http://localhost:${PORT}${PATH_TO_CHECK}`, {
+        headers: {
+          'x-forwarded-proto': 'https',
+          'x-forwarded-host': 'ecohotelsamawe.com',
+          'x-forwarded-for': '203.0.113.10',
+          'x-forwarded-port': '443',
+          'x-forwarded-server': 'traefik',
+        },
+      });
       if (res.ok) return res.text();
     } catch {
       // todavía levantando
