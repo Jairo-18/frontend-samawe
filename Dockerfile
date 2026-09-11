@@ -9,12 +9,16 @@ RUN pnpm install
 FROM deps AS builder-production
 WORKDIR /app
 COPY . .
-RUN pnpm exec ng build --configuration production && node scripts/fix-ssr-manifest.mjs
+RUN pnpm exec ng build --configuration production \
+ && node scripts/fix-ssr-manifest.mjs \
+ && node scripts/verify-ssr.mjs
 
 FROM deps AS builder-development
 WORKDIR /app
 COPY . .
-RUN pnpm exec ng build --configuration development && node scripts/fix-ssr-manifest.mjs
+RUN pnpm exec ng build --configuration development \
+ && node scripts/fix-ssr-manifest.mjs \
+ && node scripts/verify-ssr.mjs
 
 FROM node:22-alpine AS prod-deps
 WORKDIR /app

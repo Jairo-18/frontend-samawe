@@ -254,7 +254,11 @@
                   <mat-icon class="blue-color">edit_document</mat-icon>
                   <span>{{ 'invoice.list.action_edit' | translate }}</span>
                 </button>
-                <button mat-menu-item [routerLink]="['..', invoice.invoiceId, 'edit']">
+                <!-- `from` deja constancia de la lista de origen para que el
+                     botón de volver del detalle regrese aquí, aunque la factura
+                     cambie de tipo al emitirse. -->
+                <button mat-menu-item [routerLink]="['..', invoice.invoiceId, 'edit']"
+                  [queryParams]="{ from: category }">
                   <mat-icon class="blue-color">{{ invoice.factusNumber ? 'visibility' : 'edit' }}</mat-icon>
                   <span>{{ (invoice.factusNumber ? 'invoice.list.action_view_details' : 'invoice.list.action_details') |
                     translate }}</span>
@@ -561,7 +565,8 @@
                     <mat-icon class="blue-color">edit_document</mat-icon>
                     <span>{{ 'invoice.list.action_edit' | translate }}</span>
                   </button>
-                  <button mat-menu-item [routerLink]="['..', selectedInvoice?.invoiceId, 'edit']">
+                  <button mat-menu-item [routerLink]="['..', selectedInvoice?.invoiceId, 'edit']"
+                    [queryParams]="{ from: category }">
                     <mat-icon class="blue-color">{{ selectedInvoice?.factusNumber ? 'visibility' : 'edit' }}</mat-icon>
                     <span>{{ (selectedInvoice?.factusNumber ? 'invoice.list.action_view_details' :
                       'invoice.list.action_details') | translate }}</span>

@@ -304,13 +304,36 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     return !!this.invoiceData?.factusNumber;
   }
 
-  /** Ruta de regreso a la lista correspondiente según el tipo de factura. */
+  /**
+   * Ruta de regreso a la lista de la que se vino.
+   *
+   * Prioriza el query param `from` que pone el listado al abrir el detalle,
+   * porque deducirlo del tipo falla en dos casos reales: mientras la factura
+   * aún no ha cargado (`invoiceData` es undefined y se caía al listado de
+   * ventas), y cuando el tipo cambió al emitir —una compra que pasa a DSE
+   * devolvía a ventas en vez de a compras—.
+   */
   get backRoute(): string {
+    const CATEGORY_ROUTES: Record<string, string> = {
+      electronic: '/invoice/invoices/electronic',
+      sales: '/invoice/invoices/sales',
+      purchases: '/invoice/invoices/purchases',
+      support: '/invoice/invoices/support-documents',
+      quotes: '/invoice/invoices/quotes'
+    };
+
+    const from = this._route.snapshot.queryParamMap.get('from');
+    if (from && CATEGORY_ROUTES[from]) return CATEGORY_ROUTES[from];
+
     const code = this.invoiceData?.invoiceType?.code;
-    if (code === 'FVE') return '/invoice/invoices/electronic';
-    if (code === 'FC') return '/invoice/invoices/purchases';
-    if (code === 'CO') return '/invoice/invoices/quotes';
-    return '/invoice/invoices/sales';
+    const BY_TYPE: Record<string, string> = {
+      FVE: CATEGORY_ROUTES['electronic'],
+      FV: CATEGORY_ROUTES['sales'],
+      FC: CATEGORY_ROUTES['purchases'],
+      DSE: CATEGORY_ROUTES['support'],
+      CO: CATEGORY_ROUTES['quotes']
+    };
+    return (code && BY_TYPE[code]) || CATEGORY_ROUTES['sales'];
   }
 
   onInvoiceDateChange(event: MatDatepickerInputEvent<Date>): void {

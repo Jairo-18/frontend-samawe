@@ -328,6 +328,11 @@ export class SeeInvoicesComponent implements OnInit {
         width: isMobile ? '90vw' : '60vw',
         data: {
           editMode: false,
+          // La vista ya dice qué se está creando: en Cotizaciones nace una
+          // cotización, en Compras una compra. `categoryTypeId` lo resolvió
+          // loadRelatedData a partir del `code` de la categoría.
+          defaultInvoiceTypeId: this.categoryTypeId,
+          defaultInvoiceElectronic: this.category === 'electronic',
           relatedData: {
             invoiceType: this.invoiceTypeOptions,
             payType: this.getOptions('payTypeId'),

@@ -131,34 +131,40 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    padding: 10px;
+    // `!important` porque ngx-toastr trae `padding: 15px 15px 15px 50px` en
+    // `.toast-container .ngx-toastr`, con la misma especificidad que esta regla:
+    // ese padding-left de 50px reservaba hueco para un icono que aquí va en el
+    // flujo, y dejaba el texto despegado de los bordes.
+    padding: 10px 12px !important;
+    width: auto !important;
     overflow: hidden;
     position: relative;
     animation: slideInRight 0.2s ease-in forwards;
 
     @media (max-width: 768px) {
       max-width: 280px;
-      padding: 7px 8px;
+      padding: 8px 10px !important;
       margin: 6px;
     }
 
     .toast-icon {
-      font-size: 1.5rem;
-      position: absolute;
-      top: 8px;
-      left: 10px;
+      font-size: 1.35rem;
+      // En el flujo, no `absolute`: así el espacio entre icono y texto lo da el
+      // gap y el padding del toast se puede ajustar sin descuadrar nada.
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      margin-right: 10px;
 
       @media (max-width: 768px) {
         font-size: 1.1rem;
-        top: 6px;
-        left: 8px;
+        margin-right: 8px;
       }
     }
 
     .toast-body {
       display: flex;
       flex-direction: column;
-      // margin-left: 40px;
       border-radius: 16px;
 
       .toast-title {

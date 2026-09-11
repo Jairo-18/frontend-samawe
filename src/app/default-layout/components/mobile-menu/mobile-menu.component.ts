@@ -155,33 +155,12 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       const servicios = allItems.find(
         (i) => i.name === 'Productos y Servicios'
       );
-      // Facturación es un grupo de 4 vistas. En móvil el slot 4 abre un popup
-      // con las 4 (igual que Ajustes), si el rol tiene permiso de facturación.
-      const canInvoices = allowedItems.includes('Facturas de venta');
-      this.invoicingItems = canInvoices
-        ? [
-            {
-              title: 'sidebar.invoices_electronic',
-              route: '/invoice/invoices/electronic',
-              icon: 'receipt_long'
-            },
-            {
-              title: 'sidebar.invoices_sales',
-              route: '/invoice/invoices/sales',
-              icon: 'point_of_sale'
-            },
-            {
-              title: 'sidebar.invoices_purchases',
-              route: '/invoice/invoices/purchases',
-              icon: 'shopping_cart'
-            },
-            {
-              title: 'sidebar.invoices_quotes',
-              route: '/invoice/invoices/quotes',
-              icon: 'request_quote'
-            }
-          ]
-        : [];
+      // Facturación es un grupo de vistas: en móvil el slot 4 abre un popup con
+      // ellas (igual que Ajustes). Se derivan de MENU_CONST en vez de repetirse
+      // aquí — cuando estaban duplicadas, añadir una vista al escritorio la
+      // dejaba fuera del móvil sin que nadie se diera cuenta.
+      this.invoicingItems = this.buildInvoicingItems(allowedItems);
+      const canInvoices = this.invoicingItems.length > 0;
       const facturas: ItemInterface | undefined = canInvoices
         ? {
             name: 'Facturación',
@@ -220,7 +199,63 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
         finalItems[3] = { ...restaurante, titleKey: 'sidebar.restaurant' };
     }
 
-    this.loggedMenuItems = MOBILE_LOGGED_CONST[roleCode || ''] || [];
+    // El popup de Ajustes lleva, además de su lista propia, las vistas del
+    // Panel de Administrador (Gestión, Aplicación, Numeración DIAN): en la barra
+    // inferior no hay slot para ellas y quedaban sin acceso en móvil. Van al
+    // final y bajo su propio encabezado: son ajustes puntuales, no accesos del
+    // día a día, y así el desplegable se recorre sin mezclarlo todo.
+    this.loggedMenuItems = [
+      ...(MOBILE_LOGGED_CONST[roleCode || ''] || []),
+      ...this.buildAdminItems(allowedItems, allowedModules)
+    ];
     this.menuItems = finalItems;
+  }
+
+  /** Sub-vistas del grupo "Facturación" que el rol tiene permitidas. */
+  private buildInvoicingItems(allowedItems: string[]): NavItem[] {
+    const group = MENU_CONST.flatMap((module) => module.items).find(
+      (item) => item.name === 'Facturación'
+    );
+    return (group?.subItems ?? [])
+      .filter((sub) => allowedItems.includes(sub.name) && !!sub.route)
+      .map((sub) => MobileMenuComponent.toNavItem(sub));
+  }
+
+  /**
+   * Vistas del Panel de Administrador permitidas para el rol, agrupadas bajo un
+   * encabezado. Van agrupadas —y no sueltas— porque el popup de Ajustes se hacía
+   * largo y mezclaba administración con accesos del día a día; la plantilla ya
+   * sabe pintar un `NavItem` con `children` como sección con título.
+   */
+  private buildAdminItems(
+    allowedItems: string[],
+    allowedModules: string[]
+  ): NavItem[] {
+    const MODULE = 'Panel de Administrador';
+    if (!allowedModules.includes(MODULE)) return [];
+
+    const children = MENU_CONST.filter((module) => module.module === MODULE)
+      .flatMap((module) => module.items)
+      .filter((item) => allowedItems.includes(item.name) && !!item.route)
+      .map((item) => MobileMenuComponent.toNavItem(item));
+
+    if (!children.length) return [];
+    return [{ title: 'sidebar.admin_section', children }];
+  }
+
+  /**
+   * El menú de escritorio nombra el rótulo `titleKey`; los popups del móvil lo
+   * esperan en `title`. La traducción la hace la plantilla en ambos casos.
+   */
+  private static toNavItem(item: {
+    titleKey?: string;
+    route?: string;
+    icon?: string;
+  }): NavItem {
+    return {
+      title: item.titleKey ?? '',
+      route: item.route ?? '',
+      icon: item.icon ?? ''
+    };
   }
 }

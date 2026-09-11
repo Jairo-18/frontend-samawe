@@ -1,4 +1,5 @@
 import { AngularNodeAppEngine, createNodeRequestHandler, isMainModule, writeResponseToNodeResponse } from '@angular/ssr/node';
+import compression from 'compression';
 import express from 'express';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +9,17 @@ const browserDistFolder = resolve(serverDistFolder, '../browser');
 
 const app = express();
 app.disable('x-powered-by');
+
+// Compresión gzip/brotli de todo lo que sirve el SSR: el HTML renderizado y los
+// bundles de `express.static`.
+//
+// Va lo primero para envolver a los middlewares posteriores. Sin esto el
+// arranque en frío se lleva los ~2,1 MB del bundle inicial en crudo; el
+// "estimated transfer size" que reporta `ng build` (~465 kB) da por hecho que
+// el servidor comprime, cosa que este no hacía. Es el mayor ahorro de red de
+// toda la aplicación, y lo paga cada visitante del sitio público.
+app.use(compression({ threshold: 1024 }));
+
 const angularApp = new AngularNodeAppEngine();
 
 const legacyRedirects: Record<string, string> = {

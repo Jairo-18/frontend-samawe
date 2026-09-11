@@ -254,7 +254,8 @@
     "release_notes": "Release notes",
     "module_receptionist": "Receptionist Panel",
     "module_chef": "Chef / Waiter Panel",
-    "module_admin": "Administrator Panel"
+    "module_admin": "Administrator Panel",
+    "admin_section": "Administration"
   },
   "release_notes": {
     "title": "Release notes",
@@ -768,6 +769,7 @@
       "refreshed": "Numbering refreshed from Factus",
       "saved": "Range saved",
       "save_error": "Could not save the range",
+      "save_error_title": "Numbering unchanged",
       "load_error": "Could not read the numbering from Factus",
       "kind_sales": "Sales invoice",
       "kind_credit_note": "Credit note",

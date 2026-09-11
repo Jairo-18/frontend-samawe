@@ -254,7 +254,8 @@
     "release_notes": "Notas de versión",
     "module_receptionist": "Panel de Recepcionista",
     "module_chef": "Panel de Chef / Mesero",
-    "module_admin": "Panel de Administrador"
+    "module_admin": "Panel de Administrador",
+    "admin_section": "Administración"
   },
   "release_notes": {
     "title": "Notas de versión",
@@ -768,6 +769,7 @@
       "refreshed": "Numeración actualizada desde Factus",
       "saved": "Rango guardado",
       "save_error": "No se pudo guardar el rango",
+      "save_error_title": "Numeración sin cambios",
       "load_error": "No se pudo consultar la numeración en Factus",
       "kind_sales": "Factura de venta",
       "kind_credit_note": "Nota crédito",

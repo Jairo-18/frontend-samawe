@@ -5,10 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 import {
   FactusDocumentKind,
   FactusNumberingOverview,
@@ -66,7 +66,7 @@ const KINDS: {
 })
 export class FactusNumberingComponent implements OnInit {
   private readonly _service = inject(FactusNumberingService);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _notifications = inject(NotificationsService);
   private readonly _translate = inject(TranslateService);
 
   readonly kinds = KINDS;
@@ -92,11 +92,17 @@ export class FactusNumberingComponent implements OnInit {
         this.overview = res.data;
         this.loading = false;
         if (refresh) {
-          this.toast('organizational.numbering.refreshed');
+          this._notifications.showNotification(
+            'success',
+            'organizational.numbering.refreshed',
+            'organizational.numbering.title'
+          );
         }
       },
       error: (err) => {
         this.loading = false;
+        // El error de carga se muestra en la propia página (no como toast):
+        // suele ser Factus caído o sin rango, y hay que poder leerlo con calma.
         this.loadError =
           err?.error?.message ??
           this._translate.instant('organizational.numbering.load_error');
@@ -145,14 +151,23 @@ export class FactusNumberingComponent implements OnInit {
       next: (res) => {
         this.overview = res.data;
         this.saving = false;
-        this.toast('organizational.numbering.saved');
+        this._notifications.showNotification(
+          'success',
+          'organizational.numbering.saved',
+          this._translate.instant(
+            this.kinds.find((k) => k.kind === kind)?.labelKey ??
+              'organizational.numbering.title'
+          )
+        );
       },
       error: (err) => {
         this.saving = false;
-        this.toast(
-          err?.error?.message ??
-            this._translate.instant('organizational.numbering.save_error'),
-          true
+        this._notifications.showNotification(
+          'error',
+          // El backend explica POR QUÉ se rechazó (rango de otro documento,
+          // vencido, inexistente): ese mensaje vale más que uno genérico.
+          err?.error?.message ?? 'organizational.numbering.save_error',
+          'organizational.numbering.save_error_title'
         );
         // Se recarga para que el desplegable no quede mostrando algo que no se
         // guardó.
@@ -176,15 +191,5 @@ export class FactusNumberingComponent implements OnInit {
 
   statusKey(status: FactusNumberingRange['status']): string {
     return `organizational.numbering.status_${status}`;
-  }
-
-  private toast(messageOrKey: string, isError = false): void {
-    const message = messageOrKey.includes(' ')
-      ? messageOrKey
-      : this._translate.instant(messageOrKey);
-    this._snackBar.open(message, 'OK', {
-      duration: isError ? 8000 : 3000,
-      panelClass: isError ? ['snack-error'] : undefined
-    });
   }
 }

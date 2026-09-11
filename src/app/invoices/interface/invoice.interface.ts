@@ -119,6 +119,15 @@ export interface InvoiceComplete {
 export interface DialogData {
   editMode: boolean;
   invoiceId?: number;
+  /**
+   * Tipo con el que se abre el diálogo al CREAR: lo fija la vista desde la que
+   * se pulsó "Crear" (en Cotizaciones nace cotización, en Compras nace compra…),
+   * para no obligar a elegir a mano lo que el contexto ya dice. Sigue siendo
+   * editable.
+   */
+  defaultInvoiceTypeId?: number | null;
+  /** Marca inicial de "factura electrónica"; solo se activa en esa vista. */
+  defaultInvoiceElectronic?: boolean;
   relatedData: {
     invoiceType?: InvoiceType[];
     paidType: PaidType[];

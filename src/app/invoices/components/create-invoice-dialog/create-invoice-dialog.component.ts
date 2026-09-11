@@ -130,8 +130,27 @@ export class CreateInvoiceDialogComponent implements OnInit {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
     } else {
+      this.applyDefaultsFromView();
       this.setupClientAutocomplete();
     }
+  }
+
+  /**
+   * Preselecciona el tipo según la vista desde la que se abrió el diálogo. Solo
+   * se aplica si ese tipo existe en el catálogo recibido: si no, se deja vacío
+   * para que el usuario elija, en vez de dejar el formulario con un id inválido.
+   */
+  private applyDefaultsFromView(): void {
+    const defaultTypeId = this.data.defaultInvoiceTypeId;
+    const exists = this.invoiceTypes.some(
+      (t) => Number(t.invoiceTypeId) === Number(defaultTypeId)
+    );
+    if (defaultTypeId && exists) {
+      this.form.patchValue({ invoiceTypeId: defaultTypeId });
+    }
+    this.form.patchValue({
+      invoiceElectronic: !!this.data.defaultInvoiceElectronic
+    });
   }
 
   private loadInvoiceData(invoiceId: number): void {
