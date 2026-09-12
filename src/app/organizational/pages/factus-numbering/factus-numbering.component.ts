@@ -16,7 +16,10 @@ import {
   FactusNumberingService
 } from '../../services/factus-numbering.service';
 
-/** Los tres documentos que el sistema emite, en el orden en que se muestran. */
+/**
+ * Los cinco documentos que el sistema emite, agrupados como los piensa el
+ * negocio: primero la venta y sus dos notas, luego la compra y la suya.
+ */
 const KINDS: {
   kind: FactusDocumentKind;
   labelKey: string;
@@ -33,9 +36,19 @@ const KINDS: {
     icon: 'note_alt'
   },
   {
+    kind: 'debitNote',
+    labelKey: 'organizational.numbering.kind_debit_note',
+    icon: 'trending_up'
+  },
+  {
     kind: 'supportDocument',
     labelKey: 'organizational.numbering.kind_support',
     icon: 'shopping_cart'
+  },
+  {
+    kind: 'adjustmentNote',
+    labelKey: 'organizational.numbering.kind_adjustment_note',
+    icon: 'tune'
   }
 ];
 
@@ -122,7 +135,7 @@ export class FactusNumberingComponent implements OnInit {
     return (this.overview?.ranges ?? []).filter((r) => r.kind === kind);
   }
 
-  /** Rangos que Factus reporta pero que este sistema no emite (nota débito…). */
+  /** Rangos que Factus reporta y que este sistema no emite (nómina, por ejemplo). */
   get otherRanges(): FactusNumberingRange[] {
     return (this.overview?.ranges ?? []).filter((r) => r.kind === null);
   }

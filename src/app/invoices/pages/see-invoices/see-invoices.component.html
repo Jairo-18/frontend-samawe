@@ -273,6 +273,13 @@
                   <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
                 </button>
                 }
+                <!-- Nota débito: solo ventas emitidas (suma valor). -->
+                @if (canEmitDebitNote(invoice)) {
+                <button mat-menu-item (click)="openDebitNoteDialog(invoice)">
+                  <mat-icon class="blue-color">trending_up</mat-icon>
+                  <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
+                </button>
+                }
                 @if (canEmitSupportDocument(invoice)) {
                 <button mat-menu-item [disabled]="sendingFactusIds.has(invoice.invoiceId)"
                   (click)="emitSupportDocument(invoice)">
@@ -280,6 +287,13 @@
                   <span>{{ (sendingFactusIds.has(invoice.invoiceId)
                     ? 'invoice.list.support_sending'
                     : 'invoice.list.action_support_document') | translate }}</span>
+                </button>
+                }
+                <!-- Nota de ajuste: única forma de corregir un DSE validado. -->
+                @if (canEmitAdjustmentNote(invoice)) {
+                <button mat-menu-item (click)="openAdjustmentNoteDialog(invoice)">
+                  <mat-icon class="blue-color">tune</mat-icon>
+                  <span>{{ 'invoice.list.action_adjustment_note' | translate }}</span>
                 </button>
                 }
                 @if (!invoice.factusNumber) {
@@ -581,6 +595,12 @@
                     <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
                   </button>
                   }
+                  @if (canEmitDebitNote(selectedInvoice)) {
+                  <button mat-menu-item (click)="openDebitNoteDialog(selectedInvoice)">
+                    <mat-icon class="blue-color">trending_up</mat-icon>
+                    <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
+                  </button>
+                  }
                   @if (canEmitSupportDocument(selectedInvoice)) {
                   <button mat-menu-item [disabled]="sendingFactusIds.has(selectedInvoice?.invoiceId)"
                     (click)="emitSupportDocument(selectedInvoice)">
@@ -588,6 +608,12 @@
                     <span>{{ (sendingFactusIds.has(selectedInvoice?.invoiceId)
                       ? 'invoice.list.support_sending'
                       : 'invoice.list.action_support_document') | translate }}</span>
+                  </button>
+                  }
+                  @if (canEmitAdjustmentNote(selectedInvoice)) {
+                  <button mat-menu-item (click)="openAdjustmentNoteDialog(selectedInvoice)">
+                    <mat-icon class="blue-color">tune</mat-icon>
+                    <span>{{ 'invoice.list.action_adjustment_note' | translate }}</span>
                   </button>
                   }
                   @if (!selectedInvoice?.factusNumber) {

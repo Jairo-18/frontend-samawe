@@ -4,18 +4,29 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 /** Familias de documento que el sistema emite. */
-export type FactusDocumentKind = 'sales' | 'creditNote' | 'supportDocument';
+export type FactusDocumentKind =
+  | 'sales'
+  | 'creditNote'
+  | 'debitNote'
+  | 'supportDocument'
+  | 'adjustmentNote';
 
 export interface FactusNumberingRange {
   id: number;
   kind: FactusDocumentKind | null;
   documentName: string;
   prefix: string;
-  from: number;
-  to: number;
+  /**
+   * Límites del rango. Son `null` en las notas crédito: la DIAN no expide
+   * resolución para ellas, así que el rango no tiene desde/hasta ni vigencia.
+   * La vista los muestra como «N/A», igual que el portal de Factus.
+   */
+  from: number | null;
+  to: number | null;
   /** Siguiente número que se emitirá (NO el último emitido). */
   current: number;
-  remaining: number;
+  /** Números sin usar; `null` cuando el rango no tiene tope. */
+  remaining: number | null;
   resolutionNumber: string | null;
   startDate: string | null;
   endDate: string | null;
@@ -25,11 +36,7 @@ export interface FactusNumberingRange {
   status: 'ok' | 'expiring' | 'expired' | 'inactive';
 }
 
-export interface FactusRangeSelection {
-  sales: number | null;
-  creditNote: number | null;
-  supportDocument: number | null;
-}
+export type FactusRangeSelection = Record<FactusDocumentKind, number | null>;
 
 export interface FactusNumberingOverview {
   ranges: FactusNumberingRange[];

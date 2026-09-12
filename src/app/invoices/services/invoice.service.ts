@@ -17,6 +17,16 @@ import {
   CreditNote,
   CreditNoteResult
 } from '../interface/creditNote.interface';
+import {
+  CreateDebitNotePayload,
+  DebitNote,
+  DebitNoteResult
+} from '../interface/debitNote.interface';
+import {
+  AdjustmentNote,
+  AdjustmentNoteResult,
+  CreateAdjustmentNotePayload
+} from '../interface/adjustmentNote.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import {
   PaginationInterface,
@@ -112,6 +122,47 @@ export class InvoiceService {
   ): Observable<{ success: boolean; data: CreditNote[] }> {
     return this._httpClient.get<{ success: boolean; data: CreditNote[] }>(
       `${environment.apiUrl}factus/invoices/${invoiceId}/credit-notes`
+    );
+  }
+
+  /** Nota débito: SUMA valor a una factura electrónica ya emitida. */
+  createDebitNote(
+    invoiceId: number,
+    body: CreateDebitNotePayload
+  ): Observable<{ success: boolean; data: DebitNoteResult }> {
+    return this._httpClient.post<{ success: boolean; data: DebitNoteResult }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/debit-notes`,
+      body
+    );
+  }
+
+  getDebitNotes(
+    invoiceId: number
+  ): Observable<{ success: boolean; data: DebitNote[] }> {
+    return this._httpClient.get<{ success: boolean; data: DebitNote[] }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/debit-notes`
+    );
+  }
+
+  /** Nota de ajuste: corrige o anula un DOCUMENTO SOPORTE ya emitido. */
+  createAdjustmentNote(
+    invoiceId: number,
+    body: CreateAdjustmentNotePayload
+  ): Observable<{ success: boolean; data: AdjustmentNoteResult }> {
+    return this._httpClient.post<{
+      success: boolean;
+      data: AdjustmentNoteResult;
+    }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/adjustment-notes`,
+      body
+    );
+  }
+
+  getAdjustmentNotes(
+    invoiceId: number
+  ): Observable<{ success: boolean; data: AdjustmentNote[] }> {
+    return this._httpClient.get<{ success: boolean; data: AdjustmentNote[] }>(
+      `${environment.apiUrl}factus/invoices/${invoiceId}/adjustment-notes`
     );
   }
 

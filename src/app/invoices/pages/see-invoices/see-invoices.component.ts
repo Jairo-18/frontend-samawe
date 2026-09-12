@@ -15,6 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { CreateInvoiceDialogComponent } from '../../components/create-invoice-dialog/create-invoice-dialog.component';
 import { CreditNoteDialogComponent } from '../../components/credit-note-dialog/credit-note-dialog.component';
+import { DebitNoteDialogComponent } from '../../components/debit-note-dialog/debit-note-dialog.component';
+import { AdjustmentNoteDialogComponent } from '../../components/adjustment-note-dialog/adjustment-note-dialog.component';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -383,6 +385,67 @@ export class SeeInvoicesComponent implements OnInit {
         factusNumber: invoice.factusNumber
       }
     });
+  }
+
+  /**
+   * Nota débito: solo sobre una factura de VENTA ya emitida. Suma valor, así
+   * que no tiene sentido sobre una compra ni sobre algo sin emitir.
+   */
+  canEmitDebitNote(invoice: any): boolean {
+    const code = invoice?.invoiceType?.code;
+    return !!invoice?.factusNumber && (code === 'FV' || code === 'FVE');
+  }
+
+  openDebitNoteDialog(invoice: any): void {
+    if (!this.canEmitDebitNote(invoice)) return;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
+    this._matDialog
+      .open(DebitNoteDialogComponent, {
+        width: isMobile ? '95vw' : '720px',
+        maxWidth: '95vw',
+        data: {
+          invoiceId: invoice.invoiceId,
+          invoiceCode: invoice.code,
+          factusNumber: invoice.factusNumber
+        }
+      })
+      .afterClosed()
+      .subscribe((emitted) => {
+        if (emitted) this.loadInvoices();
+      });
+  }
+
+  /**
+   * Nota de ajuste: solo sobre un DOCUMENTO SOPORTE ya emitido (tipo DSE con
+   * número). Es la única forma de corregir o anular uno validado.
+   */
+  canEmitAdjustmentNote(invoice: any): boolean {
+    return (
+      invoice?.invoiceType?.code === 'DSE' && !!invoice?.factusNumber
+    );
+  }
+
+  openAdjustmentNoteDialog(invoice: any): void {
+    if (!this.canEmitAdjustmentNote(invoice)) return;
+    const isMobile = isPlatformBrowser(this._platformId)
+      ? window.innerWidth <= 768
+      : false;
+    this._matDialog
+      .open(AdjustmentNoteDialogComponent, {
+        width: isMobile ? '95vw' : '560px',
+        maxWidth: '95vw',
+        data: {
+          invoiceId: invoice.invoiceId,
+          invoiceCode: invoice.code,
+          factusNumber: invoice.factusNumber
+        }
+      })
+      .afterClosed()
+      .subscribe((emitted) => {
+        if (emitted) this.loadInvoices();
+      });
   }
 
   private getOptions(fieldName: string): any[] {

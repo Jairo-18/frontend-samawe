@@ -1,0 +1,133 @@
+<app-base-dialog
+  [title]="'invoice.debit_note.title' | translate"
+  [description]="
+    ('invoice.debit_note.subtitle' | translate) +
+    ' ' +
+    (data.factusNumber || data.invoiceCode)
+  "
+>
+  <div form>
+    @if (loading) {
+      <app-loader></app-loader>
+    } @else if (result) {
+      <!-- Resultado de la emisión -->
+      <div class="flex flex-col items-center gap-2 py-4 text-center">
+        <mat-icon class="!w-12 !h-12 !text-[48px] text-green-600">check_circle</mat-icon>
+        <p class="text-lg font-bold">{{ 'invoice.debit_note.emitted' | translate }}</p>
+        <p class="text-sm">
+          {{ 'invoice.debit_note.number' | translate }}:
+          <strong>{{ result.number || result.referenceCode }}</strong>
+        </p>
+        <p class="text-sm">
+          {{ 'invoice.debit_note.total' | translate }}:
+          <strong>{{ result.total | formatCop }}</strong>
+        </p>
+        @if (result.cude) {
+          <p class="text-xs text-gray-500 break-all">CUDE: {{ result.cude }}</p>
+        }
+        @if (result.publicUrl) {
+          <a [href]="result.publicUrl" target="_blank" rel="noopener"
+            class="text-sm text-blue-600 underline">
+            {{ 'invoice.debit_note.view_official' | translate }}
+          </a>
+        }
+      </div>
+    } @else {
+      <!-- Aviso de dirección: es lo que más se confunde con la nota crédito -->
+      <p class="mb-3 flex items-start gap-2 text-sm text-amber-700">
+        <mat-icon class="!text-base !w-4 !h-4">trending_up</mat-icon>
+        {{ 'invoice.debit_note.hint' | translate }}
+      </p>
+
+      <!-- Notas débito ya emitidas -->
+      @if (existing.length) {
+        <div class="mb-4">
+          <p class="text-sm font-semibold mb-1">{{ 'invoice.debit_note.existing' | translate }}</p>
+          <ul class="flex flex-col gap-1">
+            @for (note of existing; track note.debitNoteId) {
+              <li class="flex items-center justify-between text-xs bg-gray-50 rounded px-2 py-1">
+                <span>{{ note.factusNumber || note.referenceCode }}</span>
+                <span class="font-semibold">{{ note.total | formatCop }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'invoice.debit_note.concept' | translate }}</mat-label>
+        <mat-select [(ngModel)]="conceptCode">
+          @for (c of concepts; track c.code) {
+            <mat-option [value]="c.code">{{ c.labelKey | translate }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <p class="text-sm font-semibold mb-1">{{ 'invoice.debit_note.charges' | translate }}</p>
+      <div class="flex flex-col gap-2 mb-2">
+        @for (row of rows; track $index) {
+          <div class="flex flex-wrap items-start gap-2 border border-gray-200 rounded px-2 py-2">
+            <mat-form-field appearance="outline" class="flex-1 !min-w-[160px] dense-field">
+              <mat-label>{{ 'invoice.debit_note.charge_name' | translate }}</mat-label>
+              <input matInput maxlength="200" [(ngModel)]="row.name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="!w-20 dense-field">
+              <mat-label>{{ 'invoice.debit_note.charge_qty' | translate }}</mat-label>
+              <input matInput type="number" min="0.01" step="1" [(ngModel)]="row.quantity" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="!w-32 dense-field">
+              <mat-label>{{ 'invoice.debit_note.charge_price' | translate }}</mat-label>
+              <input matInput type="number" min="0.01" step="1" [(ngModel)]="row.price" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="!w-32 dense-field">
+              <mat-label>{{ 'invoice.debit_note.charge_tax' | translate }}</mat-label>
+              <mat-select [(ngModel)]="row.taxRate">
+                @for (t of taxes; track t.rate) {
+                  <mat-option [value]="t.rate">{{ t.labelKey | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button mat-icon-button color="warn" type="button"
+              [matTooltip]="'invoice.debit_note.remove_charge' | translate"
+              (click)="removeRow($index)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <button mat-stroked-button type="button" class="mb-3" (click)="addRow()">
+        <mat-icon>add</mat-icon>
+        {{ 'invoice.debit_note.add_charge' | translate }}
+      </button>
+
+      <p class="mb-3 text-right text-sm">
+        {{ 'invoice.debit_note.total' | translate }}:
+        <strong>{{ total | formatCop }}</strong>
+      </p>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'invoice.debit_note.observation' | translate }}</mat-label>
+        <textarea matInput rows="2" maxlength="250" [(ngModel)]="observation"></textarea>
+      </mat-form-field>
+    }
+  </div>
+
+  <div actions>
+    <section class="flex w-full justify-end gap-2">
+      @if (result) {
+        <button mat-flat-button color="primary" (click)="close()">
+          {{ 'invoice.debit_note.done' | translate }}
+        </button>
+      } @else {
+        <button mat-stroked-button (click)="close()" [disabled]="submitting">
+          {{ 'invoice.debit_note.cancel' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="submit()" [disabled]="!canSubmit">
+          <mat-icon>trending_up</mat-icon>
+          {{ submitting ? ('invoice.debit_note.emitting' | translate) : ('invoice.debit_note.emit' | translate) }}
+        </button>
+      }
+    </section>
+  </div>
+</app-base-dialog>

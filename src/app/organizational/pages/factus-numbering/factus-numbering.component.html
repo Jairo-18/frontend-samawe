@@ -40,7 +40,14 @@
             </mat-option>
             @for (r of optionsFor(k.kind); track r.id) {
             <mat-option [value]="r.id">
-              {{ r.prefix }} · {{ r.from }}–{{ r.to }} (id {{ r.id }})
+              <!-- Las notas crédito no tienen desde/hasta: se identifican por consecutivo. -->
+              {{ r.prefix }} ·
+              @if (r.from !== null && r.to !== null) {
+              {{ r.from }}–{{ r.to }}
+              } @else {
+              {{ 'organizational.numbering.col_current' | translate }} {{ r.current }}
+              }
+              (id {{ r.id }})
             </mat-option>
             }
           </mat-select>
@@ -84,10 +91,14 @@
                 </span>
                 }
               </td>
-              <td class="py-2 pr-3">{{ r.from }} – {{ r.to }}</td>
+              <!-- Sin desde/hasta (notas crédito) se muestra N/A, como el portal
+                   de Factus: pintar "0 – 0" hacía parecer el rango agotado. -->
+              <td class="py-2 pr-3">
+                {{ r.from !== null && r.to !== null ? r.from + ' – ' + r.to : 'N/A' }}
+              </td>
               <!-- `current` es el SIGUIENTE número a emitir, no el último emitido. -->
               <td class="py-2 pr-3 font-semibold">{{ r.current }}</td>
-              <td class="py-2 pr-3">{{ r.remaining }}</td>
+              <td class="py-2 pr-3">{{ r.remaining !== null ? r.remaining : 'N/A' }}</td>
               <td class="py-2 pr-3">{{ r.resolutionNumber || '—' }}</td>
               <td class="py-2 pr-3">
                 {{ r.endDate ? (r.endDate | date: 'dd/MM/yyyy') : '—' }}

@@ -3,26 +3,56 @@
   [description]="'invoice.issuer_dialog.message' | translate"
 >
   <div actions class="w-full">
+    <!-- Colores, según `mat-theming.scss`:
+           `mat-fab` sin color  → verde (igual que "Crear factura" del listado)
+           `mat-fab color=warn` → rojo  (igual que "Cancelar" en usuarios)
+           `mat-stroked-button` → transparente con contorno, ya redondeado a 24px
+         ⚠️ NO usar la clase `brand-mat-fab-blue` para diferenciar: está mal
+         nombrada. Resuelve a `$primary-color`, que es `$light-green-500`, así
+         que pinta VERDE y deja dos botones verdes indistinguibles. -->
     <section class="flex flex-col md:justify-between gap-3 w-full">
-      <!-- Organización: variante rellena (opción por defecto). -->
+      <!-- Organización: acción por defecto, en verde. -->
       <button mat-fab extended="true" class="!w-full" (click)="choose('org')">
         {{ 'invoice.issuer_dialog.org' | translate }}
       </button>
-      <!-- Propietario: variante con contorno, claramente distinta. -->
-      <button
-        mat-stroked-button
-        extended="true"
-        class="!w-full"
-        (click)="choose('owner')"
-        [disabled]="!data.hasOwner"
+
+      <!-- Propietario: variante con contorno, claramente distinta.
+           El tooltip va en el SPAN, no en el botón: un botón deshabilitado no
+           despacha eventos de ratón, así que el aviso de "vincula primero un
+           propietario" no se veía nunca — justo cuando hace falta. Material le
+           pone `pointer-events: none` al deshabilitado, de modo que el hover
+           llega al span y el tooltip sí aparece. -->
+      <span
+        class="block w-full"
         [matTooltip]="
           !data.hasOwner ? ('invoice.issuer_dialog.no_owner' | translate) : ''
         "
       >
-        {{
-          'invo
-        ice.issuer_dialog.owner' | translate
-        }}
+        <button
+          mat-stroked-button
+          class="!w-full"
+          (click)="choose('owner')"
+          [disabled]="!data.hasOwner"
+        >
+          <!-- OJO: esta clave estaba partida por un salto de línea dentro de
+               las comillas ('invo\n ice.issuer_dialog.owner'), así que no
+               resolvía y el botón mostraba el texto crudo. No partir claves. -->
+          {{ 'invoice.issuer_dialog.owner' | translate }}
+        </button>
+      </span>
+
+      <!-- Salida explícita, en rojo. Antes solo se podía cerrar con ESC o
+           clicando fuera, así que quien abría el diálogo por error se quedaba
+           sin salida visible. Cierra sin elegir emisor → `resolveIssuerChoice`
+           devuelve null y no se imprime nada. -->
+      <button
+        mat-fab
+        extended="true"
+        color="warn"
+        class="!w-full"
+        (click)="cancel()"
+      >
+        {{ 'invoice.common.cancel' | translate }}
       </button>
     </section>
   </div>

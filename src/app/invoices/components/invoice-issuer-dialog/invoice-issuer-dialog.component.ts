@@ -34,4 +34,9 @@ export class InvoiceIssuerDialogComponent {
   choose(issuer: InvoiceIssuer): void {
     this._dialogRef.close(issuer);
   }
+
+  /** Cierra sin elegir: quien llama recibe `undefined` y no imprime nada. */
+  cancel(): void {
+    this._dialogRef.close();
+  }
 }
