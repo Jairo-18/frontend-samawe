@@ -126,8 +126,18 @@ export class CreditNoteDialogComponent implements OnInit {
     );
   }
 
+  /**
+   * Queda algo por acreditar. Si es 0, la factura ya está anulada por notas
+   * previas y el backend rechaza con "ya fue acreditada en su totalidad": más
+   * vale no dejar pulsar Emitir que enseñar ese error.
+   */
+  get hasRemaining(): boolean {
+    return this.rows.some((r) => r.maxQty > 0);
+  }
+
   get canSubmit(): boolean {
-    if (this.submitting || this.result) return false;
+    if (this.submitting || this.result || this.loading) return false;
+    if (!this.hasRemaining) return false;
     if (this.isTotal) return true;
     return this.rows.some((r) => r.selected && r.quantity > 0);
   }

@@ -33,10 +33,20 @@
         }
       </div>
     } @else {
-      <p class="mb-3 flex items-start gap-2 text-sm text-amber-700">
-        <mat-icon class="!text-base !w-4 !h-4">inventory_2</mat-icon>
-        {{ 'invoice.adjustment_note.stock_hint' | translate }}
-      </p>
+      @if (hasRemaining) {
+        <p class="mb-3 flex items-start gap-2 text-sm text-amber-700">
+          <mat-icon class="!text-base !w-4 !h-4">inventory_2</mat-icon>
+          {{ 'invoice.adjustment_note.stock_hint' | translate }}
+        </p>
+      } @else {
+        <!-- Ya no queda nada por ajustar: el documento soporte está anulado por
+             las notas de abajo. Antes se dejaba pulsar Emitir y el backend
+             contestaba "ya fue ajustado en su totalidad". -->
+        <p class="mb-3 flex items-start gap-2 text-sm text-red-700">
+          <mat-icon class="!text-base !w-4 !h-4">block</mat-icon>
+          {{ 'invoice.adjustment_note.already_annulled' | translate }}
+        </p>
+      }
 
       @if (existing.length) {
         <div class="mb-4">
@@ -54,6 +64,7 @@
         </div>
       }
 
+      @if (hasRemaining) {
       <mat-checkbox [(ngModel)]="isTotal" color="warn" class="mb-3">
         {{ 'invoice.adjustment_note.cancel_total' | translate }}
       </mat-checkbox>
@@ -101,6 +112,7 @@
         <mat-label>{{ 'invoice.adjustment_note.observation' | translate }}</mat-label>
         <textarea matInput rows="2" maxlength="250" [(ngModel)]="observation"></textarea>
       </mat-form-field>
+      }
     }
   </div>
 

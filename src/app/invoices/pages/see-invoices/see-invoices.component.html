@@ -176,14 +176,14 @@
                     '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                   }">
               {{ invoice?.total ?? 0 | formatCop }}
-              @if (invoice.creditNotesCount > 0) {
+              @if (noteBadge(invoice); as badge) {
                 <div class="flex flex-col items-end mt-0.5 leading-tight">
                   <span class="text-[10px] font-bold px-1.5 py-0.5 rounded"
-                    [ngClass]="invoice.creditNotesTotal >= invoice.total - 1 ? 'bg-red-100 !text-red-700' : 'bg-amber-100 !text-amber-700'">
-                    {{ (invoice.creditNotesTotal >= invoice.total - 1 ? 'invoice.list.annulled' : 'invoice.list.has_credit_note') | translate }}
+                    [ngClass]="badge.annulled ? 'bg-red-100 !text-red-700' : 'bg-amber-100 !text-amber-700'">
+                    {{ badge.labelKey | translate }}
                   </span>
                   <span class="text-[10px] !text-gray-500 font-normal">
-                    {{ 'invoice.list.net' | translate }}: {{ (invoice.total - invoice.creditNotesTotal) | formatCop }}
+                    {{ 'invoice.list.net' | translate }}: {{ badge.net | formatCop }}
                   </span>
                 </div>
               }
@@ -267,7 +267,9 @@
                   <mat-icon class="green-color">print</mat-icon>
                   <span>{{ 'invoice.list.action_download' | translate }}</span>
                 </button>
-                @if (invoice.factusNumber) {
+                <!-- Nota crédito: solo ventas emitidas. Un documento soporte se
+                     corrige con nota de ajuste, no con nota crédito. -->
+                @if (canEmitCreditNote(invoice)) {
                 <button mat-menu-item (click)="openCreditNoteDialog(invoice)">
                   <mat-icon class="blue-color">note_alt</mat-icon>
                   <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
@@ -492,14 +494,14 @@
                     '!text-yellow-700': invoice.invoiceType?.code === 'CO'
                   }">
                 {{ invoice?.total ?? 0 | formatCop }}
-                @if (invoice.creditNotesCount > 0) {
+                @if (noteBadge(invoice); as badge) {
                   <div class="flex flex-col items-end mt-0.5 leading-tight">
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded"
-                      [ngClass]="invoice.creditNotesTotal >= invoice.total - 1 ? 'bg-red-100 !text-red-700' : 'bg-amber-100 !text-amber-700'">
-                      {{ (invoice.creditNotesTotal >= invoice.total - 1 ? 'invoice.list.annulled' : 'invoice.list.has_credit_note') | translate }}
+                      [ngClass]="badge.annulled ? 'bg-red-100 !text-red-700' : 'bg-amber-100 !text-amber-700'">
+                      {{ badge.labelKey | translate }}
                     </span>
                     <span class="text-[10px] !text-gray-500 font-normal">
-                      {{ 'invoice.list.net' | translate }}: {{ (invoice.total - invoice.creditNotesTotal) | formatCop }}
+                      {{ 'invoice.list.net' | translate }}: {{ badge.net | formatCop }}
                     </span>
                   </div>
                 }
@@ -589,7 +591,7 @@
                     <mat-icon>print</mat-icon>
                     <span class="green-color">{{ 'invoice.list.action_download' | translate }}</span>
                   </button>
-                  @if (selectedInvoice?.factusNumber) {
+                  @if (canEmitCreditNote(selectedInvoice)) {
                   <button mat-menu-item (click)="openCreditNoteDialog(selectedInvoice)">
                     <mat-icon class="blue-color">note_alt</mat-icon>
                     <span>{{ 'invoice.list.action_credit_note' | translate }}</span>

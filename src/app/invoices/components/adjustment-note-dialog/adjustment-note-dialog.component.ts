@@ -142,8 +142,18 @@ export class AdjustmentNoteDialogComponent implements OnInit {
     return detail.product?.name ?? null;
   }
 
+  /**
+   * Queda algo por ajustar. Si es 0, el documento soporte ya está anulado por
+   * notas previas y el backend rechaza con "ya fue ajustado en su totalidad":
+   * más vale no dejar pulsar Emitir que enseñar ese error.
+   */
+  get hasRemaining(): boolean {
+    return this.rows.some((r) => r.maxQty > 0);
+  }
+
   get canSubmit(): boolean {
     if (this.submitting || this.result || this.loading) return false;
+    if (!this.hasRemaining) return false;
     if (this.isTotal) return true;
     return this.rows.some((r) => r.selected && r.quantity > 0);
   }

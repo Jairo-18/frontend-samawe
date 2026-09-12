@@ -50,6 +50,15 @@
         </div>
       }
 
+      @if (!hasRemaining) {
+        <!-- Nada por acreditar: la factura ya está anulada por las notas de
+             arriba. Antes se dejaba pulsar Emitir y el backend contestaba "ya
+             fue acreditada en su totalidad". -->
+        <p class="mb-3 flex items-start gap-2 text-sm text-red-700">
+          <mat-icon class="!text-base !w-4 !h-4">block</mat-icon>
+          {{ 'invoice.credit_note.already_annulled' | translate }}
+        </p>
+      } @else {
       <!-- Modo total vs parcial -->
       <mat-checkbox [(ngModel)]="isTotal" color="warn" class="mb-3">
         {{ 'invoice.credit_note.cancel_total' | translate }}
@@ -89,6 +98,7 @@
         <mat-label>{{ 'invoice.credit_note.observation' | translate }}</mat-label>
         <textarea matInput rows="2" maxlength="250" [(ngModel)]="observation"></textarea>
       </mat-form-field>
+      }
     }
   </div>
 

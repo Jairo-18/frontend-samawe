@@ -371,8 +371,59 @@ export class SeeInvoicesComponent implements OnInit {
         if (result) this.loadInvoices();
       });
   }
+  /**
+   * Nota crédito: solo sobre una factura de VENTA ya emitida. Sus conceptos
+   * DIAN son de "anulación de factura electrónica" y su tipo de operación
+   * referencia una factura, así que un documento soporte (DSE) NO entra: ese se
+   * corrige con nota de AJUSTE. Antes solo se miraba `factusNumber` y el menú
+   * de un DSE ofrecía las dos cosas.
+   */
+  /**
+   * Resumen de notas para el badge y el neto de la lista. Las notas crédito
+   * (de una factura) y las de AJUSTE (de un documento soporte) restan; las
+   * notas débito suman. Cada documento solo puede tener las suyas, así que se
+   * agregan sin distinguir. Antes solo se miraban las notas crédito y un
+   * documento soporte anulado se veía en la lista como si estuviera vivo.
+   */
+  noteBadge(
+    invoice: any
+  ): { labelKey: string; annulled: boolean; net: number } | null {
+    const creditCount = Number(invoice?.creditNotesCount ?? 0);
+    const adjustmentCount = Number(invoice?.adjustmentNotesCount ?? 0);
+    const debitCount = Number(invoice?.debitNotesCount ?? 0);
+    if (!creditCount && !adjustmentCount && !debitCount) return null;
+
+    const total = Number(invoice?.total ?? 0);
+    const deducted =
+      Number(invoice?.creditNotesTotal ?? 0) +
+      Number(invoice?.adjustmentNotesTotal ?? 0);
+    const added = Number(invoice?.debitNotesTotal ?? 0);
+    // El peso de margen absorbe el redondeo de los totales de la DIAN.
+    const annulled = deducted > 0 && deducted >= total - 1;
+
+    let labelKey: string;
+    if (annulled) {
+      labelKey = adjustmentCount
+        ? 'invoice.list.annulled_support'
+        : 'invoice.list.annulled';
+    } else if (adjustmentCount) {
+      labelKey = 'invoice.list.has_adjustment_note';
+    } else if (creditCount) {
+      labelKey = 'invoice.list.has_credit_note';
+    } else {
+      labelKey = 'invoice.list.has_debit_note';
+    }
+
+    return { labelKey, annulled, net: total - deducted + added };
+  }
+
+  canEmitCreditNote(invoice: any): boolean {
+    const code = invoice?.invoiceType?.code;
+    return !!invoice?.factusNumber && (code === 'FV' || code === 'FVE');
+  }
+
   openCreditNoteDialog(invoice: any): void {
-    if (!invoice?.factusNumber) return;
+    if (!this.canEmitCreditNote(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
