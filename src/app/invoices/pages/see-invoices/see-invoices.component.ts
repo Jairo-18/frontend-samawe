@@ -427,15 +427,27 @@ export class SeeInvoicesComponent implements OnInit {
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
-    this._matDialog.open(CreditNoteDialogComponent, {
-      width: isMobile ? '95vw' : '560px',
-      maxWidth: '95vw',
-      data: {
-        invoiceId: invoice.invoiceId,
-        invoiceCode: invoice.code,
-        factusNumber: invoice.factusNumber
-      }
-    });
+    this._matDialog
+      .open(CreditNoteDialogComponent, {
+        width: isMobile ? '95vw' : '560px',
+        maxWidth: '95vw',
+        data: {
+          invoiceId: invoice.invoiceId,
+          invoiceCode: invoice.code,
+          factusNumber: invoice.factusNumber
+        }
+      })
+      .afterClosed()
+      // Recarga SIEMPRE, no solo cuando el diálogo devuelve `true`.
+      //
+      // Dos motivos. Uno: este era el único de los tres diálogos de nota que no
+      // recargaba nada, así que tras emitir una nota crédito la lista seguía
+      // mostrando la factura intacta —sin badge y sin neto— hasta refrescar a
+      // mano. Y dos: cerrando por backdrop o ESC, `afterClosed()` emite
+      // `undefined` aunque la nota se haya emitido, así que condicionar la
+      // recarga al valor deja la lista vieja justo en el caso más confuso. Una
+      // consulta de más al cancelar es más barata que un dato desactualizado.
+      .subscribe(() => this.loadInvoices());
   }
 
   /**
@@ -463,9 +475,9 @@ export class SeeInvoicesComponent implements OnInit {
         }
       })
       .afterClosed()
-      .subscribe((emitted) => {
-        if (emitted) this.loadInvoices();
-      });
+      // Sin condicionar: cerrando por backdrop/ESC llega `undefined` aunque la
+      // nota se haya emitido (mismo motivo que en la nota crédito).
+      .subscribe(() => this.loadInvoices());
   }
 
   /**
@@ -494,9 +506,10 @@ export class SeeInvoicesComponent implements OnInit {
         }
       })
       .afterClosed()
-      .subscribe((emitted) => {
-        if (emitted) this.loadInvoices();
-      });
+      // Sin condicionar: cerrando por backdrop/ESC llega `undefined` aunque la
+      // nota se haya emitido. Es lo que hacía parecer que la nota de ajuste no
+      // se reflejaba al instante.
+      .subscribe(() => this.loadInvoices());
   }
 
   private getOptions(fieldName: string): any[] {
