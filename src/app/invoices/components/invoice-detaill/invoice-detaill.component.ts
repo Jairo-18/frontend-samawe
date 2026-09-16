@@ -25,7 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { InvoiceDetail } from '../../interface/invoiceDetaill.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 @Component({
   selector: 'app-invoice-detaill',
@@ -49,9 +49,12 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
   @Input() invoiceId?: number;
   @Input() reload: boolean = false;
   @Input() isLocked: boolean = false;
+  /** Tipo de la factura ('FV', 'FC', 'CO'…), para avisar de qué hace borrar. */
+  @Input() invoiceTypeCode?: string;
   @Output() itemDelete = new EventEmitter<void>();
   @Output() allItemsSaved = new EventEmitter<void>();
   private readonly _matDialog: MatDialog = inject(MatDialog);
+  private readonly _translate: TranslateService = inject(TranslateService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
   );
@@ -154,11 +157,26 @@ export class InvoiceDetaillComponent implements OnChanges, AfterViewInit {
         }
       });
   }
+  /**
+   * Mismo criterio que el borrado de la factura entera: el aviso dice qué le
+   * pasa al inventario, que es distinto en cada tipo
+   * (`invoiceDetail.service.delete` en el backend).
+   */
+  private get deleteItemMessageKey(): string {
+    const code = this.invoiceTypeCode;
+    if (code === 'CO') return 'invoice.list.delete_item_msg_quote';
+    if (code === 'FC' || code === 'DSE')
+      return 'invoice.list.delete_item_msg_purchase';
+    if (code === 'FV' || code === 'FVE')
+      return 'invoice.list.delete_item_msg_sale';
+    return 'invoice.list.delete_msg';
+  }
+
   openDeleteItemDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
-        title: '¿Deseas eliminar este item?',
-        message: 'Esta acción no se puede deshacer.'
+        title: this._translate.instant('invoice.list.delete_item_title'),
+        message: this._translate.instant(this.deleteItemMessageKey)
       }
     });
     dialogRef.afterClosed().subscribe((confirm: boolean) => {

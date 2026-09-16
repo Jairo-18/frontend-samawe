@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
@@ -73,6 +73,7 @@ export class SeeUsersComponent implements OnInit {
     inject(RelatedDataService);
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _router = inject(Router);
+  private readonly _activatedRoute = inject(ActivatedRoute);
   private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
@@ -367,6 +368,22 @@ export class SeeUsersComponent implements OnInit {
       }
     });
   }
+  /**
+   * Abre la ficha al pulsar la fila: lo mismo que el botón de editar, que se
+   * mantiene como indicador visible.
+   *
+   * La ruta es relativa (`../<id>/edit`, igual que el botón) y el permiso se
+   * comprueba otra vez aquí: el `[class]` del template es apariencia, no
+   * control de acceso, y en esta vista **no todas las filas son editables**
+   * —un recepcionista no edita a un administrador—.
+   */
+  openUser(user: UserComplete): void {
+    if (!this.canEditUser(user) || !user?.userId) return;
+    this._router.navigate(['..', user.userId, 'edit'], {
+      relativeTo: this._activatedRoute
+    });
+  }
+
   canEditUser(user: UserComplete): boolean {
     const loggedCode = this._getRoleCode(
       this.userLogged?.roleType?.roleTypeId,

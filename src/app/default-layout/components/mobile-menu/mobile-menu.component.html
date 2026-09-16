@@ -19,7 +19,7 @@
                 }}</mat-icon>
               </a>
               <span
-                class="text-[11px] font-semibold mt-8"
+                class="nav-label text-[11px] font-semibold mt-8"
                 [ngClass]="
                   isItemActive(item.route)
                     ? 'text-[var(--primary-color)]'
@@ -40,7 +40,7 @@
               "
             >
               <mat-icon class="transition-transform">{{ item.icon }}</mat-icon>
-              <span class="text-[11px]">{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
+              <span class="nav-label text-[11px]">{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
             </button>
           } @else if (item.name === 'Facturación') {
             <!-- Facturación: abre un popup con las 4 vistas -->
@@ -57,7 +57,7 @@
                 class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
                 >{{ item.icon }}</mat-icon
               >
-              <span class="text-[11px]">{{
+              <span class="nav-label text-[11px]">{{
                 item.titleKey ? (item.titleKey | translate) : item.name
               }}</span>
             </button>
@@ -76,7 +76,7 @@
                 class="!text-[26px] !w-[26px] !h-[26px] transition-transform"
                 >{{ item.icon }}</mat-icon
               >
-              <span>{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
+              <span class="nav-label">{{ item.titleKey ? (item.titleKey | translate) : item.name }}</span>
             </a>
           }
         } @else {
@@ -114,7 +114,7 @@
             class="text-[var(--primary-color)] !text-[20px] !w-5 !h-5"
             >{{ child.icon }}</mat-icon
           >
-          <span>{{ (child.title ?? '') | translate }}</span>
+          <span class="nav-label">{{ (child.title ?? '') | translate }}</span>
         </button>
       } @else {
         <button
@@ -126,7 +126,7 @@
             class="text-[var(--primary-color)] !text-[20px] !w-5 !h-5"
             >{{ item.icon }}</mat-icon
           >
-          <span>{{ (item.title ?? '') | translate }}</span>
+          <span class="nav-label">{{ (item.title ?? '') | translate }}</span>
         </button>
       }
     </ng-container>
@@ -168,7 +168,7 @@
       <mat-icon class="text-[var(--primary-color)] !text-[20px] !w-5 !h-5">{{
         item.icon
       }}</mat-icon>
-      <span>{{ (item.title ?? '') | translate }}</span>
+      <span class="nav-label">{{ (item.title ?? '') | translate }}</span>
     </button>
   </div>
 }

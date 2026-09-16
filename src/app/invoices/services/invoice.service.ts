@@ -117,6 +117,22 @@ export class InvoiceService {
     );
   }
 
+  /**
+   * Reenvía al cliente la factura electrónica por correo. El PDF se regenera
+   * con las notas asociadas y, si el documento quedó anulado, con la marca de
+   * agua — a diferencia del correo de la emisión, que sale antes de que pueda
+   * existir ninguna nota.
+   */
+  resendInvoiceEmail(invoiceId: number): Observable<{
+    success: boolean;
+    data: { deliveredTo: string; annulled: boolean };
+  }> {
+    return this._httpClient.post<{
+      success: boolean;
+      data: { deliveredTo: string; annulled: boolean };
+    }>(`${environment.apiUrl}factus/invoices/${invoiceId}/resend-email`, {});
+  }
+
   getCreditNotes(
     invoiceId: number
   ): Observable<{ success: boolean; data: CreditNote[] }> {

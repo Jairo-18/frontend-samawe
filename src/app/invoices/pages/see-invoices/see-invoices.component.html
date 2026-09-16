@@ -46,7 +46,7 @@
               <mat-checkbox [checked]="isAllCurrentPageSelected()" [indeterminate]="isIndeterminate()"
                 (change)="toggleAllCurrentPage()"></mat-checkbox>
             </th>
-            <td mat-cell *matCellDef="let invoice" class="center-text">
+            <td mat-cell *matCellDef="let invoice" class="center-text" (click)="$event.stopPropagation()">
               <mat-checkbox [checked]="isSelected(invoice.invoiceId)"
                 (change)="toggleSelection(invoice.invoiceId)"></mat-checkbox>
             </td>
@@ -230,12 +230,14 @@
             <th mat-header-cell *matHeaderCellDef class="center-text">
               {{ 'invoice.list.col_actions' | translate }}
             </th>
-            <td mat-cell *matCellDef="let invoice">
+            <td mat-cell *matCellDef="let invoice" (click)="$event.stopPropagation()">
               <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                @if (invoice.invoiceType?.code === 'FVE') {
+                <!-- También sobre facturas de VENTA (FV): al emitir, el backend
+                     las convierte a FVE. Ver `canSendToFactus`. -->
+                @if (canSendToFactus(invoice)) {
                 <button mat-menu-item [disabled]="!!invoice.factusNumber || sendingFactusIds.has(invoice.invoiceId)"
                   (click)="sendInvoiceToFactus(invoice)">
                   <mat-icon [class]="invoice.factusNumber ? 'green-color' : 'blue-color'">
@@ -267,20 +269,43 @@
                   <mat-icon class="green-color">print</mat-icon>
                   <span>{{ 'invoice.list.action_download' | translate }}</span>
                 </button>
-                <!-- Nota crédito: solo ventas emitidas. Un documento soporte se
-                     corrige con nota de ajuste, no con nota crédito. -->
-                @if (canEmitCreditNote(invoice)) {
-                <button mat-menu-item (click)="openCreditNoteDialog(invoice)">
-                  <mat-icon class="blue-color">note_alt</mat-icon>
-                  <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
+                <!-- Reenviar por correo: el PDF se regenera con las notas y con
+                     la marca de "ANULADA" si aplica. -->
+                @if (canResendEmail(invoice)) {
+                <button mat-menu-item [disabled]="resendingIds.has(invoice.invoiceId)"
+                  (click)="resendInvoiceEmail(invoice)">
+                  <mat-icon class="blue-color">forward_to_inbox</mat-icon>
+                  <span>{{ (resendingIds.has(invoice.invoiceId)
+                    ? 'invoice.list.resend_sending'
+                    : 'invoice.list.action_resend_email') | translate }}</span>
                 </button>
+                }
+                <!-- Nota crédito: solo ventas emitidas. Un documento soporte se
+                     corrige con nota de ajuste, no con nota crédito.
+                     Si la factura ya está anulada las dos notas se DESHABILITAN
+                     en vez de desaparecer: así el menú explica por qué no se
+                     puede, en lugar de tener menos opciones sin motivo visible.
+                     El tooltip va en el SPAN — Material le pone
+                     `pointer-events: none` al botón deshabilitado y el aviso no
+                     se vería nunca (misma trampa que en invoice-issuer-dialog). -->
+                @if (canEmitCreditNote(invoice)) {
+                <span [matTooltip]="isAnnulled(invoice) ? ('invoice.list.annulled_hint' | translate) : ''">
+                  <button mat-menu-item [disabled]="isAnnulled(invoice)"
+                    (click)="openCreditNoteDialog(invoice)">
+                    <mat-icon class="blue-color">note_alt</mat-icon>
+                    <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
+                  </button>
+                </span>
                 }
                 <!-- Nota débito: solo ventas emitidas (suma valor). -->
                 @if (canEmitDebitNote(invoice)) {
-                <button mat-menu-item (click)="openDebitNoteDialog(invoice)">
-                  <mat-icon class="blue-color">trending_up</mat-icon>
-                  <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
-                </button>
+                <span [matTooltip]="isAnnulled(invoice) ? ('invoice.list.annulled_hint' | translate) : ''">
+                  <button mat-menu-item [disabled]="isAnnulled(invoice)"
+                    (click)="openDebitNoteDialog(invoice)">
+                    <mat-icon class="blue-color">trending_up</mat-icon>
+                    <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
+                  </button>
+                </span>
                 }
                 @if (canEmitSupportDocument(invoice)) {
                 <button mat-menu-item [disabled]="sendingFactusIds.has(invoice.invoiceId)"
@@ -299,7 +324,7 @@
                 </button>
                 }
                 @if (!invoice.factusNumber) {
-                <button mat-menu-item (click)="openDeleteInvoiceDialog(invoice.invoiceId)">
+                <button mat-menu-item (click)="openDeleteInvoiceDialog(invoice)">
                   <mat-icon class="red-color">delete</mat-icon>
                   <span>{{ 'invoice.list.action_delete' | translate }}</span>
                 </button>
@@ -308,7 +333,14 @@
             </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="clickable-row"
+            tabindex="0"
+            (click)="openInvoice(row)"
+            (keydown.enter)="openInvoice(row)"
+          ></tr>
         </table>
         } @else {
         <div class="w-full justify-center items-center flex">
@@ -561,7 +593,7 @@
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                  @if (selectedInvoice?.invoiceType?.code === 'FVE') {
+                  @if (canSendToFactus(selectedInvoice)) {
                   <button mat-menu-item
                     [disabled]="!!selectedInvoice?.factusNumber || sendingFactusIds.has(selectedInvoice?.invoiceId)"
                     (click)="sendInvoiceToFactus(selectedInvoice)">
@@ -591,17 +623,34 @@
                     <mat-icon>print</mat-icon>
                     <span class="green-color">{{ 'invoice.list.action_download' | translate }}</span>
                   </button>
-                  @if (canEmitCreditNote(selectedInvoice)) {
-                  <button mat-menu-item (click)="openCreditNoteDialog(selectedInvoice)">
-                    <mat-icon class="blue-color">note_alt</mat-icon>
-                    <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
+                  @if (canResendEmail(selectedInvoice)) {
+                  <button mat-menu-item [disabled]="resendingIds.has(selectedInvoice?.invoiceId)"
+                    (click)="resendInvoiceEmail(selectedInvoice)">
+                    <mat-icon class="blue-color">forward_to_inbox</mat-icon>
+                    <span>{{ (resendingIds.has(selectedInvoice?.invoiceId)
+                      ? 'invoice.list.resend_sending'
+                      : 'invoice.list.action_resend_email') | translate }}</span>
                   </button>
                   }
+                  <!-- Ver la nota de la vista de escritorio: anulada → las dos
+                       notas deshabilitadas, con el tooltip en el span. -->
+                  @if (canEmitCreditNote(selectedInvoice)) {
+                  <span [matTooltip]="isAnnulled(selectedInvoice) ? ('invoice.list.annulled_hint' | translate) : ''">
+                    <button mat-menu-item [disabled]="isAnnulled(selectedInvoice)"
+                      (click)="openCreditNoteDialog(selectedInvoice)">
+                      <mat-icon class="blue-color">note_alt</mat-icon>
+                      <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
+                    </button>
+                  </span>
+                  }
                   @if (canEmitDebitNote(selectedInvoice)) {
-                  <button mat-menu-item (click)="openDebitNoteDialog(selectedInvoice)">
-                    <mat-icon class="blue-color">trending_up</mat-icon>
-                    <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
-                  </button>
+                  <span [matTooltip]="isAnnulled(selectedInvoice) ? ('invoice.list.annulled_hint' | translate) : ''">
+                    <button mat-menu-item [disabled]="isAnnulled(selectedInvoice)"
+                      (click)="openDebitNoteDialog(selectedInvoice)">
+                      <mat-icon class="blue-color">trending_up</mat-icon>
+                      <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
+                    </button>
+                  </span>
                   }
                   @if (canEmitSupportDocument(selectedInvoice)) {
                   <button mat-menu-item [disabled]="sendingFactusIds.has(selectedInvoice?.invoiceId)"
@@ -619,7 +668,7 @@
                   </button>
                   }
                   @if (!selectedInvoice?.factusNumber) {
-                  <button mat-menu-item (click)="openDeleteInvoiceDialog(selectedInvoice?.invoiceId)">
+                  <button mat-menu-item (click)="openDeleteInvoiceDialog(selectedInvoice)">
                     <mat-icon class="red-color">delete</mat-icon>
                     <span>{{ 'invoice.list.action_delete' | translate }}</span>
                   </button>
@@ -628,7 +677,14 @@
               </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="clickable-row"
+            tabindex="0"
+            (click)="openInvoice(row)"
+            (keydown.enter)="openInvoice(row)"
+          ></tr>
           </table>
         </div>
       </div>

@@ -35,6 +35,21 @@ export interface DebitNoteResult {
   createdAt: string;
 }
 
+/**
+ * Conceptos cobrados, tal y como se guardaron: es el ítem del **payload de
+ * Factus**, no el del formulario. Dos consecuencias al leerlo:
+ *  - `price` es la base SIN impuesto (el formulario lo pide con impuesto
+ *    incluido y el backend extrae la base antes de enviar).
+ *  - `quantity`, `price` y `rate` son cadenas con dos decimales.
+ */
+export interface DebitNoteSnapshotItem {
+  name: string;
+  quantity: string;
+  price: string;
+  discount_rate?: string;
+  taxes?: { code: string; rate: string }[];
+}
+
 /** Nota débito persistida (la que devuelve el listado). */
 export interface DebitNote {
   debitNoteId: number;
@@ -47,6 +62,6 @@ export interface DebitNote {
   factusPublicUrl?: string;
   total: string;
   observation?: string;
-  itemsSnapshot?: unknown;
+  itemsSnapshot?: DebitNoteSnapshotItem[];
   createdAt: string;
 }

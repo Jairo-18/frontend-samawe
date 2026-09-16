@@ -26,22 +26,40 @@
     "developed_by": "Desarrollado por"
   },
   "home": {
+    "greeting": {
+      "hello": "Hola",
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "sections": {
+      "create": "Crear",
+      "go_to": "Ir a"
+    },
+    "groups": {
+      "invoicing": "Facturación",
+      "people": "Personas",
+      "catalog": "Catálogo"
+    },
+    "actions": {
+      "new_electronic": "Factura electrónica",
+      "new_sale": "Factura de venta",
+      "new_purchase": "Compra",
+      "new_quote": "Cotización",
+      "new_client": "Cliente",
+      "new_supplier": "Proveedor",
+      "new_receptionist": "Recepcionista",
+      "new_waiter": "Mesero",
+      "new_chef": "Chef",
+      "new_product": "Producto",
+      "new_accommodation": "Hospedaje",
+      "new_excursion": "Pasadía o servicio",
+      "new_recipe": "Receta"
+    },
     "cards": {
       "clients": {
         "title": "Clientes",
         "description": "Administra usuarios, roles y permisos del sistema"
-      },
-      "products": {
-        "title": "Productos",
-        "description": "Gestión de inventario y productos"
-      },
-      "accommodations": {
-        "title": "Hospedajes",
-        "description": "Estado de las habitaciones y su información"
-      },
-      "services": {
-        "title": "Pasadías y Servicios",
-        "description": "Crea tus pasadías o servicios y administralos"
       },
       "menu": {
         "title": "Menú",
@@ -71,6 +89,14 @@
       "application": {
         "title": "Aplicación",
         "description": "Configuración y administración del sistema"
+      },
+      "catalog": {
+        "title": "Productos y servicios",
+        "description": "Inventario, hospedajes y pasadías"
+      },
+      "numbering": {
+        "title": "Numeración DIAN",
+        "description": "Rangos autorizados y su consecutivo"
       }
     }
   },
@@ -372,7 +398,7 @@
       "charges": "Conceptos a cobrar",
       "charge_name": "Descripción",
       "charge_qty": "Cant.",
-      "charge_price": "Valor unitario",
+      "charge_price": "Valor unitario (IVA incl.)",
       "charge_tax": "Impuesto",
       "add_charge": "Añadir concepto",
       "remove_charge": "Quitar este concepto",
@@ -382,6 +408,8 @@
       "tax_ipo_5": "IPO 5%",
       "observation": "Observación",
       "existing": "Notas débito ya emitidas",
+      "subtotal": "Base gravable",
+      "tax_included": "Impuesto incluido",
       "total": "Total",
       "number": "Número",
       "emit": "Emitir nota débito",
@@ -603,11 +631,16 @@
       "factus_success_title": "Factura enviada",
       "factus_success_msg": "Factura enviada a la DIAN exitosamente",
       "factus_error_title": "Error al facturar",
+      "factus_confirm_title": "¿Facturar electrónicamente {{code}}?",
+      "factus_confirm_msg": "Se enviará a la DIAN y quedará con validez legal. Una vez validada NO se puede editar ni eliminar: solo corregirse con una nota crédito. Se enviará la factura por correo al cliente.",
+      "factus_confirm_convert": "Esta es una factura de venta: al validarse pasará a ser factura electrónica y dejará de aparecer en Ventas.",
       "action_support_document": "Emitir documento soporte",
       "support_sending": "Emitiendo documento soporte...",
       "support_success_title": "Documento soporte emitido",
       "support_success_msg": "El documento soporte fue validado por la DIAN",
       "support_error_title": "Error al emitir el documento soporte",
+      "support_confirm_title": "¿Emitir documento soporte de {{code}}?",
+      "support_confirm_msg": "Es para compras a proveedores NO obligados a facturar; si el proveedor emite factura electrónica, no corresponde. Se enviará a la DIAN y quedará con validez legal: una vez validado solo se corrige con una nota de ajuste. La compra pasará a ser un documento soporte.",
       "factus_locked_edit": "No se puede editar: factura ya enviada a la DIAN",
       "factus_locked_delete": "No se puede eliminar: factura ya enviada a la DIAN",
       "search_text": "Código, nombre, identificación, total, sub",
@@ -626,8 +659,24 @@
       "search_electronic_ph": "Buscar por facturación electrónica",
       "search_yes": "Sí",
       "search_no": "No",
-      "delete_title": "¿Deseas eliminar esta factura?",
+      "delete_title": "¿Eliminar la factura {{code}}?",
       "delete_msg": "Esta acción no se puede deshacer.",
+      "delete_msg_sale": "No se puede deshacer. Los productos vuelven al stock, los platos de receta devuelven sus ingredientes y los hospedajes quedan otra vez como Disponible.",
+      "delete_msg_purchase": "No se puede deshacer. Se DESCUENTA del stock lo que esta compra había ingresado, así que si ya se vendió parte de esa mercancía el producto puede quedar en negativo.",
+      "delete_msg_quote": "No se puede deshacer. Una cotización no mueve inventario, así que no se toca el stock ni los hospedajes.",
+      "delete_item_title": "¿Eliminar este ítem?",
+      "delete_item_msg_sale": "No se puede deshacer. El producto vuelve al stock y, si es un plato de receta, se devuelven sus ingredientes; un hospedaje queda otra vez como Disponible.",
+      "delete_item_msg_purchase": "No se puede deshacer. Se descuenta del stock la cantidad que esta línea había ingresado. Si dejara el producto en negativo, no se podrá eliminar.",
+      "delete_item_msg_quote": "No se puede deshacer. En una cotización el ítem no mueve inventario.",
+      "annulled_hint": "Esta factura ya está anulada por nota crédito: no admite más notas. Si hay que cobrar de nuevo, emite una factura nueva.",
+      "action_resend_email": "Reenviar por correo",
+      "resend_sending": "Enviando correo...",
+      "resend_confirm_title": "¿Reenviar la factura al cliente?",
+      "resend_confirm_msg": "Se le enviará el correo con la factura en PDF y el QR de la DIAN al correo registrado del cliente.",
+      "resend_confirm_annulled": "Ojo: esta factura está ANULADA, así que el PDF saldrá con la marca de agua y el detalle de las notas.",
+      "resend_success_title": "Correo enviado",
+      "resend_success_msg": "La factura se reenvió al cliente",
+      "resend_error_title": "No se pudo reenviar la factura",
       "action_debit_note": "Emitir nota débito",
       "action_adjustment_note": "Emitir nota de ajuste"
     },
@@ -644,7 +693,13 @@
       "tab_services": "Servicios",
       "tab_day_trips": "Pasadías y Servicios",
       "tab_products_buy": "Productos",
-      "entered_items": "Servicios y Productos Ingresados"
+      "entered_items": "Servicios y Productos Ingresados",
+      "notes_title": "Notas asociadas",
+      "notes_annulled": "Documento anulado: las notas cubren su valor total.",
+      "notes_net": "Valor neto del documento",
+      "note_credit": "Nota crédito",
+      "note_debit": "Nota débito",
+      "note_adjustment": "Nota de ajuste"
     },
     "pdf": {
       "generated_by": "Generado por:",
@@ -1575,6 +1630,8 @@
     "see_orders": {
       "title": "Ver órdenes",
       "subtitle": "Aquí puedes ver las órdenes de restaurante",
+      "delete_title": "¿Eliminar esta orden?",
+      "delete_msg": "No se puede deshacer. La orden es una venta: los platos devuelven al inventario los ingredientes que consumieron y los productos vuelven al stock.",
       "clear_filters": "Limpiar filtros",
       "search_text": "Código, Mesa",
       "search_date": "Fecha de orden",

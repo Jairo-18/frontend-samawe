@@ -158,7 +158,14 @@
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 {{ 'service_and_product.table.actions' | translate }}
               </th>
-              <td mat-cell *matCellDef="let product" class="center-text">
+              <!-- `stopPropagation`: sin esto, pulsar "eliminar" abriría además
+                   el producto por debajo del diálogo de confirmación. -->
+              <td
+                mat-cell
+                *matCellDef="let product"
+                class="center-text"
+                (click)="$event.stopPropagation()"
+              >
                 @if (validateIfCanEditUserOrDelete()) {
                   <button
                     mat-icon-button
@@ -180,7 +187,14 @@
               </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              [class.clickable-row]="validateIfCanEditUserOrDelete()"
+              [attr.tabindex]="validateIfCanEditUserOrDelete() ? 0 : null"
+              (click)="openProduct(row)"
+              (keydown.enter)="openProduct(row)"
+            ></tr>
           </table>
         } @else {
           <div class="w-full justify-center items-center flex">
@@ -354,7 +368,7 @@
                 <th mat-header-cell *matHeaderCellDef class="center-text">
                   {{ 'service_and_product.table.actions' | translate }}
                 </th>
-                <td mat-cell *matCellDef="let product" class="center-text">
+                <td mat-cell *matCellDef="let product" class="center-text" (click)="$event.stopPropagation()">
                   <button
                     mat-icon-button
                     color="primary"
@@ -374,7 +388,14 @@
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+              [class.clickable-row]="validateIfCanEditUserOrDelete()"
+              [attr.tabindex]="validateIfCanEditUserOrDelete() ? 0 : null"
+              (click)="openProduct(row)"
+              (keydown.enter)="openProduct(row)"
+            ></tr>
             </table>
           </div>
         </div>

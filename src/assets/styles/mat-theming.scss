@@ -117,7 +117,7 @@ mat-form-field {
   }
 
   .mdc-fab--extended {
-    font-weight: 500 !important;
+    font-weight: 700 !important;
     font-size: $brand-mobile-font-size !important;
     height: $brand-mobile-height !important;
   }
@@ -157,7 +157,7 @@ mat-form-field {
 
 /* Change outlined button appearance */
 .mat-mdc-outlined-button {
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   border-radius: $brand-border-radius !important;
   height: $brand-global-height-button !important;
   border: $global-border !important;
@@ -233,7 +233,6 @@ mat-form-field {
 .mdc-button:hover {
   background-color: $primary-light !important;
   color: $white-color-base !important;
-  font-weight: 500 !important;
 
   &.mat-mdc-outlined-button:not(:disabled) {
     border-color: transparent !important;
@@ -313,7 +312,7 @@ mat-form-field {
   &.active {
     .mat-mdc-menu-item-text {
       font-size: $brand-mat-menu-active-item-size !important;
-      font-weight: 600 !important;
+      font-weight: 700 !important;
     }
   }
 }
@@ -334,7 +333,7 @@ mat-form-field {
   padding: 0 !important;
 
   .mat-button-toggle {
-    font-weight: 600;
+    font-weight: 700;
     font-size: $brand-web-font-size;
     margin: 0 4px;
     border-radius: $brand-border-radius;
@@ -358,4 +357,138 @@ mat-form-field {
   color: $light-green-A700 !important;
   border-radius: 8px !important;
   border: solid 1px $deep-green-dark !important;
+}
+
+
+/* ══ TIPOGRAFÍA DE MARCA EN ANGULAR MATERIAL ═══════════════════════════════
+   Qué componentes de Material llevan Alegreya SC (`--font-title`).
+
+   La regla es la misma en toda la aplicación: la fuente de marca va en lo que
+   NOMBRA algo (rótulo de botón, etiqueta de campo, encabezado de columna,
+   título de paso) y NO en lo que lo EXPLICA ni en los datos. Alegreya SC es de
+   versalitas: en una frase larga se lee más lento, y en un dato hay que poder
+   distinguir cada carácter.
+
+   Por eso quedan fuera a propósito: `mat-tooltip`, `mat-hint`, los mensajes de
+   error, el valor que se teclea y el valor elegido de un `mat-select`.
+
+   Lo que NO es de Material (navegación, pie, pantallas de acceso) vive en
+   `global.scss`, bajo el mismo encabezado.
+
+   ⚠️ ALEGREYA SC SOLO TRAE 400 Y 700. Cualquier peso intermedio hace que el
+   navegador fabrique un negrita sintético, emborronado a tamaño pequeño. Por
+   eso los pesos se fijan en 700 en vez de dejarlos al criterio de cada clase.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── 2. Angular Material ────────────────────────────────────────────────── */
+/* Rótulos de todos los componentes: lo que nombra algo, no lo que lo explica.
+   Un `mat-tooltip` o un `mat-hint` NO están aquí a propósito — son frases que
+   se leen, y en versalitas cuestan más. */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button,
+.mat-mdc-fab,
+.mat-mdc-mini-fab,
+.mat-mdc-extended-fab,
+.mdc-button__label,
+.mat-mdc-menu-item,
+.mat-mdc-tab .mdc-tab__text-label,
+.mat-mdc-tab-link .mdc-tab__text-label,
+.mat-mdc-dialog-title,
+.mat-mdc-card-title,
+/* Stepper: el rótulo de cada paso ("Información Personal", "Tu cuenta").
+   El número del círculo (`.mat-step-icon-content`) se deja fuera: es un dígito
+   dentro de una caja pequeña y cambiarle la fuente lo descentra. */
+.mat-step-label,
+.mat-step-text-label,
+.mat-expansion-panel-header-title,
+.mat-mdc-checkbox label,
+.mat-mdc-radio-button label,
+.mat-mdc-slide-toggle label,
+.mat-mdc-chip .mdc-evolution-chip__text-label,
+/* Encabezados de tabla: "Código", "Cliente", "Total"… nombran la columna. */
+.mat-mdc-header-cell {
+  font-family: var(--font-title) !important;
+  letter-spacing: 0.01em;
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button,
+.mat-mdc-fab,
+.mat-mdc-mini-fab,
+.mat-mdc-extended-fab,
+.mat-mdc-tab .mdc-tab__text-label,
+.mat-mdc-tab-link .mdc-tab__text-label,
+.mat-step-label,
+.mat-step-text-label,
+.mat-expansion-panel-header-title,
+.mat-mdc-header-cell {
+  font-weight: 700 !important;
+}
+
+/* El desplegable de un `mat-select` y el de un autocompletado.
+   ⚠️ Se montan en `.cdk-overlay-container`, colgado del `<body>` y FUERA del
+   componente: ningún selector acotado a una pantalla los alcanza (por eso el
+   select del registro se quedaba en Poppins aunque el resto cambiara). Tienen
+   que ir por una regla global como esta. */
+.mat-mdc-option,
+.mat-mdc-option .mdc-list-item__primary-text,
+.mat-mdc-autocomplete-panel .mat-mdc-option {
+  font-family: var(--font-title) !important;
+  letter-spacing: 0.01em;
+}
+
+/* El valor ya elegido que se ve en el campo cerrado. */
+.mat-mdc-select-value-text {
+  font-family: var(--font-title) !important;
+}
+
+/* La ETIQUETA del campo, en reposo y flotando. Con `appearance="outline"` esta
+   etiqueta hace también de placeholder: es el "Correo electrónico" que se ve
+   dentro del campo vacío y sube al borde al escribir. No hay un `placeholder`
+   aparte que estilar.
+
+   `!important` porque compite con la herencia de `.mat-mdc-form-field`, que
+   Material inyecta en runtime junto al componente — ese CSS entra en el
+   `<head>` DESPUÉS de esta hoja, así que no basta con ganar por especificidad
+   si alguna versión futura sube la suya.
+
+   Fuera de las pantallas de acceso, lo que se teclea y el valor elegido en un
+   `mat-select` se quedan en Poppins: son datos (NIT, códigos, municipios del
+   DANE) que hay que leer literales, y en versalitas se pierde la forma de los
+   nombres propios. */
+.mat-mdc-form-field .mdc-floating-label,
+.mat-mdc-form-field .mat-mdc-floating-label,
+.mat-mdc-form-field .mdc-floating-label--float-above {
+  font-family: var(--font-title) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Botón de marca (`app-button-landing`): el de "Iniciar sesión" del navbar y
+   el de todas las acciones de las pantallas de acceso. */
+app-button-landing button span:not([class]) {
+  font-family: var(--font-title);
+  font-weight: 700;
+}
+
+:root {
+  /* Override Angular Material MDC typography tokens */
+  --mdc-typography-font-family: var(--font-body);
+  --mdc-typography-button-font-family: var(--font-body);
+  --mdc-typography-body1-font-family: var(--font-body);
+  --mdc-typography-body2-font-family: var(--font-body);
+  --mdc-typography-subtitle1-font-family: var(--font-body);
+  --mdc-typography-subtitle2-font-family: var(--font-body);
+  --mdc-typography-caption-font-family: var(--font-body);
+  --mdc-typography-overline-font-family: var(--font-body);
+  --mdc-typography-headline1-font-family: var(--font-title);
+  --mdc-typography-headline2-font-family: var(--font-title);
+  --mdc-typography-headline3-font-family: var(--font-title);
+  --mdc-typography-headline4-font-family: var(--font-title);
+  --mdc-typography-headline5-font-family: var(--font-title);
+  --mdc-typography-headline6-font-family: var(--font-title);
 }

@@ -54,8 +54,11 @@
         <!-- Nada por acreditar: la factura ya está anulada por las notas de
              arriba. Antes se dejaba pulsar Emitir y el backend contestaba "ya
              fue acreditada en su totalidad". -->
+        <!-- `!leading-4` y `shrink-0`: `mat-icon` trae `line-height: 24px`, así
+             que con la caja bajada a 16px el glifo se salía por abajo y en una
+             celda estrecha el icono se aplastaba. -->
         <p class="mb-3 flex items-start gap-2 text-sm text-red-700">
-          <mat-icon class="!text-base !w-4 !h-4">block</mat-icon>
+          <mat-icon class="!text-base !w-4 !h-4 !leading-4 shrink-0">block</mat-icon>
           {{ 'invoice.credit_note.already_annulled' | translate }}
         </p>
       } @else {
@@ -102,17 +105,27 @@
     }
   </div>
 
+  <!-- Botonera, mismo criterio que `invoice-issuer-dialog`:
+         acción principal → `mat-fab extended` sin color (verde de marca, el de
+         "Crear factura" del listado); salida → `mat-stroked-button`.
+       `mat-flat-button` era el que desentonaba: rectangular junto a un
+       "Cancelar" ya redondeado a 24px.
+       El `!h-[46px]` iguala la altura del fab ($brand-global-height-button, la
+       de todos los botones de marca) — Material le da 56px en escritorio y 40
+       en móvil, y quedaba desparejo con el de al lado. Las utilidades de
+       Tailwind van después de `mat-theming.scss` en `styles.scss`, así que el
+       `!` gana sin tocar el tema global. -->
   <div actions>
     <section class="flex w-full justify-end gap-2">
       @if (result) {
-        <button mat-flat-button color="primary" (click)="close()">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="close()">
           {{ 'invoice.credit_note.done' | translate }}
         </button>
       } @else {
         <button mat-stroked-button (click)="close()" [disabled]="submitting">
           {{ 'invoice.credit_note.cancel' | translate }}
         </button>
-        <button mat-flat-button color="warn" (click)="submit()" [disabled]="!canSubmit || loading">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="submit()" [disabled]="!canSubmit || loading">
           <mat-icon>note_alt</mat-icon>
           {{ submitting ? ('invoice.credit_note.emitting' | translate) : ('invoice.credit_note.emit' | translate) }}
         </button>

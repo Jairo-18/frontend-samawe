@@ -1,13 +1,10 @@
 @defer (on immediate) {
   @if (isStaffUser) {
-    <app-base-page
-      [showBorder]="false"
-      [headerTitle]="'public.home.welcome_title' | translate"
-      [showContentTitle]="true"
-      [contentInfo]="'public.home.welcome_subtitle' | translate"
-      [showContentInfo]="true"
-      [pxMobile]="false"
-    >
+    <!-- Sin `headerTitle` ni `contentInfo`: decían "Bienvenido a tu Sistema
+         Contable y Administrativo · ¿Qué deseas hacer?", que habla del sistema
+         y no de quien lo usa. El saludo por nombre y hora de `app-card-home`
+         hace ese trabajo mejor y sin repetirlo. -->
+    <app-base-page [showBorder]="false" [pxMobile]="false">
       <app-card-home></app-card-home>
     </app-base-page>
   } @else {

@@ -208,9 +208,103 @@
             [invoiceId]="invoiceId"
             [reload]="reloadInvoiceDetails"
             [isLocked]="isLocked"
+            [invoiceTypeCode]="invoiceData.invoiceType.code"
             (itemDelete)="onItemDeleted()"
           ></app-invoice-detaill>
         </section>
+        <!-- Notas asociadas al documento ya emitido. Sin esto, el detalle de
+             una factura electrónica mostraba sus ítems originales como si nada
+             hubiera pasado: una nota débito que cobra 50.000 más, o una nota
+             crédito que la anula entera, solo se veían desde el listado. -->
+        @if (notes) {
+          <section class="flex flex-col p-2 md:p-4 gap-3 rounded-2xl border border-[var(--primary-color)]">
+            <div class="w-full text-center">
+              <span class="font-bold text-sm md:text-base">
+                {{ 'invoice.edit.notes_title' | translate }}
+              </span>
+            </div>
+
+            @if (notes.annulled) {
+              <div class="flex items-center gap-2 rounded-xl bg-red-50 border border-red-300 px-3 py-2">
+                <mat-icon class="text-red-600 !text-base !w-4 !h-4 !leading-4 shrink-0">block</mat-icon>
+                <span class="text-red-800 text-xs md:text-sm font-semibold">
+                  {{ 'invoice.edit.notes_annulled' | translate }}
+                </span>
+              </div>
+            }
+
+            @for (note of notes.creditNotes; track note.creditNoteId) {
+              <div class="flex flex-col gap-1 rounded-xl border border-gray-200 px-3 py-2">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <span class="text-sm font-semibold">
+                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-red-600">undo</mat-icon>
+                    {{ 'invoice.edit.note_credit' | translate }}
+                    {{ note.factusNumber || note.referenceCode }}
+                    <span class="text-xs font-normal text-gray-400">
+                      · {{ (note.isTotal ? 'invoice.credit_note.total_tag' : 'invoice.credit_note.partial_tag') | translate }}
+                    </span>
+                  </span>
+                  <span class="text-sm font-bold text-red-700">
+                    − {{ note.total | formatCop }}
+                  </span>
+                </div>
+                @if (note.observation) {
+                  <span class="text-xs text-gray-500">{{ note.observation }}</span>
+                }
+              </div>
+            }
+
+            <!-- La nota débito es la que más falta hacía: sus conceptos NO
+                 están en los ítems de la factura, así que sin este desglose el
+                 documento no explica de dónde sale el importe extra. -->
+            @for (note of notes.debitNotes; track note.debitNoteId) {
+              <div class="flex flex-col gap-1 rounded-xl border border-gray-200 px-3 py-2">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <span class="text-sm font-semibold">
+                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-amber-600">trending_up</mat-icon>
+                    {{ 'invoice.edit.note_debit' | translate }}
+                    {{ note.factusNumber || note.referenceCode }}
+                  </span>
+                  <span class="text-sm font-bold text-amber-700">
+                    + {{ note.total | formatCop }}
+                  </span>
+                </div>
+                @for (item of debitItems(note); track $index) {
+                  <div class="flex items-center justify-between gap-2 pl-5 text-xs text-gray-600">
+                    <span class="truncate">{{ item.quantity }} × {{ item.name }}</span>
+                    <span class="shrink-0">{{ debitItemTotal(item) | formatCop }}</span>
+                  </div>
+                }
+                @if (note.observation) {
+                  <span class="text-xs text-gray-500">{{ note.observation }}</span>
+                }
+              </div>
+            }
+
+            @for (note of notes.adjustmentNotes; track note.adjustmentNoteId) {
+              <div class="flex flex-col gap-1 rounded-xl border border-gray-200 px-3 py-2">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <span class="text-sm font-semibold">
+                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-red-600">tune</mat-icon>
+                    {{ 'invoice.edit.note_adjustment' | translate }}
+                    {{ note.factusNumber || note.referenceCode }}
+                  </span>
+                  <span class="text-sm font-bold text-red-700">
+                    − {{ note.total | formatCop }}
+                  </span>
+                </div>
+                @if (note.observation) {
+                  <span class="text-xs text-gray-500">{{ note.observation }}</span>
+                }
+              </div>
+            }
+
+            <div class="flex items-center justify-between border-t border-gray-200 pt-2">
+              <span class="text-sm font-bold">{{ 'invoice.edit.notes_net' | translate }}</span>
+              <span class="text-base font-extrabold">{{ notes.net | formatCop }}</span>
+            </div>
+          </section>
+        }
         <div
           class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[var(--primary-color)]"
         >

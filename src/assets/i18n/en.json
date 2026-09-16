@@ -26,22 +26,40 @@
     "developed_by": "Developed by"
   },
   "home": {
+    "greeting": {
+      "hello": "Hello",
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "sections": {
+      "create": "Create",
+      "go_to": "Go to"
+    },
+    "groups": {
+      "invoicing": "Invoicing",
+      "people": "People",
+      "catalog": "Catalog"
+    },
+    "actions": {
+      "new_electronic": "Electronic invoice",
+      "new_sale": "Sales invoice",
+      "new_purchase": "Purchase",
+      "new_quote": "Quote",
+      "new_client": "Customer",
+      "new_supplier": "Supplier",
+      "new_receptionist": "Receptionist",
+      "new_waiter": "Waiter",
+      "new_chef": "Chef",
+      "new_product": "Product",
+      "new_accommodation": "Accommodation",
+      "new_excursion": "Day pass or service",
+      "new_recipe": "Recipe"
+    },
     "cards": {
       "clients": {
         "title": "Clients",
         "description": "Manage users, roles and system permissions"
-      },
-      "products": {
-        "title": "Products",
-        "description": "Inventory and product management"
-      },
-      "accommodations": {
-        "title": "Accommodations",
-        "description": "Room status and information"
-      },
-      "services": {
-        "title": "Day Trips & Services",
-        "description": "Create and manage your day trips or services"
       },
       "menu": {
         "title": "Menu",
@@ -71,6 +89,14 @@
       "application": {
         "title": "Application",
         "description": "System configuration and administration"
+      },
+      "catalog": {
+        "title": "Products and services",
+        "description": "Inventory, accommodations and day passes"
+      },
+      "numbering": {
+        "title": "DIAN numbering",
+        "description": "Authorized ranges and their sequence"
       }
     }
   },
@@ -372,7 +398,7 @@
       "charges": "Charges",
       "charge_name": "Description",
       "charge_qty": "Qty",
-      "charge_price": "Unit price",
+      "charge_price": "Unit price (tax incl.)",
       "charge_tax": "Tax",
       "add_charge": "Add charge",
       "remove_charge": "Remove this charge",
@@ -382,6 +408,8 @@
       "tax_ipo_5": "Consumption 5%",
       "observation": "Note",
       "existing": "Debit notes already issued",
+      "subtotal": "Taxable base",
+      "tax_included": "Tax included",
       "total": "Total",
       "number": "Number",
       "emit": "Issue debit note",
@@ -603,11 +631,16 @@
       "factus_success_title": "Invoice sent",
       "factus_success_msg": "Invoice successfully sent to DIAN",
       "factus_error_title": "Billing error",
+      "factus_confirm_title": "Send {{code}} to DIAN?",
+      "factus_confirm_msg": "It will be sent to DIAN and become legally binding. Once validated it can NOT be edited or deleted: it can only be corrected with a credit note. The invoice will be emailed to the customer.",
+      "factus_confirm_convert": "This is a sales invoice: once validated it becomes an electronic invoice and will no longer appear under Sales.",
       "action_support_document": "Issue support document",
       "support_sending": "Issuing support document...",
       "support_success_title": "Support document issued",
       "support_success_msg": "The support document was validated by DIAN",
       "support_error_title": "Could not issue the support document",
+      "support_confirm_title": "Issue support document for {{code}}?",
+      "support_confirm_msg": "This is for purchases from suppliers NOT required to invoice; if the supplier issues an electronic invoice, it does not apply. It will be sent to DIAN and become legally binding: once validated it can only be corrected with an adjustment note. The purchase will become a support document.",
       "factus_locked_edit": "Cannot edit: invoice already sent to DIAN",
       "factus_locked_delete": "Cannot delete: invoice already sent to DIAN",
       "search_text": "Code, name, ID, total, subtotal",
@@ -626,8 +659,24 @@
       "search_electronic_ph": "Search by electronic billing",
       "search_yes": "Yes",
       "search_no": "No",
-      "delete_title": "Delete this invoice?",
+      "delete_title": "Delete invoice {{code}}?",
       "delete_msg": "This action cannot be undone.",
+      "delete_msg_sale": "Cannot be undone. Products go back to stock, recipe dishes return their ingredients, and accommodations become Available again.",
+      "delete_msg_purchase": "Cannot be undone. Whatever this purchase added is SUBTRACTED from stock, so if part of that merchandise was already sold the product may end up negative.",
+      "delete_msg_quote": "Cannot be undone. A quote does not move inventory, so stock and accommodations are untouched.",
+      "delete_item_title": "Delete this item?",
+      "delete_item_msg_sale": "Cannot be undone. The product goes back to stock and, if it is a recipe dish, its ingredients are returned; an accommodation becomes Available again.",
+      "delete_item_msg_purchase": "Cannot be undone. The quantity this line added is subtracted from stock. If it would leave the product negative, it cannot be deleted.",
+      "delete_item_msg_quote": "Cannot be undone. In a quote the item does not move inventory.",
+      "annulled_hint": "This invoice is already annulled by a credit note: it accepts no further notes. If you need to charge again, issue a new invoice.",
+      "action_resend_email": "Resend by email",
+      "resend_sending": "Sending email...",
+      "resend_confirm_title": "Resend the invoice to the customer?",
+      "resend_confirm_msg": "An email with the invoice PDF and the DIAN QR code will be sent to the customer's registered address.",
+      "resend_confirm_annulled": "Note: this invoice is ANNULLED, so the PDF will carry the watermark and the notes breakdown.",
+      "resend_success_title": "Email sent",
+      "resend_success_msg": "The invoice was resent to the customer",
+      "resend_error_title": "Could not resend the invoice",
       "action_debit_note": "Issue debit note",
       "action_adjustment_note": "Issue adjustment note"
     },
@@ -644,7 +693,13 @@
       "tab_services": "Services",
       "tab_day_trips": "Day Trips & Services",
       "tab_products_buy": "Products",
-      "entered_items": "Entered Services & Products"
+      "entered_items": "Entered Services & Products",
+      "notes_title": "Associated notes",
+      "notes_annulled": "Document annulled: the notes cover its full value.",
+      "notes_net": "Document net value",
+      "note_credit": "Credit note",
+      "note_debit": "Debit note",
+      "note_adjustment": "Adjustment note"
     },
     "pdf": {
       "generated_by": "Generated by:",
@@ -1575,6 +1630,8 @@
     "see_orders": {
       "title": "See orders",
       "subtitle": "Here you can see restaurant orders",
+      "delete_title": "Delete this order?",
+      "delete_msg": "Cannot be undone. The order is a sale: dishes return their ingredients to inventory and products go back to stock.",
       "clear_filters": "Clear filters",
       "search_text": "Code, Table",
       "search_date": "Order date",

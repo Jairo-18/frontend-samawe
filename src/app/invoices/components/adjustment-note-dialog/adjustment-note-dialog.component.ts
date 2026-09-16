@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { forkJoin } from 'rxjs';
+import { filter, forkJoin } from 'rxjs';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -94,7 +94,21 @@ export class AdjustmentNoteDialogComponent implements OnInit {
   existing: AdjustmentNote[] = [];
   result: AdjustmentNoteResult | null = null;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: AdjustmentNoteDialogData) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: AdjustmentNoteDialogData) {
+    // Ver el comentario de `credit-note-dialog`: ESC y clic fuera tienen que
+    // devolver el mismo valor que el botón para que el listado solo recargue
+    // cuando de verdad se emitió algo.
+    this._dialogRef.disableClose = true;
+    this._dialogRef.backdropClick().subscribe(() => this.closeIfIdle());
+    this._dialogRef
+      .keydownEvents()
+      .pipe(filter((event) => event.key === 'Escape'))
+      .subscribe(() => this.closeIfIdle());
+  }
+
+  private closeIfIdle(): void {
+    if (!this.submitting) this.close();
+  }
 
   ngOnInit(): void {
     forkJoin({

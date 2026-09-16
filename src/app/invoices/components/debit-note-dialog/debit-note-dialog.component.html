@@ -67,9 +67,35 @@
       <div class="flex flex-col gap-2 mb-2">
         @for (row of rows; track $index) {
           <div class="flex flex-wrap items-start gap-2 border border-gray-200 rounded px-2 py-2">
+            <!-- Autocompletado sobre el catálogo (productos, hospedajes,
+                 excursiones) pero con texto libre: es un `input` normal con
+                 `matAutocomplete`, no un select, así que un concepto que no
+                 está en la base —intereses, un recargo— se escribe igual. -->
             <mat-form-field appearance="outline" class="flex-1 !min-w-[160px] dense-field">
               <mat-label>{{ 'invoice.debit_note.charge_name' | translate }}</mat-label>
-              <input matInput maxlength="200" [(ngModel)]="row.name" />
+              <!-- El término sale del `$event`, no de `row.name`: `ngModel` y
+                   este handler escuchan el mismo evento `input`, y tomando la
+                   propiedad se buscaba siempre un carácter por detrás. -->
+              <input matInput maxlength="200" [(ngModel)]="row.name"
+                [matAutocomplete]="catalog"
+                (input)="onNameInput($any($event.target).value)"
+                (focus)="onNameFocus(row)" />
+              @if (searchingCatalog) {
+                <mat-icon matSuffix class="!text-base animate-pulse">search</mat-icon>
+              }
+              <mat-autocomplete #catalog="matAutocomplete">
+                @for (option of catalogOptions; track option.label) {
+                  <!-- `isUserInput`: sin esto el evento salta también al
+                       deseleccionar y sobrescribe la fila con el ítem viejo. -->
+                  <mat-option [value]="option.label"
+                    (onSelectionChange)="$event.isUserInput && onCatalogSelected(row, option)">
+                    <span>{{ option.label }}</span>
+                    <span class="ml-2 text-xs text-gray-500">
+                      {{ option.price | formatCop }}
+                    </span>
+                  </mat-option>
+                }
+              </mat-autocomplete>
             </mat-form-field>
             <mat-form-field appearance="outline" class="!w-20 dense-field">
               <mat-label>{{ 'invoice.debit_note.charge_qty' | translate }}</mat-label>
@@ -101,10 +127,26 @@
         {{ 'invoice.debit_note.add_charge' | translate }}
       </button>
 
-      <p class="mb-3 text-right text-sm">
-        {{ 'invoice.debit_note.total' | translate }}:
-        <strong>{{ total | formatCop }}</strong>
-      </p>
+      <!-- Desglose, no solo el total: el valor unitario se teclea CON impuesto
+           incluido (igual que en toda la facturación del sistema), así que sin
+           ver la base y el impuesto por separado no queda claro que el 19 % ya
+           está dentro de la cifra escrita. -->
+      <div class="mb-3 text-right text-sm">
+        @if (taxTotal > 0) {
+          <p class="text-gray-500">
+            {{ 'invoice.debit_note.subtotal' | translate }}:
+            {{ netTotal | formatCop }}
+          </p>
+          <p class="text-gray-500">
+            {{ 'invoice.debit_note.tax_included' | translate }}:
+            {{ taxTotal | formatCop }}
+          </p>
+        }
+        <p>
+          {{ 'invoice.debit_note.total' | translate }}:
+          <strong>{{ total | formatCop }}</strong>
+        </p>
+      </div>
 
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'invoice.debit_note.observation' | translate }}</mat-label>
@@ -113,17 +155,19 @@
     }
   </div>
 
+  <!-- Botonera: ver la nota en `credit-note-dialog` — verde de marca para la
+       acción principal, contorno para salir, misma altura en los dos. -->
   <div actions>
     <section class="flex w-full justify-end gap-2">
       @if (result) {
-        <button mat-flat-button color="primary" (click)="close()">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="close()">
           {{ 'invoice.debit_note.done' | translate }}
         </button>
       } @else {
         <button mat-stroked-button (click)="close()" [disabled]="submitting">
           {{ 'invoice.debit_note.cancel' | translate }}
         </button>
-        <button mat-flat-button color="primary" (click)="submit()" [disabled]="!canSubmit">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="submit()" [disabled]="!canSubmit">
           <mat-icon>trending_up</mat-icon>
           {{ submitting ? ('invoice.debit_note.emitting' | translate) : ('invoice.debit_note.emit' | translate) }}
         </button>

@@ -1,4 +1,4 @@
-<div class="auth-content-center">
+<div class="auth-content-center py-[clamp(0.75rem,3vh,2.5rem)]">
   <!--
     Ancho con techo en px, no en % del viewport: un formulario no se lee mejor
     por ser más ancho. El `w-[90%]` solo sirve de margen en móvil.
@@ -7,15 +7,20 @@
     se recortaban sin scroll por el `overflow-hidden`.
     Las columnas se estiran con `items-stretch`; con `min-h` un `h-full` en las
     secciones resolvería a auto y la imagen desaparecería.
+    El `min-h` va dentro de un `min()` contra el alto real disponible: los
+    600/680 px son el deseo en monitor de escritorio, pero en un portátil
+    (1280x720 a 150%, 1536x864 a 125%) el alto útil tras la navbar es menor y la
+    card quedaba pegada a los bordes o desbordaba. Con el `min()` manda el
+    contenido y el `py` del contenedor garantiza el aire.
   -->
   <article
-    class="relative w-[90%] max-w-[440px] lg:max-w-[920px] h-auto lg:min-h-[600px] 2xl:min-h-[680px] flex items-stretch justify-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] max-w-[440px] lg:max-w-[920px] h-auto lg:min-h-[min(600px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] 2xl:min-h-[min(680px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] flex items-stretch justify-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
   >
     <section
       class="w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4"
     >
       <div class="flex flex-col gap-0 md:gap-1.5 mb-1 md:mb-0">
-        <span class="font-extrabold text-lg 2xl:text-xl">{{
+        <span class="auth-title font-extrabold text-lg 2xl:text-xl">{{
           'login.title' | translate
         }}</span>
         <span class="font-medium text-sm md:text-base">

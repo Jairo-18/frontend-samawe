@@ -29,6 +29,14 @@ import {
 } from '../../../shared/interfaces/relatedDataGeneral';
 import { Invoice } from '../../interface/invoice.interface';
 import { InvoiceService } from '../../services/invoice.service';
+import {
+  InvoiceNotes,
+  InvoiceNotesService
+} from '../../services/invoiceNotes.service';
+import {
+  DebitNote,
+  DebitNoteSnapshotItem
+} from '../../interface/debitNote.interface';
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -56,6 +64,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { InvoicePrintService } from '../../../shared/services/invoicePrint.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 @Component({
   selector: 'app-edit-invoice',
   standalone: true,
@@ -83,7 +92,8 @@ import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
     MatInputModule,
     MatFormFieldModule,
     TranslateModule,
-    TranslatedPipe
+    TranslatedPipe,
+    FormatCopPipe
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-CO' }],
   templateUrl: './edit-invoice.component.html',
@@ -96,6 +106,8 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
+  private readonly _invoiceNotesService: InvoiceNotesService =
+    inject(InvoiceNotesService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _dialog: MatDialog = inject(MatDialog);
   private readonly _platformId = inject(PLATFORM_ID);
@@ -112,6 +124,8 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   invoiceTypes: InvoiceType[] = [];
   reloadInvoiceDetails: boolean = false;
   invoiceData?: Invoice;
+  /** Notas asociadas, o `null` si el documento no tiene ninguna. */
+  notes: InvoiceNotes | null = null;
   invoiceId?: number;
   initialLoading: boolean = true;
   ngOnInit(): void {
@@ -206,6 +220,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
         };
         this.invoiceId = invoice.invoiceId;
         this.loadRelatedData();
+        this.loadNotes();
         if (isInitialLoad) {
           this.initialLoading = false;
         }
@@ -218,6 +233,41 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       }
     });
   }
+  /**
+   * Notas asociadas al documento (crédito y débito en facturas, ajuste en
+   * documentos soporte). Solo se piden si el documento está emitido: antes de
+   * eso no puede tener ninguna.
+   */
+  private loadNotes(): void {
+    const code = this.invoiceData?.invoiceType?.code;
+    if (!this.invoiceId || !this.invoiceData?.factusNumber) {
+      this.notes = null;
+      return;
+    }
+    this._invoiceNotesService
+      .load(this.invoiceId, code, Number(this.invoiceData.total ?? 0))
+      .subscribe((notes) => (this.notes = notes.any ? notes : null));
+  }
+
+  /** Conceptos cobrados por una nota débito, para el desglose del detalle. */
+  debitItems(note: DebitNote): DebitNoteSnapshotItem[] {
+    return note.itemsSnapshot ?? [];
+  }
+
+  /**
+   * Valor de un concepto CON su impuesto, que es como se tecleó y como suma al
+   * total de la nota. En el snapshot `price` es la base, porque es el ítem del
+   * payload de Factus.
+   */
+  debitItemTotal(item: DebitNoteSnapshotItem): number {
+    const qty = Number(item.quantity ?? 0);
+    const price = Number(item.price ?? 0);
+    const rate = Number(item.taxes?.[0]?.rate ?? 0);
+    const net = Math.round(qty * price * 100) / 100;
+    const tax = Math.round(((net * rate) / 100) * 100) / 100;
+    return net + tax;
+  }
+
   private readonly _invoicePrintService: InvoicePrintService =
     inject(InvoicePrintService);
   async downloadInvoice(): Promise<void> {

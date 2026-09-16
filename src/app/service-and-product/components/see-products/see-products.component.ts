@@ -224,6 +224,21 @@ export class SeeProductsComponent implements OnInit {
     const roleCode = (this.userLogged?.roleType?.code ?? '').toUpperCase();
     return ['SUPERADMIN', 'ADMIN', 'EMP'].includes(roleCode);
   }
+
+  /**
+   * Abre el producto al pulsar su fila: hace lo mismo que el botón de editar,
+   * que queda como indicador visible de la acción.
+   *
+   * Comprueba el permiso otra vez aunque la fila solo sea clicable con él: el
+   * `[class]` del template es apariencia, no control de acceso.
+   */
+  openProduct(product: ProductComplete): void {
+    if (!this.validateIfCanEditUserOrDelete() || !product?.productId) return;
+    this.productSelected.emit(product);
+    this._router.navigate(['/service-and-product/general'], {
+      queryParams: { editProduct: product.productId }
+    });
+  }
   printProducts(): void {
     this._earningService.getGeneragetProductSummary().subscribe({
       next: (summary) => {

@@ -1,28 +1,70 @@
-<div
-  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-4"
->
-  @for (card of cards; track card.title) {
-    <a
-      [routerLink]="card.route || '/home'"
-      [queryParams]="card.queryParams"
-      class="flex p-2 md:p-4 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-[102%] items-center no-underline text-inherit"
-    >
-      <div class="flex items-center w-full gap-x-2">
-        <div class="flex items-center w-[10%]">
-          <mat-icon class="text-[var(--primary-color)]">{{
-            card.icon
-          }}</mat-icon>
-        </div>
-        <div class="flex flex-col w-[80%]">
-          <span class="text-sm md:text-lg font-semibold">{{ (card.title || '') | translate }}</span>
-          <span class="text-xs md:text-sm text-gray-600">{{
-            (card.description || '') | translate
-          }}</span>
-        </div>
-        <div class="flex items-center w-[10%]">
-          <mat-icon class="text-black">{{ card.iconNext }}</mat-icon>
+@if (firstName || today) {
+  <header class="home-greeting">
+    <h1 class="home-greeting__hello">
+      {{ greetingKey | translate }}{{ firstName ? ', ' + firstName : '' }}
+    </h1>
+    @if (today) {
+      <p class="home-greeting__date">{{ today }}</p>
+    }
+  </header>
+}
+
+@if (actionGroups.length) {
+  <section class="mb-10">
+    <h2 class="home-heading">{{ 'home.sections.create' | translate }}</h2>
+
+    @for (group of actionGroups; track group.title) {
+      <div class="mb-5 last:mb-0">
+        <p class="home-group-label">{{ group.title | translate }}</p>
+
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-3"
+        >
+          @for (action of group.actions; track action.title) {
+            <a
+              [routerLink]="action.route"
+              [queryParams]="action.queryParams"
+              class="home-action"
+            >
+              <mat-icon class="home-action__icon">{{ action.icon }}</mat-icon>
+              <span class="home-action__label">{{
+                action.title | translate
+              }}</span>
+            </a>
+          }
         </div>
       </div>
-    </a>
-  }
-</div>
+    }
+  </section>
+}
+
+@if (cards.length) {
+  <section>
+    <h2 class="home-heading">{{ 'home.sections.go_to' | translate }}</h2>
+
+    <!-- Lista, no tarjetas: estos accesos se consultan de vez en cuando y no
+         deben competir con las acciones de arriba. -->
+    <nav class="home-destinations">
+      @for (card of cards; track card.title) {
+        <a
+          [routerLink]="card.route || '/home'"
+          [queryParams]="card.queryParams"
+          class="home-destination"
+        >
+          <mat-icon class="home-destination__icon">{{ card.icon }}</mat-icon>
+          <span class="min-w-0 flex-1">
+            <span class="home-destination__title">{{
+              (card.title || '') | translate
+            }}</span>
+            <span class="home-destination__desc">{{
+              (card.description || '') | translate
+            }}</span>
+          </span>
+          <mat-icon class="home-destination__chevron">{{
+            card.iconNext
+          }}</mat-icon>
+        </a>
+      }
+    </nav>
+  </section>
+}

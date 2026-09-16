@@ -38,7 +38,7 @@ import { CreateInvoiceDialogComponent } from '../../../invoices/components/creat
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 
 @Component({
@@ -73,6 +73,7 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
     inject(RelatedDataService);
   private readonly _router: Router = inject(Router);
   private readonly _matDialog: MatDialog = inject(MatDialog);
+  private readonly _translate: TranslateService = inject(TranslateService);
   private readonly _invoicePrintService: InvoicePrintService =
     inject(InvoicePrintService);
   private readonly _localStorage: LocalStorageService =
@@ -332,11 +333,18 @@ export class SeeOrdersComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
+  /**
+   * Una orden de restaurante es una factura de VENTA: borrarla no la quita de
+   * la lista y ya, sino que deshace sus movimientos de inventario
+   * (`invoice.service.delete`). Lo que importa avisar aquí es lo de los
+   * ingredientes: los platos son productos de receta, así que al borrar la
+   * orden se devuelven al inventario los ingredientes que consumieron.
+   */
   openDeleteOrderDialog(id: number): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
-        title: '¿Deseas eliminar esta orden?',
-        message: 'Esta acción no se puede deshacer.'
+        title: this._translate.instant('recipe.see_orders.delete_title'),
+        message: this._translate.instant('recipe.see_orders.delete_msg')
       }
     });
 

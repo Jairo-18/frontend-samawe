@@ -116,17 +116,19 @@
     }
   </div>
 
+  <!-- Botonera: ver la nota en `credit-note-dialog` — verde de marca para la
+       acción principal, contorno para salir, misma altura en los dos. -->
   <div actions>
     <section class="flex w-full justify-end gap-2">
       @if (result) {
-        <button mat-flat-button color="primary" (click)="close()">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="close()">
           {{ 'invoice.adjustment_note.done' | translate }}
         </button>
       } @else {
         <button mat-stroked-button (click)="close()" [disabled]="submitting">
           {{ 'invoice.adjustment_note.cancel' | translate }}
         </button>
-        <button mat-flat-button color="warn" (click)="submit()" [disabled]="!canSubmit">
+        <button mat-fab extended="true" class="!h-[46px]" (click)="submit()" [disabled]="!canSubmit">
           <mat-icon>tune</mat-icon>
           {{ submitting ? ('invoice.adjustment_note.emitting' | translate) : ('invoice.adjustment_note.emit' | translate) }}
         </button>

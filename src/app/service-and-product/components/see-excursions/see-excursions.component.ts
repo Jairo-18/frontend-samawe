@@ -236,6 +236,20 @@ export class SeeExcursionsComponent implements OnInit {
     const roleCode = (this.userLogged?.roleType?.code ?? '').toUpperCase();
     return ['SUPERADMIN', 'ADMIN', 'EMP'].includes(roleCode);
   }
+
+  /**
+   * Abre la pasadía al pulsar su fila: lo mismo que el botón de editar, que se
+   * mantiene como indicador visible. El permiso se vuelve a comprobar aquí
+   * porque el `[class]` del template es apariencia, no control de acceso.
+   */
+  openExcursion(excursion: ExcursionComplete): void {
+    if (!this.validateIfCanEditUserOrDelete() || !excursion?.excursionId) return;
+    this.excursionSelect.emit(excursion);
+    this._router.navigate(['/service-and-product/general'], {
+      queryParams: { editExcursion: excursion.excursionId }
+    });
+  }
+
   printExcursions(): void {
     this._excursionService.getAllExcursions().subscribe({
       next: (res) => {

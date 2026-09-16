@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { forkJoin } from 'rxjs';
+import { filter, forkJoin } from 'rxjs';
 import { BaseDialogComponent } from '../../../shared/components/base-dialog/base-dialog.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
@@ -73,7 +73,25 @@ export class CreditNoteDialogComponent implements OnInit {
   existing: CreditNote[] = [];
   result: CreditNoteResult | null = null;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: CreditNoteDialogData) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: CreditNoteDialogData) {
+    // Cerrar con ESC o clicando fuera devolvía `undefined` aunque la nota SÍ
+    // se hubiera emitido, así que el listado no podía distinguir "cancelé" de
+    // "emití y cerré con ESC" y recargaba siempre — una consulta de más en
+    // cada cancelación. Con `disableClose` esas dos salidas pasan por
+    // `close()`, que devuelve `!!this.result`, y el padre ya puede condicionar.
+    // Se ignoran mientras hay una emisión en vuelo, igual que el botón
+    // Cancelar, que está deshabilitado con `submitting`.
+    this._dialogRef.disableClose = true;
+    this._dialogRef.backdropClick().subscribe(() => this.closeIfIdle());
+    this._dialogRef
+      .keydownEvents()
+      .pipe(filter((event) => event.key === 'Escape'))
+      .subscribe(() => this.closeIfIdle());
+  }
+
+  private closeIfIdle(): void {
+    if (!this.submitting) this.close();
+  }
 
   ngOnInit(): void {
     forkJoin({

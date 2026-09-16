@@ -13,7 +13,7 @@
             class="h-12 w-12 object-contain rounded-full bg-white/10 p-1"
           />
         }
-        <span class="font-bold text-lg tracking-wide text-white">
+        <span class="footer-brand font-bold text-lg tracking-wide text-white">
           {{ org?.name | capitalize }}
         </span>
       </div>
@@ -27,7 +27,7 @@
             [href]="org?.facebookUrl"
             target="_blank"
             rel="noopener"
-            class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white"
+            class="social-link social-link--facebook w-9 h-9 rounded-full flex items-center justify-center bg-white/15 text-white"
           >
             <fa-icon [icon]="faFacebook" class="text-base"></fa-icon>
           </a>
@@ -37,7 +37,7 @@
             [href]="org?.instagramUrl"
             target="_blank"
             rel="noopener"
-            class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white"
+            class="social-link social-link--instagram w-9 h-9 rounded-full flex items-center justify-center bg-white/15 text-white"
           >
             <fa-icon [icon]="faInstagram" class="text-base"></fa-icon>
           </a>
@@ -46,17 +46,18 @@
           [href]="whatsappHref"
           target="_blank"
           rel="noopener"
-          class="w-9 h-9 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/30 transition-colors duration-200 text-white"
+          class="social-link social-link--whatsapp w-9 h-9 rounded-full flex items-center justify-center bg-white/15 text-white"
         >
           <fa-icon [icon]="faWhatsapp" class="text-base"></fa-icon>
         </a>
       </div>
     </div>
 
-    <!-- Col 2: Navegación -->
-    <div class="flex flex-col gap-3">
+    <!-- Col 2: Navegación. `<nav>` y no `<div>`: es una lista de enlaces de
+         navegación, así los lectores de pantalla la anuncian como tal. -->
+    <nav class="flex flex-col gap-3">
       <span
-        class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
+        class="footer-heading text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
       >
         {{ 'footer.explore' | translate }}
       </span>
@@ -65,12 +66,12 @@
       <a [routerLink]="lang.route('gastronomy')"    class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.gastronomy'    | translate }}</a>
       <a [routerLink]="lang.route('about-us')"      class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.about_us'      | translate }}</a>
       <a [routerLink]="lang.route('how-to-arrive')" class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.how_to_arrive' | translate }}</a>
-    </div>
+    </nav>
 
     <!-- Col 3: Contacto -->
     <div class="flex flex-col gap-3">
       <span
-        class="text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
+        class="footer-heading text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
       >
         {{ 'footer.contact' | translate }}
       </span>
@@ -107,13 +108,13 @@
     <div
       class="max-w-7xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-row flex-wrap items-center justify-between gap-2 text-xs text-white/50"
     >
-      <span>© {{ currentYear }} {{ org?.name }}. {{ 'footer.rights' | translate }}</span>
-      <div class="flex items-center gap-4">
+      <span class="footer-copy">© {{ currentYear }} {{ org?.name }}. {{ 'footer.rights' | translate }}</span>
+      <div class="footer-legal flex items-center gap-4">
         <a [routerLink]="lang.route('legal/privacity')" class="hover:text-white transition-colors">{{ 'footer.privacy' | translate }}</a>
         <span>·</span>
         <a [routerLink]="lang.route('legal/terms')" class="hover:text-white transition-colors">{{ 'footer.terms' | translate }}</a>
       </div>
-      <span>{{ 'footer.developed_by' | translate }} <a href="https://jhonlegardaportfolio.netlify.app/home" target="_blank" rel="noopener" class="text-white font-medium hover:text-white/80 transition-colors underline underline-offset-2">Jhon Jairo Legarda Erazo</a></span>
+      <span class="footer-copy">{{ 'footer.developed_by' | translate }} <a href="https://jhonlegardaportfolio.netlify.app/home" target="_blank" rel="noopener" class="text-white font-medium hover:text-white/80 transition-colors underline underline-offset-2">Jhon Jairo Legarda Erazo</a></span>
     </div>
   </div>
 </footer>

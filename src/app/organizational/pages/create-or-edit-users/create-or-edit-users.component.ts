@@ -211,6 +211,8 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
           this.roleType = allRoles;
         }
 
+        this.applyRoleFromQueryParam();
+
         this.identificationType = res.data?.identificationType || [];
         this.personType = res.data?.personType || [];
         this.phoneCode = res.data?.phoneCode || [];
@@ -226,6 +228,30 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
       }
     });
   }
+  /**
+   * Atajo `?role=USER|PRO|EMP|MES|CHE`: llega desde las tarjetas de creación
+   * del inicio ("Crear cliente", "Crear mesero"…) y deja el rol ya elegido.
+   *
+   * Se resuelve por **code**, nunca por id: los `roleTypeId` son UUID y
+   * difieren entre bases, así que un id en la URL sería un enlace roto en
+   * cuanto se cambie de entorno.
+   *
+   * Solo aplica al crear, y solo si ese rol está entre los que el usuario
+   * logueado puede asignar — la lista ya viene filtrada por permisos, así que
+   * un recepcionista no puede fabricarse un enlace para crear un admin.
+   */
+  private applyRoleFromQueryParam(): void {
+    if (this.isEditMode) return;
+    const code = this._activatedRoute.snapshot.queryParamMap.get('role');
+    if (!code) return;
+    const match = this.roleType.find(
+      (r) => r.code?.trim().toUpperCase() === code.trim().toUpperCase()
+    );
+    if (match) {
+      this.userForm.patchValue({ roleTypeId: match.roleTypeId });
+    }
+  }
+
   setupPhoneCodeSearch(): void {
     this.userForm
       .get('phoneCodeSearch')

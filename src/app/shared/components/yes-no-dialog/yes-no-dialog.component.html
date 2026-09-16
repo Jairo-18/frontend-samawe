@@ -2,12 +2,16 @@
   [title]="data?.title || 'Confirmar'"
   [description]="data?.message || '¿Estás seguro de realizar esta acción?'"
 >
+  <!-- Confirmar en VERDE (la acción) y Cancelar en ROJO (la salida), igual que
+       en los diálogos de nota. Estaba al revés: el verde invita a pulsar y era
+       el que cancelaba, en el diálogo que sale al BORRAR cosas.
+       `mat-fab` sin color → verde de marca; `color="warn"` → rojo. -->
   <div actions>
     <section class="flex content-between gap-x-2">
-      <button mat-fab extended="true" color="warn" (click)="confirmAction()">
+      <button mat-fab extended="true" (click)="confirmAction()">
         Confirmar
       </button>
-      <button mat-fab extended="true" color="primary" (click)="cancelAction()">
+      <button mat-fab extended="true" color="warn" (click)="cancelAction()">
         Cancelar
       </button>
     </section>

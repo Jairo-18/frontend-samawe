@@ -95,7 +95,7 @@
                 <div class="flex items-center">
                   <span
                     *ngIf="!isCollapsed"
-                    class="text-xs md:text-xs lg:text-sm 3xl:text-base"
+                    class="side-bar-label text-xs md:text-xs lg:text-sm 3xl:text-base"
                     >{{
                       module.moduleKey
                         ? (module.moduleKey | translate)
@@ -147,7 +147,7 @@
                     <div class="flex items-center">
                       <span
                         *ngIf="!isCollapsed"
-                        class="text-xs md:text-sm lg:text-sm 3xl:text-base"
+                        class="side-bar-label text-xs md:text-sm lg:text-sm 3xl:text-base"
                         >{{
                           item.titleKey
                             ? (item.titleKey | translate)
@@ -196,7 +196,7 @@
                           </div>
                           <div class="flex items-center">
                             <span
-                              class="text-xs md:text-sm lg:text-sm 3xl:text-base"
+                              class="side-bar-label text-xs md:text-sm lg:text-sm 3xl:text-base"
                               >{{
                                 subItem.titleKey
                                   ? (subItem.titleKey | translate)
@@ -262,7 +262,7 @@
 
         <span
           *ngIf="!isCollapsed"
-          class="text-xs md:text-sm lg:text-sm 3xl:text-base"
+          class="side-bar-label text-xs md:text-sm lg:text-sm 3xl:text-base"
           >{{ 'auth.logout' | translate }}</span
         >
       </button>

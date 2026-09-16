@@ -63,6 +63,13 @@
   }
 }
 
+// Solo la caja de centrado. El aire vertical lo pone cada página con la
+// utilidad `py-[clamp(0.75rem,3vh,2.5rem)]` de Tailwind: al ser `min-height` y
+// no `height`, el padding aquí no recortaba nada, pero repartirlo desde el HTML
+// mantiene una sola fuente para los espaciados.
+// ⚠️ Nunca dar margen exterior (`my-*`) a un elemento con esta clase: ya mide
+// `100svh - navbar`, así que el margen se suma por encima del alto de la
+// ventana y fuerza scroll en todas las pantallas.
 .auth-content-center {
   min-height: calc(100svh - var(--nav-bar-height));
   width: 100%;
@@ -70,9 +77,6 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  @media (max-width: 768px) {
-    padding-block: 10px;
-  }
 }
 
 .brand-nav-bar {
@@ -167,9 +171,17 @@
       flex-direction: column;
       border-radius: 16px;
 
+      // El TÍTULO en la tipografía de marca; el mensaje se queda en Poppins,
+      // que se lee mejor en frases largas y a 0.78rem en móvil.
+      //
+      // `!important` porque `@use 'ngx-toastr/toastr'` va DESPUÉS de este
+      // archivo en `styles.scss`: sus reglas se aplican más tarde y con la
+      // cascada sola no basta.
       .toast-title {
-        font-weight: bold;
+        font-family: var(--font-title) !important;
+        font-weight: 700 !important;
         font-size: 1.1rem;
+        letter-spacing: 0.01em;
         margin-bottom: 5px;
 
         @media (max-width: 768px) {
@@ -246,6 +258,40 @@
   text-align: center !important;
 }
 
+/**
+ * Fila de tabla que abre su registro al pulsarla. La usan los listados de
+ * facturas, productos, hospedajes, pasadías y usuarios, así que vive aquí y no
+ * repetida en cinco componentes.
+ *
+ * ⚠️ La celda de acciones (botones de editar/eliminar, checkbox de selección)
+ * tiene que parar la propagación con `(click)="$event.stopPropagation()"`, o
+ * pulsar "eliminar" abriría además el registro por debajo del diálogo.
+ *
+ * `tabindex="0"` + `(keydown.enter)` en el template: sin eso la función existe
+ * solo para el ratón. El foco se marca hacia dentro (`outline-offset`
+ * negativo) porque un anillo por fuera se recorta contra la tabla.
+ */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 6%, white);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    background-color: color-mix(in srgb, var(--primary-color) 6%, white);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clickable-row {
+    transition: none;
+  }
+}
+
 .mat-mdc-form-field-error {
   font-size: 12px !important;
 }
@@ -300,26 +346,199 @@
   scrollbar-color: var(--primary-color) #f1f1f1 !important;
 }
 
-/* ── Tipografía global dinámica ──────────────────────────────
-   Cambia --font-title / --font-body en index.html y se aplica
-   automáticamente en toda la app, incluyendo Angular Material.
-   ──────────────────────────────────────────────────────────── */
-:root {
-  /* Override Angular Material MDC typography tokens */
-  --mdc-typography-font-family: var(--font-body);
-  --mdc-typography-button-font-family: var(--font-body);
-  --mdc-typography-body1-font-family: var(--font-body);
-  --mdc-typography-body2-font-family: var(--font-body);
-  --mdc-typography-subtitle1-font-family: var(--font-body);
-  --mdc-typography-subtitle2-font-family: var(--font-body);
-  --mdc-typography-caption-font-family: var(--font-body);
-  --mdc-typography-overline-font-family: var(--font-body);
-  --mdc-typography-headline1-font-family: var(--font-title);
-  --mdc-typography-headline2-font-family: var(--font-title);
-  --mdc-typography-headline3-font-family: var(--font-title);
-  --mdc-typography-headline4-font-family: var(--font-title);
-  --mdc-typography-headline5-font-family: var(--font-title);
-  --mdc-typography-headline6-font-family: var(--font-title);
+/* ══ TIPOGRAFÍA DE MARCA — PIEZAS PROPIAS DE LA APLICACIÓN ═════════════════
+   Qué lleva Alegreya SC (`--font-title`) en la navegación, el pie y las
+   pantallas de acceso.
+
+   📍 **Lo de Angular Material está en `mat-theming.scss`**, bajo el mismo
+   encabezado: botones, menús, pestañas, stepper, etiquetas de campo,
+   encabezados de tabla y el desplegable de los selects. Este archivo es para lo
+   que escribimos nosotros; aquel, para lo que viene de la librería.
+
+   Este archivo es global y SIN encapsular, así que alcanza el interior de
+   cualquier componente: se apunta a ellos por su etiqueta `app-*`, que está en
+   el DOM. No hace falta tocar el SCSS de cada componente — se probó y las
+   reglas acaban repartidas por seis archivos sin que se sepa cuál manda.
+
+   LA REGLA: la fuente de marca va en lo que NOMBRA algo (título, enlace de
+   navegación, rótulo) y NO en lo que lo EXPLICA ni en los datos. Alegreya SC es
+   de VERSALITAS: dibuja las minúsculas como mayúsculas pequeñas, lo que borra
+   las diferencias de altura entre letras. En un título da carácter; en una
+   frase larga se lee bastante más lento, y en un dato (teléfono, correo, NIT)
+   impide distinguir carácter a carácter.
+
+   ⚠️ ALEGREYA SC SOLO TRAE 400 Y 700. Cualquier `font-medium` (500),
+   `font-semibold` (600) o `font-extrabold` (800) hace que el navegador fabrique
+   un negrita sintético, que se ve emborronado a tamaño pequeño — y varios de
+   estos rótulos miden 11px. Por eso los pesos se fijan aquí en vez de quitar
+   las clases de Tailwind de los templates, que también controlan el estado
+   activo de los enlaces.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Enlaces a redes sociales: al pasar el cursor toman el color de cada marca,
+ * en vez del gris genérico. Es la señal más rápida de a dónde lleva el botón.
+ *
+ * Los colores son los oficiales de cada plataforma. Instagram no tiene un color
+ * plano sino un degradado (naranja → magenta → violeta), así que se reproduce;
+ * usar solo el magenta se lee como "rosa" y no como Instagram.
+ *
+ * Se usa en el pie y en la ficha de la organización, por eso vive aquí.
+ */
+.social-link {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: #ffffff;
+  }
+
+  &--facebook:hover,
+  &--facebook:focus-visible {
+    background: #1877f2;
+  }
+
+  &--instagram:hover,
+  &--instagram:focus-visible {
+    background: radial-gradient(
+      circle at 30% 107%,
+      #fdf497 0%,
+      #fd5949 45%,
+      #d6249f 60%,
+      #285aeb 90%
+    );
+  }
+
+  &--whatsapp:hover,
+  &--whatsapp:focus-visible {
+    background: #25d366;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-link {
+    transition: none;
+  }
+}
+
+/* ── 0. Los iconos NUNCA cambian de fuente ──────────────────────────────── */
+/**
+ * Un icono de Material es un `<span class="material-icons">location_on</span>`:
+ * el nombre del glifo va como TEXTO y es la fuente la que lo dibuja. Si una
+ * regla de tipografía le gana, en la pantalla aparece la palabra
+ * "location_on" en vez del icono — pasó en el pie al aplicar la fuente de marca
+ * a `app-footer span`.
+ *
+ * Esta regla va la PRIMERA del bloque y con `!important` para que ninguna de
+ * las de abajo pueda romperlos, por amplio que sea su selector. No quitarla ni
+ * "simplificarla".
+ */
+mat-icon,
+.mat-icon,
+.material-icons,
+.mat-icon .material-icons {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  font-feature-settings: 'liga';
+}
+
+/* ── 1. Navegación y pie ────────────────────────────────────────────────── */
+/* Todo va en 700, el peso grueso de Alegreya SC: en versalitas el 400 se ve
+   demasiado ligero contra los fondos (verde del menú, oscuro del pie). */
+.side-bar-label,
+.nav-label,
+app-navbar-desktop a,
+app-navbar-desktop a span,
+app-navbar-desktop button span,
+app-navbar-mobile nav a,
+app-navbar-mobile nav a span,
+app-navbar-mobile a[routerLinkActive] span,
+/**
+ * En el pie SOLO los rótulos: el nombre del hotel, los encabezados de columna
+ * ("Explora", "Contacto") y los enlaces de navegación.
+ *
+ * ⚠️ El texto corrido se queda en Poppins, a propósito: Alegreya SC es una
+ * fuente de VERSALITAS (dibuja las minúsculas como mayúsculas pequeñas). En un
+ * título eso da carácter; en una frase larga elimina las diferencias de altura
+ * entre letras, que es lo que el ojo usa para reconocer palabras de un vistazo,
+ * y se lee notablemente más lento.
+ *
+ * Por eso quedan fuera la descripción del hotel, el aviso de derechos y los
+ * DATOS de contacto (teléfono, correo, dirección), que además hay que poder
+ * leer carácter a carácter.
+ */
+/* TODOS los enlaces del pie (navegación, legales, teléfono, correo y el del
+   autor), más el nombre del hotel y los encabezados de columna. Un enlace es un
+   rótulo: nombra a dónde lleva. */
+app-footer a,
+app-footer .footer-brand,
+app-footer .footer-heading {
+  font-family: var(--font-title) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Solo queda en Poppins el texto corrido: la descripción del hotel, la
+   dirección y el aviso de derechos. Son frases, y en versalitas se leen peor. */
+app-footer p,
+app-footer .footer-copy {
+  font-family: var(--font-body) !important;
+  font-weight: 400;
+}
+
+/* ── Banner de cookies y páginas legales ────────────────────────────────── */
+/**
+ * Aquí el texto ES el producto: un aviso legal se lee entero y a veces se
+ * relee, así que los párrafos se quedan en Poppins y solo llevan la fuente de
+ * marca los títulos, los encabezados de apartado y los enlaces.
+ *
+ * Es el caso donde la regla "nombra vs. explica" más se nota: poner un
+ * consentimiento de cookies en versalitas lo vuelve incómodo justo cuando hay
+ * que entenderlo para decidir.
+ */
+app-cookie-consent a,
+app-privacity h3,
+app-privacity .legal-section > span,
+app-privacity a,
+app-terms h3,
+app-terms .legal-section > span,
+app-terms a {
+  font-family: var(--font-title) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* ── 3. Pantallas de acceso ─────────────────────────────────────────────── */
+/* Mismo criterio que en el pie: la fuente de marca es de VERSALITAS, así que
+   va en los rótulos —título, enlaces, etiquetas de campo— y NO en el texto
+   corrido. En una frase, las versalitas borran las diferencias de altura entre
+   letras, que es lo que el ojo usa para reconocer palabras de un vistazo.
+
+   Quedan por tanto en Poppins: el subtítulo, los mensajes de error ("La
+   contraseña debe tener 6 caracteres…") y lo que la persona teclea, que además
+   hay que poder leer carácter a carácter: correos, NIT, contraseñas. */
+.auth-title {
+  font-family: var(--font-title);
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+.auth-content-center {
+  a,
+  label {
+    font-family: var(--font-title);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
 }
 
 h1,
@@ -331,16 +550,23 @@ h6 {
   font-family: var(--font-title);
 }
 
-body,
-p,
-span,
-li,
-a,
-button,
-input,
-textarea,
-select,
-label {
+/**
+ * Fuente por defecto del cuerpo.
+ *
+ * ⚠️ Esta regla está al FINAL del archivo y enumera `input`, `label`, `span`,
+ * `a` y `button` uno por uno, así que pisaba todo lo del bloque de tipografía
+ * de marca de más arriba: mismo peso de especificidad y va después. Por eso
+ * aquel bloque necesita `!important` en lo que compite con esta lista.
+ *
+ * `:where()` la deja en especificidad CERO: sigue siendo el valor por defecto
+ * de la aplicación, pero cualquier regla con una clase la supera sin pelear.
+ * No se borra porque `body` sí tiene que declarar la fuente base.
+ */
+body {
+  font-family: var(--font-body);
+}
+
+:where(p, span, li, a, button, input, textarea, select, label) {
   font-family: var(--font-body);
 }
 

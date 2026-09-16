@@ -6,6 +6,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { InvoiceService } from '../../invoices/services/invoice.service';
+import {
+  InvoiceNotes,
+  InvoiceNotesService
+} from '../../invoices/services/invoiceNotes.service';
 import { Invoice } from '../../invoices/interface/invoice.interface';
 import { InvoiceDetail } from '../../invoices/interface/invoiceDetaill.interface';
 import {
@@ -176,7 +180,12 @@ async function buildInvoiceDoc(
   invoice: Invoice,
   org: Organizational | null | undefined,
   defaultFont = 'Roboto',
-  opts: { ownerMode?: boolean; owner?: OwnerInfo } = {}
+  opts: {
+    ownerMode?: boolean;
+    owner?: OwnerInfo;
+    /** Notas asociadas, para el anexo informativo tras los totales. */
+    notes?: InvoiceNotes | null;
+  } = {}
 ): Promise<object> {
   const color = getColor(org);
 
@@ -646,6 +655,102 @@ async function buildInvoiceDoc(
     marginBottom: 2
   });
 
+  // ── Anexo de notas asociadas ────────────────────────────────────────────
+  //
+  // Va DESPUÉS de los totales y NO los modifica. El total impreso tiene que
+  // seguir siendo el que la DIAN validó para ESTE documento: una nota crédito o
+  // débito es otro documento electrónico, con su propio número, CUDE y PDF
+  // oficial. Lo que faltaba era la referencia cruzada — quien recibía la
+  // factura impresa no tenía forma de saber que existían.
+  const notes = opts.notes;
+  if (notes?.any) {
+    const noteLine = (
+      label: string,
+      number: string,
+      amount: number,
+      sign: '+' | '−'
+    ) => [
+      { text: `${label} ${number}`, fontSize: 7, margin: [4, 2, 4, 2] },
+      {
+        text: `${sign} ${formatCop(amount)}`,
+        fontSize: 7,
+        alignment: 'right' as const,
+        margin: [4, 2, 4, 2]
+      }
+    ];
+
+    const rows: unknown[][] = [
+      [
+        {
+          text: 'DOCUMENTOS ASOCIADOS / Associated documents',
+          bold: true,
+          fontSize: 7.5,
+          colSpan: 2,
+          margin: [4, 3, 4, 3]
+        },
+        {}
+      ],
+      ...notes.creditNotes.map((n) =>
+        noteLine(
+          'Nota crédito / Credit note',
+          n.factusNumber || n.referenceCode,
+          Number(n.total ?? 0),
+          '−'
+        )
+      ),
+      ...notes.debitNotes.map((n) =>
+        noteLine(
+          'Nota débito / Debit note',
+          n.factusNumber || n.referenceCode,
+          Number(n.total ?? 0),
+          '+'
+        )
+      ),
+      ...notes.adjustmentNotes.map((n) =>
+        noteLine(
+          'Nota de ajuste / Adjustment note',
+          n.factusNumber || n.referenceCode,
+          Number(n.total ?? 0),
+          '−'
+        )
+      ),
+      [
+        {
+          text: notes.annulled
+            ? 'DOCUMENTO ANULADO / Annulled document'
+            : 'VALOR NETO / Net value',
+          bold: true,
+          fontSize: 7.5,
+          margin: [4, 2, 4, 2]
+        },
+        {
+          text: formatCop(notes.net),
+          bold: true,
+          fontSize: 7.5,
+          alignment: 'right' as const,
+          margin: [4, 2, 4, 2]
+        }
+      ]
+    ];
+
+    content.push({
+      columns: [
+        { width: '*', text: '' },
+        {
+          width: 230,
+          table: { widths: ['*', 100], body: rows },
+          layout: {
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => '#cccccc',
+            vLineColor: () => '#cccccc'
+          }
+        }
+      ],
+      marginBottom: 4
+    });
+  }
+
   // La nota "los precios incluyen impuestos" no aplica al propietario.
   if (!ownerMode) {
     content.push({
@@ -768,6 +873,23 @@ async function buildInvoiceDoc(
     pageSize: 'LETTER' as const,
     pageMargins: [18, 18, 18, 18],
     defaultStyle: { font: defaultFont, fontSize: 9 },
+    // Marca de agua en los documentos sin valor: lo acreditado (notas crédito
+    // en facturas, notas de ajuste en documentos soporte) cubre su total. Sin
+    // ella, el PDF de una factura anulada es indistinguible de una viva —
+    // impreso o reenviado por WhatsApp, nadie ve el anexo de abajo.
+    // Va en `watermark`, no en `background`: pdfmake la repite en TODAS las
+    // páginas, y una factura larga tiene más de una.
+    ...(notes?.annulled
+      ? {
+          watermark: {
+            text: 'ANULADA',
+            color: '#d82323',
+            opacity: 0.18,
+            bold: true,
+            italics: false
+          }
+        }
+      : {}),
     content
   };
 }
@@ -775,6 +897,8 @@ async function buildInvoiceDoc(
 @Injectable({ providedIn: 'root' })
 export class InvoicePrintService {
   private readonly _invoiceService: InvoiceService = inject(InvoiceService);
+  private readonly _invoiceNotesService: InvoiceNotesService =
+    inject(InvoiceNotesService);
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
   private readonly _matDialog: MatDialog = inject(MatDialog);
@@ -805,6 +929,36 @@ export class InvoicePrintService {
     await this.downloadInvoice(invoice, issuer);
   }
 
+  /**
+   * Notas asociadas para el anexo del PDF.
+   *
+   * Best-effort: si la consulta falla se imprime sin el anexo. Un documento que
+   * no se puede imprimir es peor que uno impreso sin la referencia cruzada, y
+   * la parte legal (número, CUFE, QR) no depende de esto.
+   *
+   * En modo propietario NO se piden: esa variante es una representación
+   * simplificada a nombre del dueño, sin desglose de impuestos, y el anexo de
+   * documentos DIAN no pinta nada ahí.
+   */
+  private async loadNotesFor(
+    invoice: Invoice,
+    issuer: InvoiceIssuer
+  ): Promise<InvoiceNotes | null> {
+    if (issuer === 'owner' || !invoice.factusNumber) return null;
+    try {
+      const notes = await firstValueFrom(
+        this._invoiceNotesService.load(
+          invoice.invoiceId,
+          invoice.invoiceType?.code,
+          Number(invoice.total ?? 0)
+        )
+      );
+      return notes.any ? notes : null;
+    } catch {
+      return null;
+    }
+  }
+
   async printInvoice(
     invoice: Invoice,
     issuer: InvoiceIssuer = 'org'
@@ -812,10 +966,12 @@ export class InvoicePrintService {
     if (!isPlatformBrowser(this._platformId)) return;
     const owner = await this.resolveOwnerFor(issuer);
     if (issuer === 'owner' && !owner) return;
+    const notes = await this.loadNotesFor(invoice, issuer);
     const { pdfMake, defaultFont } = await loadPdfMake();
     const doc = await buildInvoiceDoc(invoice, this._org, defaultFont, {
       ownerMode: issuer === 'owner',
-      owner: owner ?? undefined
+      owner: owner ?? undefined,
+      notes
     });
     pdfMake.createPdf(doc).print();
   }
@@ -827,10 +983,12 @@ export class InvoicePrintService {
     if (!isPlatformBrowser(this._platformId)) return;
     const owner = await this.resolveOwnerFor(issuer);
     if (issuer === 'owner' && !owner) return;
+    const notes = await this.loadNotesFor(invoice, issuer);
     const { pdfMake, defaultFont } = await loadPdfMake();
     const doc = await buildInvoiceDoc(invoice, this._org, defaultFont, {
       ownerMode: issuer === 'owner',
-      owner: owner ?? undefined
+      owner: owner ?? undefined,
+      notes
     });
     const fecha = new Date().toLocaleDateString('es-CO').replace(/\//g, '-');
     pdfMake.createPdf(doc).download(`Factura_${invoice.code}_${fecha}.pdf`);

@@ -34,7 +34,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
@@ -85,6 +85,7 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _translate: TranslateService = inject(TranslateService);
   private readonly _notifications: NotificationsService = inject(NotificationsService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly _router: Router = inject(Router);
 
   /** Vista actual: cada ruta del side fija una categoría de factura. */
   category: 'electronic' | 'sales' | 'purchases' | 'support' | 'quotes' =
@@ -107,6 +108,8 @@ export class SeeInvoicesComponent implements OnInit {
   selectedInvoiceIds = new Set<number>();
   downloadingExcel: boolean = false;
   sendingFactusIds = new Set<number>();
+  /** Reenvíos de correo en vuelo, para no mandar el mismo dos veces. */
+  resendingIds = new Set<number>();
 
   displayedColumns: string[] = [
     'select',
@@ -285,6 +288,7 @@ export class SeeInvoicesComponent implements OnInit {
           : null;
         this.invoiceTypeOptions = res.data.invoiceType || [];
         this.loadInvoices();
+        this.openCreateDialogFromQueryParam();
         const optionMap = {
           invoiceTypeId: res.data.invoiceType,
           identificationTypeId: res.data.identificationType,
@@ -321,6 +325,30 @@ export class SeeInvoicesComponent implements OnInit {
       }
     });
   }
+  /**
+   * Atajo `?create=true`: abre el diálogo de crear al entrar. Lo usan las
+   * tarjetas del inicio ("Crear factura electrónica", "Registrar compra"…),
+   * mismo patrón que `editProduct`/`editAccommodation` en service-and-product.
+   *
+   * Se llama desde `loadRelatedData` y NO desde `ngOnInit` a propósito: el
+   * diálogo necesita `categoryTypeId` e `invoiceTypeOptions`, que se resuelven
+   * en esa respuesta. Abriéndolo antes, la factura nacería sin tipo — que es
+   * justo lo que la vista tenía que preseleccionar.
+   *
+   * El parámetro se limpia de la URL después, para que recargar o volver atrás
+   * no lo vuelva a abrir.
+   */
+  private openCreateDialogFromQueryParam(): void {
+    if (this._route.snapshot.queryParamMap.get('create') !== 'true') return;
+    this._router.navigate([], {
+      relativeTo: this._route,
+      queryParams: { create: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+    this.openCreateDialog();
+  }
+
   openCreateDialog(): void {
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
@@ -417,13 +445,109 @@ export class SeeInvoicesComponent implements OnInit {
     return { labelKey, annulled, net: total - deducted + added };
   }
 
+  /**
+   * Abre el detalle al pulsar la fila.
+   *
+   * Va al DETALLE y no al diálogo de editar, por dos motivos: es la acción no
+   * destructiva (una factura emitida no se edita) y es la que sirve para todos
+   * los tipos, incluidos los documentos ya validados por la DIAN.
+   *
+   * Lleva `from` para que el botón de volver del detalle regrese a esta lista y
+   * no a la de ventas, igual que el enlace del menú — importa porque al emitir
+   * la factura cambia de tipo y de vista.
+   */
+  openInvoice(invoice: any): void {
+    if (!invoice?.invoiceId) return;
+    this._router.navigate(['..', invoice.invoiceId, 'edit'], {
+      relativeTo: this._route,
+      queryParams: { from: this.category }
+    });
+  }
+
+  /** Reenviar por correo: solo facturas de venta ya emitidas. */
+  canResendEmail(invoice: any): boolean {
+    const code = invoice?.invoiceType?.code;
+    return !!invoice?.factusNumber && (code === 'FV' || code === 'FVE');
+  }
+
+  /**
+   * Reenvía la factura al cliente. Pide confirmación porque **manda un correo a
+   * una persona real**: es una acción hacia fuera, no una consulta.
+   *
+   * Si la factura está anulada, el aviso lo dice — el PDF saldrá con la marca
+   * de agua, y conviene saberlo antes de mandarlo.
+   */
+  resendInvoiceEmail(invoice: any): void {
+    if (!this.canResendEmail(invoice) || this.resendingIds.has(invoice.invoiceId)) {
+      return;
+    }
+    const annulled = this.isAnnulled(invoice);
+    this._matDialog
+      .open(YesNoDialogComponent, {
+        data: {
+          title: this._translate.instant('invoice.list.resend_confirm_title'),
+          message:
+            this._translate.instant('invoice.list.resend_confirm_msg') +
+            (annulled
+              ? ' ' +
+                this._translate.instant('invoice.list.resend_confirm_annulled')
+              : '')
+        }
+      })
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (confirm) this.doResendInvoiceEmail(invoice);
+      });
+  }
+
+  private doResendInvoiceEmail(invoice: any): void {
+    this.resendingIds.add(invoice.invoiceId);
+    this._invoiceService.resendInvoiceEmail(invoice.invoiceId).subscribe({
+      next: () => {
+        this.resendingIds.delete(invoice.invoiceId);
+        this._notifications.showNotification(
+          'success',
+          'invoice.list.resend_success_msg',
+          'invoice.list.resend_success_title'
+        );
+      },
+      error: (err) => {
+        this.resendingIds.delete(invoice.invoiceId);
+        const msg = err?.error?.message ?? 'invoice.list.resend_error_title';
+        this._notifications.showNotification(
+          'error',
+          msg,
+          'invoice.list.resend_error_title'
+        );
+      }
+    });
+  }
+
+  /**
+   * ¿Aplica la nota crédito a este documento? Es la condición de VISIBILIDAD:
+   * solo facturas de venta ya emitidas (un documento soporte se corrige con
+   * nota de ajuste). Que además se pueda emitir ahora mismo lo decide
+   * `isAnnulled`, que solo deshabilita — ver `openCreditNoteDialog`.
+   */
   canEmitCreditNote(invoice: any): boolean {
     const code = invoice?.invoiceType?.code;
     return !!invoice?.factusNumber && (code === 'FV' || code === 'FVE');
   }
 
+  /**
+   * Factura anulada: las notas crédito emitidas cubren ya su total.
+   *
+   * Deshabilita ambas notas en vez de esconderlas. Esconderlas dejaba el menú
+   * de una factura anulada sin ninguna señal de por qué faltan opciones que sí
+   * están en las demás; deshabilitadas, con su tooltip, la ausencia se explica
+   * sola.
+   */
+  isAnnulled(invoice: any): boolean {
+    return !!this.noteBadge(invoice)?.annulled;
+  }
+
   openCreditNoteDialog(invoice: any): void {
-    if (!this.canEmitCreditNote(invoice)) return;
+    if (!this.canEmitCreditNote(invoice) || this.isAnnulled(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
@@ -438,16 +562,18 @@ export class SeeInvoicesComponent implements OnInit {
         }
       })
       .afterClosed()
-      // Recarga SIEMPRE, no solo cuando el diálogo devuelve `true`.
+      // Recarga solo si se emitió algo. El diálogo cierra por sus tres salidas
+      // (botón, ESC y clic fuera) con `!!result`, así que cancelar ya no gasta
+      // una consulta. Antes no se podía distinguir y se recargaba siempre:
       //
-      // Dos motivos. Uno: este era el único de los tres diálogos de nota que no
-      // recargaba nada, así que tras emitir una nota crédito la lista seguía
-      // mostrando la factura intacta —sin badge y sin neto— hasta refrescar a
-      // mano. Y dos: cerrando por backdrop o ESC, `afterClosed()` emite
-      // `undefined` aunque la nota se haya emitido, así que condicionar la
-      // recarga al valor deja la lista vieja justo en el caso más confuso. Una
-      // consulta de más al cancelar es más barata que un dato desactualizado.
-      .subscribe(() => this.loadInvoices());
+      // tras emitir una nota crédito la lista seguía mostrando la factura
+      // intacta —sin badge y sin neto— hasta refrescar a mano, porque cerrando
+      // por backdrop o ESC llegaba `undefined` aunque la nota se hubiera
+      // emitido. Eso lo arregla ahora el propio diálogo (`disableClose` +
+      // `backdropClick`/`keydownEvents`), no un recargar a ciegas.
+      .subscribe((emitted) => {
+        if (emitted) this.loadInvoices();
+      });
   }
 
   /**
@@ -460,7 +586,7 @@ export class SeeInvoicesComponent implements OnInit {
   }
 
   openDebitNoteDialog(invoice: any): void {
-    if (!this.canEmitDebitNote(invoice)) return;
+    if (!this.canEmitDebitNote(invoice) || this.isAnnulled(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
@@ -475,9 +601,11 @@ export class SeeInvoicesComponent implements OnInit {
         }
       })
       .afterClosed()
-      // Sin condicionar: cerrando por backdrop/ESC llega `undefined` aunque la
-      // nota se haya emitido (mismo motivo que en la nota crédito).
-      .subscribe(() => this.loadInvoices());
+      // Solo si se emitió: las tres salidas del diálogo devuelven `!!result`
+      // (mismo criterio que en la nota crédito).
+      .subscribe((emitted) => {
+        if (emitted) this.loadInvoices();
+      });
   }
 
   /**
@@ -506,10 +634,11 @@ export class SeeInvoicesComponent implements OnInit {
         }
       })
       .afterClosed()
-      // Sin condicionar: cerrando por backdrop/ESC llega `undefined` aunque la
-      // nota se haya emitido. Es lo que hacía parecer que la nota de ajuste no
-      // se reflejaba al instante.
-      .subscribe(() => this.loadInvoices());
+      // Solo si se emitió: las tres salidas del diálogo devuelven `!!result`
+      // (mismo criterio que en la nota crédito).
+      .subscribe((emitted) => {
+        if (emitted) this.loadInvoices();
+      });
   }
 
   private getOptions(fieldName: string): any[] {
@@ -620,16 +749,38 @@ export class SeeInvoicesComponent implements OnInit {
       }
     });
   }
-  openDeleteInvoiceDialog(id: number): void {
+  /**
+   * Qué le pasa al inventario al borrar, según el tipo. Borrar una factura no
+   * es "quitarla de la lista": deshace sus movimientos, y en cada tipo deshace
+   * una cosa distinta (`invoice.service.delete` en el backend).
+   *
+   * En una COMPRA el aviso es el más importante: descontar lo que la compra
+   * ingresó puede dejar productos en stock negativo si ya se vendió parte de
+   * esa mercancía, y —a diferencia de borrar una línea suelta— el borrado de la
+   * factura entera **no lo valida**. Es exactamente lo que dejó 9 productos en
+   * negativo en producción (§7).
+   */
+  private deleteMessageKey(invoice: any): string {
+    const code = invoice?.invoiceType?.code;
+    if (code === 'CO') return 'invoice.list.delete_msg_quote';
+    if (code === 'FC' || code === 'DSE')
+      return 'invoice.list.delete_msg_purchase';
+    if (code === 'FV' || code === 'FVE') return 'invoice.list.delete_msg_sale';
+    return 'invoice.list.delete_msg';
+  }
+
+  openDeleteInvoiceDialog(invoice: any): void {
     const dialogRef = this._matDialog.open(YesNoDialogComponent, {
       data: {
-        title: this._translate.instant('invoice.list.delete_title'),
-        message: this._translate.instant('invoice.list.delete_msg')
+        title: this._translate.instant('invoice.list.delete_title', {
+          code: invoice?.code ?? ''
+        }),
+        message: this._translate.instant(this.deleteMessageKey(invoice))
       }
     });
     dialogRef.afterClosed().subscribe((confirm) => {
       if (confirm) {
-        this.deleteInvoice(id);
+        this.deleteInvoice(invoice.invoiceId);
       }
     });
   }
@@ -652,7 +803,62 @@ export class SeeInvoicesComponent implements OnInit {
       }
     }, 300);
   }
+  /**
+   * ¿Se le puede emitir factura electrónica? Vale para una FVE sin emitir y
+   * también para una factura de VENTA (FV) normal: es el caso de "la hice
+   * normal y ahora el cliente la pide electrónica".
+   *
+   * No hace falta convertirla antes: `saveFactusResult` del backend le pone
+   * `invoiceElectronic = true` y le cambia el tipo a FVE cuando la DIAN la
+   * valida, y `validateInvoiceForFactus` no exige un tipo concreto (solo
+   * cliente e ítems). Así el tipo cambia únicamente si la emisión salió bien.
+   *
+   * Las compras (FC) quedan fuera a propósito: lo suyo es el documento
+   * soporte. Y las cotizaciones (CO) no son un documento fiscal.
+   *
+   * No excluye las que ya tienen `factusNumber`: la entrada sigue apareciendo
+   * deshabilitada con el texto "Ya facturada (DIAN)", que es como estaba y
+   * sirve de indicador en el propio menú.
+   */
+  canSendToFactus(invoice: any): boolean {
+    const code = invoice?.invoiceType?.code;
+    return code === 'FV' || code === 'FVE';
+  }
+
+  /** ¿La emisión, además, va a convertir una FV en factura electrónica? */
+  private convertsToElectronic(invoice: any): boolean {
+    return invoice?.invoiceType?.code === 'FV' && !invoice?.factusNumber;
+  }
+
+  /**
+   * Pide confirmación antes de emitir. La emisión es IRREVERSIBLE —una vez
+   * validada por la DIAN la factura no se edita ni se elimina, solo se corrige
+   * con una nota crédito— y además dispara el correo al cliente. Hasta ahora
+   * salía directa desde el menú, a un clic de distancia y sin aviso.
+   */
   sendInvoiceToFactus(invoice: any): void {
+    if (invoice.factusNumber || this.sendingFactusIds.has(invoice.invoiceId)) return;
+    this._matDialog
+      .open(YesNoDialogComponent, {
+        data: {
+          title: this._translate.instant('invoice.list.factus_confirm_title', {
+            code: invoice.code
+          }),
+          message:
+            this._translate.instant('invoice.list.factus_confirm_msg') +
+            (this.convertsToElectronic(invoice)
+              ? ' ' +
+                this._translate.instant('invoice.list.factus_confirm_convert')
+              : '')
+        }
+      })
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (confirm) this.doSendInvoiceToFactus(invoice);
+      });
+  }
+
+  private doSendInvoiceToFactus(invoice: any): void {
     if (invoice.factusNumber || this.sendingFactusIds.has(invoice.invoiceId)) return;
     this.sendingFactusIds.add(invoice.invoiceId);
     this._invoiceService.sendToFactus(invoice.invoiceId).subscribe({
@@ -687,7 +893,35 @@ export class SeeInvoicesComponent implements OnInit {
     return (code === 'FC' || code === 'DSE') && !invoice?.factusNumber;
   }
 
+  /**
+   * Misma confirmación que la factura, y aquí importa más: además de ser
+   * irreversible ante la DIAN, el documento soporte **solo procede** si el
+   * proveedor NO está obligado a facturar, y al emitirlo la compra cambia de
+   * tipo (FC → DSE) y desaparece de esta lista. El aviso lo dice explícito.
+   */
   emitSupportDocument(invoice: any): void {
+    if (
+      !this.canEmitSupportDocument(invoice) ||
+      this.sendingFactusIds.has(invoice.invoiceId)
+    ) {
+      return;
+    }
+    this._matDialog
+      .open(YesNoDialogComponent, {
+        data: {
+          title: this._translate.instant('invoice.list.support_confirm_title', {
+            code: invoice.code
+          }),
+          message: this._translate.instant('invoice.list.support_confirm_msg')
+        }
+      })
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (confirm) this.doEmitSupportDocument(invoice);
+      });
+  }
+
+  private doEmitSupportDocument(invoice: any): void {
     if (
       !this.canEmitSupportDocument(invoice) ||
       this.sendingFactusIds.has(invoice.invoiceId)
