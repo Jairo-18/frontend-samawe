@@ -9,6 +9,7 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/lang-switcher.component';
+import { ThemeSwitcherComponent } from '../../../shared/components/theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'app-navbar-mobile',
@@ -22,7 +23,8 @@ import { LangSwitcherComponent } from '../../../shared/components/lang-switcher/
     TranslateModule,
     ButtonLandingComponent,
     CapitalizePipe,
-    LangSwitcherComponent
+    LangSwitcherComponent,
+    ThemeSwitcherComponent
   ],
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.scss']

@@ -5,6 +5,14 @@
   padding: 24px;
   max-width: 800px;
   margin: auto;
+  // Arial, a propósito y NO la tipografía elegida en Apariencia: una factura es
+  // un documento fiscal que se lee, se archiva y a veces se dicta por teléfono,
+  // así que va siempre en la misma fuente neutra.
+  //
+  // Debe COINCIDIR con la del PDF generado (`invoicePdf.service.ts` en el back y
+  // `pdf-maker.utils.ts` en el front), que usan Helvetica —la estándar del
+  // formato PDF, equivalente métrica de Arial— porque Arial no se puede
+  // incrustar: es de Monotype. Si se cambia una, cambiar la otra.
   font-family: Arial, Helvetica, sans-serif;
   .invoice-header {
     display: flex;

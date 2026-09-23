@@ -32,7 +32,7 @@
            porque el enlace es un solo `inline-flex`. -->
       <a
         [routerLink]="listRoute"
-        class="hover-underline-animation text-gray-500 hover:text-[var(--primary-color)] inline-flex items-center gap-1 transition-colors duration-200"
+        class="hover-underline-animation text-[var(--on-surface-muted)] hover:text-[var(--primary-color)] inline-flex items-center gap-1 transition-colors duration-200"
       >
         <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">arrow_back</mat-icon>
         {{ 'public.accommodation_detail.back_to_list' | translate }}
@@ -59,21 +59,35 @@
             laterales sin las bandas grises de un `contain` pelado.
           -->
           <div
-            class="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-[4px] border border-[var(--primary-color)] overflow-hidden bg-gray-100 transition-[aspect-ratio] duration-300"
+            class="relative w-full aspect-[4/3] lg:aspect-[16/10] rounded-[4px] border border-[var(--primary-color)] overflow-hidden bg-[var(--surface-sunken)] transition-[aspect-ratio] duration-300"
             [style.aspect-ratio]="mainImageRatio"
           >
-            <img
-              [src]="mainImage"
-              alt=""
-              aria-hidden="true"
-              class="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-40"
-            />
-            <img
-              [src]="mainImage"
-              [alt]="accommodation.name | translated"
-              class="relative w-full h-full object-contain"
-              (load)="onMainImageLoad($event)"
-            />
+            @if (hasImages) {
+              <img
+                [src]="mainImage"
+                alt=""
+                aria-hidden="true"
+                class="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-40"
+              />
+              <img
+                [src]="mainImage"
+                [alt]="accommodation.name | translated"
+                class="relative w-full h-full object-contain"
+                (load)="onMainImageLoad($event)"
+              />
+            } @else {
+              <!-- Hueco propio en vez del `notFound.avif`, que trae el fondo
+                   blanco dentro del archivo y en modo oscuro dejaba un
+                   rectángulo blanco en mitad de la página. -->
+              <div
+                class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[var(--on-surface-muted)]"
+              >
+                <mat-icon class="!w-12 !h-12 !text-[48px]">image</mat-icon>
+                <span class="text-sm">{{
+                  'public.accommodation_detail.no_image' | translate
+                }}</span>
+              </div>
+            }
           </div>
           @if (images.length > 1) {
             <ul class="flex gap-2 overflow-x-auto pb-1">
@@ -107,7 +121,7 @@
 
         <div class="flex flex-col gap-1">
           @if (accommodation.categoryType) {
-            <span class="text-xs text-gray-500">
+            <span class="text-xs text-[var(--on-surface-muted)]">
               {{ accommodation.categoryType.name | translated | capitalize }}
             </span>
           }
@@ -118,7 +132,7 @@
 
         <ul class="flex flex-wrap gap-2 text-sm">
           <li
-            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+            class="flex items-center gap-1 bg-[var(--surface-sunken)] rounded-[4px] px-2.5 py-1"
           >
             <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">person</mat-icon>
             {{ accommodation.amountPerson }}
@@ -129,14 +143,14 @@
             }}
           </li>
           <li
-            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+            class="flex items-center gap-1 bg-[var(--surface-sunken)] rounded-[4px] px-2.5 py-1"
           >
             <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">bed</mat-icon>
             {{ accommodation.amountRoom }}
             {{ 'public.common.room_singular' | translate }}
           </li>
           <li
-            class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+            class="flex items-center gap-1 bg-[var(--surface-sunken)] rounded-[4px] px-2.5 py-1"
           >
             <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">bathroom</mat-icon>
             {{ accommodation.amountBathroom }}
@@ -148,7 +162,7 @@
           </li>
           @if (accommodation.bedType) {
             <li
-              class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+              class="flex items-center gap-1 bg-[var(--surface-sunken)] rounded-[4px] px-2.5 py-1"
             >
               <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">king_bed</mat-icon>
               {{ accommodation.bedType.name | translated | capitalize }}
@@ -156,7 +170,7 @@
           }
           @if (accommodation.jacuzzi) {
             <li
-              class="flex items-center gap-1 bg-gray-100 rounded-[4px] px-2.5 py-1"
+              class="flex items-center gap-1 bg-[var(--surface-sunken)] rounded-[4px] px-2.5 py-1"
             >
               <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">hot_tub</mat-icon>
               {{ 'public.card_accommodation.jacuzzi' | translate }}
@@ -165,7 +179,7 @@
         </ul>
 
         @if (accommodation.description | translated) {
-          <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+          <p class="text-sm md:text-base text-[var(--on-surface)] leading-relaxed whitespace-pre-line">
             {{ accommodation.description | translated }}
           </p>
         }
@@ -178,7 +192,7 @@
         que recalcularlo si cambia la altura del navbar.
       -->
       <aside
-        class="lg:sticky lg:top-[calc(var(--nav-bar-height)+1rem)] flex flex-col gap-4 border border-[var(--primary-color)] rounded-[4px] p-4 md:p-5 shadow-sm bg-white"
+        class="lg:sticky lg:top-[calc(var(--nav-bar-height)+1rem)] flex flex-col gap-4 border border-[var(--primary-color)] rounded-[4px] p-4 md:p-5 shadow-sm bg-[var(--bg-primary-color)]"
       >
         <app-availability-calendar
           [accommodationId]="accommodation.accommodationId"
@@ -188,7 +202,7 @@
 
         <div class="border-t pt-4 flex flex-col gap-3">
           <div>
-            <span class="text-xs text-gray-500">
+            <span class="text-xs text-[var(--on-surface-muted)]">
               {{ 'public.card_accommodation.per_night' | translate }}
             </span>
             <p class="text-2xl font-bold">
@@ -203,7 +217,7 @@
               (clicked)="requestBooking()"
               class="w-full"
             />
-            <span class="text-xs text-gray-500 text-center">
+            <span class="text-xs text-[var(--on-surface-muted)] text-center">
               {{ 'public.accommodation_detail.availability_note' | translate }}
             </span>
           }

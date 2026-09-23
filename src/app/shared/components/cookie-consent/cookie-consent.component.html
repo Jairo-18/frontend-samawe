@@ -1,6 +1,6 @@
 @if (visible()) {
   <div
-    class="fixed bottom-0 left-0 right-0 z-[9998] bg-white border-t border-gray-200 shadow-[0_-4px_24px_rgba(0,0,0,0.10)] px-4 py-4 md:px-8 md:py-5"
+    class="fixed bottom-0 left-0 right-0 z-[9998] bg-[var(--surface-raised)] border-t border-[var(--border-color)] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] px-4 py-4 md:px-8 md:py-5"
     role="dialog"
     aria-live="polite"
     [attr.aria-label]="'cookies.banner_label' | translate"
@@ -11,7 +11,7 @@
       <div class="flex items-start gap-3 flex-1">
         <mat-icon class="text-[var(--primary-color)] shrink-0 mt-0.5">cookie</mat-icon>
         <div>
-          <p class="text-sm text-gray-700 leading-relaxed">
+          <p class="text-sm text-[var(--on-surface)] leading-relaxed">
             {{ 'cookies.message' | translate }}
             <a
               [routerLink]="privacyRoute"

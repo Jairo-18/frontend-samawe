@@ -28,7 +28,7 @@
   font-family: var(--font-title);
   font-size: 1.5rem;
   line-height: 1.15;
-  color: $black-color-base;
+  color: var(--on-surface);
   margin: 0;
 
   @media (min-width: 768px) {
@@ -38,7 +38,7 @@
 
 .home-greeting__date {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--on-surface-muted);
   margin: 0.125rem 0 0;
   /* La fecha viene del locale en minúscula ("miércoles 16 de septiembre"). */
   &::first-letter {
@@ -56,14 +56,14 @@
   gap: 0.75rem;
   font-family: var(--font-title);
   font-size: 1.125rem;
-  color: $black-color-base;
+  color: var(--on-surface);
   margin: 0 0 1rem;
 
   &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: #e5e7eb;
+    background: var(--border-color);
   }
 
   @media (min-width: 768px) {
@@ -71,10 +71,12 @@
   }
 }
 
+// Encabezado de grupo: nombra un bloque de accesos, así que es un rótulo.
 .home-group-label {
+  font-family: var(--font-title);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--on-surface-muted);
   margin: 0 0 0.5rem;
 }
 
@@ -85,10 +87,13 @@
   flex-direction: column;
   gap: 0.375rem;
   padding: 0.875rem 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--primary-color) 25%, transparent);
-  border-radius: $brand-border-radius-sm;
-  background: color-mix(in srgb, var(--primary-color) 5%, white);
-  color: $black-color-base;
+  border: 1px solid var(--brand);
+  border-radius: 4px;
+  // Se mezcla con la SUPERFICIE, no con blanco literal: mezclado con blanco,
+  // en modo oscuro el resultado era casi blanco puro —un parche claro flotando
+  // sobre el fondo oscuro en vez de un tinte sutil del verde.
+  background: color-mix(in srgb, var(--brand) 6%, var(--surface-raised));
+  color: var(--on-surface);
   text-decoration: none;
   transition:
     background-color 0.15s ease,
@@ -121,7 +126,7 @@
 }
 
 .home-action__icon {
-  color: var(--primary-color);
+  color: var(--brand);
   transition: color 0.15s ease;
   /* `mat-icon` trae 24px de line-height: sin fijarlo, la caja del icono se
      lleva un espacio extra que descuadra el alto de las fichas. */
@@ -131,7 +136,9 @@
   line-height: 22px;
 }
 
+// Nombra a dónde lleva el acceso: mismo trato que los rótulos del menú.
 .home-action__label {
+  font-family: var(--font-title);
   font-size: 0.8125rem;
   font-weight: 600;
   line-height: 1.3;
@@ -146,10 +153,10 @@
 .home-destinations {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e5e7eb;
-  border-radius: $brand-border-radius-sm;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--surface-raised);
 }
 
 .home-destination {
@@ -157,27 +164,27 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: $black-color-base;
+  color: var(--on-surface);
   text-decoration: none;
   transition: background-color 0.15s ease;
 
   & + & {
-    border-top: 1px solid #f0f1f2;
+    border-top: 1px solid var(--border-color);
   }
 
   &:hover,
   &:focus-visible {
-    background: color-mix(in srgb, var(--primary-color) 6%, white);
+    background: color-mix(in srgb, var(--brand) 6%, var(--surface-raised));
   }
 
   &:focus-visible {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--brand);
     outline-offset: -2px;
   }
 }
 
 .home-destination__icon {
-  color: var(--primary-color);
+  color: var(--brand);
   flex-shrink: 0;
   width: 20px;
   height: 20px;
@@ -185,7 +192,10 @@
   line-height: 20px;
 }
 
+// El título del destino es rótulo; la descripción de debajo NO —es una frase
+// explicativa— y se queda en la fuente de texto.
 .home-destination__title {
+  font-family: var(--font-title);
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
@@ -195,7 +205,7 @@
 .home-destination__desc {
   display: block;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--on-surface-muted);
   line-height: 1.4;
   /* En móvil la descripción roba la línea al título; se recorta a una. */
   overflow: hidden;
@@ -208,7 +218,7 @@
 }
 
 .home-destination__chevron {
-  color: #9ca3af;
+  color: var(--on-surface-muted);
   flex-shrink: 0;
   width: 20px;
   height: 20px;

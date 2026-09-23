@@ -48,15 +48,15 @@
     >
       @for (order of orders; track order.invoiceId) {
         <div
-          class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden border border-gray-100"
+          class="bg-[var(--surface-raised)] rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden border border-[var(--border-color)]"
         >
           <!-- Estado strip superior -->
           <div
             class="h-1.5 w-full"
             [ngClass]="{
-              'bg-amber-400': order.stateType?.code === 'ENC',
-              'bg-green-500': order.stateType?.code === 'ENT',
-              'bg-gray-300': !['ENC', 'ENT'].includes(
+              'bg-[var(--warning)]': order.stateType?.code === 'ENC',
+              'bg-[var(--success)]': order.stateType?.code === 'ENT',
+              'bg-[var(--border-color)]': !['ENC', 'ENT'].includes(
                 order.stateType?.code ?? ''
               )
             }"
@@ -66,24 +66,24 @@
           <div class="px-4 pt-3 pb-2 flex justify-between items-start">
             <div class="flex flex-col gap-0.5">
               <div class="flex items-center gap-2">
-                <span class="font-extrabold text-base text-gray-800">{{
+                <span class="font-extrabold text-base text-[var(--on-surface)]">{{
                   order.code || '---'
                 }}</span>
                 <span
                   class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide"
                   [ngClass]="{
-                    'bg-amber-100 text-amber-700':
+                    'bg-[var(--warning-bg)] text-[var(--warning)]':
                       order.stateType?.code === 'ENC',
-                    'bg-green-100 text-green-700':
+                    'bg-[var(--success-bg)] text-[var(--success)]':
                       order.stateType?.code === 'ENT',
-                    'bg-gray-100 text-gray-500': !['ENC', 'ENT'].includes(
+                    'bg-[var(--surface-sunken)] text-[var(--on-surface-muted)]': !['ENC', 'ENT'].includes(
                       order.stateType?.code ?? ''
                     )
                   }"
                   >{{ order.stateType?.name | translated }}</span
                 >
               </div>
-              <span class="text-[11px] text-gray-400">{{
+              <span class="text-[11px] text-[var(--on-surface-muted)]">{{
                 (order.orderTime || order.createdAt) | relativeTime
               }}</span>
             </div>
@@ -92,7 +92,7 @@
               [matMenuTriggerFor]="menu"
               class="!-mt-1 !-mr-2"
             >
-              <mat-icon class="text-gray-400">more_vert</mat-icon>
+              <mat-icon class="text-[var(--on-surface-muted)]">more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu" xPosition="before">
               <button
@@ -127,30 +127,30 @@
             </mat-menu>
           </div>
 
-          <div class="mx-4 border-t border-gray-100"></div>
+          <div class="mx-4 border-t border-[var(--border-color)]"></div>
 
           <!-- Body -->
           <div class="px-4 py-3 flex flex-col gap-3 flex-1">
             <!-- Mesa + Estado pago -->
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1.5">
-                <mat-icon class="!text-lg text-[var(--primary-color)]"
+                <mat-icon class="!text-lg text-[var(--brand)]"
                   >table_restaurant</mat-icon
                 >
-                <span class="text-sm font-bold text-gray-800"
+                <span class="text-sm font-bold text-[var(--on-surface)]"
                   >{{ 'recipe.see_orders.table_label' | translate }} {{ order.tableNumber || '---' }}</span
                 >
               </div>
               <span
                 class="text-[10px] font-semibold px-2 py-0.5 rounded-full"
                 [ngClass]="{
-                  'bg-green-100 text-green-700': (order.paidType.name?.['es'] || '')
+                  'bg-[var(--success-bg)] text-[var(--success)]': (order.paidType.name?.['es'] || '')
                     .toLowerCase()
                     .includes('pagado'),
-                  'bg-red-100 text-red-600': (order.paidType.name?.['es'] || '')
+                  'bg-[var(--danger-bg)] text-[var(--danger)]': (order.paidType.name?.['es'] || '')
                     .toLowerCase()
                     .includes('pendiente'),
-                  'bg-gray-100 text-gray-500':
+                  'bg-[var(--surface-sunken)] text-[var(--on-surface-muted)]':
                     !(order.paidType.name?.['es'] || '')
                       .toLowerCase()
                       .includes('pagado') &&
@@ -165,10 +165,10 @@
             <!-- Método de pago -->
             @if (order.payType.name) {
               <div class="flex items-center gap-1.5">
-                <mat-icon class="!text-sm !w-4 !h-4 text-gray-400"
+                <mat-icon class="!text-sm !w-4 !h-4 text-[var(--on-surface-muted)]"
                   >credit_card</mat-icon
                 >
-                <span class="text-xs text-gray-500">{{
+                <span class="text-xs text-[var(--on-surface-muted)]">{{
                   order.payType.name | translated
                 }}</span>
               </div>
@@ -176,27 +176,27 @@
 
             <!-- Horarios -->
             <div
-              class="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2"
+              class="flex items-center justify-between bg-[var(--surface-sunken)] rounded-xl px-3 py-2"
             >
               <div class="flex flex-col items-center gap-0.5">
-                <span class="text-[10px] text-gray-400 uppercase tracking-wide"
+                <span class="field-label text-[10px] text-[var(--on-surface-muted)] uppercase tracking-wide"
                   >{{ 'recipe.see_orders.order_time' | translate }}</span
                 >
-                <span class="text-xs font-bold text-gray-600">{{
+                <span class="text-xs font-bold text-[var(--on-surface-muted)]">{{
                   order.orderTime ? (order.orderTime | date: 'hh:mm a') : '---'
                 }}</span>
               </div>
-              <mat-icon class="!text-base text-gray-300"
+              <mat-icon class="!text-base text-[var(--on-surface-muted)]"
                 >arrow_forward</mat-icon
               >
               <div class="flex flex-col items-center gap-0.5">
-                <span class="text-[10px] text-gray-400 uppercase tracking-wide"
+                <span class="field-label text-[10px] text-[var(--on-surface-muted)] uppercase tracking-wide"
                   >{{ 'recipe.see_orders.ready_time' | translate }}</span
                 >
                 <span
                   class="text-xs font-bold"
                   [ngClass]="
-                    order.readyTime ? 'text-green-600' : 'text-gray-400'
+                    order.readyTime ? 'text-[var(--success)]' : 'text-[var(--on-surface-muted)]'
                   "
                   >{{
                     order.readyTime
@@ -210,19 +210,19 @@
 
           <!-- Footer: Total -->
           <div
-            class="px-4 py-3 border-t border-gray-100 flex justify-between items-center"
+            class="px-4 py-3 border-t border-[var(--border-color)] flex justify-between items-center"
           >
             <div class="flex items-center gap-1">
-              <mat-icon class="!text-sm text-gray-400">receipt</mat-icon>
-              <span class="text-xs text-gray-400">{{ 'recipe.see_orders.total' | translate }}</span>
+              <mat-icon class="!text-sm text-[var(--on-surface-muted)]">receipt</mat-icon>
+              <span class="text-xs text-[var(--on-surface-muted)]">{{ 'recipe.see_orders.total' | translate }}</span>
             </div>
             <span
               class="text-base font-extrabold"
               [ngClass]="{
-                'text-green-700': (order.invoiceType.code ?? '') === 'FV',
-                'text-red-700': (order.invoiceType.code ?? '') === 'FC',
-                'text-yellow-700': (order.invoiceType.code ?? '') === 'CO',
-                'text-gray-800': !['FV', 'FC', 'CO'].includes(
+                'text-[var(--success)]': (order.invoiceType.code ?? '') === 'FV',
+                'text-[var(--danger)]': (order.invoiceType.code ?? '') === 'FC',
+                'text-[var(--warning)]': (order.invoiceType.code ?? '') === 'CO',
+                'text-[var(--on-surface)]': !['FV', 'FC', 'CO'].includes(
                   order.invoiceType.code ?? ''
                 )
               }"
@@ -244,7 +244,7 @@
     <div
       class="w-full flex justify-center items-center min-h-[200px] text-center"
     >
-      <p class="text-gray-400">{{ 'recipe.see_orders.no_results' | translate }}</p>
+      <p class="text-[var(--on-surface-muted)]">{{ 'recipe.see_orders.no_results' | translate }}</p>
     </div>
   }
 </div>

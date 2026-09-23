@@ -5,6 +5,31 @@
   [showContentInfo]="true"
 >
   @if (!isLoading) {
+    <!-- Va FUERA del grupo de pestañas a propósito: los cuatro primeros tabs
+         comparten un único formulario, así que se pueden dejar cambios en
+         "Apariencia" y acabar en otra pestaña. Aquí el aviso se ve siempre.
+         (Legales, Multimedia y Google no pasan por este formulario: guardan
+         cada acción al momento.) -->
+    @if (dirtyTabKeys.length) {
+      <div
+        class="flex flex-wrap items-center gap-2 rounded-[4px] border border-[var(--warning-border)] bg-[var(--warning-bg)] px-4 py-2 mb-4 text-[var(--warning)]"
+        role="status"
+      >
+        <mat-icon class="!text-[20px] !w-5 !h-5 shrink-0">info</mat-icon>
+        <span class="text-sm">{{
+          'organizational.app_manage.unsaved_changes' | translate
+        }}</span>
+        <!-- Los nombres de las pestañas con cambios: sin esto el aviso obliga a
+             recorrerlas una por una buscando qué se tocó. -->
+        @for (key of dirtyTabKeys; track key) {
+          <span
+            class="rounded-full border border-[var(--warning)] bg-[var(--warning-bg)] px-2 py-0.5 text-xs font-semibold text-[var(--warning)]"
+            >{{ key | translate }}</span
+          >
+        }
+      </div>
+    }
+
     <mat-tab-group>
       <mat-tab label="{{ 'organizational.app_manage.tab_general' | translate }}">
         <ng-template matTabContent>

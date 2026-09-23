@@ -12,11 +12,11 @@ table {
 }
 
 .red-color {
-  color: rgb(255, 27, 27) !important;
+  color: var(--danger) !important;
 }
 .green-color {
-  color: green !important;
+  color: var(--success) !important;
 }
 .blue-color {
-  color: rgb(14, 58, 154) !important;
+  color: var(--info) !important;
 }

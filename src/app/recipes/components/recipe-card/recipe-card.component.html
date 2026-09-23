@@ -1,8 +1,8 @@
 <div
-  class="flex flex-col h-full bg-white rounded-2xl border border-[var(--primary-color)]"
+  class="flex flex-col h-full bg-[var(--surface-raised)] rounded-[4px] border border-[var(--brand)]"
 >
   <div
-    class="w-full aspect-square overflow-hidden relative group rounded-t-2xl bg-gray-100"
+    class="w-full aspect-square overflow-hidden relative group rounded-t-[4px] bg-[var(--surface-sunken)]"
   >
     @if (recipe.images && recipe.images.length > 0) {
       <div
@@ -29,7 +29,7 @@
         <button
           type="button"
           (click)="$event.stopPropagation(); prevImage(recipe.images.length)"
-          class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
+          class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-[var(--surface-raised)] text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
         >
           <mat-icon class="text-lg w-[18px] h-[18px]">chevron_left</mat-icon>
         </button>
@@ -37,7 +37,7 @@
         <button
           type="button"
           (click)="$event.stopPropagation(); nextImage(recipe.images.length)"
-          class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
+          class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-[var(--surface-raised)] text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10"
         >
           <mat-icon class="text-lg w-[18px] h-[18px]">chevron_right</mat-icon>
         </button>
@@ -46,7 +46,7 @@
         >
           @for (img of recipe.images; track img.publicId; let idx = $index) {
             <span
-              class="block w-2 h-2 rounded-full transition-all bg-white"
+              class="block w-2 h-2 rounded-full transition-all bg-[var(--surface-raised)]"
               [class.opacity-40]="currentImageIndex !== idx"
               [class.scale-125]="currentImageIndex === idx"
             ></span>
@@ -55,21 +55,21 @@
       }
     } @else {
       <div
-        class="w-full h-full flex flex-col items-center justify-center text-gray-500 bg-indigo-50"
+        class="w-full h-full flex flex-col items-center justify-center text-[var(--on-surface-muted)] bg-[var(--surface-sunken)]"
       >
         <span class="text-sm font-medium">{{ 'recipe.card.no_image' | translate }}</span>
       </div>
     }
   </div>
   <div
-    class="flex flex-col md:flex-row md:justify-between md:items-center px-3 md:px-5 py-2 md:py-4 text-black"
+    class="flex flex-col md:flex-row md:justify-between md:items-center px-3 md:px-5 py-2 md:py-4 text-[var(--on-surface)]"
   >
     <div
       class="flex gap-1 order-first md:order-last md:self-start [&>button]:!text-white/[0.85] hover:[&>button]:!text-white hover:[&>button]:!bg-white/15 self-end"
     >
       @if (canEdit) {
         <button mat-icon-button [matMenuTriggerFor]="actionMenu">
-          <mat-icon class="text-black">more_vert</mat-icon>
+          <mat-icon class="text-[var(--on-surface)]">more_vert</mat-icon>
         </button>
         <mat-menu #actionMenu="matMenu" xPosition="before">
           @if (!isMesero) {
@@ -79,7 +79,7 @@
             </button>
           }
           <button mat-menu-item (click)="addToOrder.emit(recipe)">
-            <mat-icon style="color: var(--primary-color)">assignment</mat-icon>
+            <mat-icon style="color: var(--brand)">assignment</mat-icon>
             <span>{{ 'recipe.card.add_to_order' | translate }}</span>
           </button>
           @if (!isMesero) {
@@ -92,14 +92,14 @@
       }
     </div>
     <div class="flex flex-col items-start gap-1">
-      <span class="font-bold text-black text-[10px] md:text-sm flex items-center gap-1">
+      <span class="font-bold text-[var(--on-surface)] text-[10px] md:text-sm flex items-center gap-1">
         {{ recipe.productName | capitalize }}
       </span>
       <span class="inline-flex items-center text-[9px] md:text-xs font-semibold rounded-full">
         {{ recipe.availablePortions ?? 0 }} {{ 'recipe.card.portions' | translate }}
       </span>
       @if (hasCriticalIngredients) {
-        <span class="text-[9px] md:text-xs text-red-900 leading-tight">
+        <span class="text-[9px] md:text-xs text-[var(--danger)] leading-tight">
           {{ 'recipe.card.critical_ingredients' | translate }} <strong>{{ criticalIngredientsNames | capitalize }}</strong>
         </span>
       }
@@ -117,23 +117,23 @@
           <span
             class="text-[9px] md:text-[0.85rem] font-semibold truncate flex items-center gap-1"
             [ngClass]="{
-              'text-red-900 font-bold':
+              'text-[var(--danger)] font-bold':
                 getPortionColor(getIngPortions(ing)) === 'critical',
-              'text-red-500': getPortionColor(getIngPortions(ing)) === 'danger',
-              'text-yellow-600':
+              'text-[var(--danger)]': getPortionColor(getIngPortions(ing)) === 'danger',
+              'text-[var(--warning)]':
                 getPortionColor(getIngPortions(ing)) === 'warning',
-              'text-green-600':
+              'text-[var(--success)]':
                 getPortionColor(getIngPortions(ing)) === 'success'
             }"
           >
             {{ ing.ingredientProductName | capitalize }}
           </span>
-          <span class="text-[9px] md:text-xs text-gray-500">
+          <span class="text-[9px] md:text-xs text-[var(--on-surface-muted)]">
             {{ ing.quantity | unitFormat: ing.unit : 'qty' | number: '1.0-3' }}
             {{ ing.quantity | unitFormat: ing.unit : 'unit' }}
           </span>
           @if (!isMesero) {
-            <span class="text-[9px] md:text-xs font-bold text-[#43a047]">
+            <span class="text-[9px] md:text-xs font-bold text-[var(--success)]">
               {{ ing.totalCost | formatCop }}
             </span>
           }
@@ -147,7 +147,7 @@
         (click)="showAllIngredients = !showAllIngredients"
       >
         <span
-          class="text-center w-full text-[9px] md:text-sm font-semibold text-[var(--primary-color)] hover:text-[#048a04] transition-colors"
+          class="text-center w-full text-[9px] md:text-sm font-semibold text-[var(--brand)] hover:text-[color-mix(in_srgb,var(--brand)_80%,black)] transition-colors"
         >
           {{
             showAllIngredients
@@ -160,13 +160,13 @@
   </div>
   @if (!isMesero) {
     <div
-      class="flex flex-col items-start px-5 py-3.5 border-t border-[var(--primary-color)] mt-1 flex-1 rounded-b-2xl"
+      class="flex flex-col items-start px-5 py-3.5 border-t border-[var(--brand)] mt-1 flex-1 rounded-b-[4px]"
     >
       <div class="flex flex-col">
         <span class="text-[9px] md:text-base font-semibold"
           >{{ 'recipe.card.total_cost' | translate }}</span
         >
-        <span class="text-[9px] md:text-base font-extrabold text-[#43a047]">
+        <span class="text-[9px] md:text-base font-extrabold text-[var(--success)]">
           {{ recipe.totalRecipeCost | formatCop }}
         </span>
       </div>

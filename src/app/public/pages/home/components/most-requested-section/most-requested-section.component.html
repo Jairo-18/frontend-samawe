@@ -37,21 +37,21 @@
             >
               <span class="flex items-center gap-1">
                 <span
-                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  class="material-icons text-sm text-[var(--brand)]"
                   >person</span
                 >
                 {{ 'public.most_requested.min' | translate }} {{ acc.amountPerson }} {{ acc.amountPerson !== 1 ? ('public.common.person_plural' | translate) : ('public.common.person_singular' | translate) }}
               </span>
               <span class="flex items-center gap-1">
                 <span
-                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  class="material-icons text-sm text-[var(--brand)]"
                   >group</span
                 >
                 {{ 'public.most_requested.max' | translate }} {{ acc.amountBathroom }} {{ acc.amountBathroom !== 1 ? ('public.common.person_plural' | translate) : ('public.common.person_singular' | translate) }}
               </span>
               <span class="flex items-center gap-1">
                 <span
-                  class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                  class="material-icons text-sm text-[var(--brand)]"
                   >bed</span
                 >
                 {{ acc.amountRoom }} {{ acc.amountRoom !== 1 ? ('public.common.room_plural' | translate) : ('public.common.room_singular' | translate) }}
@@ -59,7 +59,7 @@
               @if (acc.bedType) {
                 <span class="flex items-center gap-1">
                   <span
-                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                    class="material-icons text-sm text-[var(--brand)]"
                     >king_bed</span
                   >
                   {{ acc.bedType.name | translated }}
@@ -68,7 +68,7 @@
               @if (acc.jacuzzi) {
                 <span class="flex items-center gap-1">
                   <span
-                    class="material-icons text-sm text-[var(--primary-color,#5c7a4e)]"
+                    class="material-icons text-sm text-[var(--brand)]"
                     >hot_tub</span
                   >
                   {{ 'public.most_requested.jacuzzi' | translate }}
@@ -78,9 +78,9 @@
 
             <div class="flex flex-col items-start gap-4 mt-1">
               <div class="w-full flex flex-col items-center md:items-start">
-                <span class="text-xs text-gray-400">{{ 'public.most_requested.per_night' | translate }}</span>
+                <span class="text-xs text-[var(--on-surface-muted)]">{{ 'public.most_requested.per_night' | translate }}</span>
                 <p
-                  class="text-xl font-bold text-[var(--primary-color,#5c7a4e)]"
+                  class="text-xl font-bold text-[var(--brand)]"
                 >
                   COP {{ acc.priceSale | number: '1.0-0' }}
                 </p>

@@ -36,8 +36,8 @@
               {{ 'public.common.edit' | translate }}
             </button>
             <button mat-menu-item (click)="delete()">
-              <span class="material-icons mr-2 text-red-500">delete</span>
-              <span class="text-red-500">{{ 'public.common.delete' | translate }}</span>
+              <span class="material-icons mr-2 text-[var(--danger)]">delete</span>
+              <span class="text-[var(--danger)]">{{ 'public.common.delete' | translate }}</span>
             </button>
           </mat-menu>
         </div>
@@ -48,7 +48,7 @@
       <div class="mt-1">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'public.review.edit_reply' | translate }}</mat-label>
-          <textarea matInput [(ngModel)]="editComment" rows="2" cdkTextareaAutosize maxlength="750"></textarea>
+          <textarea matInput [(ngModel)]="editComment" rows="6" cdkTextareaAutosize maxlength="750"></textarea>
           <mat-hint align="end">{{ editComment.length }}/750</mat-hint>
         </mat-form-field>
         <div class="flex gap-2 justify-end">

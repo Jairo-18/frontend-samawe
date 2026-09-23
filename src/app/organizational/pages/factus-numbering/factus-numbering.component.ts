@@ -192,13 +192,13 @@ export class FactusNumberingComponent implements OnInit {
   statusClass(status: FactusNumberingRange['status']): string {
     switch (status) {
       case 'expired':
-        return 'bg-red-100 !text-red-700';
+        return 'bg-[var(--danger-bg)] !text-[var(--danger)]';
       case 'expiring':
-        return 'bg-amber-100 !text-amber-700';
+        return 'bg-[var(--warning-bg)] !text-[var(--warning)]';
       case 'inactive':
-        return 'bg-gray-200 !text-gray-700';
+        return 'bg-[var(--surface-sunken)] !text-[var(--on-surface-muted)]';
       default:
-        return 'bg-green-100 !text-green-700';
+        return 'bg-[var(--success-bg)] !text-[var(--success)]';
     }
   }
 

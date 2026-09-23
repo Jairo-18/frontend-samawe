@@ -175,6 +175,10 @@ export class CreateOrEditRecipeComponent implements OnChanges {
           ingredientProductName: ing.ingredientProductName
         });
       }
+      // Cargar una receta existente no cuenta como cambio: el botón de guardar
+      // arranca deshabilitado hasta que se toque algo de verdad (ver `canSave`).
+      this._ingredientsChanged = false;
+      this.form.markAsPristine();
       this._cdr.detectChanges();
     }
   }
@@ -341,12 +345,31 @@ export class CreateOrEditRecipeComponent implements OnChanges {
 
   addIngredient(): void {
     this._addIngredientRow();
+    this._ingredientsChanged = true;
   }
 
   removeIngredient(index: number): void {
     this.ingredientsArray.removeAt(index);
     this.filteredIngredients.splice(index, 1);
+    this._ingredientsChanged = true;
     this.table?.renderRows();
+  }
+
+  private _ingredientsChanged = false;
+
+  /**
+   * Si hay algo que guardar. Añadir o quitar filas del `FormArray` **no**
+   * ensucia el formulario (`push`/`removeAt` no marcan `dirty`), y tocar la
+   * foto tampoco, así que los dos se preguntan aparte.
+   */
+  get canSave(): boolean {
+    return (
+      !this.saving &&
+      this.ingredientsArray.length > 0 &&
+      (this.form.dirty ||
+        this._ingredientsChanged ||
+        !!this.imageUploader?.hasPendingChanges)
+    );
   }
 
   getIngredientUnit(index: number): string {

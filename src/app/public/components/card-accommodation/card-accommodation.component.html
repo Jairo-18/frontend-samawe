@@ -108,10 +108,14 @@
         }
       </ul>
 
-      <!-- Price + CTA -->
-      <div
-        class="flex items-end justify-between gap-2 pt-2 border-t border-white/20"
-      >
+      <!-- Precio y llamada a la acción, en COLUMNA.
+           Antes iban en fila con `justify-between`, y el botón competía por el
+           ancho con el precio: en tarjetas estrechas el rótulo "Ver
+           disponibilidad" se partía en dos líneas y el precio quedaba
+           apretado. Apilados, el precio se lee de un vistazo y el botón ocupa
+           todo el ancho, que además es un objetivo más cómodo de pulsar en
+           móvil. -->
+      <div class="flex flex-col gap-2 pt-2 border-t border-white/20">
         <div>
           <span class="text-xs text-white/60">{{ 'public.card_accommodation.per_night' | translate }}</span>
           <p class="text-lg font-bold text-white">
@@ -123,6 +127,7 @@
           [label]="'public.card_accommodation.view_availability' | translate"
           variant="solid"
           [routerLink]="detailRoute"
+          class="w-full"
         />
       </div>
     </div>

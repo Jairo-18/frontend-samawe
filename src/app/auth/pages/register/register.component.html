@@ -7,7 +7,7 @@
        de la ventana y forzaba scroll siempre.
        El `min-h` se acota con `min()` contra el alto disponible — ver login. -->
   <article
-    class="relative w-[90%] max-w-[520px] lg:max-w-[1040px] h-auto lg:min-h-[min(680px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] 3xl:min-h-[min(750px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] flex items-stretch justify-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] max-w-[520px] lg:max-w-[1040px] h-auto lg:min-h-[min(680px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] 3xl:min-h-[min(750px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] flex items-stretch justify-center bg-[var(--bg-primary-color)] border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
   >
     @if (registered) {
       <section
@@ -19,7 +19,7 @@
         <span class="auth-title font-extrabold text-xl">{{
           registeredTitle | translate
         }}</span>
-        <p class="text-sm text-gray-500 max-w-sm">
+        <p class="text-sm text-[var(--on-surface-muted)] max-w-sm">
           {{ registeredSubtitle | translate }}
         </p>
         <app-button-landing
@@ -32,7 +32,7 @@
     }
     @if (!registered) {
       <section
-        class="relative w-full hidden lg:flex flex-col bg-gray-100"
+        class="relative w-full hidden lg:flex flex-col bg-[var(--surface-sunken)]"
       >
         <img
           *ngIf="registerBgUrl"
@@ -43,6 +43,11 @@
           class="object-cover"
         />
       </section>
+      <!-- Alto MÍNIMO, no fijo: quien evita el salto entre pasos es la rejilla
+           del stepper (`brand-linear-stepper` en `mat-theming.scss`), que apila
+           los dos pasos en la misma celda y hace que el contenido mida siempre
+           lo del más largo. Con alto fijo, el paso 2 no cabía y aparecía una
+           barra de desplazamiento. -->
       <section
         class="w-full flex flex-col text-center py-5 gap-0 md:gap-1"
       >
@@ -56,7 +61,17 @@
         </div>
         <!-- `flex-1` y no `h-full`: la sección ya no tiene altura definida
              (la da `items-stretch`) y un porcentaje resolvería a auto. -->
-        <mat-horizontal-stepper [linear]="true" #stepper class="w-full flex-1">
+        <!-- ⚠️ NO poner aquí `brand-linear-stepper`: esa clase arrastra un
+             bloque entero de `mat-theming.scss` (oculta el círculo numerado,
+             fuerza `flex-wrap`, pone el rótulo al 80% de alto…) que lleva
+             tiempo sin aplicarse a ningún stepper. Al añadirla, el registro se
+             descuadra. Aquí solo hace falta `stable-stepper`, que iguala el
+             alto de los pasos y nada más. -->
+        <mat-horizontal-stepper
+          [linear]="true"
+          #stepper
+          class="stable-stepper w-full flex-1"
+        >
           <mat-step [stepControl]="formStep1">
             <form [formGroup]="formStep1" class="flex flex-col mt-5">
               <ng-template matStepLabel>{{
@@ -333,6 +348,24 @@
             {{ 'register.login_here' | translate }}
           </a>
         </div>
+
+        <!-- Las rutas van por `LangService`, no escritas a mano: las legales
+             viven bajo el prefijo de idioma (`/es/legal/...`) y sin él caerían
+             en el comodín del router. -->
+        <p class="text-xs text-[var(--on-surface-muted)] text-center mt-2">
+          {{ 'auth.legal_notice' | translate }}
+          <a
+            [routerLink]="privacyRoute"
+            class="text-[var(--primary-color)] underline hover:opacity-80"
+            >{{ 'footer.privacy' | translate }}</a
+          >
+          {{ 'auth.legal_and' | translate }}
+          <a
+            [routerLink]="termsRoute"
+            class="text-[var(--primary-color)] underline hover:opacity-80"
+            >{{ 'footer.terms' | translate }}</a
+          >.
+        </p>
       </section>
     }
   </article>

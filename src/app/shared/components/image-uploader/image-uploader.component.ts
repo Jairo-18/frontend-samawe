@@ -114,15 +114,31 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
         .sort((a, b) => b.imageId - a.imageId);
       this.loadedEntityId = this.entityId;
       this.cdr.detectChanges();
-    } else if (this.entityId && (!this.images || this.images.length === 0)) {
-      if (this.loadedEntityId !== this.entityId) {
-        this.loadImages();
-      }
-    } else {
+    } else if (this.entityId && this.loadedEntityId !== this.entityId) {
+      // Respaldo: la entidad tiene id pero su respuesta no trajo imágenes.
+      // Se piden aparte por `GET /:id/images`.
+      this.loadImages();
+    } else if (!this.entityId) {
+      // Alta nueva (o formulario reseteado): no hay galería que mostrar.
       this.images = [];
       this.cdr.detectChanges();
     }
+    // ⚠️ Si el id es el mismo que ya se cargó y llega `initialImages` vacío, NO
+    // se vacía la galería: el formulario padre asigna `initialImages` DOS veces
+    // al editar —primero lo que devolvió el detalle, después lo que emite este
+    // componente— y un detalle sin la relación `images` cargada borraba lo que
+    // el respaldo acababa de traer. Esa era la segunda mitad del bug de "la
+    // foto no aparece al editar"; la primera estaba en el `findOne` del backend.
   }
+  /**
+   * Si hay fotos por subir o por borrar pendientes de guardar. Lo usan los
+   * formularios para no dejar el botón "Guardar" deshabilitado cuando lo único
+   * que cambió fue la galería: tocar fotos no ensucia el `FormGroup`.
+   */
+  get hasPendingChanges(): boolean {
+    return this.pendingFiles.length > 0 || this.toDeleteImages.length > 0;
+  }
+
   loadImages() {
     this.loadedEntityId = this.entityId;
     this.imageService.getImages(this.entityType, this.entityId).subscribe({
@@ -245,6 +261,27 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   resetPending() {
     this.pendingFiles = [];
     this.pendingPreviews = [];
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Vacía la galería ENTERA: lo pendiente de subir, lo marcado para borrar y lo
+   * ya cargado. Es lo que hay que llamar al cancelar o resetear un formulario.
+   *
+   * ⚠️ No basta con `resetPending()` (solo limpia lo pendiente) ni con poner
+   * `initialImages = []` desde el padre: `processInitialImages` ignora a
+   * propósito un `initialImages` vacío cuando el `entityId` ya está cargado
+   * —si no, un detalle sin la relación `images` borraba lo que el respaldo
+   * acababa de traer—. Por eso el vaciado deliberado necesita ser explícito:
+   * el componente no puede adivinar si el array vacío significa "no tengo el
+   * dato" o "olvida lo que había".
+   */
+  clear() {
+    this.images = [];
+    this.pendingFiles = [];
+    this.pendingPreviews = [];
+    this.toDeleteImages = [];
+    this.loadedEntityId = null;
     this.cdr.detectChanges();
   }
   uploadFiles(files: File[]) {

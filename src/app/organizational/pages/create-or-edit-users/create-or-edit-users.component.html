@@ -10,11 +10,13 @@
   @if (!loading) {
   <form [formGroup]="userForm" class="flex flex-col">
     <!--
-      Foto del usuario: solo al editar (en alta todavía no existe el usuario al
-      que subírsela). Al pulsarla se abre el visor con las opciones de moderar.
-      El cambio queda pendiente y se aplica al guardar, como el resto del form.
+      Foto del usuario, también al crear. Al pulsarla se abre el visor con las
+      opciones de moderar. El cambio queda pendiente y se aplica al guardar,
+      como el resto del formulario: en alta el `userId` ya se conoce antes de
+      llamar al backend (se genera con `uuid.v4()`), así que la foto se sube
+      justo después de crear el usuario, igual que hace el uploader de fotos
+      de productos con `applyChanges(newId)`.
     -->
-    @if (isEditMode) {
       <div class="flex flex-col items-center mb-6">
         <div
           class="relative group w-24 h-24 cursor-pointer"
@@ -40,7 +42,6 @@
           (change)="onAvatarSelected($event)"
         />
       </div>
-    }
 
     <div class="flex flex-col md:flex-row gap-x-10 gap-y-[25px] md:gap-y-0">
       <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
@@ -71,16 +72,43 @@
             {{ 'organizational.edit_user.id_type_required' | translate }}
           </mat-error>
         </mat-form-field>
+        <!--
+          Tipo de persona ante la DIAN. Editable a propósito: el tipo de
+          documento solo propone un valor, no lo impone. Una persona natural
+          también puede tener NIT (su cédula inscrita en el RUT), y es el caso
+          normal del proveedor de un documento soporte.
+        -->
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'organizational.edit_user.person_type' | translate }}</mat-label>
-          <mat-select formControlName="personTypeId">
-            <mat-option value="" disabled selected>{{ 'organizational.edit_user.select_person_type' | translate
-              }}</mat-option>
-            <mat-option *ngFor="let pt of personType" [value]="pt.personTypeId.toString()">
-              {{ pt.name | translated | capitalize }}
+          <mat-select formControlName="factusLegalOrganizationCode">
+            <mat-option *ngFor="let opt of legalOrganizationOptions" [value]="opt.value">
+              {{ opt.labelKey | translate }}
             </mat-option>
           </mat-select>
           <mat-icon matPrefix>business</mat-icon>
+          <!-- El `mat-error` solo se pinta si el campo está `touched`; el hint
+               se oculta cuando hay error, así que no compiten. -->
+          <mat-hint>{{ 'organizational.edit_user.person_type_hint' | translate }}</mat-hint>
+          <mat-error
+            *ngIf="userForm.get('factusLegalOrganizationCode')?.hasError('juridicaRequiresNit')"
+          >
+            {{ 'organizational.edit_user.juridica_requires_nit' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <!--
+          Eje INDEPENDIENTE del anterior: una persona natural puede ser
+          responsable de IVA y una jurídica puede no serlo. Va al `tribute_code`
+          del `customer` de Factus, que hasta ahora se mandaba siempre 'ZZ'.
+        -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.tribute' | translate }}</mat-label>
+          <mat-select formControlName="factusTributeCode">
+            <mat-option *ngFor="let opt of tributeOptions" [value]="opt.value">
+              {{ opt.labelKey | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>receipt_long</mat-icon>
+          <mat-hint>{{ 'organizational.edit_user.tribute_hint' | translate }}</mat-hint>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{ 'organizational.edit_user.id_number' | translate }}</mat-label>
@@ -163,9 +191,8 @@
           <mat-label>{{ 'organizational.edit_user.phone' | translate }}</mat-label>
           <input matInput formControlName="phone" (input)="onPhoneInput($event)" />
           <mat-icon matPrefix>phone_iphone</mat-icon>
-          <mat-error *ngIf="userForm.get('phone')?.hasError('required')">
-            {{ 'organizational.edit_user.phone_required' | translate }}
-          </mat-error>
+          <!-- El número es opcional; el país de arriba sigue siendo obligatorio. -->
+          <mat-hint>{{ 'organizational.edit_user.phone_optional' | translate }}</mat-hint>
           <mat-error *ngIf="userForm.get('phone')?.hasError('pattern')">
             {{ 'organizational.edit_user.phone_pattern' | translate }}
           </mat-error>
@@ -212,7 +239,7 @@
         }
       </section>
     </div>
-    <div class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full">
+    <div class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-[var(--border-color)] w-full">
       @if (isEditMode) {
       <div class="w-full flex content-between md:w-[24%]">
         <button mat-fab extended="true" color="warn" type="button" [routerLink]="['/organizational/users/list']"
@@ -223,7 +250,7 @@
       }
       <div class="w-full flex content-between md:w-[24%]">
         <button mat-fab extended color="primary" type="button" class="mt-2 md:mt-0 !w-full" (click)="save()"
-          [disabled]="isSaving">
+          [disabled]="!canSave">
           <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
           {{ isEditMode ? ('organizational.common.save_changes' | translate) :
           ('organizational.edit_user.create_user_btn' | translate) }}

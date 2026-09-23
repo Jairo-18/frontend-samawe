@@ -100,7 +100,13 @@
       }
     }
   },
+  "theme": {
+    "dark": "Dark mode",
+    "light": "Light mode"
+  },
   "auth": {
+    "legal_notice": "By continuing you accept our",
+    "legal_and": "and the",
     "logout": "Sign Out",
     "profile": "Profile",
     "recipes": "Recipes",
@@ -186,7 +192,11 @@
     "email_inv": "Enter a valid email.",
     "back_btn": "Back",
     "wait": "Wait",
-    "send_btn": "Send"
+    "send_btn": "Send",
+    "sent_title": "Check your inbox",
+    "sent_subtitle": "We sent a recovery email to {{email}}. Open the link to set a new password.",
+    "sent_hint": "Can't find it? Check your spam folder before trying again.",
+    "go_login_btn": "Go to sign in"
   },
   "google_callback": {
     "logging_in": "Signing in with Google...",
@@ -979,6 +989,14 @@
       "id_type_required": "Identification type required",
       "person_type": "Person type",
       "select_person_type": "Select the person type",
+      "person_type_hint": "Suggested from the document type; you can change it",
+      "juridica_requires_nit": "A legal entity must be identified with a NIT. If this is someone registered in the RUT with their own NIT, choose Natural person.",
+      "person_natural": "Natural person",
+      "person_juridica": "Legal entity",
+      "tribute": "VAT liability",
+      "tribute_hint": "Sent on the electronic invoice to the DIAN",
+      "tribute_responsible": "VAT responsible",
+      "tribute_not_responsible": "Not VAT responsible",
       "id_number": "Identification Number",
       "id_number_required": "Identification number required",
       "id_number_pattern": "Only letters, numbers and dashes (no spaces)",
@@ -1000,6 +1018,7 @@
       "country_required": "Country required",
       "phone": "Phone",
       "phone_required": "Phone required",
+      "phone_optional": "Optional",
       "phone_pattern": "Only numbers, maximum 15 digits",
       "status": "Status",
       "create_user_btn": "Create user"
@@ -1021,6 +1040,7 @@
     "app_manage": {
       "title": "Application Management",
       "subtitle": "Here you can manage your hotel's information",
+      "unsaved_changes": "You have unsaved changes in:",
       "tab_general": "General Information",
       "tab_appearance": "Appearance and SEO",
       "tab_home_content": "Home Content",
@@ -1066,6 +1086,20 @@
     },
     "appearance": {
       "corporate_colors": "Corporate Colors",
+      "corporate_hint": "The hotel's identity. The same in light and dark mode.",
+      "light_mode": "Light mode",
+      "mode_hint": "Backgrounds and text for this mode.",
+      "dark_mode": "Dark mode",
+      "dark_bg": "Background",
+      "dark_surface": "Cards",
+      "dark_title": "Heading",
+      "dark_text": "Text",
+      "dark_subtitle": "Secondary text",
+      "typography": "Typography",
+      "font_title": "Heading font",
+      "font_title_hint": "Used for headings and labels: menu, footer, section titles.",
+      "font_body": "Body font",
+      "font_body_hint": "Used for all running text: forms, tables and invoices.",
       "primary": "Primary",
       "secondary": "Secondary",
       "tertiary": "Tertiary",
@@ -1262,7 +1296,13 @@
       "subtitle": "Manage the accommodations registered in your hotel",
       "not_found": "No accommodations found"
     },
+    "gallery": {
+      "previous": "Previous photo",
+      "next": "Next photo",
+      "empty": "This item has no photos yet"
+    },
     "table": {
+      "photo": "Photo",
       "category": "Category",
       "code": "Code",
       "name": "Name",
@@ -1325,6 +1365,7 @@
       "jacuzzi_question": "Has jacuzzi?",
       "rooms": "Rooms",
       "field_required": "Required field",
+      "incomplete": "Check the fields marked in red before saving",
       "min_persons": "Minimum persons",
       "max_persons": "Maximum persons"
     },
@@ -1422,8 +1463,12 @@
       "sort_oldest": "Oldest",
       "first_review": "Be the first to leave a review.",
       "no_results": "No reviews match your search.",
+      "clear_filters": "Clear filters",
+      "rating_label": "Rating",
+      "rate_aria": "Rate {{score}} out of 5 stars",
       "confirm_delete_review": "Delete this review?",
-      "confirm_delete_reply": "Delete this reply?"
+      "confirm_delete_reply": "Delete this reply?",
+      "confirm_delete_message": "This action cannot be undone."
     },
     "benefits": {
       "label": "Services",
@@ -1437,6 +1482,7 @@
       "view_availability": "See availability"
     },
     "accommodation_detail": {
+      "no_image": "No photos yet",
       "not_found": "We couldn't find this accommodation",
       "back_to_list": "See all accommodations",
       "availability_note": "We'll confirm availability over WhatsApp.",

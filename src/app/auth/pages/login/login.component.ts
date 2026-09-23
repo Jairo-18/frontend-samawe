@@ -19,6 +19,7 @@ import { NotificationsService } from '../../../shared/services/notifications.ser
 import { Subscription } from 'rxjs';
 import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { LangService } from '../../../shared/services/lang.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -45,6 +46,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     inject(ApplicationService);
   private readonly _notificationsService: NotificationsService =
     inject(NotificationsService);
+  private readonly _langService: LangService = inject(LangService);
+
+  /** Rutas legales con el prefijo de idioma activo (`/es/legal/...`). */
+  get privacyRoute(): string {
+    return this._langService.route('legal/privacity');
+  }
+
+  get termsRoute(): string {
+    return this._langService.route('legal/terms');
+  }
 
   loginBgUrl: string = '';
   form: FormGroup;
@@ -53,6 +64,16 @@ export class LoginComponent implements OnInit, OnDestroy {
   showPassword: boolean = false;
   cooldownRemaining: number = 0;
   loginError: boolean = false;
+
+  /**
+   * Hay un intento en vuelo.
+   *
+   * El cooldown de aquí solo arranca **tras un fallo**, así que hasta ahora no
+   * había nada que impidiera mandar varios inicios de sesión seguidos mientras
+   * el primero seguía en camino: validar credenciales y abrir sesión tarda lo
+   * suyo, y sin señal en pantalla lo natural es volver a pulsar.
+   */
+  loggingIn: boolean = false;
   private _failedAttempts: number = 0;
   private _cooldownInterval: ReturnType<typeof setInterval> | null = null;
   private _subscription: Subscription = new Subscription();
@@ -121,13 +142,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
-    if (this.form.invalid || this.cooldownRemaining > 0) return;
+    if (this.form.invalid || this.cooldownRemaining > 0 || this.loggingIn)
+      return;
+    this.loggingIn = true;
     this._authService.login(this.form.value).subscribe({
       next: () => {
+        this.loggingIn = false;
         this._router.navigateByUrl('/home');
         this._authService.cleanRedirectUrl();
       },
       error: (error) => {
+        this.loggingIn = false;
         this.loginError = false;
         const msg: string = error?.error?.message || error?.message || '';
         if (

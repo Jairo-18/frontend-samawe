@@ -12,7 +12,8 @@ export interface CreateUserPanel {
   lastName: string;
   email: string;
   phoneCode: string;
-  phone: string;
+  /** Opcional: el prefijo de país sí es obligatorio, el número no. */
+  phone?: string;
   password?: string;
   confirmPassword?: string;
   isActive?: boolean;
@@ -23,6 +24,10 @@ export interface CreateUserPanel {
   address?: string;
   departmentId?: number | null;
   municipalityId?: number | null;
+  /** `tribute_code` DIAN: '01' responsable de IVA … 'ZZ' no aplica. */
+  factusTributeCode?: string;
+  /** `legal_organization_code` DIAN: '1' jurídica, '2' natural. */
+  factusLegalOrganizationCode?: string;
 }
 export interface UserComplete {
   userId: string;
@@ -47,6 +52,8 @@ export interface UserComplete {
     code: string;
     name: string;
   } | null;
+  factusTributeCode?: string | null;
+  factusLegalOrganizationCode?: string | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

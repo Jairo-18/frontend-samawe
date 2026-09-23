@@ -107,6 +107,11 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
         }
       }
 
+      // Cargar un menú existente no cuenta como cambio: el botón de guardar
+      // arranca deshabilitado hasta que se toque algo de verdad.
+      this._recipesChanged = false;
+      this.form.markAsPristine();
+
       this._cdr.detectChanges();
     }
   }
@@ -150,6 +155,21 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
     );
   }
 
+  /**
+   * Si hay algo que guardar. Un menú no se ensucia solo con el `FormGroup`:
+   * elegir o quitar platillos toca un `Set`, no un control, así que ese cambio
+   * se marca a mano.
+   */
+  get canSave(): boolean {
+    return (
+      !this.saving &&
+      this.selectedRecipeIds.size > 0 &&
+      (this.form.dirty || this._recipesChanged)
+    );
+  }
+
+  private _recipesChanged = false;
+
   isRecipeSelected(recipe: RecipeWithDetails): boolean {
     return this.selectedRecipeIds.has(recipe.productId);
   }
@@ -160,11 +180,13 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
     } else {
       this.selectedRecipeIds.add(recipe.productId);
     }
+    this._recipesChanged = true;
     this._cdr.markForCheck();
   }
 
   removeRecipe(productId: number): void {
     this.selectedRecipeIds.delete(productId);
+    this._recipesChanged = true;
     this._cdr.markForCheck();
   }
 

@@ -72,7 +72,7 @@
   <!-- Selected Recipes Chips -->
   @if (selectedRecipeIds.size > 0) {
     <div class="mb-4">
-      <span class="text-sm font-semibold text-gray-700 mb-2 block"
+      <span class="text-sm font-semibold text-[var(--on-surface)] mb-2 block"
         >{{ 'menu.selected_dishes' | translate }} ({{
           selectedRecipeIds.size
         }})</span
@@ -103,11 +103,13 @@
     >
       @for (recipe of filteredRecipes; track recipe.productId) {
         <div
-          class="recipe-select-card rounded-xl border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
-          [class.border-[var(--primary-color)]]="isRecipeSelected(recipe)"
-          [class.bg-green-50]="isRecipeSelected(recipe)"
-          [class.border-gray-200]="!isRecipeSelected(recipe)"
-          [class.bg-white]="!isRecipeSelected(recipe)"
+          class="recipe-select-card rounded-[4px] border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+          [class.border-[var(--brand)]]="isRecipeSelected(recipe)"
+          [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-raised))]]="
+            isRecipeSelected(recipe)
+          "
+          [class.border-[var(--border-color)]]="!isRecipeSelected(recipe)"
+          [class.bg-[var(--surface-raised)]]="!isRecipeSelected(recipe)"
           (click)="toggleRecipe(recipe)"
         >
           <div class="flex items-center gap-3">
@@ -126,17 +128,17 @@
               />
             } @else {
               <div
-                class="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center"
+                class="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] flex items-center justify-center"
               >
-                <mat-icon class="text-indigo-400 text-lg">restaurant</mat-icon>
+                <mat-icon class="text-[var(--on-surface-muted)] text-lg">restaurant</mat-icon>
               </div>
             }
 
             <div class="flex-1 min-w-0">
-              <span class="font-semibold text-sm text-black truncate block">{{
+              <span class="font-semibold text-sm text-[var(--on-surface)] truncate block">{{
                 recipe.productName | capitalize
               }}</span>
-              <span class="text-xs text-gray-500"
+              <span class="text-xs text-[var(--on-surface-muted)]"
                 >{{ recipe.ingredients.length }} ingrediente(s)</span
               >
             </div>
@@ -149,12 +151,12 @@
                 ing of recipe.ingredients.slice(0, 3);
                 track ing.ingredientProductId
               ) {
-                <span class="text-xs text-gray-500 block truncate"
+                <span class="text-xs text-[var(--on-surface-muted)] block truncate"
                   >• {{ ing.ingredientProductName | capitalize }}</span
                 >
               }
               @if (recipe.ingredients.length > 3) {
-                <span class="text-xs text-gray-400 italic"
+                <span class="text-xs text-[var(--on-surface-muted)] italic"
                   >+{{ recipe.ingredients.length - 3 }} más</span
                 >
               }
@@ -164,14 +166,14 @@
       }
     </div>
   } @else {
-    <div class="text-center py-8 text-gray-400">
+    <div class="text-center py-8 text-[var(--on-surface-muted)]">
       <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
       <p>{{ 'menu.no_dishes_found' | translate }}</p>
     </div>
   }
 
   @if (form.invalid === false && selectedRecipeIds.size === 0 && form.touched) {
-    <p class="text-red-500 text-sm mb-4">
+    <p class="text-[var(--danger)] text-sm mb-4">
       {{ 'menu.select_dish_required' | translate }}
     </p>
   }
@@ -197,7 +199,7 @@
         mat-fab
         extended="true"
         class="!w-full"
-        [disabled]="saving || selectedRecipeIds.size === 0"
+        [disabled]="!canSave"
       >
         {{ isEditMode ? ('menu.save_changes' | translate) : ('menu.create_title' | translate) }}
       </button>

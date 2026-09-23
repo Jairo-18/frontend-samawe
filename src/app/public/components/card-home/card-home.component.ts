@@ -64,7 +64,10 @@ export class CardHomeComponent {
     ).map((card) => {
       // El mesero no edita recetas, las consulta para tomar el pedido.
       if (card.title === 'home.cards.recipes.title' && roleCode === 'MES') {
-        return { ...card, description: 'home.cards.recipes.waiter_description' };
+        return {
+          ...card,
+          description: 'home.cards.recipes.waiter_description'
+        };
       }
       return card;
     });

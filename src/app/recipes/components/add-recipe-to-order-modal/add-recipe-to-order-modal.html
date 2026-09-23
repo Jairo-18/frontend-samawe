@@ -47,11 +47,11 @@
                 >table_restaurant</mat-icon
               >
               <span>{{ 'recipe.add_to_order.table_label' | translate }} {{ invoice.tableNumber }}</span>
-              <span class="text-gray-600"
+              <span class="text-[var(--on-surface-muted)]"
                 >- {{ invoice.user.firstName }} {{ invoice.user.lastName
                 }}</span
               >
-              <span class="text-gray-400 font-normal"
+              <span class="text-[var(--on-surface-muted)] font-normal"
                 >({{ invoice.code }})</span
               >
             </span>
@@ -59,7 +59,7 @@
         </mat-option>
         } @if(showNoResultsMessage) {
         <mat-option disabled>
-          <span class="text-gray-500"
+          <span class="text-[var(--on-surface-muted)]"
             >{{ 'recipe.add_to_order.no_orders' | translate }}</span
           >
         </mat-option>
@@ -82,7 +82,7 @@
 
   <section
     actions
-    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full"
+    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-[var(--border-color)] w-full"
   >
     <div class="w-full flex content-between md:w-[50%]">
       <button

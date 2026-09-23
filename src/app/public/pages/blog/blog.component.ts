@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { MatDialog } from '@angular/material/dialog';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { ReviewService } from '../../services/review.service';
 import { Review } from '../../../shared/interfaces/review.interface';
@@ -31,6 +32,9 @@ import {
   GoogleReview
 } from '../../../organizational/services/google-business.service';
 import { SeoService } from '../../../shared/services/seo.service';
+import { LangService } from '../../../shared/services/lang.service';
+import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
+import { ButtonLandingComponent } from '../../../shared/components/button-landing/button-landing.component';
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -49,6 +53,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     SectionHeaderComponent,
     LoaderComponent,
     ReviewCardComponent,
+    ButtonLandingComponent,
     TranslateModule
   ],
   templateUrl: './blog.component.html',
@@ -63,6 +68,8 @@ export class BlogComponent implements OnInit, OnDestroy {
   private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _translate: TranslateService = inject(TranslateService);
+  private readonly _langService: LangService = inject(LangService);
+  private readonly _matDialog: MatDialog = inject(MatDialog);
   private readonly _destroy$ = new Subject<void>();
   private readonly _searchSubject = new Subject<string>();
 
@@ -89,11 +96,33 @@ export class BlogComponent implements OnInit, OnDestroy {
   newScore: number = 5;
   submitting: boolean = false;
 
+  /** Estrella que se está señalando con el ratón, para previsualizar la nota
+   *  sin haber hecho clic todavía. `null` = mostrar la puntuación elegida. */
+  hoverScore: number | null = null;
+
   searchQuery: string = '';
   filterScore: 'all' | '1' | '2' | '3' | '4' | '5' = 'all';
   sortOrder: 'newest' | 'oldest' = 'newest';
 
   readonly starPositions = [1, 2, 3, 4, 5];
+  readonly maxTitleLength = 255;
+
+  /**
+   * Hay una búsqueda o un filtro puestos por la persona.
+   *
+   * Distingue "todavía no hay reseñas" de "tu búsqueda no encontró nada", que
+   * son mensajes distintos, y sobre todo decide si los filtros se siguen
+   * mostrando: ocultarlos cuando el resultado es vacío dejaba la página sin
+   * forma de deshacer el filtro que acababa de aplicarse.
+   */
+  get hasActiveFilters(): boolean {
+    return this.searchQuery.trim().length > 0 || this.filterScore !== 'all';
+  }
+
+  /** La nota que deben pintar las estrellas: la señalada o, si no, la elegida. */
+  get displayScore(): number {
+    return this.hoverScore ?? this.newScore;
+  }
 
   ngOnInit(): void {
     this.isLoggedIn = this._authService.isAuthenticated();
@@ -131,6 +160,13 @@ export class BlogComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(): void {
+    this._reloadReviews();
+  }
+
+  /** Salida directa del resultado vacío, sin tener que deshacer filtro a filtro. */
+  clearFilters(): void {
+    this.searchQuery = '';
+    this.filterScore = 'all';
     this._reloadReviews();
   }
 
@@ -211,6 +247,19 @@ export class BlogComponent implements OnInit, OnDestroy {
     return this._googleBusinessService.starRatingToNumber(rating);
   }
 
+  /** Puntúa al hacer clic. Media estrella en la mitad izquierda de cada una. */
+  setScore(score: number): void {
+    this.newScore = score;
+  }
+
+  previewScore(score: number): void {
+    this.hoverScore = score;
+  }
+
+  clearPreview(): void {
+    this.hoverScore = null;
+  }
+
   submitReview(): void {
     if (!this.newTitle.trim() || !this.newComment.trim()) return;
     this.submitting = true;
@@ -247,12 +296,12 @@ export class BlogComponent implements OnInit, OnDestroy {
   }
 
   onDeleteReview(reviewId: number): void {
-    if (!isPlatformBrowser(this._platformId)) return;
-    if (!confirm(this._translate.instant('public.blog.confirm_delete_review'))) return;
-    this._reviewService.remove(reviewId).subscribe({
-      next: () => {
-        this.reviews = this.reviews.filter((r) => r.reviewId !== reviewId);
-      }
+    this._confirm('public.blog.confirm_delete_review', () => {
+      this._reviewService.remove(reviewId).subscribe({
+        next: () => {
+          this.reviews = this.reviews.filter((r) => r.reviewId !== reviewId);
+        }
+      });
     });
   }
 
@@ -282,14 +331,38 @@ export class BlogComponent implements OnInit, OnDestroy {
   }
 
   onDeleteReply(event: { reviewId: number; replyId: number }): void {
-    if (!isPlatformBrowser(this._platformId)) return;
-    if (!confirm(this._translate.instant('public.blog.confirm_delete_reply'))) return;
-    this._reviewService.removeReply(event.reviewId, event.replyId).subscribe({
-      next: () => {
-        const review = this.reviews.find((r) => r.reviewId === event.reviewId);
-        if (review) review.replies = review.replies.filter((r) => r.reviewReplyId !== event.replyId);
-      }
+    this._confirm('public.blog.confirm_delete_reply', () => {
+      this._reviewService.removeReply(event.reviewId, event.replyId).subscribe({
+        next: () => {
+          const review = this.reviews.find((r) => r.reviewId === event.reviewId);
+          if (review)
+            review.replies = review.replies.filter(
+              (r) => r.reviewReplyId !== event.replyId
+            );
+        }
+      });
     });
+  }
+
+  /**
+   * Confirmación con el diálogo de la casa en vez del `confirm()` del
+   * navegador, que sale sin estilo, en el idioma del sistema y bloquea la
+   * pestaña entera. Sigue protegido para SSR: en servidor no hay diálogo que
+   * abrir y el borrado no debe ocurrir solo.
+   */
+  private _confirm(titleKey: string, onConfirm: () => void): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+    this._matDialog
+      .open(YesNoDialogComponent, {
+        data: {
+          title: this._translate.instant(titleKey),
+          message: this._translate.instant('public.blog.confirm_delete_message')
+        }
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) onConfirm();
+      });
   }
 
   getStarIcon(position: number, score: number): string {
@@ -298,8 +371,10 @@ export class BlogComponent implements OnInit, OnDestroy {
     return 'star_border';
   }
 
+  /** La fecha sigue al idioma de la página: en `/en/blog` decía "15 sept 2026". */
   formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('es-CO', {
+    const locale = this._langService.lang() === 'en' ? 'en-US' : 'es-CO';
+    return new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric'

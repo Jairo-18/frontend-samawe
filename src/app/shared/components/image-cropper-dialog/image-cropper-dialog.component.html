@@ -1,12 +1,12 @@
 <app-base-dialog title="Recortar Imagen">
   <div form class="flex flex-col items-center gap-4">
     <div
-      class="cropper-wrapper w-full overflow-hidden rounded-lg border border-gray-200 bg-gray-50"
+      class="cropper-wrapper w-full overflow-hidden rounded-lg border border-[var(--border-color)]"
     >
       @if (isLoading) {
         <div class="loader-overlay">
           <mat-spinner diameter="48"></mat-spinner>
-          <span class="mt-2 text-sm text-gray-500">Cargando imagen...</span>
+          <span class="mt-2 text-sm text-[var(--on-surface-muted)]">Cargando imagen...</span>
         </div>
       }
       <image-cropper

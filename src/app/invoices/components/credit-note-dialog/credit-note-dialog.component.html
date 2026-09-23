@@ -12,8 +12,8 @@
     } @else if (result) {
       <!-- Resultado de la emisión -->
       <div class="flex flex-col items-center gap-2 py-4 text-center">
-        <mat-icon class="!w-12 !h-12 !text-[48px] text-green-600">check_circle</mat-icon>
-        <p class="text-lg font-bold">{{ 'invoice.credit_note.emitted' | translate }}</p>
+        <mat-icon class="!w-12 !h-12 !text-[48px] text-[var(--success)]">check_circle</mat-icon>
+        <p class="panel-heading text-lg font-bold">{{ 'invoice.credit_note.emitted' | translate }}</p>
         <p class="text-sm">
           {{ 'invoice.credit_note.number' | translate }}:
           <strong>{{ result.number || result.referenceCode }}</strong>
@@ -23,11 +23,11 @@
           <strong>{{ result.total | formatCop }}</strong>
         </p>
         @if (result.cude) {
-          <p class="text-xs text-gray-500 break-all">CUDE: {{ result.cude }}</p>
+          <p class="text-xs text-[var(--on-surface-muted)] break-all">CUDE: {{ result.cude }}</p>
         }
         @if (result.publicUrl) {
           <a [href]="result.publicUrl" target="_blank" rel="noopener"
-            class="text-sm text-blue-600 underline">
+            class="text-sm blue-color underline">
             {{ 'invoice.credit_note.view_official' | translate }}
           </a>
         }
@@ -39,9 +39,9 @@
           <p class="text-sm font-semibold mb-1">{{ 'invoice.credit_note.existing' | translate }}</p>
           <ul class="flex flex-col gap-1">
             @for (note of existing; track note.creditNoteId) {
-              <li class="flex items-center justify-between text-xs bg-gray-50 rounded px-2 py-1">
+              <li class="flex items-center justify-between text-xs bg-[var(--surface-sunken)] rounded px-2 py-1">
                 <span>{{ note.factusNumber || note.referenceCode }}
-                  <span class="text-gray-400">· {{ note.isTotal ? ('invoice.credit_note.total_tag' | translate) : ('invoice.credit_note.partial_tag' | translate) }}</span>
+                  <span class="text-[var(--on-surface-muted)]">· {{ note.isTotal ? ('invoice.credit_note.total_tag' | translate) : ('invoice.credit_note.partial_tag' | translate) }}</span>
                 </span>
                 <span class="font-semibold">{{ note.total | formatCop }}</span>
               </li>
@@ -57,7 +57,7 @@
         <!-- `!leading-4` y `shrink-0`: `mat-icon` trae `line-height: 24px`, así
              que con la caja bajada a 16px el glifo se salía por abajo y en una
              celda estrecha el icono se aplastaba. -->
-        <p class="mb-3 flex items-start gap-2 text-sm text-red-700">
+        <p class="mb-3 flex items-start gap-2 text-sm text-[var(--danger)]">
           <mat-icon class="!text-base !w-4 !h-4 !leading-4 shrink-0">block</mat-icon>
           {{ 'invoice.credit_note.already_annulled' | translate }}
         </p>
@@ -68,18 +68,18 @@
       </mat-checkbox>
 
       @if (isTotal) {
-        <p class="text-sm text-gray-600 mb-3">{{ 'invoice.credit_note.cancel_total_hint' | translate }}</p>
+        <p class="text-sm text-[var(--on-surface-muted)] mb-3">{{ 'invoice.credit_note.cancel_total_hint' | translate }}</p>
       } @else {
         <p class="text-sm font-semibold mb-1">{{ 'invoice.credit_note.select_items' | translate }}</p>
         <div class="flex flex-col gap-1 mb-3">
           @for (row of rows; track row.detail.invoiceDetailId) {
-            <div class="flex items-center gap-2 border border-gray-200 rounded px-2 py-1"
+            <div class="flex items-center gap-2 border border-[var(--border-color)] rounded px-2 py-1"
               [class.opacity-50]="row.maxQty <= 0">
               <mat-checkbox [(ngModel)]="row.selected" color="primary"
                 [disabled]="row.maxQty <= 0"></mat-checkbox>
               <div class="flex-1 min-w-0">
                 <p class="text-sm truncate">{{ (itemName(row.detail) | translated) || ('invoice.credit_note.item' | translate) }}</p>
-                <p class="text-xs text-gray-400">
+                <p class="text-xs text-[var(--on-surface-muted)]">
                   {{ row.detail.priceWithTax | formatCop }} ·
                   @if (row.maxQty > 0) {
                     {{ 'invoice.credit_note.available' | translate }} {{ row.maxQty }}
@@ -99,7 +99,7 @@
 
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'invoice.credit_note.observation' | translate }}</mat-label>
-        <textarea matInput rows="2" maxlength="250" [(ngModel)]="observation"></textarea>
+        <textarea matInput rows="4" maxlength="250" [(ngModel)]="observation"></textarea>
       </mat-form-field>
       }
     }

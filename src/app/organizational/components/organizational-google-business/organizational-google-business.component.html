@@ -41,7 +41,7 @@
     <!-- Estado: conectado, sin ubicación -->
     @if (status?.connected && !status?.locationName) {
       <div class="border border-[var(--primary-color)] rounded-[4px] p-6 flex flex-col gap-4">
-        <div class="flex items-center gap-2 text-green-600">
+        <div class="flex items-center gap-2 text-[var(--success)]">
           <span class="material-icons text-base">check_circle</span>
           <span class="text-sm font-medium">{{ 'organizational.google_business.account_connected' | translate }}</span>
         </div>
@@ -54,7 +54,7 @@
 
         @if (!loadingAccounts && accounts.length > 0) {
           <div>
-            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.business_account' | translate }}</label>
+            <label class="field-label block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.business_account' | translate }}</label>
             <select
               [value]="selectedAccount"
               (change)="onAccountChange($any($event.target).value)"
@@ -76,7 +76,7 @@
 
         @if (!loadingLocations && locations.length > 0) {
           <div>
-            <label class="block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.location' | translate }}</label>
+            <label class="field-label block text-xs font-medium text-[var(--text-color)] mb-1">{{ 'organizational.google_business.location' | translate }}</label>
             <select
               [value]="selectedLocation"
               (change)="selectedLocation = $any($event.target).value"
@@ -102,7 +102,7 @@
 
         <button
           (click)="disconnect()"
-          class="self-start text-xs text-red-500 hover:underline mt-1"
+          class="self-start text-xs text-[var(--danger)] hover:underline mt-1"
         >
           {{ 'organizational.google_business.disconnect_account' | translate }}
         </button>
@@ -111,20 +111,20 @@
 
     <!-- Estado: conectado y configurado -->
     @if (status?.connected && status?.locationName) {
-      <div class="border border-green-400 bg-green-50 rounded-[4px] p-5 flex flex-col gap-3">
-        <div class="flex items-center gap-2 text-green-700">
+      <div class="border border-[var(--success)] bg-[var(--success-bg)] rounded-[4px] p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2 text-[var(--success)]">
           <span class="material-icons text-base">check_circle</span>
           <span class="text-sm font-semibold">{{ 'organizational.google_business.google_connected' | translate }}</span>
         </div>
-        <div class="text-xs text-gray-600 space-y-1">
+        <div class="text-xs text-[var(--on-surface-muted)] space-y-1">
           <p><span class="font-medium">{{ 'organizational.google_business.account' | translate }}:</span> {{ status?.accountName }}</p>
           <p><span class="font-medium">{{ 'organizational.google_business.location' | translate }}:</span> {{ status?.locationName }}</p>
         </div>
-        <p class="text-xs text-gray-500">{{ 'organizational.google_business.reviews_auto' | translate }}</p>
+        <p class="text-xs text-[var(--on-surface-muted)]">{{ 'organizational.google_business.reviews_auto' | translate }}</p>
         <button
           (click)="disconnect()"
           [disabled]="disconnecting"
-          class="self-start flex items-center gap-1 text-xs text-red-500 hover:underline disabled:opacity-50"
+          class="self-start flex items-center gap-1 text-xs text-[var(--danger)] hover:underline disabled:opacity-50"
         >
           <span class="material-icons text-sm">link_off</span>
           {{ disconnecting ? ('organizational.google_business.disconnecting' | translate) : ('organizational.google_business.disconnect' | translate) }}

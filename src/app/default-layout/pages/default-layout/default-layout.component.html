@@ -1,5 +1,5 @@
 @if (_relatedDataService.isLoading()) {
-  <div class="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
+  <div class="fixed inset-0 z-[9999] bg-[var(--bg-secondary-color)] flex items-center justify-center">
     <app-loader></app-loader>
   </div>
 }
@@ -8,7 +8,7 @@
   class="flex relative min-h-dvh"
   [class.invisible]="_relatedDataService.isLoading()"
   [style.--sidebar-width]="
-    !showSideBar ? '0px' : isCollapsedSideBar ? '64px' : '288px'
+    !showSideBar ? '0px' : isCollapsedSideBar ? '64px' : '320px'
   "
 >
   @if (showSideBar) {

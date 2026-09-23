@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
-import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { BasePageComponent } from '../../../shared/components/base-page/base-page.component';
 import { LangService } from '../../../shared/services/lang.service';
@@ -74,29 +73,6 @@ export class SettingsComponent implements OnInit {
   }
 
   logout(): void {
-    const allSessionData = this._localStorage.getAllSessionData();
-    if (
-      !allSessionData?.user?.userId ||
-      !allSessionData?.tokens?.accessToken ||
-      !allSessionData?.session?.accessSessionId
-    ) {
-      this._authService.cleanStorageAndRedirectToLogin();
-      return;
-    }
-
-    const sessionDataToLogout: LogOutInterface = {
-      userId: allSessionData.user.userId,
-      accessToken: allSessionData.tokens.accessToken,
-      accessSessionId: allSessionData.session.accessSessionId
-    };
-
-    this._authService.logout(sessionDataToLogout).subscribe({
-      next: () => {
-        this._authService.cleanStorageAndRedirectToLogin();
-      },
-      error: () => {
-        this._authService.cleanStorageAndRedirectToLogin();
-      }
-    });
+    this._authService.signOut();
   }
 }

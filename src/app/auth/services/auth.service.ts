@@ -14,6 +14,7 @@ import { ApiResponseInterface } from '../../shared/interfaces/api-response.inter
 import { Router } from '@angular/router';
 import { UserInterface } from '../../shared/interfaces/user.interface';
 import { LogOutInterface } from '../interfaces/logout.interface';
+import { SidebarStateService } from '../../shared/services/sidebar-state.service';
 import { ChangePassword } from '../../organizational/interfaces/create.interface';
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,10 @@ export class AuthService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
+  private readonly _sidebarState: SidebarStateService =
+    inject(SidebarStateService);
   private _refreshingToken: boolean = false;
+  private _signingOut: boolean = false;
   private _refreshTimer: ReturnType<typeof setTimeout> | null = null;
   _isLoggedSubject: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private readonly _router: Router = inject(Router);
@@ -87,6 +91,55 @@ export class AuthService {
   saveLocalUserData(userData: LoginSuccessInterface): void {
     this._localStorageService.setItem(this._tokensStorageKey, JSON.stringify(userData));
   }
+  /**
+   * Cierre de sesión, en un único sitio.
+   *
+   * Estaba copiado en tres componentes —sidebar (`default-layout`), navbar
+   * (`nav-bar`) y ajustes del sitio público (`settings`)— y las copias ya
+   * habían divergido: solo la del sidebar limpiaba el estado de
+   * `SidebarStateService`. Como ese servicio es `providedIn: 'root'`, salir por
+   * la navbar o por ajustes dejaba `_sessionOpen` en `true`, y al volver a
+   * entrar en la misma pestaña `openForSession()` no abría el sidebar.
+   *
+   * `_signingOut` cubre además el doble clic: no era dañino (los dos caminos
+   * acaban limpiando y redirigiendo) pero mandaba una petición de más contra
+   * una sesión ya borrada.
+   */
+  signOut(): void {
+    if (this._signingOut) return;
+
+    const session = this._localStorageService.getAllSessionData();
+    if (
+      !session?.user?.userId ||
+      !session?.tokens?.accessToken ||
+      !session?.session?.accessSessionId
+    ) {
+      // Sin datos completos no hay nada que cerrar en el servidor, pero la
+      // sesión local sí hay que dejarla limpia.
+      this._finishSignOut();
+      return;
+    }
+
+    this._signingOut = true;
+    this.logout({
+      userId: session.user.userId,
+      accessToken: session.tokens.accessToken,
+      accessSessionId: session.session.accessSessionId
+    }).subscribe({
+      next: () => this._finishSignOut(),
+      // Si el servidor falla igual hay que sacar a la persona: dejarla dentro
+      // con la sesión a medias es peor que perder el registro del cierre.
+      error: () => this._finishSignOut()
+    });
+  }
+
+  private _finishSignOut(): void {
+    this._signingOut = false;
+    this._sidebarState.closeForLogout();
+    this._sidebarState.clearCache();
+    this.cleanStorageAndRedirectToLogin();
+  }
+
   logout(data: LogOutInterface): Observable<unknown> {
     const params = this._httpUtilities.httpParamsFromObject(data);
     return this._httpClient

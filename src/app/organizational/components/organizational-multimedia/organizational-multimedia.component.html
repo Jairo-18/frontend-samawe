@@ -1,38 +1,42 @@
 <div class="py-6 flex flex-col gap-8">
   <!-- LOGO (diseño especial circular) -->
   <div>
-    <span class="text-lg font-bold border-b pb-2 mb-4 flex items-center gap-2">
-      <mat-icon class="text-[var(--primary-color)]"
+    <span class="panel-heading text-lg font-bold border-b pb-2 mb-4 flex items-center gap-2">
+      <mat-icon class="text-[var(--brand)]"
         >branding_watermark</mat-icon
       >
       {{ 'organizational.multimedia.brand_identity' | translate }}
     </span>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      <!-- `rounded-[4px]`, el radio del resto de la aplicación. La tarjeta
+           llevaba `rounded-2xl` (16px) y desentonaba con las tablas, los
+           diálogos y los campos. El recuadro del logo sí sigue redondo: ahí es
+           deliberado, es una marca. -->
       <div
-        class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
+        class="flex flex-col gap-4 items-center p-6 border rounded-[4px] bg-[var(--surface-raised)] shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
       >
         <div
           *ngIf="mediaLoading['LOGO']"
-          class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
+          class="absolute inset-0 bg-[var(--surface-raised)]/80 z-10 flex flex-col items-center justify-center gap-3"
         >
           <mat-spinner diameter="40"></mat-spinner>
           <span class="text-xs font-bold animate-pulse">{{ 'organizational.multimedia.processing' | translate }}</span>
         </div>
         <div class="flex justify-between w-full items-center">
-          <span class="text-sm font-semibold text-gray-700">
+          <span class="field-label text-sm font-semibold text-[var(--on-surface)]">
             {{ 'organizational.multimedia.system_logo' | translate }}
           </span>
           <mat-icon
-            class="text-gray-400"
+            class="text-[var(--on-surface-muted)]"
             [matTooltip]="'organizational.multimedia.main_brand_image' | translate"
             >info</mat-icon
           >
         </div>
         <div
-          class="w-40 h-40 rounded-full border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
+          class="w-40 h-40 rounded-full border-4 border-[var(--border-color)] flex items-center justify-center overflow-hidden bg-[var(--surface-sunken)] relative"
         >
           @if (getMediaUrl('LOGO') && !isImageLoaded('LOGO')) {
-            <div class="absolute inset-0 bg-gray-200 animate-pulse rounded-full z-10"></div>
+            <div class="absolute inset-0 bg-[var(--surface-sunken)] animate-pulse rounded-full z-10"></div>
           }
           <img
             [src]="getMediaUrl('LOGO') || 'assets/images/notFound.avif'"
@@ -79,7 +83,7 @@
           (change)="fileSelected.emit({ event: $event, code: 'LOGO' })"
           accept="image/*"
         />
-        <p class="text-[10px] text-gray-400 text-center leading-tight">
+        <p class="text-[10px] text-[var(--on-surface-muted)] text-center leading-tight">
           {{ 'organizational.multimedia.logo_spec' | translate }}
         </p>
       </div>
@@ -91,39 +95,65 @@
     <div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
         @for (type of nonLogoTypes; track type.code) {
+            <!-- Los medios que en el sitio se ven a lo ancho ocupan dos
+                 columnas: así la miniatura se parece a lo que verá el
+                 visitante. `ngClass` y no `[class.md:col-span-2]` porque el
+                 `:` de la variante de Tailwind rompe el binding por nombre. -->
             <div
-              class="flex flex-col gap-4 items-center p-6 border rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
+              class="flex flex-col gap-4 items-center p-6 border rounded-[4px] bg-[var(--surface-raised)] shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group"
+              [ngClass]="isWide(type.code) ? 'md:col-span-2' : ''"
             >
               <div
                 *ngIf="mediaLoading[type.code]"
-                class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center gap-3"
+                class="absolute inset-0 bg-[var(--surface-raised)]/80 z-10 flex flex-col items-center justify-center gap-3"
               >
                 <mat-spinner diameter="40"></mat-spinner>
                 <span class="text-xs font-bold animate-pulse">{{ 'organizational.multimedia.uploading' | translate }}</span>
               </div>
               <div class="flex justify-between w-full items-center">
-                <span class="font-bold text-gray-800">{{ type.name | translated }}</span>
+                <span class="field-label font-bold text-[var(--on-surface)]">{{ type.name | translated }}</span>
                 <mat-icon
-                  class="text-gray-400"
+                  class="text-[var(--on-surface-muted)]"
                   [matTooltip]="('organizational.multimedia.image_for' | translate) + (type.name | translated)"
                   >info</mat-icon
                 >
               </div>
+              <!-- La proporción es la REAL de cada medio: los fondos de acceso
+                   se ven verticales (3/4) y el resto apaisados (16/9). Con una
+                   altura fija para todos, la miniatura del login mentía sobre
+                   cómo se iba a recortar la foto.
+                   Va como estilo y no como clase `aspect-[...]`: Tailwind no
+                   detecta clases construidas en tiempo de ejecución. -->
               <div
-                class="w-full h-40 rounded-xl border-4 border-gray-100 flex items-center justify-center overflow-hidden bg-gray-50 relative"
+                class="w-full rounded-[4px] border-4 border-[var(--border-color)] flex items-center justify-center overflow-hidden bg-[var(--surface-sunken)] relative"
+                [style.aspectRatio]="aspectFor(type.code)"
               >
-                @if (getMediaUrl(type.code) && !isImageLoaded(type.code)) {
-                  <div class="absolute inset-0 bg-gray-200 animate-pulse z-10"></div>
+                @if (getMediaUrl(type.code) && !isImageLoaded(type.code) && !isVideo(type.code)) {
+                  <div class="absolute inset-0 bg-[var(--surface-sunken)] animate-pulse z-10"></div>
                 }
-                <img
-                  [src]="
-                    getMediaUrl(type.code) || 'assets/images/notFound.avif'
-                  "
-                  [alt]="type.name | translated"
-                  class="w-full h-full object-cover"
-                  (load)="onImgLoad(type.code)"
-                  (error)="onImgError($event, type.code)"
-                />
+                @if (isVideo(type.code) && getMediaUrl(type.code)) {
+                  <!-- Silenciado y en bucle, como se verá en la portada. Sin
+                       `controls`: aquí solo se comprueba qué se subió; para
+                       verlo entero está el botón de la lupa. -->
+                  <video
+                    [src]="getMediaUrl(type.code)!"
+                    class="w-full h-full object-cover"
+                    muted
+                    loop
+                    autoplay
+                    playsinline
+                  ></video>
+                } @else {
+                  <img
+                    [src]="
+                      getMediaUrl(type.code) || 'assets/images/notFound.avif'
+                    "
+                    [alt]="type.name | translated"
+                    class="w-full h-full object-cover"
+                    (load)="onImgLoad(type.code)"
+                    (error)="onImgError($event, type.code)"
+                  />
+                }
                 <div
                   class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-300"
                 >
@@ -158,15 +188,18 @@
                   </button>
                 </div>
               </div>
+              <!-- El vídeo principal acepta MP4/WEBM; el resto, imágenes. Con
+                   `image/*` fijo, la ranura de vídeo no dejaba elegir el
+                   archivo. -->
               <input
                 [id]="'input-' + type.code"
                 type="file"
                 class="hidden"
                 (change)="fileSelected.emit({ event: $event, code: type.code })"
-                accept="image/*"
+                [accept]="acceptFor(type.code)"
               />
-              <p class="text-[10px] text-gray-400 text-center leading-tight">
-                JPG/WEBP · 1920×1080 PX
+              <p class="text-[10px] text-[var(--on-surface-muted)] text-center leading-tight">
+                {{ specFor(type.code) }}
               </p>
             </div>
           }

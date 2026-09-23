@@ -7,7 +7,7 @@
       <button
         type="button"
         (click)="clear()"
-        class="text-xs text-gray-500 hover:text-[var(--primary-color)] inline-flex items-center gap-1"
+        class="text-xs text-[var(--on-surface-muted)] hover:text-[var(--primary-color)] inline-flex items-center gap-1"
       >
         <mat-icon class="!text-[16px] !w-[16px] !h-[16px]">close</mat-icon>
         {{ 'public.availability.clear' | translate }}
@@ -29,37 +29,37 @@
     />
   </div>
 
-  <ul class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
+  <ul class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--on-surface-muted)]">
     <li class="flex items-center gap-1.5">
       <span class="w-3 h-3 rounded-full bg-[var(--primary-color)]"></span>
       {{ 'public.availability.legend_selected' | translate }}
     </li>
     <li class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded-full bg-red-100 border border-red-300"></span>
+      <span class="w-3 h-3 rounded-full bg-[var(--danger-bg)] border border-[var(--danger-border)]"></span>
       {{ 'public.availability.legend_occupied' | translate }}
     </li>
   </ul>
 
   @if (failed) {
-    <p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-[4px] px-3 py-2">
+    <p class="text-xs text-[var(--warning)] bg-[var(--warning-bg)] border border-[var(--warning-border)] rounded-[4px] px-3 py-2">
       {{ 'public.availability.load_failed' | translate }}
     </p>
   }
 
   @if (crossedOccupied) {
-    <p class="text-xs text-red-700 bg-red-50 border border-red-200 rounded-[4px] px-3 py-2">
+    <p class="text-xs text-[var(--danger)] bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-[4px] px-3 py-2">
       {{ 'public.availability.crosses_occupied' | translate }}
     </p>
   }
 
   @if (startDate && !endDate) {
-    <p class="text-xs text-gray-600">
+    <p class="text-xs text-[var(--on-surface-muted)]">
       {{ 'public.availability.pick_checkout' | translate }}
     </p>
   }
 
   @if (nights > 0) {
-    <div class="rounded-[4px] bg-gray-50 border px-3 py-2 flex flex-col gap-1 text-sm">
+    <div class="rounded-[4px] bg-[var(--surface-sunken)] border px-3 py-2 flex flex-col gap-1 text-sm">
       <div class="flex justify-between">
         <span>{{ 'public.availability.check_in' | translate }}</span>
         <strong>{{ startDate | date: 'mediumDate' }}</strong>

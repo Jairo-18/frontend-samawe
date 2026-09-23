@@ -14,6 +14,7 @@ import { environment } from '../environments/environment';
 import { ApplicationService } from './organizational/services/application.service';
 import { AuthService } from './auth/services/auth.service';
 import { RelatedDataService } from './shared/services/relatedData.service';
+import { ThemeService } from './shared/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -30,9 +31,14 @@ export class AppComponent implements OnDestroy {
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
+  private readonly _themeService: ThemeService = inject(ThemeService);
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
+    // Modo claro/oscuro: se resuelve al arrancar, antes de pintar nada. Sigue
+    // al sistema salvo que la persona haya elegido con el interruptor.
+    this._themeService.init();
+
     if (environment.production) {
       this._meta.addTag({
         httpEquiv: 'Content-Security-Policy',

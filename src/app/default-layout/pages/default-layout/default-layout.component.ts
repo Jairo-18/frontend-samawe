@@ -16,7 +16,6 @@ import { distinctUntilChanged, filter, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
-import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { NotificationButtonComponent } from '../../components/notification-button/notification-button.component';
 import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.component';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -188,35 +187,11 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   logout(): void {
     if (!this.isLoggedUser) {
       this._router.navigateByUrl('/auth/login');
-    } else {
-      const allSessionData = this._localStorage.getAllSessionData();
-      if (
-        !allSessionData?.user?.userId ||
-        !allSessionData?.tokens?.accessToken ||
-        !allSessionData?.session?.accessSessionId
-      ) {
-        console.error('Faltan datos de sesión para cerrar sesión');
-        this._authService.cleanStorageAndRedirectToLogin();
-        return;
-      }
-      const sessionDataToLogout: LogOutInterface = {
-        userId: allSessionData.user.userId,
-        accessToken: allSessionData.tokens.accessToken,
-        accessSessionId: allSessionData.session.accessSessionId
-      };
-      this._authService.logout(sessionDataToLogout).subscribe({
-        next: () => {
-          this._sidebarState.closeForLogout();
-          this._sidebarState.clearCache();
-          this._authService.cleanStorageAndRedirectToLogin();
-          this.user = undefined;
-        },
-        error: () => {
-          this._sidebarState.closeForLogout();
-          this._sidebarState.clearCache();
-          this._authService.cleanStorageAndRedirectToLogin();
-        }
-      });
+      return;
     }
+    // Toda la mecánica vive en AuthService.signOut(); aquí solo queda lo
+    // propio de esta pantalla.
+    this.user = undefined;
+    this._authService.signOut();
   }
 }

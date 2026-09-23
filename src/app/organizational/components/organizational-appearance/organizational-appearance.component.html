@@ -1,162 +1,179 @@
 <form [formGroup]="form" class="py-6 flex flex-col gap-6">
+  <!-- Un solo selector de color, reutilizado por los tres grupos.
+       Antes cada color estaba escrito a mano: quince bloques idénticos de
+       nueve líneas, y añadir uno obligaba a cambiar el `for`, el `id` y el
+       `formControlName` a la vez.
+
+       ⚠️ El `ng-template` va DENTRO del `<form>` a propósito. `formControlName`
+       busca su `formGroup` por donde el template está DECLARADO, no por donde
+       se inserta: declarado fuera, Angular lanza "formControlName must be used
+       with a parent formGroup directive" al abrir la pestaña. -->
+  <ng-template #colorField let-c>
+  <div class="flex flex-col gap-2">
+    <label
+      [for]="c.control + 'Text'"
+      class="field-label text-xs text-[var(--on-surface-muted)] uppercase font-bold"
+      >{{ c.labelKey | translate }}</label
+    >
+    <div class="flex items-center gap-3">
+      <div
+        class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-[var(--border-color)] shadow-sm shrink-0"
+      >
+        <!-- `markAsDirty` explícito: `setValue` desde código NO ensucia el
+             control, así que sin esto el botón Guardar seguiría gris tras
+             elegir un color en la rueda. -->
+        <input
+          type="color"
+          [value]="form.get(c.control)?.value || '#000000'"
+          (input)="
+            form.get(c.control)?.setValue($any($event.target).value);
+            form.get(c.control)?.markAsDirty()
+          "
+          class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0"
+        />
+      </div>
+      <!-- Es un `<input>` normal, no `matInput`: no hereda NINGUNA de las
+           reglas de Material que ya cubren el resto de campos. El navegador le
+           pone fondo blanco y texto negro por su cuenta —un `<input>` no
+           hereda ni color ni fondo del body, es de las pocas etiquetas que la
+           hoja de estilos del navegador sí les fija ambas cosas—, así que sin
+           esto el código hexadecimal quedaba en una casilla blanca fija
+           encendida en mitad de la pantalla oscura. -->
+      <input
+        [id]="c.control + 'Text'"
+        type="text"
+        [formControlName]="c.control"
+        class="w-28 h-10 px-3 border border-[var(--border-color)] rounded-lg text-sm font-mono uppercase bg-[var(--surface-raised)] text-[var(--on-surface)] focus:outline-none focus:border-[var(--brand)]"
+        placeholder="#000000"
+        />
+      </div>
+    </div>
+  </ng-template>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="flex flex-col gap-4">
-      <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
-        <mat-icon class="text-[var(--primary-color)]">color_lens</mat-icon>
-        {{ 'organizational.appearance.corporate_colors' | translate }}
-      </span>
-      <div class="flex flex-col md:flex-row gap-8 items-center">
-
-        <!-- Primario -->
-        <div class="flex flex-col gap-2">
-          <label for="primaryColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.primary' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('primaryColor')?.value || '#000000'"
-                (input)="form.get('primaryColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="primaryColorText" type="text" formControlName="primaryColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
+    <div class="flex flex-col gap-8">
+      <!-- ── 1. Colores corporativos ─────────────────────────────────────── -->
+      <div class="flex flex-col gap-4">
+        <span
+          class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2"
+        >
+          <mat-icon class="text-[var(--primary-color)]">color_lens</mat-icon>
+          {{ 'organizational.appearance.corporate_colors' | translate }}
+        </span>
+        <p class="text-xs text-[var(--on-surface-muted)] -mt-2">
+          {{ 'organizational.appearance.corporate_hint' | translate }}
+        </p>
+        <div class="flex flex-col md:flex-row gap-8 items-center flex-wrap">
+          @for (c of brandColorFields; track c.control) {
+            <ng-container
+              *ngTemplateOutlet="colorField; context: { $implicit: c }"
+            ></ng-container>
+          }
         </div>
-
-        <!-- Secundario -->
-        <div class="flex flex-col gap-2">
-          <label for="secondaryColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.secondary' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('secondaryColor')?.value || '#000000'"
-                (input)="form.get('secondaryColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="secondaryColorText" type="text" formControlName="secondaryColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
-        </div>
-
-        <!-- Terciario -->
-        <div class="flex flex-col gap-2">
-          <label for="tertiaryColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.tertiary' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('tertiaryColor')?.value || '#000000'"
-                (input)="form.get('tertiaryColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="tertiaryColorText" type="text" formControlName="tertiaryColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
-        </div>
-
       </div>
 
-      <div class="flex flex-col md:flex-row gap-8 items-center flex-wrap">
-
-        <!-- Texto -->
-        <div class="flex flex-col gap-2">
-          <label for="textColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.text' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('textColor')?.value || '#000000'"
-                (input)="form.get('textColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="textColorText" type="text" formControlName="textColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
+      <!-- ── 2. Modo claro ───────────────────────────────────────────────── -->
+      <div class="flex flex-col gap-4">
+        <span
+          class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2"
+        >
+          <mat-icon class="text-[var(--primary-color)]">light_mode</mat-icon>
+          {{ 'organizational.appearance.light_mode' | translate }}
+        </span>
+        <p class="text-xs text-[var(--on-surface-muted)] -mt-2">
+          {{ 'organizational.appearance.mode_hint' | translate }}
+        </p>
+        <div class="flex flex-col md:flex-row gap-8 items-center flex-wrap">
+          @for (c of lightColorFields; track c.control) {
+            <ng-container
+              *ngTemplateOutlet="colorField; context: { $implicit: c }"
+            ></ng-container>
+          }
         </div>
+      </div>
 
-        <!-- Título -->
-        <div class="flex flex-col gap-2">
-          <label for="titleColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.title' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('titleColor')?.value || '#000000'"
-                (input)="form.get('titleColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="titleColorText" type="text" formControlName="titleColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
+      <!-- ── 3. Modo oscuro ──────────────────────────────────────────────── -->
+      <div class="flex flex-col gap-4">
+        <span
+          class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2"
+        >
+          <mat-icon class="text-[var(--primary-color)]">dark_mode</mat-icon>
+          {{ 'organizational.appearance.dark_mode' | translate }}
+        </span>
+        <p class="text-xs text-[var(--on-surface-muted)] -mt-2">
+          {{ 'organizational.appearance.mode_hint' | translate }}
+        </p>
+        <div class="flex flex-col md:flex-row gap-8 items-center flex-wrap">
+          @for (c of darkColorFields; track c.control) {
+            <ng-container
+              *ngTemplateOutlet="colorField; context: { $implicit: c }"
+            ></ng-container>
+          }
         </div>
-
-        <!-- Subtítulo -->
-        <div class="flex flex-col gap-2">
-          <label for="subtitleColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.subtitle' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('subtitleColor')?.value || '#000000'"
-                (input)="form.get('subtitleColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="subtitleColorText" type="text" formControlName="subtitleColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
-        </div>
-
-        <!-- Fondo Principal -->
-        <div class="flex flex-col gap-2">
-          <label for="bgPrimaryColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.bg_primary' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('bgPrimaryColor')?.value || '#000000'"
-                (input)="form.get('bgPrimaryColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="bgPrimaryColorText" type="text" formControlName="bgPrimaryColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
-        </div>
-
-        <!-- Fondo Secundario -->
-        <div class="flex flex-col gap-2">
-          <label for="bgSecondaryColorText" class="text-xs text-gray-500 uppercase font-bold">{{ 'organizational.appearance.bg_secondary' | translate }}</label>
-          <div class="flex items-center gap-3">
-            <div class="relative w-14 h-14 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm shrink-0">
-              <input type="color"
-                [value]="form.get('bgSecondaryColor')?.value || '#000000'"
-                (input)="form.get('bgSecondaryColor')?.setValue($any($event.target).value)"
-                class="absolute -top-4 -left-4 w-24 h-24 cursor-pointer border-0 bg-transparent p-0" />
-            </div>
-            <input id="bgSecondaryColorText" type="text" formControlName="bgSecondaryColor"
-              class="w-28 h-10 px-3 border border-gray-300 rounded-lg text-sm font-mono uppercase focus:outline-none focus:border-green-500"
-              placeholder="#000000" />
-          </div>
-        </div>
-
       </div>
     </div>
 
     <div class="flex flex-col gap-4">
-      <span class="text-lg font-bold border-b pb-2">{{ 'organizational.appearance.seo_optimization' | translate }}</span>
+      <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
+        <mat-icon class="text-[var(--primary-color)]">text_fields</mat-icon>
+        {{ 'organizational.appearance.typography' | translate }}
+      </span>
+
+      <!-- Cada opción va escrita en su propia fuente: es lo que permite
+           elegir de un vistazo en vez de guardar y mirar el sitio. -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'organizational.appearance.font_title' | translate }}</mat-label>
+        <mat-select formControlName="fontTitle">
+          @for (font of titleFonts; track font.family) {
+            <mat-option [value]="font.family">
+              <span [ngStyle]="fontPreview(font.family, font.fallback)" class="text-base">
+                {{ font.label }}
+              </span>
+              <span class="text-xs text-[var(--on-surface-muted)] ml-2">— {{ font.hint }}</span>
+            </mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ 'organizational.appearance.font_title_hint' | translate }}</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ 'organizational.appearance.font_body' | translate }}</mat-label>
+        <mat-select formControlName="fontBody">
+          @for (font of bodyFonts; track font.family) {
+            <mat-option [value]="font.family">
+              <span [ngStyle]="fontPreview(font.family, font.fallback)" class="text-base">
+                {{ font.label }}
+              </span>
+              <span class="text-xs text-[var(--on-surface-muted)] ml-2">— {{ font.hint }}</span>
+            </mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ 'organizational.appearance.font_body_hint' | translate }}</mat-hint>
+      </mat-form-field>
+
+      <span class="panel-heading text-lg font-bold border-b pb-2 mt-2">{{ 'organizational.appearance.seo_optimization' | translate }}</span>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'organizational.appearance.meta_title' | translate }}</mat-label>
         <input matInput formControlName="metaTitleEs" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'organizational.appearance.meta_description' | translate }}</mat-label>
-        <textarea matInput formControlName="metaDescriptionEs" rows="3"></textarea>
+        <textarea matInput formControlName="metaDescriptionEs" rows="4"></textarea>
       </mat-form-field>
     </div>
   </div>
 
   <div class="flex justify-end gap-3 mt-4">
-    <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
+    <!-- Se mira `dirty`, no `valid`: con el formulario recién abierto un botón
+         gris se entiende; con campos requeridos sin tocar, no. Mismo criterio
+         que en productos, hospedajes y recetas. -->
+    <button
+      mat-fab
+      extended="true"
+      class="!w-full"
+      [disabled]="!form.dirty"
+      (click)="save.emit()"
+    >
       <mat-icon>save</mat-icon>
       {{ 'organizational.common.save_changes' | translate }}
     </button>

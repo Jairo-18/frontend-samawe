@@ -58,7 +58,7 @@
       <section
         class="flex flex-col md:flex-row justify-between items-center mb-4"
       >
-        <span class="text-base md:text-xl font-semibold">{{ 'recipe.create_edit_recipe.ingredients' | translate }}</span>
+        <span class="panel-heading text-base md:text-xl font-semibold">{{ 'recipe.create_edit_recipe.ingredients' | translate }}</span>
         <div class="w-full md:w-[24%]">
           <button
             type="button"
@@ -123,7 +123,7 @@
                       appearance="outline"
                       class="w-20 mt-2 [&_.mat-mdc-form-field-subscript-wrapper]:hidden"
                     >
-                      <input matInput [value]="getIngredientUnit(i)" [readonly]="true" class="text-center font-semibold text-emerald-600" />
+                      <input matInput [value]="getIngredientUnit(i)" [readonly]="true" class="text-center font-semibold text-[var(--brand)]" />
                     </mat-form-field>
                   }
                   </div>
@@ -207,28 +207,28 @@
               <tr
                 mat-row
                 *matRowDef="let row; columns: displayedColumns"
-                class="hover:bg-emerald-50/30 transition-colors"
+                class="hover:bg-[var(--surface-sunken)] transition-colors"
               ></tr>
             </table>
           </div>
         } @else {
           <div
-            class="flex flex-col items-center gap-3 p-12 text-gray-400 border-2 border-dashed border-emerald-100 rounded-2xl bg-gray-50/30"
+            class="flex flex-col items-center gap-3 p-12 text-[var(--on-surface-muted)] border-2 border-dashed border-[var(--border-color)] rounded-2xl bg-[var(--surface-sunken)]"
           >
             <mat-icon class="text-6xl w-12 h-12 opacity-20"
               >inventory_2</mat-icon
             >
-            <p class="m-0 font-medium text-emerald-900/40 text-center">
+            <p class="m-0 font-medium text-[var(--on-surface-muted)] text-center">
               {{ 'recipe.create_edit_recipe.no_ingredients' | translate }}
             </p>
           </div>
         }
         @if (ingredientsArray.length > 0) {
           <div
-            class="w-full flex flex-col md:flex-row justify-between items-center mt-6 text-black"
+            class="w-full flex flex-col md:flex-row justify-between items-center mt-6 text-[var(--on-surface)]"
           >
             <div class="flex flex-col">
-              <span class="text-xs md:text-lg font-bold">{{ 'recipe.create_edit_recipe.total_recipe' | translate }}</span>
+              <span class="field-label text-xs md:text-lg font-bold">{{ 'recipe.create_edit_recipe.total_recipe' | translate }}</span>
               <span class="text-[10px] md:text-sm"
                 >{{ 'recipe.create_edit_recipe.cost_by_ingredients' | translate }}</span
               >
@@ -281,7 +281,7 @@
         type="button"
         class="!w-full"
         (click)="save()"
-        [disabled]="saving || form.invalid || ingredientsArray.length === 0"
+        [disabled]="!canSave"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
         {{ isEditMode ? ('recipe.create_edit_recipe.save' | translate) : ('recipe.create_edit_recipe.create' | translate) }}

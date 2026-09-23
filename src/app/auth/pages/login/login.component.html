@@ -14,7 +14,7 @@
     contenido y el `py` del contenedor garantiza el aire.
   -->
   <article
-    class="relative w-[90%] max-w-[440px] lg:max-w-[920px] h-auto lg:min-h-[min(600px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] 2xl:min-h-[min(680px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] flex items-stretch justify-center border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
+    class="relative w-[90%] max-w-[440px] lg:max-w-[920px] h-auto lg:min-h-[min(600px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] 2xl:min-h-[min(680px,calc(100svh_-_var(--nav-bar-height)_-_5rem))] flex items-stretch justify-center bg-[var(--bg-primary-color)] border border-[var(--primary-color)] rounded-[4px] mx-auto overflow-hidden shadow-2xl"
   >
     <section
       class="w-full flex flex-col text-center justify-center items-center p-5 gap-1 md:gap-4"
@@ -69,7 +69,7 @@
         </mat-form-field>
         @if (loginError) {
           <div
-            class="w-full flex items-center gap-2 text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 text-sm"
+            class="w-full flex items-center gap-2 text-[var(--danger)] bg-[var(--danger-bg)] border border-[var(--danger-border)] rounded-md px-3 py-2 text-sm"
           >
             <span class="material-icons text-base">error_outline</span>
             <span>{{ 'login.error_message' | translate }}</span>
@@ -85,6 +85,7 @@
                 : ('login.submit' | translate)
             "
             variant="solid"
+            [loading]="loggingIn"
             [disabled]="form.invalid || cooldownRemaining > 0"
             (clicked)="login()"
             class="w-full"
@@ -140,10 +141,28 @@
               >{{ 'login.register' | translate }}</a
             >
           </div>
+
+          <!-- Las rutas van por `LangService`, no escritas a mano: las legales
+               viven bajo el prefijo de idioma (`/es/legal/...`) y sin él
+               caerían en el comodín del router. -->
+          <p class="text-xs text-[var(--on-surface-muted)] text-center mt-1">
+            {{ 'auth.legal_notice' | translate }}
+            <a
+              [routerLink]="privacyRoute"
+              class="text-[var(--primary-color)] underline hover:opacity-80"
+              >{{ 'footer.privacy' | translate }}</a
+            >
+            {{ 'auth.legal_and' | translate }}
+            <a
+              [routerLink]="termsRoute"
+              class="text-[var(--primary-color)] underline hover:opacity-80"
+              >{{ 'footer.terms' | translate }}</a
+            >.
+          </p>
         </div>
       </form>
     </section>
-    <section class="relative w-full hidden lg:flex flex-col bg-gray-100">
+    <section class="relative w-full hidden lg:flex flex-col bg-[var(--surface-sunken)]">
       <img
         *ngIf="loginBgUrl"
         [ngSrc]="loginBgUrl"

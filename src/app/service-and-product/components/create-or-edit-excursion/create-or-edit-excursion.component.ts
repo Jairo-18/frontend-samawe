@@ -186,16 +186,22 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       taxeTypeId: 1
     });
     this.excursionImages = [];
+    this.excursionId = 0;
     if (this.imageUploader) {
-      this.imageUploader.resetPending();
+      // `clear()` y no `resetPending()`: al cancelar hay que vaciar la galería
+      // entera, no solo lo pendiente de subir.
+      this.imageUploader.clear();
     }
     this.cdr.detectChanges();
   }
   resetForm() {
     this.resetFormToDefaults();
+    // ⚠️ Ver el comentario largo en `create-or-edit-product.component.ts`:
+    // `setErrors(null)` sin recálculo deja el formulario vacío y "válido".
     Object.keys(this.excursionForm.controls).forEach((key) => {
       const control = this.excursionForm.get(key);
       control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this.isEditMode = false;
     this.excursionCanceled.emit();
@@ -226,6 +232,18 @@ export class CreateOrEditExcursionComponent implements OnChanges, OnDestroy {
       }
     });
   }
+  /**
+   * Si hay algo que guardar. Ver el comentario largo en
+   * `create-or-edit-product.component.ts`: se mira `dirty`, no `valid`, y la
+   * galería se pregunta aparte porque tocar fotos no ensucia el `FormGroup`.
+   */
+  get canSave(): boolean {
+    return (
+      !this.isSaving &&
+      (this.excursionForm.dirty || !!this.imageUploader?.hasPendingChanges)
+    );
+  }
+
   save() {
     if (this.excursionForm.valid) {
       const formValue = this.excursionForm.value;

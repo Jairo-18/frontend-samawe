@@ -19,16 +19,16 @@
         </button>
       </section>
       <section class="flex flex-col gap-2">
-        <div class="text-sm text-gray-500">{{ 'organizational.card_types.code_prefix' | translate }}:</div>
-        <div class="text-base font-semibold text-gray-800">
+        <div class="text-sm text-[var(--on-surface-muted)]">{{ 'organizational.card_types.code_prefix' | translate }}:</div>
+        <div class="text-base font-semibold text-[var(--on-surface)]">
           {{ item.code }}
         </div>
         <p class="text-[var(--text-color)] text-sm mb-6 m-0 leading-relaxed">
           {{ 'organizational.card_types.total' | translate }}:
           <span class="font-bold text-[var(--title-color)]">{{ item['count'] }}</span>
         </p>
-        <div class="text-sm text-gray-500 mt-2">{{ 'organizational.card_types.name' | translate }}:</div>
-        <div class="text-base font-semibold text-gray-800">
+        <div class="text-sm text-[var(--on-surface-muted)] mt-2">{{ 'organizational.card_types.name' | translate }}:</div>
+        <div class="text-base font-semibold text-[var(--on-surface)]">
           {{ item.name | translated }}
         </div>
       </section>

@@ -100,7 +100,13 @@
       }
     }
   },
+  "theme": {
+    "dark": "Modo oscuro",
+    "light": "Modo claro"
+  },
   "auth": {
+    "legal_notice": "Al continuar aceptas nuestra",
+    "legal_and": "y los",
     "logout": "Cerrar Sesión",
     "profile": "Perfil",
     "recipes": "Recetas",
@@ -186,7 +192,11 @@
     "email_inv": "Ingresa un correo válido.",
     "back_btn": "Volver",
     "wait": "Espera",
-    "send_btn": "Enviar"
+    "send_btn": "Enviar",
+    "sent_title": "Revisa tu bandeja de entrada",
+    "sent_subtitle": "Te enviamos un correo de recuperación a {{email}}. Abre el enlace para crear una contraseña nueva.",
+    "sent_hint": "¿No lo ves? Mira en correo no deseado antes de volver a intentarlo.",
+    "go_login_btn": "Ir a iniciar sesión"
   },
   "google_callback": {
     "logging_in": "Iniciando sesión con Google...",
@@ -979,6 +989,14 @@
       "id_type_required": "Tipo de identificación requerido",
       "person_type": "Tipo de persona",
       "select_person_type": "Seleccione el tipo de persona",
+      "person_type_hint": "Se sugiere según el documento; puedes cambiarlo",
+      "juridica_requires_nit": "Una persona jurídica debe identificarse con NIT. Si es alguien inscrito en el RUT con NIT propio, elige Persona natural.",
+      "person_natural": "Persona natural",
+      "person_juridica": "Persona jurídica",
+      "tribute": "Responsabilidad de IVA",
+      "tribute_hint": "Va en la factura electrónica ante la DIAN",
+      "tribute_responsible": "Responsable de IVA",
+      "tribute_not_responsible": "No responsable de IVA",
       "id_number": "Número de identificación",
       "id_number_required": "Número de identificación requerido",
       "id_number_pattern": "Solo letras, números y guiones (sin espacios)",
@@ -1000,6 +1018,7 @@
       "country_required": "País requerido",
       "phone": "Teléfono",
       "phone_required": "Teléfono requerido",
+      "phone_optional": "Opcional",
       "phone_pattern": "Solo números, máximo 15 dígitos",
       "status": "Estado",
       "create_user_btn": "Crear usuario"
@@ -1021,6 +1040,7 @@
     "app_manage": {
       "title": "Gestión de la Aplicación",
       "subtitle": "Aquí puedes gestionar la información de tu hotel",
+      "unsaved_changes": "Tienes cambios sin guardar en:",
       "tab_general": "Información General",
       "tab_appearance": "Apariencia y SEO",
       "tab_home_content": "Contenido de inicio",
@@ -1066,6 +1086,20 @@
     },
     "appearance": {
       "corporate_colors": "Colores Corporativos",
+      "corporate_hint": "La identidad del hotel. Son los mismos en modo claro y oscuro.",
+      "light_mode": "Modo claro",
+      "mode_hint": "Fondos y textos de este modo.",
+      "dark_mode": "Modo oscuro",
+      "dark_bg": "Fondo",
+      "dark_surface": "Tarjetas",
+      "dark_title": "Título",
+      "dark_text": "Texto",
+      "dark_subtitle": "Texto secundario",
+      "typography": "Tipografía",
+      "font_title": "Fuente de títulos",
+      "font_title_hint": "Se usa en títulos y rótulos: menú, pie, encabezados.",
+      "font_body": "Fuente del texto",
+      "font_body_hint": "Se usa en todo el texto: formularios, tablas y facturas.",
       "primary": "Primario",
       "secondary": "Secundario",
       "tertiary": "Terciario",
@@ -1262,7 +1296,13 @@
       "subtitle": "Gestiona los hospedajes registrados en tu hotel",
       "not_found": "No se encontraron hospedajes"
     },
+    "gallery": {
+      "previous": "Foto anterior",
+      "next": "Foto siguiente",
+      "empty": "Este ítem todavía no tiene fotos"
+    },
     "table": {
+      "photo": "Foto",
       "category": "Categoría",
       "code": "Código",
       "name": "Nombre",
@@ -1325,6 +1365,7 @@
       "jacuzzi_question": "¿Tiene jacuzzi?",
       "rooms": "Habitaciones",
       "field_required": "Campo requerido",
+      "incomplete": "Revisa los campos marcados en rojo antes de guardar",
       "min_persons": "Mínimo Personas",
       "max_persons": "Máximo Personas"
     },
@@ -1422,8 +1463,12 @@
       "sort_oldest": "Más antiguas",
       "first_review": "Sé el primero en dejar una reseña.",
       "no_results": "No hay reseñas que coincidan con tu búsqueda.",
+      "clear_filters": "Quitar filtros",
+      "rating_label": "Puntuación",
+      "rate_aria": "Puntuar con {{score}} de 5 estrellas",
       "confirm_delete_review": "¿Eliminar esta reseña?",
-      "confirm_delete_reply": "¿Eliminar esta respuesta?"
+      "confirm_delete_reply": "¿Eliminar esta respuesta?",
+      "confirm_delete_message": "Esta acción no se puede deshacer."
     },
     "benefits": {
       "label": "Servicios",
@@ -1437,6 +1482,7 @@
       "view_availability": "Ver disponibilidad"
     },
     "accommodation_detail": {
+      "no_image": "Sin fotos todavía",
       "not_found": "No encontramos este hospedaje",
       "back_to_list": "Ver todos los hospedajes",
       "availability_note": "Te confirmamos disponibilidad por WhatsApp.",

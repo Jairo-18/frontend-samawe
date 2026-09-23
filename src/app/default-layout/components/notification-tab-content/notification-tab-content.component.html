@@ -5,7 +5,7 @@
 >
   @if (!list || list.length === 0) {
     <div
-      class="flex justify-center items-center p-8 text-center text-gray-400 text-sm min-h-[150px] md:min-h-[300px]"
+      class="flex justify-center items-center p-8 text-center text-[var(--on-surface-muted)] text-sm min-h-[150px] md:min-h-[300px]"
     >
       <mat-icon class="!w-12 !h-12 !text-5xl mb-2 opacity-20"
         >notifications_off</mat-icon
@@ -15,14 +15,13 @@
   } @else {
     @for (notif of list || []; track notif.notificationId) {
       <div
-        class="relative group border-b border-gray-100 last:border-0 transition-colors"
+        class="relative group border-b border-[var(--border-color)] last:border-0 transition-colors"
         [ngClass]="{
-          'bg-green-100 hover:bg-green-200': !notif.read,
-          'bg-white hover:bg-gray-50': notif.read
+          'bg-[var(--success-bg)] hover:brightness-95': !notif.read,
+          'bg-[var(--surface-raised)] hover:bg-[var(--surface-sunken)]':
+            notif.read
         }"
-        [style.border-left]="
-          !notif.read ? '4px solid [var(--primary-color)]' : 'none'
-        "
+        [style.border-left]="!notif.read ? '4px solid var(--brand)' : 'none'"
         (click)="$event.stopPropagation()"
       >
         <div class="flex p-3 gap-3">
@@ -30,9 +29,9 @@
             <div
               class="w-10 h-10 rounded-full flex items-center justify-center"
               [ngClass]="{
-                'bg-yellow-100 text-yellow-600':
+                'bg-[var(--warning-bg)] text-[var(--warning)]':
                   notif.metadata?.stateCode === 'ENC',
-                'bg-green-100 text-green-600':
+                'bg-[var(--success-bg)] text-[var(--success)]':
                   notif.metadata?.stateCode === 'ENT'
               }"
             >
@@ -45,10 +44,10 @@
             <div class="flex justify-between items-start mb-0.5">
               <span
                 class="font-bold text-sm"
-                [ngClass]="{ 'text-[var(--primary-color)]': !notif.read }"
+                [ngClass]="{ 'text-[var(--brand)]': !notif.read }"
                 >{{ 'notifications.invoice' | translate }}: {{ notif.metadata?.code }}</span
               >
-              <span class="text-[10px] text-gray-400 text-right">{{
+              <span class="text-[10px] text-[var(--on-surface-muted)] text-right">{{
                 notif.createdAt | relativeTime
               }}</span>
             </div>
@@ -56,17 +55,17 @@
             <div
               class="flex flex-col text-xs font-semibold mb-1"
               [ngClass]="{
-                'text-yellow-600': notif.metadata?.stateCode === 'ENC',
-                'text-green-600': notif.metadata?.stateCode === 'ENT'
+                'text-[var(--warning)]': notif.metadata?.stateCode === 'ENC',
+                'text-[var(--success)]': notif.metadata?.stateCode === 'ENT'
               }"
             >
               {{ 'notifications.status' | translate }}: {{ notif.metadata?.state }}
               @if (notif.metadata?.tableNumber) {
-                <span class="text-gray-600">{{ 'notifications.table' | translate }}: {{ notif.metadata?.tableNumber }}</span>
+                <span class="text-[var(--on-surface-muted)]">{{ 'notifications.table' | translate }}: {{ notif.metadata?.tableNumber }}</span>
               }
             </div>
 
-            <div class="text-[11px] text-gray-500 leading-tight mb-2">
+            <div class="text-[11px] text-[var(--on-surface-muted)] leading-tight mb-2">
               {{ notif.message }}
             </div>
           </div>
@@ -83,7 +82,7 @@
               <mat-icon
                 class="!text-lg"
                 [style.color]="
-                  notif.read ? '#9ca3af' : '[var(--primary-color)]'
+                  notif.read ? 'var(--on-surface-muted)' : 'var(--brand)'
                 "
                 >{{ notif.read ? 'mark_as_unread' : 'drafts' }}</mat-icon
               >
@@ -93,14 +92,14 @@
               [title]="'notifications.delete' | translate"
               (click)="onDelete($event, notif)"
             >
-              <mat-icon class="!text-lg text-red-400">delete_outline</mat-icon>
+              <mat-icon class="!text-lg text-[var(--danger)]">delete_outline</mat-icon>
             </button>
           </div>
         </div>
       </div>
     }
     @if (loading) {
-      <div class="p-4 text-center text-gray-400 text-xs">
+      <div class="p-4 text-center text-[var(--on-surface-muted)] text-xs">
         {{ 'notifications.loading_more' | translate }}
       </div>
     }

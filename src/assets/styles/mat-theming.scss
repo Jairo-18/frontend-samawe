@@ -200,7 +200,53 @@ mat-form-field {
   border-radius: 4px;
 }
 
+/**
+ * El área de contenido no cambia de alto al pasar de un paso a otro.
+ *
+ * El stepper solo mide el paso ACTIVO, y el paso 2 del registro tiene un campo
+ * más que el 1: al pulsar "Siguiente" el bloque crecía de golpe.
+ *
+ * Los pasos se apilan en la MISMA celda de una rejilla, así el contenedor mide
+ * siempre lo que ocupa el más alto. Se evita a propósito una altura fija con un
+ * número mágico, que se quedaría corta al traducir a otro idioma o al aparecer
+ * un `mat-error`.
+ *
+ * ⚠️ Material 19 marca los pasos inactivos con `-next` / `-previous` (no con
+ * `aria-expanded` ni `--inactive`, que son de versiones anteriores) y les pone
+ * `height: 0`, que en una rejilla los colapsaría. Por eso se les devuelve el
+ * alto y se ocultan solo con `visibility`, que conserva el espacio.
+ * `pointer-events: none` evita que sus campos, invisibles pero presentes,
+ * sigan siendo alcanzables con el tabulador.
+ *
+ * ⚠️ Va en su PROPIA clase y no dentro de `.brand-linear-stepper`: aquel
+ * bloque hace muchas más cosas —oculta el círculo numerado, fuerza
+ * `flex-wrap`, pone el rótulo al 80% de alto— y no lo usa ningún stepper hoy.
+ * Al aplicarlo al registro, la pantalla se descuadra.
+ */
+.stable-stepper {
+  .mat-horizontal-content-container {
+    display: grid;
+  }
+
+  .mat-horizontal-stepper-content {
+    grid-area: 1 / 1;
+  }
+
+  .mat-horizontal-stepper-content-next,
+  .mat-horizontal-stepper-content-previous {
+    height: auto !important;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
 /* Stepper */
+/**
+ * ⚠️ NINGÚN stepper usa hoy esta clase — comprobado el 22 sep 2026. El bloque
+ * se conserva por si se recupera ese diseño, pero **no aplicarlo sin mirarlo**:
+ * el registro se descuadra, porque da por hecho una cabecera sin círculos
+ * numerados y con los rótulos a todo el ancho.
+ */
 .brand-linear-stepper {
   .mat-horizontal-content-container {
     padding: 0 !important;
@@ -278,8 +324,21 @@ mat-form-field {
 }
 
 /*mat-menu*/
+/**
+ * Estaban en `$surface-color` (blanco fijo) y `$text-primary`
+ * (`--secondary-color`, un verde oscuro fijo): ninguno de los dos sigue el
+ * tema. En claro coincidían por casualidad con lo que se necesitaba; en
+ * oscuro el panel salía blanco con texto verde oscuro encima —justo lo que se
+ * ve en los menús de "⋮" y del avatar sin estilizar—.
+ *
+ * Los tokens `--mat-menu-*` que existen más abajo en `variables.scss` NO
+ * hacen nada: esta app no invoca el mixin de theming completo de Material,
+ * así que sus componentes nunca leen esas variables — quedan declaradas pero
+ * sin consumidor. Aquí, como en tabs y filas de tabla, hay que fijar el color
+ * a mano por clase.
+ */
 .mat-mdc-menu-panel {
-  background-color: $surface-color !important;
+  background-color: var(--surface-raised) !important;
   border-radius: $brand-border-radius-sm !important;
   box-shadow: $box-shadow !important;
 }
@@ -287,9 +346,9 @@ mat-form-field {
 .mat-mdc-menu-item {
   font-size: $font-size-medium !important;
   padding: $spacing-medium !important;
-  color: $text-primary !important;
+  color: var(--on-surface) !important;
   transition: background-color $transition-fast !important;
-  border-bottom: $global-border !important;
+  border-bottom: 1px solid var(--border-color) !important;
 
   &:hover {
     background-color: $primary-hover-color !important;
@@ -297,7 +356,7 @@ mat-form-field {
   }
 
   &:disabled {
-    color: $text-disabled !important;
+    color: var(--on-surface-muted) !important;
   }
 
   .mat-mdc-menu-item-icon {
@@ -319,7 +378,11 @@ mat-form-field {
 
 .mat-mdc-row {
   &:hover {
-    background-color: rgb(248, 248, 248) !important;
+    // Estaba fijado a `rgb(248, 248, 248)`, un gris casi blanco con
+    // `!important`: ignoraba el tema por completo. En modo oscuro pintaba la
+    // fila casi blanca mientras el texto, ya corregido a `--on-surface`
+    // (claro), quedaba invisible encima — texto claro sobre fondo claro.
+    background-color: var(--surface-sunken) !important;
   }
 }
 
@@ -337,6 +400,12 @@ mat-form-field {
     font-size: $brand-web-font-size;
     margin: 0 4px;
     border-radius: $brand-border-radius;
+    // El SELECCIONADO ya tenía su propio verde de marca, así que se veía bien
+    // en los dos modos. El botón sin seleccionar nunca tuvo color propio aquí,
+    // así que caía en el fondo/texto claro por defecto de Material —correcto
+    // en claro, invisible en oscuro—.
+    background-color: var(--surface-raised) !important;
+    color: var(--on-surface) !important;
 
     &.mat-button-toggle-checked {
       background-color: $primary-color !important;
@@ -381,6 +450,41 @@ mat-form-field {
    ═════════════════════════════════════════════════════════════════════════ */
 
 /* ── 2. Angular Material ────────────────────────────────────────────────── */
+
+/**
+ * BASE: que ningún componente de Material se quede con su propia fuente.
+ *
+ * Los tokens `--mdc-typography-*` del final del archivo son de Material 15 y
+ * este proyecto va por Material 19, donde la mayoría de componentes ya no los
+ * leen y traen su `font-family` por clase. Sin esta regla, las tarjetas, las
+ * pestañas, los paneles desplegables y las listas se quedan con la fuente de
+ * Material y no siguen la elegida en Apariencia.
+ *
+ * ⚠️ `!important` es imprescindible, y la POSICIÓN también. El CSS de Material
+ * entra en el `<head>` DESPUÉS de esta hoja y usa clases, o sea la misma
+ * especificidad que `[class*='mat-']`: en el empate gana el último, que sería
+ * el suyo. Con `!important` esta gana a la de Material...
+ *
+ * ...pero entonces también empataría con las reglas de marca de aquí abajo,
+ * que llevan `!important` y clase. Por eso VA LA PRIMERA: entre dos
+ * `!important` de igual especificidad decide el orden, así que las de abajo,
+ * al ir después, siguen ganando y los rótulos se quedan en la fuente de marca.
+ * **No mover este bloque más abajo.**
+ *
+ * `inherit` y no la variable: cada componente toma la de su contenedor, así el
+ * reparto título/texto lo siguen decidiendo `global.scss` y el `body`.
+ *
+ * ⚠️ LOS ICONOS SE EXCLUYEN A MANO, y no es opcional. Un `<mat-icon>` lleva la
+ * clase `mat-icon`, así que entra por este selector; y su regla protectora
+ * vive en `global.scss`, que `styles.scss` carga ANTES que este archivo. Entre
+ * dos `!important` de igual especificidad gana el último, o sea este — sin el
+ * `:not()` los iconos perderían su fuente y en pantalla aparecería la palabra
+ * `location_on` en lugar del dibujo.
+ */
+[class*='mat-']:not(.mat-icon):not(.material-icons) {
+  font-family: inherit !important;
+}
+
 /* Rótulos de todos los componentes: lo que nombra algo, no lo que lo explica.
    Un `mat-tooltip` o un `mat-hint` NO están aquí a propósito — son frases que
    se leen, y en versalitas cuestan más. */
@@ -429,6 +533,24 @@ mat-form-field {
   font-weight: 700 !important;
 }
 
+/**
+ * COLOR del rótulo de cada pestaña.
+ *
+ * Esta versión de Angular Material no expone el color inactivo de la pestaña
+ * por ninguna variable CSS que este proyecto declare —sin theming completo,
+ * cae en un gris oscuro fijo de fábrica—, así que se fuerza por clase.
+ * `mat-mdc-tab-active` es la que Material añade a la pestaña seleccionada.
+ */
+.mat-mdc-tab .mdc-tab__text-label,
+.mat-mdc-tab-link .mdc-tab__text-label {
+  color: var(--on-surface-muted) !important;
+}
+
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label,
+.mat-mdc-tab.mat-mdc-tab-active .mdc-tab__text-label {
+  color: var(--brand) !important;
+}
+
 /* El desplegable de un `mat-select` y el de un autocompletado.
    ⚠️ Se montan en `.cdk-overlay-container`, colgado del `<body>` y FUERA del
    componente: ningún selector acotado a una pantalla los alcanza (por eso el
@@ -456,10 +578,14 @@ mat-form-field {
    `<head>` DESPUÉS de esta hoja, así que no basta con ganar por especificidad
    si alguna versión futura sube la suya.
 
-   Fuera de las pantallas de acceso, lo que se teclea y el valor elegido en un
-   `mat-select` se quedan en Poppins: son datos (NIT, códigos, municipios del
-   DANE) que hay que leer literales, y en versalitas se pierde la forma de los
-   nombres propios. */
+   ⚠️ Corregido el 22 sep 2026. Aquí decía que "fuera de las pantallas de acceso
+   el valor elegido en un `mat-select` se queda en Poppins, porque son datos
+   (NIT, códigos, municipios del DANE) que hay que leer literales". Esa
+   acotación NUNCA existió en el CSS: las tres reglas de este bloque son
+   globales y siempre alcanzaron a toda la aplicación. El comentario describía
+   una intención que el código no cumplía.
+   La decisión tomada es la contraria —fuente de marca en todo, ver el bloque 5
+   de `global.scss`—, así que las reglas se quedan globales tal cual. */
 .mat-mdc-form-field .mdc-floating-label,
 .mat-mdc-form-field .mat-mdc-floating-label,
 .mat-mdc-form-field .mdc-floating-label--float-above {
@@ -473,6 +599,33 @@ mat-form-field {
 app-button-landing button span:not([class]) {
   font-family: var(--font-title);
   font-weight: 700;
+}
+
+/* ── Acciones de fila: SIEMPRE en horizontal ────────────────────────────── */
+/**
+ * Los botones de la columna "Acciones" de cualquier tabla.
+ *
+ * Ninguna plantilla los pone en `flex-col`: si se ven apilados es por salto de
+ * línea, cuando los botones no caben en el ancho que le queda a la columna
+ * —pantalla estrecha, o una columna de más—. `nowrap` lo impide: antes de
+ * apilarse, la tabla deja que esa celda empuje y aparezca el scroll horizontal
+ * que ya tienen todas.
+ *
+ * Va por `.cdk-column-actions`, la clase que Material pone solo en la columna
+ * cuyo `matColumnDef` es `actions`, así que alcanza a todas las tablas de la
+ * aplicación sin tocar una sola plantilla.
+ */
+.cdk-column-actions {
+  white-space: nowrap;
+
+  /* Por si alguna celda envuelve los botones en un contenedor propio. */
+  > div,
+  > span {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
 }
 
 :root {

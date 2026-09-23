@@ -36,8 +36,7 @@ import { CreateUserPanel } from '../../interfaces/create.interface';
 import {
   IdentificationType,
   PhoneCode,
-  RoleType,
-  PersonType
+  RoleType
 } from '../../../shared/interfaces/relatedDataGeneral';
 import {
   Department,
@@ -53,6 +52,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import {
+  FACTUS_LEGAL_ORGANIZATION_JURIDICA,
+  FACTUS_LEGAL_ORGANIZATION_NATURAL,
+  FACTUS_TRIBUTE_NO_APLICA,
+  LEGAL_ORGANIZATION_OPTIONS,
+  TRIBUTE_OPTIONS,
+  suggestedLegalOrganizationCode
+} from '../../../shared/constants/factusCustomer.constants';
 
 @Component({
   selector: 'app-create-or-edit-users',
@@ -114,7 +121,11 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
 
   identificationType: IdentificationType[] = [];
   roleType: RoleType[] = [];
-  personType: PersonType[] = [];
+  // El catálogo `PersonType` ya no se consulta aquí: el formulario elige el
+  // `legal_organization_code` de Factus ('1'/'2') y el backend deriva de él el
+  // `personType`, para que no haya dos fuentes de la misma decisión.
+  readonly legalOrganizationOptions = LEGAL_ORGANIZATION_OPTIONS;
+  readonly tributeOptions = TRIBUTE_OPTIONS;
   phoneCode: PhoneCode[] = [];
   filteredPhoneCodes: PhoneCode[] = [];
   departments: Department[] = [];
@@ -169,11 +180,22 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
       email: ['', [Validators.email, Validators.pattern(/^\S+$/)]],
       phoneCodeId: ['', Validators.required],
       phoneCodeSearch: [''],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
+      // El NÚMERO es opcional; el `phoneCodeId` de arriba NO, porque define la
+      // nacionalidad del cliente y hay que poder elegirlo aunque no se registre
+      // teléfono. `Validators.pattern` no valida el string vacío, así que no
+      // hace falta condicionarlo.
+      phone: ['', [Validators.pattern(/^[0-9]{1,15}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
       isActive: [true, Validators.required],
-      personTypeId: [{ value: '', disabled: true }],
+      // Tipo de persona ante la DIAN. Ya NO está deshabilitado ni se deduce a
+      // la fuerza del documento: el tipo de documento solo propone un valor
+      // inicial, porque una persona natural también puede tener NIT (su cédula
+      // inscrita en el RUT) y ese es justo el caso del proveedor de un
+      // documento soporte.
+      factusLegalOrganizationCode: [FACTUS_LEGAL_ORGANIZATION_NATURAL],
+      // Eje independiente del anterior: si el cliente es responsable de IVA.
+      factusTributeCode: [FACTUS_TRIBUTE_NO_APLICA],
       address: [''],
       departmentId: [''],
       municipalityId: ['']
@@ -189,6 +211,9 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
     this.userForm
       .get('identificationNumber')
       ?.addValidators(this.nitValidator);
+    this.userForm
+      .get('factusLegalOrganizationCode')
+      ?.addValidators(this.juridicaRequiresNitValidator);
     this.userId = this._activatedRoute.snapshot.params['id'];
     this.isEditMode = !!this.userId;
     if (this.isEditMode) {
@@ -214,7 +239,6 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
         this.applyRoleFromQueryParam();
 
         this.identificationType = res.data?.identificationType || [];
-        this.personType = res.data?.personType || [];
         this.phoneCode = res.data?.phoneCode || [];
         this.filteredPhoneCodes = this.phoneCode.slice(0, 20);
         // Ya se conoce el tipo de documento (incl. modo edición): aplica la
@@ -242,12 +266,17 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
    */
   private applyRoleFromQueryParam(): void {
     if (this.isEditMode) return;
-    const code = this._activatedRoute.snapshot.queryParamMap.get('role');
-    if (!code) return;
+    // Sin `?role=`, el rol por defecto es CLIENTE: es con diferencia el que más
+    // se crea (cada huésped es uno), y el personal se da de alta de vez en
+    // cuando. Igual que el atajo, se resuelve por **code**, nunca por id.
+    const code =
+      this._activatedRoute.snapshot.queryParamMap.get('role') ?? 'USER';
     const match = this.roleType.find(
       (r) => r.code?.trim().toUpperCase() === code.trim().toUpperCase()
     );
     if (match) {
+      // `patchValue` no ensucia el formulario, así que el botón de guardar
+      // sigue deshabilitado hasta que se escriba algo de verdad.
       this.userForm.patchValue({ roleTypeId: match.roleTypeId });
     }
   }
@@ -319,7 +348,7 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
     this.userForm
       .get('identificationTypeId')
       ?.valueChanges.subscribe((selectedId: string) => {
-        this.applyPersonTypeLock(selectedId);
+        this.suggestLegalOrganization(selectedId);
         // El NIT exige dv: revalida el número al cambiar el tipo de documento.
         this.userForm.get('identificationNumber')?.updateValueAndValidity();
         // Documento extranjero: la ubicación DANE no aplica, se limpia.
@@ -419,36 +448,62 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
     const dv = mod > 1 ? 11 - mod : mod;
     return String(dv);
   }
-  private applyPersonTypeLock(identificationTypeId: string): void {
-    const selectedType = this.identificationType.find(
-      (t) => t.identificationTypeId?.toString() === identificationTypeId
-    );
-    if (!selectedType) return;
-    const isNit = selectedType?.name?.['es']?.toUpperCase().includes('NIT');
-    if (isNit) {
-      const juridica = this.personType.find(
-        (pt) =>
-          pt.name?.['es']?.toUpperCase().includes('JUR\u00CDDICA') ||
-          pt.name?.['es']?.toUpperCase().includes('JURIDICA')
+  /**
+   * Propone el tipo de persona seg\u00FAn el documento elegido. Es una SUGERENCIA,
+   * no un candado: si quien registra ya lo cambi\u00F3 a mano (el control est\u00E1
+   * `dirty`), se respeta su elecci\u00F3n.
+   *
+   * \u26A0\uFE0F Antes esto forzaba el valor en cada cambio y el control iba
+   * deshabilitado, as\u00ED que "NIT \u21D2 jur\u00EDdica" no se pod\u00EDa desmentir. En Colombia
+   * un independiente inscrito en el RUT es persona NATURAL con NIT, y sal\u00EDa
+   * hacia la DIAN como empresa \u2014con su nombre en `company` en vez de `names`\u2014
+   * tanto en la factura como en el documento soporte.
+   */
+  private suggestLegalOrganization(identificationTypeId: string): void {
+    const control = this.userForm.get('factusLegalOrganizationCode');
+    if (!control) return;
+
+    if (!control.dirty) {
+      const selectedType = this.identificationType.find(
+        (t) => t.identificationTypeId?.toString() === identificationTypeId
       );
-      if (juridica) {
-        this.userForm.patchValue(
-          { personTypeId: juridica.personTypeId.toString() },
-          { emitEvent: false }
-        );
-      }
-    } else {
-      const natural = this.personType.find((pt) =>
-        pt.name?.['es']?.toUpperCase().includes('NATURAL')
-      );
-      if (natural) {
-        this.userForm.patchValue(
-          { personTypeId: natural.personTypeId.toString() },
-          { emitEvent: false }
-        );
+      if (selectedType) {
+        const isNit = !!selectedType.name?.['es']?.toUpperCase().includes('NIT');
+        control.setValue(suggestedLegalOrganizationCode(isNit), {
+          emitEvent: false
+        });
       }
     }
+
+    // El documento cambió: hay que revalidar la regla "jurídica ⇒ NIT", que
+    // depende de los dos campos a la vez.
+    control.updateValueAndValidity({ emitEvent: false });
   }
+
+  /**
+   * La única regla que la DIAN sí impone sobre el tipo de persona, y es la
+   * **inversa** de la que el sistema asumía: una persona **jurídica** solo
+   * puede identificarse con NIT, porque una empresa no tiene cédula. Lo
+   * contrario sí vale — una persona natural puede tener NIT (su cédula
+   * inscrita en el RUT), y ese es justo el caso que antes era imposible.
+   *
+   * Se valida aquí además de en el backend para que el aviso salga al elegir,
+   * no al guardar.
+   */
+  private juridicaRequiresNitValidator = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    if (control.value !== FACTUS_LEGAL_ORGANIZATION_JURIDICA) return null;
+    // `?.` porque el validador puede correr antes de que el form esté armado.
+    const idTypeId = this.userForm?.get('identificationTypeId')?.value;
+    if (!idTypeId) return null;
+    const selectedType = this.identificationType.find(
+      (t) => t.identificationTypeId?.toString() === idTypeId
+    );
+    if (!selectedType) return null;
+    const isNit = !!selectedType.name?.['es']?.toUpperCase().includes('NIT');
+    return isNit ? null : { juridicaRequiresNit: true };
+  };
   /** Lo que se pinta: primero la pendiente, luego la guardada, luego genérica. */
   get displayAvatarUrl(): string {
     if (this.pendingAvatarPreview) return this.pendingAvatarPreview;
@@ -547,9 +602,25 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
           phoneCodeSearch: user.phoneCode,
           phone: user.phone?.replace(/\s/g, '') ?? '',
           isActive: user.isActive,
-          personTypeId: user.personType?.personTypeId?.toString() || '',
+          // Lo guardado manda. El `?? ` cubre a los usuarios anteriores al
+          // backfill (migración 1780500000000) por si se edita uno antes de
+          // correrla: se cae al default, nunca a vacío.
+          factusLegalOrganizationCode:
+            user.factusLegalOrganizationCode ??
+            FACTUS_LEGAL_ORGANIZATION_NATURAL,
+          factusTributeCode:
+            user.factusTributeCode ?? FACTUS_TRIBUTE_NO_APLICA,
           address: user.address ?? ''
         });
+
+        // Cargar un usuario no cuenta como cambio: el botón de guardar arranca
+        // deshabilitado hasta que se toque algo de verdad (ver `canSave`).
+        //
+        // El tipo de persona guardado no corre peligro aquí: dentro de un mismo
+        // `patchValue` las claves se aplican en orden, así que el listener de
+        // `identificationTypeId` ya disparó su sugerencia ANTES de que se
+        // escriba `factusLegalOrganizationCode`, y gana lo guardado.
+        this.userForm.markAsPristine();
 
         // Ubicación DANE (sin disparar el listener para no borrar el municipio).
         const deptId = user.department?.departmentId ?? null;
@@ -575,6 +646,15 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
       }
     });
   }
+  /**
+   * Si hay algo que guardar. Se mira `dirty`, no `valid`: con el formulario
+   * recién abierto no hay nada que mandar. La foto se pregunta aparte porque
+   * cambiarla no ensucia el `FormGroup`.
+   */
+  get canSave(): boolean {
+    return !this.isSaving && (this.userForm.dirty || this.hasPendingAvatarChange);
+  }
+
   save() {
     if (this.userForm.get('identificationNumber')?.value) {
       this.setPassword();
@@ -593,11 +673,16 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
         lastName: formValue.lastName,
         email: formValue.email || undefined,
         phoneCode: formValue.phoneCodeId,
-        phone: formValue.phone,
+        // Vacío se manda como `undefined`, no como '': así el backend se salta
+        // el chequeo de duplicados en vez de comparar cadenas vacías entre sí.
+        phone: formValue.phone?.trim() || undefined,
         password: formValue.identificationNumber,
         confirmPassword: formValue.identificationNumber,
         isActive: formValue.isActive,
-        personType: formValue.personTypeId || undefined,
+        // El backend deriva el `personType` de esto, así que no se manda:
+        // eran la misma decisión escrita dos veces y podían discrepar.
+        factusLegalOrganizationCode: formValue.factusLegalOrganizationCode,
+        factusTributeCode: formValue.factusTributeCode,
         address: formValue.address?.trim() || undefined,
         departmentId:
           isColombian && formValue.departmentId
@@ -629,11 +714,21 @@ export class CreateOrEditUsersComponent implements OnInit, OnDestroy {
           }
         });
       } else {
+        // El `userId` se generó arriba con `uuid.v4()`, así que ya se conoce
+        // antes de llamar al backend y la foto se puede subir en cuanto el
+        // usuario exista. Se guarda aparte porque el `delete` de la rama de
+        // edición no aplica aquí, pero `userSave.userId` es opcional en el tipo.
+        const newUserId = userSave.userId as string;
         this.isSaving = true;
         this._usersService.createUser(userSave).subscribe({
           next: () => {
-            this.isSaving = false;
-            this._router.navigateByUrl('/organizational/users/list');
+            // La foto se aplica después de crear el usuario y solo entonces se
+            // sale; si falla, `_applyPendingAvatar` llama igual a `done` y no
+            // deja el formulario colgado con el usuario ya creado.
+            this._applyPendingAvatar(newUserId, () => {
+              this.isSaving = false;
+              this._router.navigateByUrl('/organizational/users/list');
+            });
           },
           error: (err) => {
             this.isSaving = false;

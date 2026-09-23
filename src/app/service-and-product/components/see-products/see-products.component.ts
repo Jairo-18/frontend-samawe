@@ -44,6 +44,8 @@ import { ProductsPrintComponent } from '../../../shared/components/products-prin
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { DEFAULT_ITEM } from '../../../shared/constants/avatar.constants';
+import { ItemImagesDialogComponent } from '../../../shared/components/item-images-dialog/item-images-dialog.component';
 @Component({
   selector: 'app-see-products',
   standalone: true,
@@ -89,7 +91,47 @@ export class SeeProductsComponent implements OnInit {
   private readonly _platformId = inject(PLATFORM_ID);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
+  readonly defaultItem = DEFAULT_ITEM;
+
+  /**
+   * Miniatura del ítem: su primera foto, o la genérica si no tiene ninguna.
+   * Va en el componente y no en la plantilla para que el respaldo esté en un
+   * solo sitio — las vistas de catálogo tienen DOS tablas (escritorio y móvil)
+   * y hay que pintarla en las dos.
+   */
+  itemImage(item?: { images?: { imageUrl?: string }[] } | null): string {
+    return item?.images?.[0]?.imageUrl || this.defaultItem;
+  }
+
+  /**
+   * Abre el visor de fotos desde el listado, sin entrar a editar.
+   *
+   * ⚠️ El `stopPropagation` es imprescindible: la fila es clicable y sin él
+   * pulsar la foto abriría **además** el formulario por debajo del diálogo.
+   * Misma trampa que ya estaba documentada en la celda de acciones.
+   */
+  openImagesPreview(
+    event: Event,
+    item?: {
+      name?: Record<string, string>;
+      images?: { imageUrl?: string }[];
+    } | null
+  ): void {
+    event.stopPropagation();
+    this._matDialog.open(ItemImagesDialogComponent, {
+      data: {
+        title: item?.name?.['es'] ?? '',
+        images: item?.images ?? []
+      },
+      // `width` explícito: la config global de diálogos (app.config.ts) impone
+      // `width: 95vw`, así que sin esto el visor ocuparía casi toda la pantalla.
+      width: '440px',
+      maxWidth: '92vw'
+    });
+  }
+
   displayedColumns: string[] = [
+    'image',
     'categoryType',
     'code',
     'name',

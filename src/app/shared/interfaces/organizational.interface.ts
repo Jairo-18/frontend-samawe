@@ -90,9 +90,19 @@ export interface Organizational {
   timezone?: string;
   languageDefault?: string;
   description?: TranslatedField;
+  /** Familia para títulos. Se resuelve contra `TITLE_FONTS`, no se usa tal cual. */
+  fontTitle?: string;
+  /** Familia para el texto. Se resuelve contra `BODY_FONTS`. */
+  fontBody?: string;
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  /** Modo oscuro: solo superficie y texto. Los de marca no se duplican. */
+  darkTitleColor?: string;
+  darkSubtitleColor?: string;
+  darkTextColor?: string;
+  darkBgPrimaryColor?: string;
+  darkBgSecondaryColor?: string;
   textColor?: string;
   titleColor?: string;
   subtitleColor?: string;

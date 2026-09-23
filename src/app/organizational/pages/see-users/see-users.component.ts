@@ -260,7 +260,11 @@ export class SeeUsersComponent implements OnInit {
    * Visor de la foto desde el listado: solo lectura. La moderación (cambiar o
    * eliminar) vive en la pantalla de edición del usuario.
    */
-  openAvatarPreview(user: UserComplete): void {
+  openAvatarPreview(event: Event, user: UserComplete): void {
+    // ⚠️ El `stopPropagation` es imprescindible: la fila es clicable y sin él
+    // pulsar la foto abría **además** la edición del usuario por debajo del
+    // visor. Misma trampa que ya estaba documentada en la celda de acciones.
+    event.stopPropagation();
     this._matDialog.open(AvatarPreviewDialogComponent, {
       data: {
         avatarUrl: user.avatarUrl,

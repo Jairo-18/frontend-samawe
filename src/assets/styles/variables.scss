@@ -1,15 +1,32 @@
 // Colores base
+//
+// ⚠️ ÚNICO sitio donde se declaran `--font-title` y `--font-body`. Estuvieron
+// también en un `<style>` de `index.html` con valores DISTINTOS
+// (`--font-body: 'Alegreya'`), que quedaba pisado por este archivo y no lo
+// parecía. Si hacen falta más familias, van al catálogo
+// (`assets/fonts/_catalog.scss`), no aquí.
+//
+// Estos son solo los VALORES POR DEFECTO: `ApplicationService` los sobreescribe
+// en caliente con lo que tenga guardado la organización, igual que los colores.
 :root {
   --primary-color: #486e2b;
   --font-title: 'Alegreya SC', serif;
   --font-body: 'Poppins', sans-serif;
   --secondary-color: #187b18;
   --tertiary-color: #11382e;
-  --title-color: #11382e;
-  --subtitle-color: #486e2b;
-  --text-color: #486e2b;
-  --bg-primary-color: #ffffff;
-  --bg-secondary-color: #f7f7f7;
+  // ⚠️ Estos cinco se leen de `--org-*`, que es lo que escribe
+  // `ApplicationService` con los colores guardados por la organización.
+  //
+  // El rodeo NO es decorativo: `setProperty` pone un estilo EN LÍNEA sobre
+  // `<html>`, y un estilo en línea gana a cualquier regla CSS, incluida la del
+  // modo oscuro. Si la organización escribiera directamente en `--text-color`,
+  // el modo oscuro no podría cambiarlo nunca. Escribiendo en `--org-*`, el
+  // bloque de abajo puede reengancharlos a la capa neutra.
+  --title-color: var(--org-title-color, #11382e);
+  --subtitle-color: var(--org-subtitle-color, #486e2b);
+  --text-color: var(--org-text-color, #486e2b);
+  --bg-primary-color: var(--org-bg-primary-color, #ffffff);
+  --bg-secondary-color: var(--org-bg-secondary-color, #f7f7f7);
 
   --mdc-theme-primary: var(--primary-color);
   --mdc-theme-secondary: var(--secondary-color);
@@ -27,6 +44,269 @@
   --mdc-radio-selected-focus-icon-color: var(--primary-color);
   --mdc-radio-selected-hover-icon-color: var(--primary-color);
   --mdc-radio-selected-pressed-icon-color: var(--primary-color);
+
+  // ── Capa neutra, para el modo oscuro ──────────────────────────────────────
+  //
+  // Los neutros que hoy están escritos a fuego en las plantillas
+  // (`bg-white`, `text-gray-500`, `border-gray-200`…) van migrando a estos
+  // tokens. Son los ÚNICOS que cambian entre claro y oscuro.
+  //
+  // `surface` es el papel; `surface-raised`, lo que va por encima (tarjetas,
+  // diálogos, menús). `muted` es el texto secundario, y `border` las líneas.
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f7f7f7;
+  /** Pista de la barra de desplazamiento. */
+  --scrollbar-track: #f1f1f1;
+
+  // ── Menú lateral ──────────────────────────────────────────────────────────
+  //
+  // El FONDO del sidebar es el verde de marca y no cambia con el tema, igual
+  // que el pie: es un bloque de identidad, no una superficie neutra.
+  //
+  // Lo que sí cambia son las pastillas de cada opción, que hoy son blancas con
+  // borde negro. En oscuro pasan a una superficie elevada, para que no queden
+  // cinco rectángulos blancos encendidos en una pantalla oscura.
+  --sidebar-item-bg: #ffffff;
+  --sidebar-item-border: #000000;
+  --sidebar-item-text: #000000;
+  --sidebar-item-hover: #fef9c3;
+  --on-surface: #1f2937;
+  --on-surface-muted: #6b7280;
+  --border-color: #e5e7eb;
+
+  // El color de marca tal cual: en claro no hace falta ajustarlo.
+  --brand: var(--primary-color);
+
+  // ── Colores con SIGNIFICADO ───────────────────────────────────────────────
+  //
+  // Error, acierto y aviso. No se invierten como los neutros —un error es rojo
+  // en los dos modos— pero sí cambian de tono: sobre fondo oscuro un rojo 600
+  // se apaga, y un fondo `red-50` sería un rectángulo casi blanco.
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --danger-border: #fecaca;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --warning-border: #fcd34d;
+  // Informativo/neutro (p. ej. "Ocupado", "Reservado"): ni error ni acierto ni
+  // aviso, un estado normal que solo hay que distinguir de los demás.
+  --info: #2563eb;
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+}
+
+// ── MODO OSCURO ─────────────────────────────────────────────────────────────
+//
+// Lo aplica `ThemeService` poniendo `data-theme="dark"` en el `<html>`.
+//
+// ⚠️ Aquí SOLO se tocan los colores de SUPERFICIE y TEXTO. Los de marca
+// —`--primary-color`, `--secondary-color`, `--tertiary-color`— NO se
+// redefinen: los elige el dueño en Apariencia y son identidad, no estructura.
+// Si el modo oscuro los pisara, cada hotel dejaría de reconocerse de noche.
+//
+// La excepción es `--brand`: el verde por defecto (#486e2b) es oscuro y sobre
+// un fondo oscuro pierde contraste, así que se aclara mezclándolo con blanco.
+// Se usa `color-mix` para que siga siendo SU color —funciona con el que sea—
+// en vez de un verde claro fijo que ignoraría la configuración.
+:root[data-theme='dark'] {
+  // Igual que en claro: el valor lo puede fijar la organización desde
+  // Apariencia (`--org-dark-*`), y si no hay nada guardado rige el de aquí.
+  --surface: var(--org-dark-bg-secondary-color, #14181d);
+  --surface-raised: var(--org-dark-bg-primary-color, #1c2128);
+  --surface-sunken: #0f1216;
+  // La barra de desplazamiento era lo último que quedaba en claro: una franja
+  // blanca de 16px a lo alto de toda la pantalla.
+  --scrollbar-track: #1c2128;
+
+  // Pastillas del menú lateral. El fondo verde del sidebar NO se toca: es
+  // marca. Estas pasan a superficie oscura para no quedar encendidas sobre él.
+  --sidebar-item-bg: #1c2128;
+  --sidebar-item-border: #3a434d;
+  --sidebar-item-text: #e6e8eb;
+  --sidebar-item-hover: #2a323b;
+  --on-surface: var(--org-dark-text-color, #e6e8eb);
+  --on-surface-muted: var(--org-dark-subtitle-color, #9aa3ad);
+  --border-color: #2c333b;
+
+  --brand: color-mix(in srgb, var(--primary-color) 55%, #ffffff);
+
+  // Los semánticos suben de luminosidad y sus fondos se vuelven tintes
+  // oscuros: el mismo rojo del modo claro se apaga contra un fondo oscuro, y
+  // un `red-50` sería un rectángulo casi blanco en mitad de la pantalla.
+  --danger: #f87171;
+  --danger-bg: #2a1416;
+  --danger-border: #522025;
+  --success: #4ade80;
+  --success-bg: #10241a;
+  --warning: #fbbf24;
+  --warning-bg: #2a2110;
+  --warning-border: #5c4415;
+  --info: #60a5fa;
+  --info-bg: #101d2a;
+  --info-border: #1e3a5c;
+
+  // Los tres tokens de texto y los dos de fondo que ya usaban las plantillas
+  // se reenganchan a la capa neutra, así lo que hoy usa variables se oscurece
+  // solo, sin tocar una línea de HTML.
+  //
+  // El título puede tener su propio color; los demás siguen a la capa neutra,
+  // que a su vez ya lee de `--org-dark-*`.
+  --title-color: var(--org-dark-title-color, var(--on-surface));
+  --subtitle-color: var(--on-surface-muted);
+  --text-color: var(--on-surface);
+  --bg-primary-color: var(--surface-raised);
+  --bg-secondary-color: var(--surface);
+
+  // ── Componentes de Material ───────────────────────────────────────────────
+  //
+  // Menús, diálogos, desplegables y autocompletados pintan su propio fondo
+  // BLANCO y se montan en `.cdk-overlay-container`, fuera del componente que
+  // los abre. Sin esto, en modo oscuro salen como un rectángulo blanco con
+  // texto claro encima: ilegible.
+  //
+  // Un token que no exista en esta versión de Material simplemente no hace
+  // nada, así que la lista puede ser generosa sin romper.
+  --mat-menu-container-color: var(--surface-raised);
+  --mat-menu-item-label-text-color: var(--on-surface);
+  --mat-menu-item-icon-color: var(--on-surface-muted);
+  --mdc-dialog-container-color: var(--surface-raised);
+  --mdc-dialog-subhead-color: var(--on-surface);
+  --mdc-dialog-supporting-text-color: var(--on-surface-muted);
+  --mat-select-panel-background-color: var(--surface-raised);
+  --mat-select-enabled-trigger-text-color: var(--on-surface);
+  --mat-select-placeholder-text-color: var(--on-surface-muted);
+  --mat-select-disabled-trigger-text-color: var(--on-surface-muted);
+  --mat-select-enabled-arrow-color: var(--on-surface-muted);
+
+  // Campos de texto. Con `appearance="outline"` la ETIQUETA hace además de
+  // marcador dentro del campo vacío, y Material la pinta en un gris casi
+  // negro: sobre fondo oscuro no se leía. Lo mismo el texto que se teclea y el
+  // contorno de la caja.
+  --mdc-outlined-text-field-label-text-color: var(--on-surface-muted);
+  --mdc-outlined-text-field-hover-label-text-color: var(--on-surface);
+  --mdc-outlined-text-field-focus-label-text-color: var(--primary-color);
+  --mdc-outlined-text-field-input-text-color: var(--on-surface);
+  --mdc-outlined-text-field-input-text-placeholder-color: var(
+    --on-surface-muted
+  );
+  --mdc-outlined-text-field-outline-color: var(--border-color);
+  --mdc-outlined-text-field-hover-outline-color: var(--on-surface-muted);
+  --mdc-outlined-text-field-disabled-outline-color: var(--border-color);
+  --mdc-outlined-text-field-disabled-input-text-color: var(--on-surface-muted);
+  --mat-form-field-state-layer-color: var(--on-surface);
+  --mdc-filled-text-field-label-text-color: var(--on-surface-muted);
+  --mdc-filled-text-field-input-text-color: var(--on-surface);
+  --mat-option-label-text-color: var(--on-surface);
+  --mat-option-selected-state-label-text-color: var(--on-surface);
+  --mat-autocomplete-background-color: var(--surface-raised);
+  --mat-table-background-color: var(--surface-raised);
+  // Faltaba el TEXTO de la tabla, no solo el fondo: sin esto el fondo pasaba a
+  // oscuro pero las celdas seguían con el texto negro por defecto de Material,
+  // así que las tablas del panel quedaban ilegibles.
+  --mat-table-row-item-label-text-color: var(--on-surface);
+  --mat-table-header-headline-color: var(--on-surface);
+  --mat-table-row-item-outline-color: var(--border-color);
+  --mdc-filled-text-field-container-color: var(--surface-sunken);
+  --mat-expansion-container-background-color: var(--surface-raised);
+  --mat-expansion-header-text-color: var(--on-surface);
+  --mat-expansion-container-text-color: var(--on-surface);
+  --mat-datepicker-calendar-container-background-color: var(--surface-raised);
+  --mat-datepicker-calendar-date-text-color: var(--on-surface);
+  --mat-datepicker-calendar-container-text-color: var(--on-surface);
+  --mat-datepicker-calendar-body-label-text-color: var(--on-surface-muted);
+  --mat-datepicker-calendar-period-button-text-color: var(--on-surface);
+  --mat-datepicker-calendar-period-button-icon-color: var(--on-surface);
+  --mat-datepicker-calendar-navigation-button-icon-color: var(--on-surface);
+  --mat-datepicker-weekday-text-color: var(--on-surface-muted);
+  --mat-datepicker-calendar-header-text-color: var(--on-surface-muted);
+  // Los días ya pasados salían casi negros sobre fondo oscuro: se distinguía
+  // la forma pero no el número. Con el gris apagado se leen sin competir con
+  // los días seleccionables.
+  --mat-datepicker-calendar-date-disabled-state-text-color: var(
+    --on-surface-muted
+  );
+  --mat-datepicker-calendar-date-text-disabled-state-color: var(
+    --on-surface-muted
+  );
+  --mat-datepicker-calendar-date-outline-color: var(--border-color);
+  --mat-datepicker-calendar-date-hover-state-background-color: var(
+    --surface-sunken
+  );
+  --mat-tab-header-inactive-label-text-color: var(--on-surface-muted);
+  --mat-tab-header-active-label-text-color: var(--on-surface);
+  --mdc-elevated-card-container-color: var(--surface-raised);
+
+  // Stepper: es el formulario de REGISTRO. Pinta su propio fondo blanco, así
+  // que en oscuro el formulario salía como un bloque blanco dentro de la
+  // tarjeta oscura.
+  --mat-stepper-container-color: var(--surface-raised);
+  --mat-stepper-line-color: var(--border-color);
+  --mat-stepper-header-label-text-color: var(--on-surface-muted);
+  --mat-stepper-header-selected-state-label-text-color: var(--on-surface);
+  --mat-stepper-header-optional-label-text-color: var(--on-surface-muted);
+  --mat-stepper-header-hover-state-layer-color: var(--surface-sunken);
+  --mat-stepper-header-focus-state-layer-color: var(--surface-sunken);
+
+  // Otros contenedores de Material que también traen fondo propio.
+  --mat-toolbar-container-background-color: var(--surface-raised);
+  --mat-toolbar-container-text-color: var(--on-surface);
+  --mdc-list-list-item-container-color: var(--surface-raised);
+  --mdc-list-list-item-label-text-color: var(--on-surface);
+  --mdc-list-list-item-supporting-text-color: var(--on-surface-muted);
+  --mat-paginator-container-background-color: var(--surface-raised);
+  --mat-paginator-container-text-color: var(--on-surface);
+  --mdc-outlined-card-container-color: var(--surface-raised);
+  --mdc-outlined-card-outline-color: var(--border-color);
+  --mat-divider-color: var(--border-color);
+  --mat-tree-container-background-color: var(--surface-raised);
+  --mat-tree-node-text-color: var(--on-surface);
+}
+
+// El stepper no expone token para el fondo de su contenido en todas las
+// versiones, así que se fuerza también por clase.
+:root[data-theme='dark'] {
+  .mat-horizontal-content-container,
+  .mat-horizontal-stepper-header-container,
+  .mat-vertical-content-container,
+  .mat-stepper-horizontal,
+  .mat-stepper-vertical {
+    background-color: transparent;
+  }
+}
+
+/**
+ * El `border` SIN color de Tailwind (`border`, `border-t`, `border-b`,
+ * `border-l`, `border-r`, `divide-y`, `divide-x`) no es transparente ni
+ * `currentColor`: Tailwind hornea un gris claro fijo (`#e5e7eb`, su gray-200)
+ * en la propia regla de la utilidad. Es la línea por defecto que separa
+ * secciones —encabezados de tarjeta, filas de una lista— en decenas de
+ * plantillas que nunca especificaron un color porque el gris por defecto ya
+ * les servía en claro.
+ *
+ * En oscuro esa misma línea gris clara queda flotando, casi blanca, sobre el
+ * fondo oscuro. Como es un valor grabado en la propia clase de Tailwind
+ * —`@tailwind utilities` se carga DESPUÉS de este archivo en `styles.scss`—,
+ * hay que ganarle con `!important`, igual que con los demás componentes de
+ * Material de este archivo.
+ */
+:root[data-theme='dark'] {
+  .border,
+  .border-t,
+  .border-b,
+  .border-l,
+  .border-r,
+  .border-x,
+  .border-y {
+    border-color: var(--border-color) !important;
+  }
+
+  .divide-y > :not([hidden]) ~ :not([hidden]),
+  .divide-x > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--border-color) !important;
+  }
 }
 
 $white-color-base: #ffffff;
@@ -127,6 +407,10 @@ $heigth-footer: 245px;
 $width-side-bar: 300px;
 
 // Medidas globales
+// ⚠️ NO USAR: ninguna regla lee esta variable ni `$heigth-nav-bar` (86px),
+// y ese valor ya NO es el alto de la barra — desde el 22 sep 2026 son 104px
+// en escritorio, porque la barra pasó a dos filas. La altura real vive en
+// `--nav-bar-height` (`global.scss`), que es la única que hay que mirar.
 $brand-height-router-outlet-container: calc(100vh - ($heigth-nav-bar));
 
 // Layout

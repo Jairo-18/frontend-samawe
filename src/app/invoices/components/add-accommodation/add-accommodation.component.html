@@ -98,21 +98,21 @@
         *ngFor="let accommodation of filteredAccommodations"
         [value]="accommodation"
       >
-        <span class="font-semibold text-gray-500">{{ accommodation.code }}</span>
+        <span class="font-semibold text-[var(--on-surface-muted)]">{{ accommodation.code }}</span>
         - {{ accommodation.name | translated }}
-        <span class="text-gray-700">· {{ accommodation.priceSale | formatCop }}</span>
+        <span class="text-[var(--on-surface)]">· {{ accommodation.priceSale | formatCop }}</span>
         <span
           [ngClass]="{
-            'text-green-600':
+            'text-[var(--success)]':
               accommodation.stateType?.name?.['es'] === 'Disponible' ||
               accommodation.stateType?.name?.['es'] === 'DISPONIBLE',
-            'text-yellow-600':
+            'text-[var(--warning)]':
               accommodation.stateType?.name?.['es'] === 'Mantenimiento' ||
               accommodation.stateType?.name?.['es'] === 'MANTENIMIENTO',
-            'text-red-600':
+            'text-[var(--danger)]':
               accommodation.stateType?.name?.['es'] === 'Fuera de Servicio' ||
               accommodation.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
-            'text-blue-600':
+            'blue-color':
               accommodation.stateType?.name?.['es'] === 'Ocupado' ||
               accommodation.stateType?.name?.['es'] === 'OCUPADO'
           }"

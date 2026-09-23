@@ -1,4 +1,8 @@
 @use '@angular/material' as mat;
+// El catálogo de tipografías va PRIMERO: son solo declaraciones `@font-face`,
+// que no pintan nada por sí solas, pero tienen que estar registradas antes de
+// que cualquier regla nombre una familia.
+@use 'assets/fonts/catalog' as *;
 @use 'assets/styles/variables' as *;
 @use 'assets/styles/breakpoints.scss';
 @use 'assets/styles/global.scss';
@@ -16,9 +20,29 @@ body {
   min-height: 100%;
   overflow-x: hidden;
 }
+// Fuente de MARCA por defecto. Las excepciones —lo que se lee seguido y lo que
+// se teclea— están juntas en el bloque 5 de `global.scss`.
+//
+// Estaba al revés: con la fuente de texto aquí, cada rótulo había que marcarlo
+// a mano con una clase, y siempre se escapaba alguno. En un panel la mayoría
+// del texto son rótulos (menús, botones, encabezados, columnas), así que por
+// defecto conviene la de marca y una lista corta de excepciones.
+//
+// Va después de `@tailwind base` a propósito: el preflight de Tailwind declara
+// `html, :host { font-family: ui-sans-serif, … }` y hay que ganarle. Misma
+// especificidad, así que decide el orden. No mover arriba.
+html,
+body {
+  font-family: var(--font-title);
+}
+
 body {
   margin: 0;
-  font-family: var(--font-body);
+  // El fondo NO estaba declarado: lo ponía el navegador, y es siempre blanco.
+  // En modo oscuro eso dejaba en blanco todo lo que no pintara su propio fondo
+  // —las pantallas de acceso, por ejemplo, cuyas tarjetas solo tienen borde—.
+  background-color: var(--bg-secondary-color);
+  color: var(--text-color);
 }
 
 input.mat-input-element,

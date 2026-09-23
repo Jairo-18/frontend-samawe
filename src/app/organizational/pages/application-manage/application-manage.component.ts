@@ -25,6 +25,20 @@ import { OrganizationalMultimediaComponent } from '../../components/organization
 import { OrganizationalHomeContentComponent } from '../../components/organizational-home-content/organizational-home-content.component';
 import { OrganizationalLegalComponent } from '../../components/organizational-legal/organizational-legal.component';
 import { OrganizationalGoogleBusinessComponent } from '../../components/organizational-google-business/organizational-google-business.component';
+import {
+  BODY_FONTS,
+  DEFAULT_BODY_FONT,
+  DEFAULT_TITLE_FONT,
+  TITLE_FONTS,
+  resolveFontStack
+} from '../../../shared/constants/fonts.constants';
+import { aspectForMedia } from '../../../shared/constants/media.constants';
+import {
+  DARK_COLOR_TOKENS,
+  DEFAULT_DARK_COLORS
+} from '../../../shared/constants/theme.constants';
+import { ItemImagesDialogComponent } from '../../../shared/components/item-images-dialog/item-images-dialog.component';
+import { LangService } from '../../../shared/services/lang.service';
 import { ApplicationService } from '../../services/application.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
@@ -50,6 +64,7 @@ import {
 } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-application-manage',
@@ -68,7 +83,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     OrganizationalLegalComponent,
     OrganizationalGoogleBusinessComponent,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatIconModule
   ],
   templateUrl: './application-manage.component.html',
   styleUrls: ['./application-manage.component.scss']
@@ -81,6 +97,7 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _dialog: MatDialog = inject(MatDialog);
+  private readonly _langService: LangService = inject(LangService);
   private readonly _platformId = inject(PLATFORM_ID);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _translate: TranslateService = inject(TranslateService);
@@ -132,6 +149,8 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       city: [''],
       department: [''],
       descriptionEs: [''],
+      fontTitle: [''],
+      fontBody: [''],
       primaryColor: [''],
       secondaryColor: [''],
       tertiaryColor: [''],
@@ -140,6 +159,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       subtitleColor: [''],
       bgPrimaryColor: [''],
       bgSecondaryColor: [''],
+      darkTitleColor: [''],
+      darkSubtitleColor: [''],
+      darkTextColor: [''],
+      darkBgPrimaryColor: [''],
+      darkBgSecondaryColor: [''],
       homeTitleEs: [''],
       homeDescriptionEs: [''],
       experienceTitleEs: [''],
@@ -206,6 +230,21 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
 
     if (this.organization && isPlatformBrowser(this._platformId)) {
+      // Deshace la vista previa de tipografía si se sale sin guardar.
+      const titleStack = resolveFontStack(
+        this.organization.fontTitle,
+        TITLE_FONTS
+      );
+      if (titleStack) {
+        document.documentElement.style.setProperty('--font-title', titleStack);
+      }
+      const bodyStack = resolveFontStack(
+        this.organization.fontBody,
+        BODY_FONTS
+      );
+      if (bodyStack) {
+        document.documentElement.style.setProperty('--font-body', bodyStack);
+      }
       if (this.organization.primaryColor) {
         document.documentElement.style.setProperty(
           '--primary-color',
@@ -257,8 +296,72 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * A qué pestaña pertenece cada control del formulario.
+   *
+   * Se resuelve por patrón y no con una lista de nombres: el formulario tiene
+   * más de cincuenta controles y una lista se desincronizaría al añadir campos.
+   * Lo que no encaje en ningún patrón cae en "Información General", que es
+   * donde vive el resto.
+   */
+  private readonly _tabOfControl: { labelKey: string; test: RegExp }[] = [
+    {
+      // `Color$` cubre también los `dark*Color` del modo oscuro.
+      labelKey: 'organizational.app_manage.tab_appearance',
+      test: /Color$|^font(Title|Body)$|^meta/
+    },
+    {
+      labelKey: 'organizational.app_manage.tab_home_content',
+      test: /^(home|experience|reservation|aboutUs|mission|vision|history)/
+    },
+    {
+      labelKey: 'organizational.app_manage.tab_web_content',
+      test: /^(gastronomy|accommodations|howToArrive|accessibility|mapsUrl)/
+    }
+  ];
+
+  /** Pestañas con cambios pendientes, para decir en el aviso DÓNDE están. */
+  get dirtyTabKeys(): string[] {
+    const keys = new Set<string>();
+    for (const [name, control] of Object.entries(this.form.controls)) {
+      if (!control.dirty) continue;
+      const match = this._tabOfControl.find((t) => t.test.test(name));
+      keys.add(match?.labelKey ?? 'organizational.app_manage.tab_general');
+    }
+    return [...keys];
+  }
+
   private setupLiveColorPreview(): void {
     if (!isPlatformBrowser(this._platformId)) return;
+
+    // Colores del modo oscuro. Se escriben en sus tokens al vuelo igual que
+    // los claros; si el modo oscuro no está activo no se nota nada, porque
+    // solo los lee el bloque `[data-theme='dark']`.
+    for (const [control, token] of Object.entries(DARK_COLOR_TOKENS)) {
+      this._subscription.add(
+        this.form.get(control)?.valueChanges.subscribe((color) => {
+          if (color) document.documentElement.style.setProperty(token, color);
+        })
+      );
+    }
+
+    // Tipografía: se ve al instante, igual que los colores. El valor se
+    // resuelve contra el catálogo, así que elegir algo que no esté en él no
+    // cambia nada en vez de escribir cualquier cosa en la variable.
+    this._subscription.add(
+      this.form.get('fontTitle')?.valueChanges.subscribe((family) => {
+        const stack = resolveFontStack(family, TITLE_FONTS);
+        if (stack)
+          document.documentElement.style.setProperty('--font-title', stack);
+      })
+    );
+    this._subscription.add(
+      this.form.get('fontBody')?.valueChanges.subscribe((family) => {
+        const stack = resolveFontStack(family, BODY_FONTS);
+        if (stack)
+          document.documentElement.style.setProperty('--font-body', stack);
+      })
+    );
 
     this._subscription.add(
       this.form.get('primaryColor')?.valueChanges.subscribe((color) => {
@@ -388,6 +491,11 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       city: org.city,
       department: org.department,
       descriptionEs: org.description?.['es'] ?? '',
+      // Viene de la base. Si está vacía —que es el estado de toda organización
+      // hasta que alguien elija— el desplegable muestra marcada la fuente que
+      // rige por defecto, que es la que se está viendo en pantalla.
+      fontTitle: org.fontTitle ?? DEFAULT_TITLE_FONT,
+      fontBody: org.fontBody ?? DEFAULT_BODY_FONT,
       primaryColor: org.primaryColor,
       secondaryColor: org.secondaryColor,
       tertiaryColor: org.tertiaryColor,
@@ -396,6 +504,15 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
       subtitleColor: org.subtitleColor,
       bgPrimaryColor: org.bgPrimaryColor,
       bgSecondaryColor: org.bgSecondaryColor,
+      // Sin color guardado se muestra el que rige por defecto en
+      // `variables.scss`, que es lo que se ve al encender el modo oscuro.
+      darkTitleColor: org.darkTitleColor ?? DEFAULT_DARK_COLORS.title,
+      darkSubtitleColor: org.darkSubtitleColor ?? DEFAULT_DARK_COLORS.subtitle,
+      darkTextColor: org.darkTextColor ?? DEFAULT_DARK_COLORS.text,
+      darkBgPrimaryColor:
+        org.darkBgPrimaryColor ?? DEFAULT_DARK_COLORS.bgPrimary,
+      darkBgSecondaryColor:
+        org.darkBgSecondaryColor ?? DEFAULT_DARK_COLORS.bgSecondary,
       homeTitleEs: org.homeTitle?.['es'] ?? '',
       homeDescriptionEs: org.homeDescription?.['es'] ?? '',
       experienceTitleEs: org.experienceTitle?.['es'] ?? '',
@@ -522,7 +639,18 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
               this.organization.secondaryColor = payload.secondaryColor;
             if (payload.tertiaryColor)
               this.organization.tertiaryColor = payload.tertiaryColor;
+            // Sin esto, `ngOnDestroy` restauraría la tipografía ANTERIOR al
+            // salir de la pantalla y el cambio recién guardado se desharía
+            // solo — que es lo que ya pasaba con los colores que no están en
+            // esta lista.
+            if (payload.fontTitle)
+              this.organization.fontTitle = payload.fontTitle;
+            if (payload.fontBody) this.organization.fontBody = payload.fontBody;
           }
+          // Lo guardado deja de ser "pendiente": vuelve a deshabilitar el botón
+          // y retira el aviso de cambios sin guardar. Sin esto el formulario
+          // seguiría marcado como sucio para siempre.
+          this.form.markAsPristine();
           this.isLoading = false;
         },
         error: () => (this.isLoading = false)
@@ -608,9 +736,37 @@ export class ApplicationManageComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Abre el medio en el visor de la aplicación, no en otra pestaña.
+   *
+   * Antes hacía `window.open`: sacaba a la persona del panel, perdía el sitio
+   * donde estaba y, con los cambios sin guardar del formulario, era además una
+   * invitación a dejarlos atrás. El visor es el mismo de las fotos de producto.
+   */
   previewMedia(mediaTypeCode: string): void {
+    if (!isPlatformBrowser(this._platformId)) return;
     const url = this.getMediaUrl(mediaTypeCode);
-    if (url && isPlatformBrowser(this._platformId)) window.open(url, '_blank');
+    if (!url) return;
+
+    const type = this.mediaTypes.find((t) => t.code === mediaTypeCode);
+
+    this._dialog.open(ItemImagesDialogComponent, {
+      data: {
+        title: type ? this._translated(type.name) : mediaTypeCode,
+        images: [{ imageUrl: url }],
+        // Los fondos de acceso se ven en vertical en la pantalla real; el
+        // resto, apaisados. Con una sola proporción, unos u otros salían
+        // recortados justo por donde importa.
+        aspect: aspectForMedia(mediaTypeCode)
+      }
+    });
+  }
+
+  /** Texto de un campo traducido, en el idioma activo. */
+  private _translated(value: Record<string, string> | string | undefined): string {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value[this._langService.lang()] ?? value['es'] ?? '';
   }
 
   getMediaUrl(code: string): string | null {

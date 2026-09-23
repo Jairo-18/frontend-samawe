@@ -1,0 +1,95 @@
+<div class="flex flex-col items-center gap-4 p-4">
+  @if (data.title) {
+    <p class="text-base font-semibold text-[var(--text-color)] text-center break-words">
+      {{ data.title }}
+    </p>
+  }
+
+  <!-- `aspect-[4/3]` + `h-auto`, como el visor de avatar: con alto fijo más un
+       `max-width`, en pantallas angostas el ancho se encoge y el alto no, y la
+       foto sale deformada. Así el alto siempre sigue al ancho. -->
+  <div class="relative w-[380px] max-w-[80vw]">
+    @if (isVideo) {
+      <!-- Con controles: aquí sí se viene a verlo. En la tarjeta de Multimedia
+           va sin ellos, porque allí solo se comprueba qué se subió. -->
+      <video
+        [src]="currentUrl"
+        [style.aspectRatio]="aspectRatio"
+        class="w-full h-auto rounded-lg object-cover border-2 border-[var(--primary-color)] bg-black"
+        controls
+        muted
+        loop
+        autoplay
+        playsinline
+      ></video>
+    } @else {
+      <img
+        [src]="currentUrl"
+        [alt]="data.title ?? ''"
+        [style.aspectRatio]="aspectRatio"
+        class="w-full h-auto rounded-lg object-cover border-2 border-[var(--primary-color)] bg-black/5"
+      />
+    }
+
+    @if (hasMany) {
+      <button
+        mat-icon-button
+        type="button"
+        class="!absolute left-1 top-1/2 -translate-y-1/2 !bg-black/45 !text-white"
+        [attr.aria-label]="'service_and_product.gallery.previous' | translate"
+        (click)="previous()"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        type="button"
+        class="!absolute right-1 top-1/2 -translate-y-1/2 !bg-black/45 !text-white"
+        [attr.aria-label]="'service_and_product.gallery.next' | translate"
+        (click)="next()"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <span
+        class="absolute bottom-1 right-2 text-xs text-white bg-black/45 rounded px-1.5 py-0.5"
+      >
+        {{ index + 1 }} / {{ urls.length }}
+      </span>
+    }
+  </div>
+
+  @if (hasMany) {
+    <div class="flex flex-wrap gap-2 justify-center max-w-[80vw]">
+      @for (url of urls; track url; let i = $index) {
+        <img
+          [src]="url"
+          [alt]="data.title ?? ''"
+          class="w-12 h-12 rounded-md object-cover cursor-pointer border-2"
+          [style.borderColor]="
+            i === index ? 'var(--primary-color)' : 'transparent'
+          "
+          (click)="select(i)"
+        />
+      }
+    </div>
+  }
+
+  @if (urls.length === 0) {
+    <p class="text-sm text-[var(--text-color)] opacity-70 text-center">
+      {{ 'service_and_product.gallery.empty' | translate }}
+    </p>
+  }
+
+  <!-- Contorneado, igual que el visor de avatar: un `mat-fab` sin `color`
+       heredaría el primario y competiría con la acción principal. -->
+  <button
+    mat-stroked-button
+    color="primary"
+    type="button"
+    class="!w-full"
+    (click)="close()"
+  >
+    <mat-icon>close</mat-icon>
+    {{ 'user.profile.close' | translate }}
+  </button>
+</div>

@@ -36,6 +36,17 @@ import { LangService } from '../../../shared/services/lang.service';
 export class ChangePasswordComponent implements OnInit {
   changePasswordForm: FormGroup;
   passwordMismatch: boolean = false;
+
+  /**
+   * Hay un cambio en vuelo.
+   *
+   * Aquí el doble clic engaña especialmente: el primer envío **consume el
+   * token de recuperación**, así que el segundo responde "el enlace ha
+   * expirado o ya fue utilizado" justo después de que la contraseña se haya
+   * cambiado bien.
+   */
+  saving: boolean = false;
+
   eyeOpen = faEye;
   eyeClose = faEyeSlash;
   showOldPassword: boolean = false;
@@ -80,6 +91,7 @@ export class ChangePasswordComponent implements OnInit {
     this.changePasswordForm.patchValue({ userId, resetToken });
   }
   onChangePassword(): void {
+    if (this.saving) return;
     const { userId, newPassword, confirmNewPassword, resetToken } =
       this.changePasswordForm.value;
     if (newPassword !== confirmNewPassword) {
@@ -87,6 +99,7 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
     this.passwordMismatch = false;
+    this.saving = true;
     this._usersService
       .recoveryPasswordByUserId({
         userId,
@@ -96,10 +109,12 @@ export class ChangePasswordComponent implements OnInit {
       })
       .subscribe({
         next: () => {
+          this.saving = false;
           this._router.navigateByUrl(this._langService.route('auth/login'));
           this.changePasswordForm.reset();
         },
         error: (err) => {
+          this.saving = false;
           console.error('Error al cambiar la contraseña:', err);
         }
       });

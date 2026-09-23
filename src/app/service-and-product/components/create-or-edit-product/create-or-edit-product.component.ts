@@ -43,6 +43,7 @@ import { ImageItem } from '../../../shared/interfaces/image.interface';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { NotificationsService } from '../../../shared/services/notifications.service';
 @Component({
   selector: 'app-create-or-edit-product',
   standalone: true,
@@ -120,6 +121,8 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
   private readonly _productsService: ProductsService = inject(ProductsService);
   private readonly _activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
+  private readonly _notificationsService: NotificationsService =
+    inject(NotificationsService);
   constructor(
     private _fb: FormBuilder,
     private cdr: ChangeDetectorRef
@@ -201,16 +204,29 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       taxeTypeId: 1
     });
     this.productImages = [];
+    this.productId = 0;
     if (this.imageUploader) {
-      this.imageUploader.resetPending();
+      // `clear()` y no `resetPending()`: al cancelar hay que vaciar la galería
+      // entera, no solo lo pendiente de subir. Con `resetPending()` la foto del
+      // producto que se estaba editando se quedaba en pantalla.
+      this.imageUploader.clear();
     }
     this.cdr.detectChanges();
   }
   resetForm() {
     this.resetFormToDefaults();
+    // ⚠️ `setErrors(null)` deja el control VÁLIDO a la fuerza y Angular no
+    // vuelve a correr sus validadores hasta que cambie de valor. Sin el
+    // `updateValueAndValidity` de abajo, el formulario quedaba vacío y
+    // `productForm.valid === true` a la vez: bastaba con escribir UN campo y
+    // pulsar "Crear" para que `save()` mandara el resto en blanco y el backend
+    // respondiera 400 (pasó en producción el 19 sep 2026). El `setErrors` se
+    // conserva para limpiar errores puestos a mano; el recálculo devuelve la
+    // validez real. Como `reset()` ya dejó todo untouched, no se pinta rojo.
     Object.keys(this.productForm.controls).forEach((key) => {
       const control = this.productForm.get(key);
       control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this.isEditMode = false;
     this.productCanceled.emit();
@@ -238,6 +254,22 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
       }
     });
   }
+  /**
+   * Si hay algo que guardar. Se mira `dirty` y no `valid`: con el formulario
+   * recién abierto (o recién reseteado) no hay nada que mandar, y un botón
+   * gris ahí sí se entiende. En cuanto se toca un campo se habilita, y si
+   * falta algo lo dicen los `mat-error` + el aviso de `save()`.
+   *
+   * Tocar la galería NO ensucia el `FormGroup`, así que se pregunta aparte al
+   * uploader; si no, cambiar solo una foto dejaba el botón bloqueado.
+   */
+  get canSave(): boolean {
+    return (
+      !this.isSaving &&
+      (this.productForm.dirty || !!this.imageUploader?.hasPendingChanges)
+    );
+  }
+
   save() {
     if (this.productForm.valid) {
       const formValue = this.productForm.value;
@@ -301,8 +333,16 @@ export class CreateOrEditProductComponent implements OnChanges, OnDestroy {
         });
       }
     } else {
+      // El botón se deja HABILITADO con el formulario inválido a propósito: un
+      // campo requerido que nadie ha tocado no pinta su `mat-error`, así que un
+      // botón gris no diría cuál falta. Pulsarlo es lo que marca los campos y
+      // saca el aviso. La barrera contra el envío es este `if`, no la UI.
       console.error('Formulario no válido', this.productForm);
       this.productForm.markAllAsTouched();
+      this._notificationsService.showNotification(
+        'error',
+        'service_and_product.form.incomplete'
+      );
     }
   }
   ngOnDestroy(): void {

@@ -1,8 +1,8 @@
 <form [formGroup]="form" class="py-6 flex flex-col gap-8">
   <!-- GASTRONOMY -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
-      <mat-icon class="text-[var(--primary-color)]">restaurant</mat-icon>
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--brand)]">restaurant</mat-icon>
       {{ 'organizational.web_content.gastronomy' | translate }}
     </span>
     <mat-form-field appearance="outline" class="w-full">
@@ -11,7 +11,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
-      <textarea matInput formControlName="gastronomyDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="gastronomyDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.history_title' | translate }}</mat-label>
@@ -19,7 +19,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.history_description' | translate }}</mat-label>
-      <textarea matInput formControlName="gastronomyHistoryDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="gastronomyHistoryDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.kitchen_title' | translate }}</mat-label>
@@ -27,7 +27,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.kitchen_description' | translate }}</mat-label>
-      <textarea matInput formControlName="gastronomyKitchenDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="gastronomyKitchenDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.ingredients_title' | translate }}</mat-label>
@@ -35,14 +35,14 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.ingredients_description' | translate }}</mat-label>
-      <textarea matInput formControlName="gastronomyIngredientsDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="gastronomyIngredientsDescriptionEs" rows="6"></textarea>
     </mat-form-field>
   </div>
 
   <!-- ACCOMMODATIONS -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
-      <mat-icon class="text-[var(--primary-color)]">hotel</mat-icon>
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--brand)]">hotel</mat-icon>
       {{ 'organizational.web_content.accommodation' | translate }}
     </span>
     <mat-form-field appearance="outline" class="w-full">
@@ -51,25 +51,25 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.main_description' | translate }}</mat-label>
-      <textarea matInput formControlName="accommodationsDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="accommodationsDescriptionEs" rows="6"></textarea>
     </mat-form-field>
   </div>
 
   <!-- BENEFIT SECTIONS (read-only) -->
   @if (benefitSections.length > 0) {
     <div class="flex flex-col gap-4">
-      <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
-        <mat-icon class="text-[var(--primary-color)]">hotel_class</mat-icon>
+      <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
+        <mat-icon class="text-[var(--brand)]">hotel_class</mat-icon>
         {{ 'organizational.web_content.benefits_services' | translate }}
       </span>
       @for (section of benefitSections; track section.benefitSectionId) {
         <div class="flex flex-col gap-2">
-          <span class="font-semibold text-gray-700 text-sm">{{ section.title | translated }}</span>
+          <span class="panel-heading font-semibold text-[var(--on-surface)] text-sm">{{ section.title | translated }}</span>
           @if (section.items.length > 0) {
             <div class="flex flex-wrap gap-2">
               @for (item of section.items; track item.benefitItemId) {
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700">
-                  <mat-icon class="text-[var(--primary-color)] !text-base !w-4 !h-4">{{ item.icon }}</mat-icon>
+                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--surface-sunken)] text-sm text-[var(--on-surface)]">
+                  <mat-icon class="text-[var(--brand)] !text-base !w-4 !h-4">{{ item.icon }}</mat-icon>
                   {{ item.name | translated }}
                 </div>
               }
@@ -82,25 +82,25 @@
 
   <!-- HOW TO ARRIVE -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
-      <mat-icon class="text-[var(--primary-color)]">map</mat-icon>
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
+      <mat-icon class="text-[var(--brand)]">map</mat-icon>
       {{ 'organizational.web_content.how_to_arrive' | translate }}
     </span>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.general_description' | translate }}</mat-label>
-      <textarea matInput formControlName="howToArriveDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="howToArriveDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.public_transport' | translate }}</mat-label>
-      <textarea matInput formControlName="howToArrivePublicTransportDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="howToArrivePublicTransportDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.private_transport' | translate }}</mat-label>
-      <textarea matInput formControlName="howToArrivePrivateTransportDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="howToArrivePrivateTransportDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.accessibility' | translate }}</mat-label>
-      <textarea matInput formControlName="accessibilityDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="accessibilityDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.web_content.google_maps_link' | translate }}</mat-label>
@@ -110,7 +110,13 @@
   </div>
 
   <div class="flex justify-end mt-2">
-    <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
+    <button
+      mat-fab
+      extended="true"
+      class="!w-full"
+      [disabled]="!form.dirty"
+      (click)="save.emit()"
+    >
       <mat-icon>save</mat-icon>
       {{ 'organizational.web_content.save_content' | translate }}
     </button>
@@ -119,15 +125,15 @@
 
 <!-- BENEFIT SECTIONS -->
 <div class="flex flex-col gap-4 mt-4 border-t pt-6">
-  <span class="text-lg font-bold flex items-center gap-2">
-    <mat-icon class="text-[var(--primary-color)]">hotel_class</mat-icon>
+  <span class="panel-heading text-lg font-bold flex items-center gap-2">
+    <mat-icon class="text-[var(--brand)]">hotel_class</mat-icon>
     {{ 'organizational.web_content.benefits_services' | translate }}
   </span>
 
   <!-- Add / Edit section form -->
   <form
     [formGroup]="benefitSectionForm"
-    class="bg-gray-50 rounded-xl p-4 flex flex-col gap-3"
+    class="bg-[var(--surface-sunken)] rounded-xl p-4 flex flex-col gap-3"
   >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
       <mat-form-field appearance="outline" class="w-full md:col-span-2">
@@ -164,23 +170,23 @@
   </form>
 
   @if (benefitSections.length === 0) {
-    <p class="text-gray-400 text-sm text-center py-4">
+    <p class="text-[var(--on-surface-muted)] text-sm text-center py-4">
       {{ 'organizational.web_content.no_benefit_sections' | translate }}
     </p>
   }
 
   @for (section of benefitSections; track section.benefitSectionId) {
-    <div class="border rounded-xl bg-white overflow-hidden">
+    <div class="border rounded-xl bg-[var(--surface-raised)] overflow-hidden">
       <!-- Section header -->
       <div
-        class="flex items-center justify-between px-4 py-3 bg-gray-50 border-b"
+        class="flex items-center justify-between px-4 py-3 bg-[var(--surface-sunken)] border-b"
       >
-        <span class="font-semibold text-gray-800 flex items-center gap-2">
-          <mat-icon class="text-[var(--primary-color)] text-base"
+        <span class="font-semibold text-[var(--on-surface)] flex items-center gap-2">
+          <mat-icon class="text-[var(--brand)] text-base"
             >list</mat-icon
           >
           {{ section.title | translated }}
-          <span class="text-xs text-gray-400 font-normal"
+          <span class="text-xs text-[var(--on-surface-muted)] font-normal"
             >({{ section.items.length }} {{ 'organizational.common.items' | translate }})</span
           >
         </span>
@@ -190,28 +196,31 @@
             (click)="editSectionEvt.emit(section)"
             [matTooltip]="'organizational.web_content.edit_section' | translate"
           >
-            <mat-icon class="text-[var(--primary-color)]">edit</mat-icon>
+            <mat-icon class="text-[var(--brand)]">edit</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="toggleItemForm(section.benefitSectionId)"
             [matTooltip]="'organizational.web_content.add_item' | translate"
           >
-            <mat-icon class="text-green-600">add_circle</mat-icon>
+            <mat-icon class="text-[var(--success)]">add_circle</mat-icon>
           </button>
           <button
             mat-icon-button
             (click)="deleteSectionEvt.emit(section.benefitSectionId)"
             [matTooltip]="'organizational.web_content.delete_section' | translate"
           >
-            <mat-icon class="text-red-500">delete</mat-icon>
+            <mat-icon class="text-[var(--danger)]">delete</mat-icon>
           </button>
         </div>
       </div>
 
       <!-- Inline item form -->
       @if (activeSectionId === section.benefitSectionId) {
-        <div class="p-4 bg-blue-50 border-b">
+        <!-- Resalta que el formulario de ítem está abierto, sin usar el verde
+             de marca (se reserva para "seleccionado"): un tinte neutro sobre
+             la superficie del tema. -->
+        <div class="p-4 bg-[var(--surface-sunken)] border-b border-[var(--border-color)]">
           <form [formGroup]="itemForm" class="flex flex-col gap-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>{{ 'organizational.web_content.benefit_name' | translate }}</mat-label>
@@ -227,9 +236,9 @@
             <div class="flex flex-col gap-2">
               <div class="flex items-center gap-3">
                 <div
-                  class="w-11 h-11 rounded-lg border-2 border-[var(--primary-color)] flex items-center justify-center bg-white shrink-0"
+                  class="w-11 h-11 rounded-lg border-2 border-[var(--primary-color)] flex items-center justify-center bg-[var(--surface-raised)] shrink-0"
                 >
-                  <mat-icon class="text-[var(--primary-color)]">{{
+                  <mat-icon class="text-[var(--brand)]">{{
                     itemForm.get('icon')?.value || 'help_outline'
                   }}</mat-icon>
                 </div>
@@ -244,12 +253,12 @@
                 @if (
                   !itemForm.get('icon')?.value && itemForm.get('icon')?.touched
                 ) {
-                  <span class="text-xs text-red-500">{{ 'organizational.web_content.select_icon' | translate }}</span>
+                  <span class="text-xs text-[var(--danger)]">{{ 'organizational.web_content.select_icon' | translate }}</span>
                 }
               </div>
 
               @if (showIconPicker) {
-                <div class="bg-white border rounded-xl p-3 flex flex-col gap-2">
+                <div class="bg-[var(--surface-raised)] border rounded-xl p-3 flex flex-col gap-2">
                   <input
                     class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-[var(--primary-color)] transition-colors"
                     [placeholder]="'organizational.web_content.search_icon' | translate"
@@ -266,24 +275,24 @@
                         class="flex flex-col items-center gap-1 p-2 rounded-lg border-2 transition-colors cursor-pointer"
                         [ngClass]="
                           itemForm.get('icon')?.value === item.icon
-                            ? 'border-blue-500 bg-blue-50'
-                            : 'border-gray-200 hover:bg-gray-50'
+                            ? 'border-[var(--brand)] bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-raised))]'
+                            : 'border-[var(--border-color)] hover:bg-[var(--surface-sunken)]'
                         "
                         (click)="selectIcon(item.icon)"
                         [matTooltip]="item.label"
                       >
-                        <mat-icon class="text-gray-600 !text-xl !w-6 !h-6">{{
+                        <mat-icon class="text-[var(--on-surface-muted)] !text-xl !w-6 !h-6">{{
                           item.icon
                         }}</mat-icon>
                         <span
-                          class="text-[9px] text-gray-500 text-center leading-tight truncate w-full"
+                          class="text-[9px] text-[var(--on-surface-muted)] text-center leading-tight truncate w-full"
                           >{{ item.label }}</span
                         >
                       </button>
                     }
                     @if (filteredIcons.length === 0) {
                       <p
-                        class="col-span-4 sm:col-span-6 text-center text-gray-400 text-sm py-4"
+                        class="col-span-4 sm:col-span-6 text-center text-[var(--on-surface-muted)] text-sm py-4"
                       >
                         {{ 'organizational.web_content.no_results' | translate }}
                       </p>
@@ -314,9 +323,9 @@
 
       <!-- Items list -->
       @if (!section.items || section.items.length === 0) {
-        <p class="text-gray-400 text-sm text-center py-4 px-4">
+        <p class="text-[var(--on-surface-muted)] text-sm text-center py-4 px-4">
           {{ 'organizational.web_content.no_items_use' | translate }}
-          <mat-icon class="text-green-600 !text-base align-middle"
+          <mat-icon class="text-[var(--success)] !text-base align-middle"
             >add_circle</mat-icon
           >
           {{ 'organizational.web_content.to_add' | translate }}
@@ -324,18 +333,18 @@
       }
       <div class="divide-y">
         @for (item of section.items; track item.benefitItemId) {
-          <div class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
-            <mat-icon class="text-[var(--primary-color)] shrink-0 !text-xl">{{
+          <div class="flex items-center gap-3 px-4 py-3 hover:bg-[var(--surface-sunken)]">
+            <mat-icon class="text-[var(--brand)] shrink-0 !text-xl">{{
               item.icon
             }}</mat-icon>
-            <span class="flex-1 text-sm text-gray-700">{{ item.name | translated }}</span>
+            <span class="flex-1 text-sm text-[var(--on-surface)]">{{ item.name | translated }}</span>
             <div class="flex gap-1 shrink-0">
               <button
                 mat-icon-button
                 (click)="startEditItem(item, section.benefitSectionId)"
                 [matTooltip]="'organizational.common.edit' | translate"
               >
-                <mat-icon class="text-[var(--primary-color)] !text-base"
+                <mat-icon class="text-[var(--brand)] !text-base"
                   >edit</mat-icon
                 >
               </button>
@@ -344,7 +353,7 @@
                 (click)="deleteItemEvt.emit(item.benefitItemId)"
                 [matTooltip]="'organizational.common.delete' | translate"
               >
-                <mat-icon class="text-red-500 !text-base">delete</mat-icon>
+                <mat-icon class="text-[var(--danger)] !text-base">delete</mat-icon>
               </button>
             </div>
           </div>
@@ -356,14 +365,14 @@
 
 <!-- CORPORATE VALUES -->
 <div class="flex flex-col gap-4 mt-4 border-t pt-6">
-  <span class="text-lg font-bold flex items-center gap-2">
-    <mat-icon class="text-[var(--primary-color)]">star</mat-icon>
+  <span class="panel-heading text-lg font-bold flex items-center gap-2">
+    <mat-icon class="text-[var(--brand)]">star</mat-icon>
     {{ 'organizational.web_content.corporate_values' | translate }}
   </span>
 
   <form
     [formGroup]="corporateValueForm"
-    class="bg-gray-50 rounded-xl p-4 flex flex-col gap-3"
+    class="bg-[var(--surface-sunken)] rounded-xl p-4 flex flex-col gap-3"
   >
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
       <mat-form-field appearance="outline" class="w-full md:col-span-2">
@@ -385,7 +394,7 @@
       <textarea
         matInput
         formControlName="description"
-        rows="2"
+        rows="6"
         [placeholder]="'organizational.web_content.value_desc_ph' | translate"
       ></textarea>
     </mat-form-field>
@@ -410,7 +419,7 @@
   </form>
 
   @if (corporateValues.length === 0) {
-    <p class="text-gray-400 text-sm text-center py-4">
+    <p class="text-[var(--on-surface-muted)] text-sm text-center py-4">
       {{ 'organizational.web_content.no_corporate_values' | translate }}
     </p>
   }
@@ -455,7 +464,7 @@
             (click)="deleteValue.emit(value.corporateValueId)"
             [matTooltip]="'organizational.common.delete' | translate"
           >
-            <mat-icon class="text-red-400">delete</mat-icon>
+            <mat-icon class="text-[var(--danger)]">delete</mat-icon>
           </button>
           <input
             [id]="'cv-img-' + value.corporateValueId"
@@ -482,7 +491,7 @@
               (click)="deleteValueImage.emit(value.corporateValueId)"
               [matTooltip]="'organizational.web_content.delete_image' | translate"
             >
-              <mat-icon class="text-orange-400">hide_image</mat-icon>
+              <mat-icon class="text-[var(--warning)]">hide_image</mat-icon>
             </button>
           }
         </div>

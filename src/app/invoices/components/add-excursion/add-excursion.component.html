@@ -27,21 +27,21 @@
         *ngFor="let excursion of filteredExcursions"
         [value]="excursion.name | translated"
       >
-        <span class="font-semibold text-gray-500">{{ excursion.code }}</span>
+        <span class="font-semibold text-[var(--on-surface-muted)]">{{ excursion.code }}</span>
         - {{ excursion.name | translated }}
-        <span class="text-gray-700">· {{ excursion.priceSale | formatCop }}</span>
+        <span class="text-[var(--on-surface)]">· {{ excursion.priceSale | formatCop }}</span>
         <span
           [ngClass]="{
-            'text-green-600':
+            'text-[var(--success)]':
               excursion.stateType?.name?.['es'] === 'Disponible' ||
               excursion.stateType?.name?.['es'] === 'DISPONIBLE',
-            'text-yellow-600':
+            'text-[var(--warning)]':
               excursion.stateType?.name?.['es'] === 'Mantenimiento' ||
               excursion.stateType?.name?.['es'] === 'MANTENIMIENTO',
-            'text-red-600':
+            'text-[var(--danger)]':
               excursion.stateType?.name?.['es'] === 'Fuera de Servicio' ||
               excursion.stateType?.name?.['es'] === 'FUERA DE SERVICIO',
-            'text-blue-600':
+            'blue-color':
               excursion.stateType?.name?.['es'] === 'Ocupado' ||
               excursion.stateType?.name?.['es'] === 'OCUPADO'
           }"

@@ -45,6 +45,8 @@ import { ExcursiosPrintComponent } from '../../../shared/components/excursios-pr
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
 import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { DEFAULT_ITEM } from '../../../shared/constants/avatar.constants';
+import { ItemImagesDialogComponent } from '../../../shared/components/item-images-dialog/item-images-dialog.component';
 @Component({
   selector: 'app-see-excursions',
   standalone: true,
@@ -90,7 +92,32 @@ export class SeeExcursionsComponent implements OnInit {
   @ViewChild(SearchFieldsComponent) searchComponent!: SearchFieldsComponent;
   @ViewChild('excursionsPrint')
   excursionsPrintComponent!: ExcursiosPrintComponent;
+  readonly defaultItem = DEFAULT_ITEM;
+
+  /** Ver `see-products.component.ts`: miniatura con respaldo genérico. */
+  itemImage(item?: { images?: { imageUrl?: string }[] } | null): string {
+    return item?.images?.[0]?.imageUrl || this.defaultItem;
+  }
+
+  /** Ver `see-products.component.ts`: visor de fotos sin entrar a editar. */
+  openImagesPreview(
+    event: Event,
+    item?: {
+      name?: Record<string, string>;
+      images?: { imageUrl?: string }[];
+    } | null
+  ): void {
+    // ⚠️ Sin el `stopPropagation` la fila clicable abriría además el formulario.
+    event.stopPropagation();
+    this._matDialog.open(ItemImagesDialogComponent, {
+      data: { title: item?.name?.['es'] ?? '', images: item?.images ?? [] },
+      width: '440px',
+      maxWidth: '92vw'
+    });
+  }
+
   displayedColumns: string[] = [
+    'image',
     'categoryType',
     'code',
     'name',

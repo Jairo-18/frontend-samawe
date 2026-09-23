@@ -16,6 +16,11 @@ import { ApiResponseInterface } from '../../shared/interfaces/api-response.inter
 import { TranslatedInput } from '../../shared/types/translated-field.type';
 import { BehaviorSubject, tap } from 'rxjs';
 import { SeoService } from '../../shared/services/seo.service';
+import {
+  BODY_FONTS,
+  TITLE_FONTS,
+  resolveFontStack
+} from '../../shared/constants/fonts.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -124,34 +129,79 @@ export class ApplicationService {
                 org.tertiaryColor
               );
             }
+            // ⚠️ Estos cinco van a `--org-*`, NO a `--title-color` y compañía.
+            //
+            // `setProperty` escribe un estilo EN LÍNEA en `<html>`, que gana a
+            // cualquier regla CSS: escribiendo directo en `--text-color`, el
+            // modo oscuro no podría cambiarlo jamás. `variables.scss` lee estos
+            // valores en modo claro y los ignora en oscuro, donde manda la capa
+            // neutra. Los de MARCA (primario, secundario, terciario) sí van
+            // directos: son identidad y no cambian con el tema.
             if (org.titleColor) {
               document.documentElement.style.setProperty(
-                '--title-color',
+                '--org-title-color',
                 org.titleColor
               );
             }
             if (org.subtitleColor) {
               document.documentElement.style.setProperty(
-                '--subtitle-color',
+                '--org-subtitle-color',
                 org.subtitleColor
               );
             }
             if (org.textColor) {
               document.documentElement.style.setProperty(
-                '--text-color',
+                '--org-text-color',
                 org.textColor
               );
             }
             if (org.bgPrimaryColor) {
               document.documentElement.style.setProperty(
-                '--bg-primary-color',
+                '--org-bg-primary-color',
                 org.bgPrimaryColor
               );
             }
             if (org.bgSecondaryColor) {
               document.documentElement.style.setProperty(
-                '--bg-secondary-color',
+                '--org-bg-secondary-color',
                 org.bgSecondaryColor
+              );
+            }
+
+            // Modo oscuro. Se aplican SIEMPRE, esté o no activo: son variables
+            // que solo lee el bloque `[data-theme='dark']`, así que en claro no
+            // pintan nada y al encender el modo ya están puestas —sin esperar a
+            // que la organización se vuelva a cargar.
+            const darkColors: [string, string | undefined][] = [
+              ['--org-dark-title-color', org.darkTitleColor],
+              ['--org-dark-subtitle-color', org.darkSubtitleColor],
+              ['--org-dark-text-color', org.darkTextColor],
+              ['--org-dark-bg-primary-color', org.darkBgPrimaryColor],
+              ['--org-dark-bg-secondary-color', org.darkBgSecondaryColor]
+            ];
+            for (const [token, value] of darkColors) {
+              if (value) {
+                document.documentElement.style.setProperty(token, value);
+              }
+            }
+
+            // Tipografía. A diferencia de los colores, el valor guardado NO se
+            // aplica tal cual: se resuelve contra el catálogo del front, que
+            // es una lista cerrada. Así, lo que no esté en ella —una familia
+            // retirada, o un valor manipulado en la base— se ignora y queda el
+            // de `variables.scss`, en vez de acabar dentro del `setProperty`.
+            const titleStack = resolveFontStack(org.fontTitle, TITLE_FONTS);
+            if (titleStack) {
+              document.documentElement.style.setProperty(
+                '--font-title',
+                titleStack
+              );
+            }
+            const bodyStack = resolveFontStack(org.fontBody, BODY_FONTS);
+            if (bodyStack) {
+              document.documentElement.style.setProperty(
+                '--font-body',
+                bodyStack
               );
             }
           }

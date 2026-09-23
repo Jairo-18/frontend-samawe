@@ -20,7 +20,11 @@
           'service_and_product.form.category' | translate
         }}</mat-label>
         <mat-select formControlName="categoryTypeId" required>
-          <mat-option value="" disabled selected>
+          <!-- Sin `selected`: en `mat-select` ese atributo no hace nada (la
+               selección la manda `formControlName`) y hacía leer la opción
+               como si fuera el valor inicial. `disabled` sí es el que impide
+               volver al placeholder. -->
+          <mat-option value="" disabled>
             {{ 'service_and_product.form.select_category' | translate }}
           </mat-option>
           <mat-option
@@ -84,7 +88,7 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'service_and_product.product_form.description_label' | translate }}</mat-label>
         <mat-icon matPrefix>description</mat-icon>
-        <textarea matInput formControlName="descriptionEs" rows="3" [maxlength]="500"></textarea>
+        <textarea matInput formControlName="descriptionEs" rows="6" [maxlength]="500"></textarea>
         <mat-hint align="end">{{ productForm.get('descriptionEs')?.value?.length ?? 0 }}/500</mat-hint>
       </mat-form-field>
     </section>
@@ -155,7 +159,7 @@
     ></app-image-uploader>
   </section>
   <div
-    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full"
+    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-[var(--border-color)] w-full"
   >
     @if (isEditMode) {
       <div class="w-full flex content-between md:w-[24%]">
@@ -178,7 +182,7 @@
         type="button"
         class="mt-2 md:mt-0 !w-full"
         (click)="save()"
-        [disabled]="isSaving"
+        [disabled]="!canSave"
       >
         <mat-icon>{{ isEditMode ? 'save' : 'add_circle' }}</mat-icon>
         {{

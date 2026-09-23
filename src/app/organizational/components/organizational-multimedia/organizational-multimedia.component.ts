@@ -18,6 +18,12 @@ import {
 } from '../../../shared/interfaces/organizational.interface';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import {
+  PORTRAIT_MEDIA,
+  VIDEO_MEDIA,
+  WIDE_MEDIA,
+  aspectForMedia
+} from '../../../shared/constants/media.constants';
 
 @Component({
   selector: 'app-organizational-multimedia',
@@ -50,8 +56,59 @@ export class OrganizationalMultimediaComponent implements OnChanges {
 
   loadedImages = new Set<string>();
 
+  /** Ocupa dos columnas: en el sitio se ve a todo lo ancho. */
+  isWide(code: string): boolean {
+    return WIDE_MEDIA.has(code);
+  }
+
+  /** Se ve en vertical (los fondos de acceso, junto al formulario). */
+  isPortrait(code: string): boolean {
+    return PORTRAIT_MEDIA.has(code);
+  }
+
+  /** El vídeo de portada necesita `<video>`, no `<img>`. */
+  isVideo(code: string): boolean {
+    return VIDEO_MEDIA.has(code);
+  }
+
+  /**
+   * Proporción del recuadro, como valor CSS.
+   *
+   * No se usa una clase `aspect-[...]` construida al vuelo: Tailwind analiza
+   * las plantillas en compilación y no vería una clase formada en tiempo de
+   * ejecución, así que no acabaría en el CSS.
+   */
+  aspectFor(code: string): string {
+    return aspectForMedia(code);
+  }
+
+  /** Qué acepta el selector de archivos de cada ranura. */
+  acceptFor(code: string): string {
+    return this.isVideo(code) ? 'video/mp4,video/webm' : 'image/*';
+  }
+
+  /** Medida recomendada, para que no haya que adivinarla. */
+  specFor(code: string): string {
+    if (this.isVideo(code)) return 'MP4/WEBM · 1920×1080 · máx. 10 MB';
+    if (this.isPortrait(code)) return 'JPG/WEBP · 1080×1440 PX (vertical)';
+    return this.isWide(code)
+      ? 'JPG/WEBP · 1920×1080 PX'
+      : 'JPG/WEBP · 1200×800 PX';
+  }
+
+  /**
+   * Los tipos se ordenan poniendo los anchos primero.
+   *
+   * Sin esto la rejilla queda con huecos: una tarjeta de dos columnas no entra
+   * en el espacio que deja una de una, y CSS Grid la empuja a la fila
+   * siguiente dejando el vacío a la vista.
+   */
   get nonLogoTypes(): MediaType[] {
-    return this.mediaTypes.filter((t) => t.code !== 'LOGO');
+    return this.mediaTypes
+      .filter((t) => t.code !== 'LOGO')
+      .sort(
+        (a, b) => Number(this.isWide(b.code)) - Number(this.isWide(a.code))
+      );
   }
 
   getMediaUrl(code: string): string | null {

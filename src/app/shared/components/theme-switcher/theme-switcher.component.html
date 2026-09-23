@@ -1,0 +1,15 @@
+<!-- Interruptor deslizante, no botón: el modo oscuro es un ajuste de dos
+     estados, y un interruptor muestra en cuál estás sin tener que leer.
+     El icono va al lado y cambia con el estado: luna en oscuro, sol en claro. -->
+<label class="flex items-center gap-2 cursor-pointer select-none">
+  <mat-slide-toggle
+    color="primary"
+    [checked]="theme.isDark"
+    (change)="theme.toggle()"
+    [attr.aria-label]="(theme.isDark ? 'theme.light' : 'theme.dark') | translate"
+    [matTooltip]="(theme.isDark ? 'theme.light' : 'theme.dark') | translate"
+  ></mat-slide-toggle>
+  <mat-icon class="!text-[18px] !w-[18px] !h-[18px] !leading-[18px]">
+    {{ theme.isDark ? 'dark_mode' : 'light_mode' }}
+  </mat-icon>
+</label>

@@ -11,7 +11,7 @@
       <div class="flex justify-end items-center gap-3 mb-6">
         @if (hasUnsavedChanges) {
           <span
-            class="flex items-center gap-1 text-xs md:text-sm text-amber-600 dark:text-amber-400"
+            class="flex items-center gap-1 text-xs md:text-sm text-[var(--warning)]"
           >
             <mat-icon class="!text-base !w-4 !h-4 !leading-4">info</mat-icon>
             {{ 'user.profile.unsaved_changes' | translate }}

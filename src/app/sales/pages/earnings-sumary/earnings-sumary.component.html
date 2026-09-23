@@ -17,7 +17,7 @@
       <mat-button-toggle-group
         [value]="selectedPeriod"
         (change)="onPeriodChange($event.value)"
-        class="rounded-xl bg-white p-1"
+        class="rounded-xl bg-[var(--surface-raised)] p-1"
         color="primary"
         buttonToggleAppearance="legacy"
       >
@@ -52,25 +52,25 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-box text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold">
+            <span class="text-[var(--on-surface)] font-semibold">
               {{ 'sales.gross_products' | translate }}
             </span>
           </div>
         </div>
         <div class="space-y-2">
           <div class="flex justify-between">
-            <span class="text-slate-600">{{ 'sales.purchase_price' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.purchase_price' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceBuy ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-600">{{ 'sales.sale_price' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.sale_price' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
-          <div class="flex justify-between text-[#06a606] font-semibold">
+          <div class="flex justify-between text-[var(--success)] font-semibold">
             <span>{{ 'sales.profit' | translate }}</span>
             <span>{{ productSummary?.balanceProduct ?? 0 | formatCop }}</span>
           </div>
@@ -84,25 +84,25 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-file-invoice text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold"
+            <span class="text-[var(--on-surface)] font-semibold"
               >{{ 'sales.billing_balance' | translate }}</span
             >
           </div>
           <span
-            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
+            class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
           >
             {{ getSelectedPeriodLabel() }}
           </span>
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-[#06a606] font-semibold">
+          <div class="flex justify-between text-[var(--success)] font-semibold">
             <span>{{ 'sales.sales' | translate }}</span>
             <span class="font-semibold">{{
               invoiceBalance?.[selectedPeriod]?.totalInvoiceSale ?? 0
                 | formatCop
             }}</span>
           </div>
-          <div class="flex justify-between text-orange-600">
+          <div class="flex justify-between text-[var(--warning)]">
             <span>{{ 'sales.purchases' | translate }}</span>
             <span class="font-semibold">{{
               invoiceBalance?.[selectedPeriod]?.totalInvoiceBuy ?? 0 | formatCop
@@ -111,9 +111,9 @@
           <div
             class="flex justify-between font-semibold"
             [ngClass]="{
-              'text-[#06a606]':
+              'text-[var(--success)]':
                 +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) >= 0,
-              'text-red-600':
+              'text-[var(--danger)]':
                 +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) < 0
             }"
           >
@@ -132,22 +132,22 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold">{{ 'sales.total_inventory' | translate }}</span>
+            <span class="text-[var(--on-surface)] font-semibold">{{ 'sales.total_inventory' | translate }}</span>
           </div>
           <span
-            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
+            class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
             >{{ 'sales.stock' | translate }}</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">{{ 'sales.inventory_value' | translate }}</span>
+          <div class="flex justify-between text-[var(--success)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.inventory_value' | translate }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-600">{{ 'sales.total_units' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.total_units' | translate }}</span>
             <span class="font-semibold">{{
               inventoryTotal?.totalStock ?? 0
             }}</span>
@@ -158,22 +158,22 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold"
+            <span class="text-[var(--on-surface)] font-semibold"
               >{{ 'sales.product_status' | translate }}</span
             >
           </div>
           <span
-            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
+            class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
             >{{ 'sales.status' | translate }}</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">{{ 'sales.active' | translate }}</span>
+          <div class="flex justify-between text-[var(--success)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.active' | translate }}</span>
             <span class="font-semibold">{{ activeProductsCount }}</span>
           </div>
-          <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">{{ 'sales.inactive' | translate }}</span>
+          <div class="flex justify-between text-[var(--danger)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.inactive' | translate }}</span>
             <span class="font-semibold">{{ inactiveProductsCount }}</span>
           </div>
         </div>
@@ -186,40 +186,40 @@
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-slate-800 font-semibold">
+            <span class="text-[var(--on-surface)] font-semibold">
               {{ 'sales.accommodation_status' | translate }}
             </span>
           </div>
           <span
-            class="text-sm bg-[var(--primary-color)] text-slate-800 px-2 py-1 rounded"
+            class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
             >{{ 'sales.status' | translate }}</span
           >
         </div>
         <div class="space-y-2">
-          <div class="flex justify-between text-[#06a606]">
-            <span class="text-slate-600">{{ 'sales.available' | translate }}</span>
+          <div class="flex justify-between text-[var(--success)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.available' | translate }}</span>
             <span class="font-semibold">{{
               availableAccommodationsCount
             }}</span>
           </div>
-          <div class="flex justify-between text-yellow-600">
-            <span class="text-slate-600">{{ 'sales.maintenance' | translate }}</span>
+          <div class="flex justify-between text-[var(--warning)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.maintenance' | translate }}</span>
             <span class="font-semibold">{{
               maintenanceAccommodationsCount
             }}</span>
           </div>
-          <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">{{ 'sales.occupied' | translate }}</span>
+          <div class="flex justify-between text-[var(--danger)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.occupied' | translate }}</span>
             <span class="font-semibold">{{ occupiedAccommodationsCount }}</span>
           </div>
-          <div class="flex justify-between text-red-600">
-            <span class="text-slate-600">{{ 'sales.out_of_service' | translate }}</span>
+          <div class="flex justify-between text-[var(--danger)]">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.out_of_service' | translate }}</span>
             <span class="font-semibold">{{
               noServiceAccommodationsCount
             }}</span>
           </div>
-          <div class="flex justify-between text-blue-600">
-            <span class="text-slate-600">{{ 'sales.reserved' | translate }}</span>
+          <div class="flex justify-between blue-color">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.reserved' | translate }}</span>
             <span class="font-semibold">{{ reservedAccommodationsCount }}</span>
           </div>
         </div>

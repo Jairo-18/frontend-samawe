@@ -18,7 +18,7 @@
         class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
       >
         <p
-          class="text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
+          class="hero-eyebrow text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
         >
           @if (org.city || org.department) {
             {{ org.city }}{{ org.city && org.department ? ', ' : ''
@@ -27,11 +27,16 @@
             {{ 'public.about_us.who_we_are' | translate }}
           }
         </p>
-        <h2
+        <!-- `h1`, no `h2`: es el encabezado principal de la página. Estaba
+             como `h2` y dejaba la página sin `h1`, que es lo que Google usa
+             para saber de qué trata. El resto de portadas (cómo llegar) ya
+             usaba `h1`. El tamaño lo dan las clases, así que cambiar la
+             etiqueta no altera nada visual. -->
+        <h1
           class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
         >
           {{ org.aboutUsTitle | translated }}
-        </h2>
+        </h1>
         @if (org.aboutUsDescription) {
           <p
             class="mt-4 text-[10px] md:text-base drop-shadow-md max-w-xl md:max-w-4xl opacity-90"
@@ -42,20 +47,23 @@
       </div>
     </div>
 
-    <!-- Secciones -->
-    <div
-      class="max-w-[1400px] mx-auto px-6 md:px-10 py-16 flex flex-col gap-20"
-    >
-      <!-- Misión -->
-      @if (org.missionTitle || org.missionDescription) {
-        <div class="flex flex-col md:flex-row-reverse gap-10 items-center">
+    <!-- Secciones, con el fondo ALTERNADO. Mismo criterio que en Gastronomía:
+         antes las tres colgaban de un contenedor común y se leían como un
+         bloque continuo. -->
+
+    <!-- Misión -->
+    @if (org.missionTitle || org.missionDescription) {
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+        <div
+          class="max-w-[1400px] mx-auto flex flex-col md:flex-row-reverse gap-10 items-center"
+        >
           <div
             class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('MISSION_IMAGE')"
-              [alt]="org.missionTitle ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-fill"
+              [alt]="(org.missionTitle | translated) ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -67,18 +75,22 @@
             />
           </div>
         </div>
-      }
+      </div>
+    }
 
-      <!-- Visión -->
-      @if (org.visionTitle || org.visionDescription) {
-        <div class="flex flex-col md:flex-row gap-10 items-center">
+    <!-- Visión -->
+    @if (org.visionTitle || org.visionDescription) {
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
+        <div
+          class="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-10 items-center"
+        >
           <div
             class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('VISION_IMAGE')"
-              [alt]="org.visionTitle ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-fill"
+              [alt]="(org.visionTitle | translated) ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -90,18 +102,22 @@
             />
           </div>
         </div>
-      }
+      </div>
+    }
 
-      <!-- Historia -->
-      @if (org.historyTitle || org.historyDescription) {
-        <div class="flex flex-col md:flex-row-reverse gap-10 items-center">
+    <!-- Historia -->
+    @if (org.historyTitle || org.historyDescription) {
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+        <div
+          class="max-w-[1400px] mx-auto flex flex-col md:flex-row-reverse gap-10 items-center"
+        >
           <div
             class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('HISTORY_IMAGE')"
-              [alt]="org.historyTitle ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-fill"
+              [alt]="(org.historyTitle | translated) ?? ''"
+              class="w-full h-[200px] md:h-[320px] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -113,12 +129,13 @@
             />
           </div>
         </div>
-      }
-    </div>
+      </div>
+    }
 
     <!-- Valores corporativos -->
     @if (corporateValues && corporateValues.length > 0) {
-      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+      <!-- Secundario: Historia, justo encima, usa el primario. -->
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
         <div class="max-w-[1400px] mx-auto flex flex-col gap-10">
           <app-section-header
             [label]="'public.about_us.values_label' | translate"
@@ -132,7 +149,7 @@
                 <img
                   [src]="value.imageUrl || 'assets/images/notFound.avif'"
                   [alt]="value.title | translated"
-                  class="w-full h-[450px] md:h-[550px] object-fill block"
+                  class="w-full h-[450px] md:h-[550px] object-cover block"
                 />
                 <div
                   class="absolute inset-0"

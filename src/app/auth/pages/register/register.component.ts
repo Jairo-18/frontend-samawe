@@ -323,6 +323,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this._router.navigateByUrl(this._langService.route('auth/login'));
   }
 
+  /** Rutas legales con el prefijo de idioma activo (`/es/legal/...`). */
+  get privacyRoute(): string {
+    return this._langService.route('legal/privacity');
+  }
+
+  get termsRoute(): string {
+    return this._langService.route('legal/terms');
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }

@@ -58,7 +58,7 @@
             </div>
           </mat-option>
           <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">{{ 'recipe.create_edit_order.no_clients' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{ 'recipe.create_edit_order.no_clients' | translate }}</span>
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -128,7 +128,7 @@
         <textarea
           matInput
           formControlName="observations"
-          rows="3"
+          rows="6"
           maxlength="500"
           appUppercase
         ></textarea>

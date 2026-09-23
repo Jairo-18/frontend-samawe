@@ -331,8 +331,12 @@ export class AddAccommodationComponent implements OnInit {
     this.taxAmount = 0;
     this.unitPrice = 0;
     this.finalPrice = 0;
+    // ⚠️ Ver `create-or-edit-product.component.ts`: `setErrors(null)` sin
+    // recálculo deja el formulario vacío y "válido" a la vez.
     Object.keys(this.form.controls).forEach((key) => {
-      this.form.get(key)?.setErrors(null);
+      const control = this.form.get(key);
+      control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this._router.navigate([], {
       queryParams: {},

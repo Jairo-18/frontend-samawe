@@ -42,8 +42,8 @@
             {{ 'public.common.edit' | translate }}
           </button>
           <button mat-menu-item (click)="delete()">
-            <span class="material-icons mr-2 text-red-500">delete</span>
-            <span class="text-red-500">{{ 'public.common.delete' | translate }}</span>
+            <span class="material-icons mr-2 text-[var(--danger)]">delete</span>
+            <span class="text-[var(--danger)]">{{ 'public.common.delete' | translate }}</span>
           </button>
         </mat-menu>
       </div>
@@ -59,18 +59,18 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'public.review.comment_label' | translate }}</mat-label>
-        <textarea matInput [(ngModel)]="editComment" rows="3" cdkTextareaAutosize maxlength="750"></textarea>
+        <textarea matInput [(ngModel)]="editComment" rows="6" cdkTextareaAutosize maxlength="750"></textarea>
         <mat-hint align="end">{{ editComment.length }}/750</mat-hint>
       </mat-form-field>
       <div class="flex items-center gap-3 mb-3">
         <div class="flex">
           @for (pos of starPositions; track pos) {
-            <span class="material-icons text-base text-yellow-400 cursor-default">
+            <span class="material-icons text-base text-[var(--warning)] cursor-default">
               {{ getStarIcon(pos, editScore) }}
             </span>
           }
         </div>
-        <input type="range" min="1" max="5" step="0.5" [(ngModel)]="editScore" class="flex-1 accent-yellow-400" />
+        <input type="range" min="1" max="5" step="0.5" [(ngModel)]="editScore" class="flex-1 accent-[var(--warning)]" />
         <span class="text-sm font-semibold text-[var(--primary-color)] w-6">{{ editScore }}</span>
       </div>
       <div class="flex gap-2 justify-end">
@@ -85,7 +85,7 @@
   } @else {
     <div class="flex items-center gap-0.5 mt-3">
       @for (pos of starPositions; track pos) {
-        <span class="material-icons text-base text-yellow-400">
+        <span class="material-icons text-base text-[var(--warning)]">
           {{ getStarIcon(pos, review.score) }}
         </span>
       }
@@ -150,7 +150,7 @@
           <div class="flex-1">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>{{ 'public.review.reply_placeholder' | translate }}</mat-label>
-              <textarea matInput [(ngModel)]="replyComment" rows="2" cdkTextareaAutosize maxlength="750"></textarea>
+              <textarea matInput [(ngModel)]="replyComment" rows="6" cdkTextareaAutosize maxlength="750"></textarea>
               <mat-hint align="end">{{ replyComment.length }}/750</mat-hint>
             </mat-form-field>
             <div class="flex gap-2 justify-end">

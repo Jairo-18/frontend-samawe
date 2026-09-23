@@ -12,7 +12,6 @@ import { ApplicationService } from '../../../organizational/services/application
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth.service';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
-import { LogOutInterface } from '../../../auth/interfaces/logout.interface';
 import { NAVBAR_LOGGED_CONST } from '../../../shared/constants/navbar-logged.constants';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { NavbarDesktopComponent } from '../navbar-desktop/navbar-desktop.component';
@@ -237,24 +236,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    const allSessionData = this._localStorage.getAllSessionData();
-    if (
-      !allSessionData?.user?.userId ||
-      !allSessionData?.tokens?.accessToken ||
-      !allSessionData?.session?.accessSessionId
-    ) {
-      this._authService.cleanStorageAndRedirectToLogin();
-      return;
-    }
-    const sessionDataToLogout: LogOutInterface = {
-      userId: allSessionData.user.userId,
-      accessToken: allSessionData.tokens.accessToken,
-      accessSessionId: allSessionData.session.accessSessionId
-    };
-    this._authService.logout(sessionDataToLogout).subscribe({
-      next: () => this._authService.cleanStorageAndRedirectToLogin(),
-      error: () => this._authService.cleanStorageAndRedirectToLogin()
-    });
+    this._authService.signOut();
   }
 
   ngOnDestroy(): void {

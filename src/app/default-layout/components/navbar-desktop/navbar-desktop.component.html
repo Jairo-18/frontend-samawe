@@ -2,23 +2,26 @@
   aria-label="Navegación principal"
   class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 ease-in-out py-2"
   [ngClass]="{
-    'bg-white': !isScrolled || isPastHero || !isHomePage,
+    'bg-[var(--surface-raised)]': !isScrolled || isPastHero || !isHomePage,
     'shadow-lg': isScrolled,
     'lg:bg-transparent lg:shadow-none lg:backdrop-blur-sm':
       isScrolled && !isPastHero && isHomePage
   }"
 >
   <!--
-    Hasta 2xl (<1536px) los 7 enlaces + logo + login + idioma no caben en una
-    sola fila: necesitan ~1240px y se apelotonan en cualquier portátil. Con
-    `flex-wrap` y el `w-full` de la sección de enlaces, estos bajan a una
-    segunda fila y arriba quedan solo marca y acciones. Los `order-*` son los
-    que mantienen el orden visual marca · enlaces · acciones en 2xl, donde
-    vuelve a ser una sola fila.
-    Si se cambia el punto de corte, hay que mover con él `--nav-bar-height`
-    en `global.scss`, o la barra tapará el contenido.
+    DOS FILAS SIEMPRE (desde 1024px): arriba marca y acciones, abajo los
+    enlaces. Antes se juntaba todo en una sola fila a partir de 2xl (1536px),
+    pero al añadir el interruptor de modo claro/oscuro los 7 enlaces + logo +
+    "Iniciar sesión" + idioma + tema ya no caben ni ahí: quedaban apretados y
+    el conjunto perdía aire.
+
+    El `w-full` de la sección de enlaces es lo que los empuja a su propia fila;
+    los `order-*` mantienen el orden visual marca · enlaces · acciones.
+
+    ⚠️ Si se cambia esto, hay que mover con él `--nav-bar-height` en
+    `global.scss`, o la barra tapará el principio del contenido.
   -->
-  <article class="flex flex-wrap 2xl:flex-nowrap gap-y-1 px-6 items-center w-full">
+  <article class="flex flex-wrap gap-y-1 px-6 items-center w-full">
     <!-- Branding -->
     <section
       class="order-1 flex flex-1 items-center gap-x-3 transition-colors duration-300"
@@ -34,7 +37,7 @@
         [ngClass]="
           isScrolled && !isPastHero && isHomePage
             ? 'text-white'
-            : 'text-gray-800'
+            : 'text-[var(--on-surface)]'
         "
       >
         {{ organizationalName | capitalize }}
@@ -43,15 +46,17 @@
 
     <!-- Links de navegación -->
     <section
-      class="order-3 2xl:order-2 hidden lg:flex w-full 2xl:w-auto flex-none items-center justify-center gap-x-1 lg:gap-x-2 2xl:gap-x-1 3xl:gap-x-4 transition-colors duration-300"
+      class="order-3 hidden lg:flex w-full flex-none items-center justify-center gap-x-1 lg:gap-x-2 3xl:gap-x-4 transition-colors duration-300"
       [ngClass]="
-        isScrolled && !isPastHero && isHomePage ? 'text-white' : 'text-gray-800'
+        isScrolled && !isPastHero && isHomePage
+          ? 'text-white'
+          : 'text-[var(--on-surface)]'
       "
     >
       @for (item of navBarItems; track $index) {
         <a
           [routerLink]="item.route"
-          routerLinkActive="!text-[var(--primary-color)]"
+          routerLinkActive="!text-[var(--brand)]"
           [routerLinkActiveOptions]="item.exact ? exactOptionsStrict : exactOptions"
           class="nav-label cursor-pointer hover-underline-animation font-medium text-sm lg:text-base px-1 lg:px-1 3xl:px-2 py-1 transition-colors duration-200 whitespace-nowrap flex items-center gap-2"
         >
@@ -65,7 +70,7 @@
 
     <!-- Acciones: login / usuario + hamburguesa -->
     <section
-      class="order-2 2xl:order-3 flex flex-1 items-center justify-end gap-x-4 2xl:gap-x-3"
+      class="order-2 flex flex-1 items-center justify-end gap-x-3 md:gap-x-4"
     >
       <!-- Desktop: login o menú usuario -->
       <div class="hidden lg:flex">
@@ -109,7 +114,7 @@
                   "
                 >
                   <button mat-menu-item [matMenuTriggerFor]="subMenu">
-                    <mat-icon class="text-[var(--primary-color)]">{{
+                    <mat-icon class="text-[var(--brand)]">{{
                       item.icon
                     }}</mat-icon>
                     <span>{{ item.title ?? '' | translate }}</span>
@@ -120,7 +125,7 @@
                       *ngFor="let child of item.children"
                       [routerLink]="child.route"
                     >
-                      <mat-icon class="text-[var(--primary-color)]">{{
+                      <mat-icon class="text-[var(--brand)]">{{
                         child.icon
                       }}</mat-icon>
                       <span>{{ child.title ?? '' | translate }}</span>
@@ -129,7 +134,7 @@
                 </ng-container>
                 <ng-template #regularItem>
                   <button mat-menu-item [routerLink]="item.route">
-                    <mat-icon class="text-[var(--primary-color)]">{{
+                    <mat-icon class="text-[var(--brand)]">{{
                       item.icon
                     }}</mat-icon>
                     <span>{{ item.title ?? '' | translate }}</span>
@@ -140,9 +145,9 @@
               <button
                 mat-menu-item
                 (click)="logoutEvent.emit()"
-                class="text-red-600"
+                class="text-[var(--danger)]"
               >
-                <mat-icon class="text-red-600">logout</mat-icon>
+                <mat-icon class="text-[var(--danger)]">logout</mat-icon>
                 <span class="font-bold">{{ 'auth.logout' | translate }}</span>
               </button>
             </mat-menu>
@@ -150,13 +155,21 @@
         }
       </div>
 
-      <!-- Lang switcher -->
+      <!-- Idioma y modo claro/oscuro: los dos ajustes de quien mira, juntos. -->
       <app-lang-switcher
         class="hidden lg:flex"
         [ngClass]="
           isScrolled && !isPastHero && isHomePage
             ? 'text-white'
-            : 'text-gray-700'
+            : 'text-[var(--on-surface-muted)]'
+        "
+      />
+      <app-theme-switcher
+        class="hidden lg:flex"
+        [ngClass]="
+          isScrolled && !isPastHero && isHomePage
+            ? 'text-white'
+            : 'text-[var(--on-surface-muted)]'
         "
       />
 

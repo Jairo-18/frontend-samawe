@@ -1,8 +1,12 @@
+<!-- ⚠️ El ancho de abajo (`w-72 md:w-80`) va acoplado a `--sidebar-width` en
+     `default-layout.component.html`, que es la que desplaza el contenido. Si
+     se cambia uno sin el otro, el panel queda tapado o con una franja vacía
+     al lado. -->
 <aside
   [ngClass]="{
-    'flex flex-col bg-[var(--primary-color)] items-center font-bold border-r border-black fixed top-0 left-0 h-dvh z-50 transition-all duration-300': true,
+    'flex flex-col bg-[var(--primary-color)] items-center font-bold border-r border-[var(--sidebar-item-border)] fixed top-0 left-0 h-dvh z-50 transition-all duration-300': true,
     'w-16': isCollapsed,
-    'w-64 md:w-72 p-2': !isCollapsed
+    'w-72 md:w-80 p-2': !isCollapsed
   }"
 >
   @if (isLoading) {
@@ -19,7 +23,7 @@
     >
       <button
         (click)="toggleSidebar()"
-        class="flex text-xl bg-white hover:bg-yellow-100 rounded-full shadow-md justify-center items-center border border-black"
+        class="flex text-xl bg-[var(--sidebar-item-bg)] hover:bg-[var(--sidebar-item-hover)] rounded-full shadow-md justify-center items-center border border-[var(--sidebar-item-border)]"
         [ngClass]="{
           'w-[35px] h-[35px]   md:w-[35px] md:h-[35px] lg:w-[30px] lg:h-[30px] xl:w-[35px] xl:h-[35px] transition-all duration-[600ms] ease-in-out':
             isCollapsed,
@@ -52,7 +56,7 @@
           width="150"
           height="150"
           alt="Logo Ecohotel Samawé"
-          class="w-[90px] md:w-[100px] 3xl:w-[150px] h-[90px] md:h-[100px] 3xl:h-[150px] border border-black rounded-full"
+          class="w-[90px] md:w-[100px] 3xl:w-[150px] h-[90px] md:h-[100px] 3xl:h-[150px] border border-[var(--sidebar-item-border)] rounded-full"
           [ngClass]="{ 'img-logo-collapsed': isCollapsed }"
         />
       }
@@ -77,17 +81,16 @@
               }"
             >
               <div
-                class="flex items-center"
+                class="flex items-center text-white"
                 [ngClass]="{
                   'justify-start w-full': !isCollapsed,
-                  'justify-center items-center w-full text-black': isCollapsed
+                  'justify-center items-center w-full': isCollapsed
                 }"
               >
                 <mat-icon
                   class="!flex items-center justify-center text-base md:text-base lg:text-base 3xl:text-xl"
                   [ngClass]="{
-                    'mx-[5px]': !isCollapsed,
-                    'text-black ': isCollapsed
+                    'mx-[5px]': !isCollapsed
                   }"
                 >
                   {{ module.icon }}
@@ -113,14 +116,17 @@
                     'flex justify-center py-[5px]': isCollapsed
                   }"
                 >
+                  <!-- El `hover` va como clase fija: antes eran dos entradas
+                       del `ngClass` con colores distintos según el estado
+                       (`yellow-100` expandido, `white/20` plegado); ahora las
+                       dos usan el mismo token, así que una sola clase basta
+                       —y dos claves iguales en el objeto no compilan—. -->
                   <button
-                    class="flex items-center rounded-lg"
+                    class="flex items-center rounded-lg hover:bg-[var(--sidebar-item-hover)]"
                     [ngClass]="{
                       'bg-none': isCollapsed,
-                      'flex w-full bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px]':
-                        !isCollapsed,
-                      'hover:bg-yellow-100': !isCollapsed,
-                      'hover:bg-white/20': isCollapsed
+                      'flex w-full bg-[var(--sidebar-item-bg)] border border-[var(--sidebar-item-border)] py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px]':
+                        !isCollapsed
                     }"
                     [routerLink]="
                       !item?.subItems?.length && item.route ? item?.route : null
@@ -133,10 +139,10 @@
                   >
                     <div class="flex items-center md:items-start">
                       <mat-icon
-                        class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)]"
+                        class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--brand)]"
                         [ngClass]="{
                           'mx-[5px]': !isCollapsed,
-                          ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-100':
+                          ' bg-[var(--sidebar-item-bg)] border border-[var(--sidebar-item-border)] rounded-lg p-4 hover:bg-[var(--sidebar-item-hover)]':
                             isCollapsed,
                           inline: true
                         }"
@@ -160,7 +166,7 @@
                 <mat-menu #submenu="matMenu" xPosition="after">
                   <ng-container *ngFor="let subItem of item.subItems">
                     <button mat-menu-item [routerLink]="subItem.route">
-                      <mat-icon class="text-[var(--primary-color)]">{{
+                      <mat-icon class="text-[var(--brand)]">{{
                         subItem.icon
                       }}</mat-icon>
                       <span>{{
@@ -184,13 +190,13 @@
                     <li *ngFor="let subItem of item.subItems">
                       <div class="flex justify-start py-[1.5px]">
                         <button
-                          class="flex w-full items-center rounded-lg bg-white border border-black py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px] hover:bg-yellow-100"
+                          class="flex w-full items-center rounded-lg bg-[var(--sidebar-item-bg)] border border-[var(--sidebar-item-border)] py-[2px] md:py-[2px] lg:py-[2px] 3xl:py-[5px] hover:bg-[var(--sidebar-item-hover)]"
                           [routerLink]="subItem.route"
                           (click)="removeFocus($event)"
                         >
                           <div class="flex items-center md:items-start">
                             <mat-icon
-                              class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)] mx-[5px]"
+                              class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--brand)] mx-[5px]"
                               >{{ subItem.icon }}</mat-icon
                             >
                           </div>
@@ -235,24 +241,25 @@
     <div
       class="flex flex-col shrink-0 justify-center w-full items-center gap-y-2 px-2 py-3 mt-0 md:mt-3"
     >
-      <!-- Lang switcher — solo visible cuando el sidebar está expandido -->
-      <div *ngIf="!isCollapsed" class="flex w-full justify-start px-1">
-        <app-lang-switcher class="text-white w-full" />
+      <!-- Idioma y modo claro/oscuro — solo con el sidebar expandido -->
+      <div *ngIf="!isCollapsed" class="flex items-center w-full justify-start px-1 gap-2">
+        <app-lang-switcher class="text-white flex-1" />
+        <app-theme-switcher class="text-white flex-1" />
       </div>
       <button
         (click)="logout.emit(); removeFocus($event)"
         class="flex items-center justify-start"
         [ngClass]="{
-          'flex items-center w-full px-[2px] py-[2px] md:py-[2px] xl:py-[2px] border border-black rounded-lg font-extrabold bg-white hover:bg-yellow-100 md:gap-x-1 2xl:gap-x-2':
+          'flex items-center w-full px-[2px] py-[2px] md:py-[2px] xl:py-[2px] border border-[var(--sidebar-item-border)] rounded-lg font-extrabold bg-[var(--sidebar-item-bg)] hover:bg-[var(--sidebar-item-hover)] md:gap-x-1 2xl:gap-x-2':
             !isCollapsed,
           'bg-none': isCollapsed
         }"
       >
         <mat-icon
-          class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--primary-color)]"
+          class="!flex text-base md:text-sm lg:text-sm 3xl:text-2xl justify-center items-center text-[var(--brand)]"
           [ngClass]="{
             'mx-[5px]': !isCollapsed,
-            ' bg-white border border-black rounded-lg p-4 hover:bg-yellow-100':
+            ' bg-[var(--sidebar-item-bg)] border border-[var(--sidebar-item-border)] rounded-lg p-4 hover:bg-[var(--sidebar-item-hover)]':
               isCollapsed,
             inline: true
           }"

@@ -47,19 +47,21 @@
 // Altura que la barra reserva en el flujo. El <nav> de dentro es `fixed`, así
 // que no ocupa espacio: quien lo reserva es `.brand-nav-bar`. Si las dos dejan
 // de coincidir, la barra se come el principio del contenido.
-// Tres tramos, alineados con los de `navbar-desktop.component.html`:
-//   <1024px  → hamburguesa: una fila, logo de 56px          → 72px
-//   1024–1535 → dos filas: marca+acciones arriba, enlaces abajo → 104px
-//   >=1536px → una fila con el logo grande de 70px          → 86px
+//
+// DOS tramos, alineados con los de `navbar-desktop.component.html`:
+//   <1024px  → hamburguesa: una fila, logo de 56px              → 72px
+//   >=1024px → dos filas: marca+acciones arriba, enlaces abajo  → 104px
+//
+// ⚠️ Antes había un tercer tramo (>=1536px → 86px) para cuando la barra volvía
+// a una sola fila en pantallas grandes. Se quitó el 22 sep 2026 al pasar a dos
+// filas SIEMPRE: con el interruptor de modo claro/oscuro, los enlaces y las
+// acciones ya no caben juntos ni a 1536px. Si se deja aquel valor, en pantalla
+// grande la barra reserva 86px, ocupa 104 y tapa el principio del contenido.
 :root {
-  --nav-bar-height: #{$heigth-nav-bar};
+  --nav-bar-height: 104px;
 
   @media (max-width: 1023.98px) {
     --nav-bar-height: 72px;
-  }
-
-  @media (min-width: 1024px) and (max-width: 1535.98px) {
-    --nav-bar-height: 104px;
   }
 }
 
@@ -115,8 +117,55 @@
   }
 }
 
-.font-noto-serif {
-  font-family: 'Noto Serif Variable', serif;
+/* Título de los diálogos (`base-dialog`), y por tanto de todos los que se
+   apoyan en él: crear factura, notas, confirmaciones, visor de imágenes.
+   Es un rótulo, así que va en la fuente de marca.
+
+   Se llamaba `.font-noto-serif` y pedía `'Noto Serif Variable'`, una fuente que
+   NO está declarada en ningún sitio del proyecto: todos esos títulos salían en
+   la serif genérica del sistema —Times New Roman en Windows— y se quedaban
+   fuera de la tipografía elegida. */
+.dialog-title {
+  font-family: var(--font-title);
+}
+
+/* Título de página y de sección de `base-page`, o sea el encabezado de casi
+   todas las pantallas del panel.
+
+   Va aquí y no con los `h1`–`h6` porque en ese componente son `<span>`, no
+   encabezados: se quedaban en la fuente de texto sin que se notara el motivo.
+   (Que sean `<span>` es otra discusión —el título de una página debería ser un
+   encabezado, también por accesibilidad y por SEO—, pero cambiar la etiqueta
+   toca tamaños y márgenes en todas las pantallas.) */
+.page-title {
+  font-family: var(--font-title);
+}
+
+/* El rotulito en mayúsculas que va encima del título en el sitio público
+   ("COMUNIDAD", "SERVICIOS"). Nombra la sección, así que es un rótulo; el `h2`
+   de debajo ya estaba cubierto por la regla de encabezados. */
+.section-eyebrow {
+  font-family: var(--font-title);
+}
+
+/* Encabezado de un bloque dentro de un panel: "Colores Corporativos",
+   "Tipografía", "Multimedia", "Contenido web"… Son los `<span class="text-lg
+   font-bold border-b">` que se repiten por todo `organizational`. */
+.panel-heading {
+  font-family: var(--font-title);
+}
+
+/* Etiqueta suelta de un campo, la que no es un `mat-label`: los rótulos en
+   mayúsculas de los selectores de color ("PRIMARIO", "FONDO SECUNDARIO"). */
+.field-label {
+  font-family: var(--font-title);
+}
+
+/* El rotulito sobre el título de las portadas del sitio público.
+   ⚠️ SOLO el rótulo: la frase de debajo es texto corrido y se queda en la
+   fuente de texto, que es justo lo que la hace legible sobre la foto. */
+.hero-eyebrow {
+  font-family: var(--font-title);
 }
 
 /* Toast clases */
@@ -303,12 +352,12 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1 !important;
+  background-color: var(--scrollbar-track) !important;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--primary-color) !important;
-  border: 2px solid #f1f1f1 !important;
+  border: 2px solid var(--scrollbar-track) !important;
   min-height: 60px !important;
 }
 
@@ -324,7 +373,7 @@
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: #f1f1f1 !important;
+  background-color: var(--scrollbar-track) !important;
 }
 
 .main::-webkit-scrollbar {
@@ -332,18 +381,20 @@
 }
 
 .main::-webkit-scrollbar-track {
-  background-color: #f1f1f1 !important;
+  background-color: var(--scrollbar-track) !important;
 }
 
 .main::-webkit-scrollbar-thumb {
   background-color: var(--primary-color) !important;
   min-height: 60px !important;
-  border: 2px solid #f1f1f1 !important;
+  border: 2px solid var(--scrollbar-track) !important;
 }
 
 * {
   scrollbar-width: auto !important;
-  scrollbar-color: var(--primary-color) #f1f1f1 !important;
+  // Firefox. `--brand` y no `--primary-color`: en oscuro es el mismo verde
+  // aclarado, que sobre la pista oscura sí se distingue.
+  scrollbar-color: var(--brand) var(--scrollbar-track) !important;
 }
 
 /* ══ TIPOGRAFÍA DE MARCA — PIEZAS PROPIAS DE LA APLICACIÓN ═════════════════
@@ -487,8 +538,8 @@ app-footer .footer-heading {
   letter-spacing: 0.01em;
 }
 
-/* Solo queda en Poppins el texto corrido: la descripción del hotel, la
-   dirección y el aviso de derechos. Son frases, y en versalitas se leen peor. */
+/* Solo queda en la fuente de texto el texto corrido: la descripción del hotel,
+   la dirección y el aviso de derechos. Son frases, y se leen mejor así. */
 app-footer p,
 app-footer .footer-copy {
   font-family: var(--font-body) !important;
@@ -505,12 +556,12 @@ app-footer .footer-copy {
  * consentimiento de cookies en versalitas lo vuelve incómodo justo cuando hay
  * que entenderlo para decidir.
  */
+/* Se quitaron de esta lista `app-privacity h3` / `app-terms h3` (el título de
+   esas páginas pasó a `h1`, que ya cubre la regla de encabezados) y
+   `.legal-section > span`, que no correspondía a ningún elemento de esas
+   plantillas. Quedan los enlaces, que sí son rótulos. */
 app-cookie-consent a,
-app-privacity h3,
-app-privacity .legal-section > span,
 app-privacity a,
-app-terms h3,
-app-terms .legal-section > span,
 app-terms a {
   font-family: var(--font-title) !important;
   font-weight: 700 !important;
@@ -541,6 +592,70 @@ app-terms a {
   }
 }
 
+/* ── 4. Blog / reseñas ──────────────────────────────────────────────────── */
+/* Mismo criterio que en las pantallas de acceso: la fuente de marca solo en
+   los rótulos que NOMBRAN una sección ("Reseñas de Google", "Escribe una
+   reseña").
+
+   Aquí importa especialmente no pasarse: el cuerpo de una reseña es un texto
+   ajeno que la gente lee entero para decidir si viene al hotel, y el nombre de
+   quien la firma es un dato, no un rótulo. Los dos se quedan en Poppins. */
+.blog-label {
+  font-family: var(--font-title);
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Las etiquetas de los campos (Buscar, Filtrar, Ordenar, Título) NO necesitan
+   regla aquí: `mat-theming.scss` ya las pone en la fuente de marca para toda la
+   aplicación, con `.mat-mdc-form-field .mdc-floating-label`. */
+
+/* ── 5. Cobertura: que NADA se quede fuera del sistema ──────────────────── */
+/**
+ * Criterio, fijado el 22 sep 2026: **dos roles en toda la aplicación**, pública
+ * y administrativa por igual.
+ *
+ *   `--font-title` → títulos y rótulos: lo que NOMBRA algo.
+ *   `--font-body`  → todo lo demás: párrafos, datos y lo que se teclea.
+ *
+ * Aquí NO hay lista de módulos. Se intentó una (auth, default-layout,
+ * invoices) y se descartó: dejaba el resto de la aplicación con otro criterio,
+ * y la gracia es justamente que la tipografía elegida alcance a todo.
+ *
+ * El reparto se hace POR DEFECTO Y EXCEPCIÓN, no marcando cada rótulo:
+ *   1. `styles.scss` pone `--font-title` en el `body`: todo nace en marca.
+ *   2. La lista de abajo devuelve a `--font-body` lo que se lee seguido o se
+ *      teclea.
+ *   3. `mat-theming.scss` se ocupa de los componentes de Material, que traen
+ *      su propia fuente y no heredan solos.
+ *
+ * Se hizo así tras comprobar que el camino contrario —texto por defecto y una
+ * clase en cada rótulo— dejaba huecos constantemente: 60 sitios sin cubrir en
+ * el primer barrido, y seguían apareciendo. Con este, lo que se escriba mañana
+ * queda bien sin acordarse de nada.
+ */
+p,
+li,
+small,
+blockquote,
+/* Lo que la persona teclea: hay que poder leerlo carácter a carácter, y a
+   veces es un dato que se dicta por teléfono (NIT, correo, código). */
+input,
+textarea,
+/* Mensajes bajo los campos: explican, no nombran. */
+mat-error,
+mat-hint,
+.mat-mdc-form-field-error,
+.mat-mdc-form-field-hint,
+/* Contenido de las tablas. El ENCABEZADO de columna sí es rótulo y se queda en
+   marca por su propia regla en `mat-theming.scss`. */
+td,
+.mat-mdc-cell,
+/* Escotilla para cualquier texto corrido que no encaje arriba. */
+.body-text {
+  font-family: var(--font-body);
+}
+
 h1,
 h2,
 h3,
@@ -562,20 +677,37 @@ h6 {
  * de la aplicación, pero cualquier regla con una clase la supera sin pelear.
  * No se borra porque `body` sí tiene que declarar la fuente base.
  */
-body {
+/* La fuente base del `body` la declara `styles.scss`, y desde el 22 sep 2026
+   es la de MARCA. Aquí había una segunda declaración con `--font-body` que la
+   contradecía y solo perdía por ir antes en el archivo. */
+
+/* ⚠️ De esta lista salieron `span`, `a`, `button` y `label` el 22 sep 2026, y
+   es EL cambio que hizo que la tipografía llegara a las tarjetas.
+
+   Aunque `:where()` tenga especificidad cero, una regla que apunta al elemento
+   gana SIEMPRE a lo que se hereda del `body` — la herencia solo actúa cuando
+   nadie dijo nada sobre ese elemento. Con `span` aquí dentro, el contenido de
+   las tarjetas de recetas, del reporte de ganancias y de los menús se quedaba
+   en la fuente de texto por mucho que el `body` pidiera la de marca. Solo
+   cambiaba lo que llevaba una clase, porque cualquier clase supera al
+   `:where()`.
+
+   Quedan los que de verdad son texto corrido o campos que se teclean. El resto
+   del reparto vive en el bloque 5 de este archivo. */
+:where(p, li, input, textarea, select) {
   font-family: var(--font-body);
 }
 
-:where(p, span, li, a, button, input, textarea, select, label) {
-  font-family: var(--font-body);
-}
-
+/* Iconos de acción en menús (editar / eliminar / asignar). Colores fijos
+   antes: un rojo y un azul saturados que no se adaptaban al tema. En oscuro no
+   quedaban invisibles, pero desentonaban con el resto de rojos y verdes del
+   sitio, que sí siguen el tema desde hoy. */
 .red-color {
-  color: rgb(255, 27, 27) !important;
+  color: var(--danger) !important;
 }
 .green-color {
-  color: green !important;
+  color: var(--success) !important;
 }
 .blue-color {
-  color: rgb(14, 58, 154) !important;
+  color: var(--info) !important;
 }

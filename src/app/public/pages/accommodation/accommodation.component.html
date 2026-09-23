@@ -11,15 +11,15 @@
       class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
     >
       <p
-        class="text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
+        class="hero-eyebrow text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
       >
         {{ 'public.accommodation.label' | translate }}
       </p>
-      <h2
+      <h1
         class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
       >
         {{ org?.accommodationsTitle | translated }}
-      </h2>
+      </h1>
       @if (org?.accommodationsDescription) {
         <p class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90">
           {{ org?.accommodationsDescription | translated }}
@@ -40,7 +40,7 @@
     <!-- Empty state -->
     @if (!loading && accommodations.length === 0) {
       <div
-        class="flex flex-col items-center justify-center py-24 gap-3 text-gray-400"
+        class="flex flex-col items-center justify-center py-24 gap-3 text-[var(--on-surface-muted)]"
       >
         <span class="material-icons text-5xl">cabin</span>
         <p class="text-base">{{ 'public.accommodation.no_results' | translate }}</p>

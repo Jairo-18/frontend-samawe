@@ -211,9 +211,15 @@ export class AddProductComponent implements OnInit {
       startDateTime: null,
       endDateTime: null
     });
+    // ⚠️ `setErrors(null)` deja el control VÁLIDO a la fuerza y Angular no
+    // vuelve a correr sus validadores hasta que cambie de valor: sin el
+    // recálculo, el formulario queda vacío y `form.valid === true` a la vez, y
+    // cualquier guarda `if (form.valid)` deja de proteger. Ver el detalle en
+    // `create-or-edit-product.component.ts`.
     Object.keys(this.form.controls).forEach((key) => {
       const control = this.form.get(key);
       control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this._router.navigate([], {
       queryParams: {},

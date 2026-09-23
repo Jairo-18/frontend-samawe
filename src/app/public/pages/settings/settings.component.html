@@ -9,24 +9,24 @@
       @for (item of settingsItems; track item.label) {
         <div
           (click)="navigateTo(item.route)"
-          class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer group"
         >
           <mat-icon
-            class="text-gray-500 group-hover:text-[var(--primary-color)] transition-colors"
+            class="text-[var(--on-surface-muted)] group-hover:text-[var(--brand)] transition-colors"
             >{{ item.icon }}</mat-icon
           >
           <span class="text-[16px] font-medium">{{ item.label }}</span>
         </div>
-        <div class="h-[1px] bg-gray-50 last:hidden"></div>
+        <div class="h-[1px] bg-[var(--border-color)] last:hidden"></div>
       }
 
       @if (settingsItems.length > 0) {
-        <div class="h-[1px] bg-gray-100 my-2"></div>
+        <div class="h-[1px] bg-[var(--border-color)] my-2"></div>
       }
 
       <button
         (click)="logout()"
-        class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 text-red-600 transition-colors w-full text-left group"
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--danger-bg)] text-[var(--danger)] transition-colors w-full text-left group"
       >
         <mat-icon class="group-hover:scale-110 transition-transform"
           >logout</mat-icon

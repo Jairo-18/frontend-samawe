@@ -27,10 +27,10 @@
         *ngFor="let product of filteredProducts"
         [value]="product.name | translated"
       >
-        <span class="font-semibold text-gray-500">{{ product.code }}</span>
+        <span class="font-semibold text-[var(--on-surface-muted)]">{{ product.code }}</span>
         - {{ product.name | translated }}
-        <span class="text-gray-700">· {{ product.priceSale | formatCop }}</span>
-        <span [ngClass]="product.isActive ? 'text-green-600' : 'text-red-600'">
+        <span class="text-[var(--on-surface)]">· {{ product.priceSale | formatCop }}</span>
+        <span [ngClass]="product.isActive ? 'text-[var(--success)]' : 'text-[var(--danger)]'">
           - {{ product?.isActive ? ('invoice.common.active' | translate) : ('invoice.common.inactive' | translate) }}
         </span>
       </mat-option>

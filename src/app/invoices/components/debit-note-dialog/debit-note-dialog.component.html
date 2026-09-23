@@ -12,8 +12,8 @@
     } @else if (result) {
       <!-- Resultado de la emisión -->
       <div class="flex flex-col items-center gap-2 py-4 text-center">
-        <mat-icon class="!w-12 !h-12 !text-[48px] text-green-600">check_circle</mat-icon>
-        <p class="text-lg font-bold">{{ 'invoice.debit_note.emitted' | translate }}</p>
+        <mat-icon class="!w-12 !h-12 !text-[48px] text-[var(--success)]">check_circle</mat-icon>
+        <p class="panel-heading text-lg font-bold">{{ 'invoice.debit_note.emitted' | translate }}</p>
         <p class="text-sm">
           {{ 'invoice.debit_note.number' | translate }}:
           <strong>{{ result.number || result.referenceCode }}</strong>
@@ -23,18 +23,18 @@
           <strong>{{ result.total | formatCop }}</strong>
         </p>
         @if (result.cude) {
-          <p class="text-xs text-gray-500 break-all">CUDE: {{ result.cude }}</p>
+          <p class="text-xs text-[var(--on-surface-muted)] break-all">CUDE: {{ result.cude }}</p>
         }
         @if (result.publicUrl) {
           <a [href]="result.publicUrl" target="_blank" rel="noopener"
-            class="text-sm text-blue-600 underline">
+            class="text-sm blue-color underline">
             {{ 'invoice.debit_note.view_official' | translate }}
           </a>
         }
       </div>
     } @else {
       <!-- Aviso de dirección: es lo que más se confunde con la nota crédito -->
-      <p class="mb-3 flex items-start gap-2 text-sm text-amber-700">
+      <p class="mb-3 flex items-start gap-2 text-sm text-[var(--warning)]">
         <mat-icon class="!text-base !w-4 !h-4">trending_up</mat-icon>
         {{ 'invoice.debit_note.hint' | translate }}
       </p>
@@ -45,7 +45,7 @@
           <p class="text-sm font-semibold mb-1">{{ 'invoice.debit_note.existing' | translate }}</p>
           <ul class="flex flex-col gap-1">
             @for (note of existing; track note.debitNoteId) {
-              <li class="flex items-center justify-between text-xs bg-gray-50 rounded px-2 py-1">
+              <li class="flex items-center justify-between text-xs bg-[var(--surface-sunken)] rounded px-2 py-1">
                 <span>{{ note.factusNumber || note.referenceCode }}</span>
                 <span class="font-semibold">{{ note.total | formatCop }}</span>
               </li>
@@ -66,7 +66,7 @@
       <p class="text-sm font-semibold mb-1">{{ 'invoice.debit_note.charges' | translate }}</p>
       <div class="flex flex-col gap-2 mb-2">
         @for (row of rows; track $index) {
-          <div class="flex flex-wrap items-start gap-2 border border-gray-200 rounded px-2 py-2">
+          <div class="flex flex-wrap items-start gap-2 border border-[var(--border-color)] rounded px-2 py-2">
             <!-- Autocompletado sobre el catálogo (productos, hospedajes,
                  excursiones) pero con texto libre: es un `input` normal con
                  `matAutocomplete`, no un select, así que un concepto que no
@@ -90,7 +90,7 @@
                   <mat-option [value]="option.label"
                     (onSelectionChange)="$event.isUserInput && onCatalogSelected(row, option)">
                     <span>{{ option.label }}</span>
-                    <span class="ml-2 text-xs text-gray-500">
+                    <span class="ml-2 text-xs text-[var(--on-surface-muted)]">
                       {{ option.price | formatCop }}
                     </span>
                   </mat-option>
@@ -133,11 +133,11 @@
            está dentro de la cifra escrita. -->
       <div class="mb-3 text-right text-sm">
         @if (taxTotal > 0) {
-          <p class="text-gray-500">
+          <p class="text-[var(--on-surface-muted)]">
             {{ 'invoice.debit_note.subtotal' | translate }}:
             {{ netTotal | formatCop }}
           </p>
-          <p class="text-gray-500">
+          <p class="text-[var(--on-surface-muted)]">
             {{ 'invoice.debit_note.tax_included' | translate }}:
             {{ taxTotal | formatCop }}
           </p>
@@ -150,7 +150,7 @@
 
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'invoice.debit_note.observation' | translate }}</mat-label>
-        <textarea matInput rows="2" maxlength="250" [(ngModel)]="observation"></textarea>
+        <textarea matInput rows="4" maxlength="250" [(ngModel)]="observation"></textarea>
       </mat-form-field>
     }
   </div>

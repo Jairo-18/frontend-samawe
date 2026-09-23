@@ -41,7 +41,29 @@ export class HowToArriveSectionComponent implements OnChanges {
   private readonly _platformId = inject(PLATFORM_ID);
 
   mapCenter: google.maps.LatLngLiteral = FALLBACK;
-  mapOptions: google.maps.MapOptions = { mapId: 'DEMO_MAP_ID' };
+  /**
+   * Mapa SATELITAL: fotografía real del terreno, que es lo que enseña de
+   * verdad dónde está el hotel —rodeado de selva, junto al río— cosa que el
+   * mapa de calles no cuenta.
+   *
+   * Se usa `hybrid` y no `satellite` a secas: es la misma imagen de satélite
+   * pero conserva encima los nombres de vías y poblaciones. En una página de
+   * "cómo llegar" eso importa, porque sin etiquetas la foto es bonita pero no
+   * sirve para orientarse. Para foto limpia, cambiar a `'satellite'`.
+   *
+   * `mapTypeControl` queda activo para poder volver al mapa de calles.
+   *
+   * ⚠️ `mapId` es obligatorio para `map-advanced-marker`: sin él el marcador no
+   * se dibuja. `DEMO_MAP_ID` es el identificador de PRUEBAS de Google; para
+   * producción conviene crear uno propio en Google Cloud y ponerlo aquí.
+   */
+  mapOptions: google.maps.MapOptions = {
+    mapId: 'DEMO_MAP_ID',
+    mapTypeId: 'hybrid',
+    mapTypeControl: true,
+    streetViewControl: false,
+    fullscreenControl: true
+  };
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['org'] && this.org) {

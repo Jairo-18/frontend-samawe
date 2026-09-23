@@ -4,20 +4,20 @@
       <!-- Title with decorative lines -->
       <div class="flex flex-col items-center text-center gap-2">
         <span
-          class="text-xs uppercase tracking-widest text-[var(--subtitle-color)] font-[900]"
+          class="section-eyebrow text-xs uppercase tracking-widest text-[var(--subtitle-color)] font-[900]"
         >
           {{ 'public.benefits.label' | translate }}
         </span>
       </div>
       <div class="flex items-center gap-4">
-        <hr class="flex-1 border-t border-[var(--primary-color)]" />
+        <hr class="flex-1 border-t border-[var(--brand)]" />
 
         <h2
           class="text-2xl md:text-4xl font-bold text-[var(--title-color)] whitespace-nowrap tracking-tight"
         >
           {{ 'public.benefits.title' | translate }}
         </h2>
-        <hr class="flex-1 border-t border-[var(--primary-color)]" />
+        <hr class="flex-1 border-t border-[var(--brand)]" />
       </div>
 
       @for (section of benefitSections; track section.benefitSectionId) {
@@ -37,23 +37,30 @@
                 track item.benefitItemId;
                 let i = $index
               ) {
+                <!-- `--brand` y no `--primary-color` en el icono y en el texto
+                     de la columna derecha: es el MISMO verde, pero aclarado en
+                     modo oscuro. El primario a secas es un verde oscuro que
+                     sobre fondo oscuro casi no se distingue. -->
                 <div
                   class="flex items-center gap-3 py-3"
                   [ngClass]="{
                     'pr-4 md:pr-8': i % 2 === 0,
-                    'pl-4 md:pl-8 border-l border-gray-400': i % 2 !== 0
+                    'pl-4 md:pl-8 border-l border-[var(--border-color)]':
+                      i % 2 !== 0
                   }"
                 >
                   <span
                     class="material-icons text-2xl shrink-0"
-                    style="color: var(--primary-color)"
+                    style="color: var(--brand)"
                   >
                     {{ item.icon }}
                   </span>
                   <span
                     class="text-sm md:text-base"
-                    [ngClass]="i % 2 === 0 ? 'text-gray-800' : 'font-medium'"
-                    [style.color]="i % 2 !== 0 ? 'var(--primary-color)' : null"
+                    [ngClass]="
+                      i % 2 === 0 ? 'text-[var(--on-surface)]' : 'font-medium'
+                    "
+                    [style.color]="i % 2 !== 0 ? 'var(--brand)' : null"
                   >
                     {{ item.name | translated }}
                   </span>

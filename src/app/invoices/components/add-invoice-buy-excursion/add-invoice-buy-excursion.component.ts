@@ -220,9 +220,12 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
       amount: 1,
       finalPrice: 0
     });
+    // ⚠️ Ver `create-or-edit-product.component.ts`: `setErrors(null)` sin
+    // recálculo deja el formulario vacío y "válido" a la vez.
     Object.keys(this.form.controls).forEach((key) => {
       const control = this.form.get(key);
       control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this._router.navigate([], {
       queryParams: {},

@@ -75,7 +75,7 @@
                 >
                 <span
                   [ngClass]="
-                    client.isActive ? 'text-green-600' : 'text-red-600'
+                    client.isActive ? 'text-[var(--success)]' : 'text-[var(--danger)]'
                   "
                 >
                   -
@@ -89,7 +89,7 @@
             </div>
           </mat-option>
           <mat-option *ngIf="showNoResultsMessage" disabled>
-            <span class="text-gray-500">{{
+            <span class="text-[var(--on-surface-muted)]">{{
               'invoice.common.no_results_clients' | translate
             }}</span>
           </mat-option>
@@ -175,7 +175,7 @@
         <textarea
           matInput
           formControlName="observations"
-          rows="3"
+          rows="6"
           #descTextarea
           maxlength="500"
           appUppercase
@@ -193,7 +193,7 @@
 
   <section
     actions
-    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-emerald-50 w-full"
+    class="flex flex-col-reverse md:flex-row justify-end gap-3 mt:0 md:mt-8 border-t border-[var(--border-color)] w-full"
   >
     <div class="w-full flex content-between md:w-[50%]">
       <button

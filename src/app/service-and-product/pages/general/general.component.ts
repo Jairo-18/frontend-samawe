@@ -121,9 +121,12 @@ export class GeneralComponent implements AfterViewInit, OnInit {
     this.currentProduct = undefined;
     this.currentAccommodation = undefined;
     this.currentExcursion = undefined;
-    this.createOrEditProductComponent?.imageUploader?.resetPending();
-    this.createOrEditAccommodationComponent?.imageUploader?.resetPending();
-    this.createOrEditExcursionComponent?.imageUploader?.resetPending();
+    // `clear()` y no `resetPending()`: al cambiar de pestaña se abandona lo que
+    // se estaba editando, así que hay que vaciar la galería entera y no solo lo
+    // pendiente de subir — si no, la foto del ítem anterior sigue en pantalla.
+    this.createOrEditProductComponent?.imageUploader?.clear();
+    this.createOrEditAccommodationComponent?.imageUploader?.clear();
+    this.createOrEditExcursionComponent?.imageUploader?.clear();
   }
   goToTop(): void {
     if (!isPlatformBrowser(this._platformId)) return;

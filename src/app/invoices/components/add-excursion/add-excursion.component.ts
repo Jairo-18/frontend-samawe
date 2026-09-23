@@ -265,8 +265,12 @@ export class AddExcursionComponent implements OnInit {
       startDateTime: null,
       endDateTime: null
     });
+    // ⚠️ Ver `create-or-edit-product.component.ts`: `setErrors(null)` sin
+    // recálculo deja el formulario vacío y "válido" a la vez.
     Object.keys(this.form.controls).forEach((key) => {
-      this.form.get(key)?.setErrors(null);
+      const control = this.form.get(key);
+      control?.setErrors(null);
+      control?.updateValueAndValidity({ emitEvent: false });
     });
     this._router.navigate([], {
       queryParams: {},

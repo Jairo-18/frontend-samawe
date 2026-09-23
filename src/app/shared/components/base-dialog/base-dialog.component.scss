@@ -1,6 +1,10 @@
 .base-dialog {
-  background-color: #fff;
-  border: solid 1px var(--primary-color);
+  // Estaba en `#fff` fijo. Este es el envoltorio de TODOS los diálogos de
+  // facturación (crear factura, notas, emisor…): en oscuro salían como un
+  // recuadro blanco encendido en mitad de la pantalla oscura, aunque su
+  // contenido interior ya estuviera migrado.
+  background-color: var(--surface-raised);
+  border: solid 1px var(--brand);
   width: 100%;
   padding: 20px;
   display: flex;
@@ -8,10 +12,11 @@
   justify-content: space-between;
 }
 .base-dialog-header {
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 2px solid var(--brand);
   padding-bottom: 10px;
   margin-bottom: 20px;
   font-weight: 600;
+  color: var(--on-surface);
 }
 .base-dialog-content {
   flex-grow: 1;
@@ -19,19 +24,24 @@
   margin-bottom: 20px;
   max-height: calc(100vh - 400px) !important;
   overflow-y: auto;
+  color: var(--on-surface);
 }
 .base-dialog-actions {
   display: flex;
   justify-content: flex-end;
+  // Este `button` genérico no se usa: cada diálogo proyecta sus propios
+  // `mat-fab`/`mat-stroked-button` por `[actions]`, que traen su color de
+  // Material y ganan por especificidad. Se deja el token por si algún día un
+  // `<button>` sin clases cae aquí dentro, para que no vuelva a salir azul.
   button {
     padding: 8px 16px;
     border: none;
-    background-color: #2962dc;
-    color: white;
+    background-color: var(--brand);
+    color: #ffffff;
     border-radius: 4px;
     cursor: pointer;
     &:hover {
-      background-color: #1e4bbd;
+      background-color: color-mix(in srgb, var(--brand) 80%, black);
     }
   }
 }

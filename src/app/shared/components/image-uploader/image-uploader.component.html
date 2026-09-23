@@ -11,15 +11,15 @@
 >
   <div
     *ngIf="isLoading"
-    class="absolute inset-0 z-10 bg-white/60 backdrop-blur-[1px] flex flex-col items-center justify-center rounded-xl"
+    class="absolute inset-0 z-10 bg-[var(--surface-raised)]/60 backdrop-blur-[1px] flex flex-col items-center justify-center rounded-xl"
   >
     <mat-spinner diameter="40"></mat-spinner>
-    <p class="text-sm text-gray-500 mt-2 font-medium">Cargando imágenes...</p>
+    <p class="text-sm text-[var(--on-surface-muted)] mt-2 font-medium">Cargando imágenes...</p>
   </div>
   <div
     class="w-full flex flex-col md:flex-row justify-between items-center mb-4"
   >
-    <span class="mat-h3 m-0 font-semibold text-gray-700"
+    <span class="mat-h3 m-0 font-semibold text-[var(--on-surface)]"
       >Galería de Imágenes</span
     >
     <button
@@ -56,7 +56,7 @@
     >
       <div
         *ngFor="let preview of pendingPreviews; let i = index"
-        class="relative flex-shrink-0 w-[260px] h-[260px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm group border-2 border-dashed border-[var(--primary-color)]/30 bg-[#f8f9fa]"
+        class="relative flex-shrink-0 w-[260px] h-[260px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm group border-2 border-dashed border-[var(--primary-color)]/30 bg-[var(--surface-sunken)]"
       >
         <img
           [src]="preview"
@@ -86,7 +86,7 @@
           </button>
         </div>
         <div
-          class="absolute bottom-0 bg-black/60 w-full text-white text-center text-[10px] py-1 font-bold uppercase tracking-wider"
+          class="field-label absolute bottom-0 bg-black/60 w-full text-white text-center text-[10px] py-1 font-bold uppercase tracking-wider"
         >
           Pendiente
         </div>
@@ -103,7 +103,7 @@
       </div>
       <div
         *ngFor="let image of images"
-        class="relative flex-shrink-0 w-[260px] h-[260px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm cursor-pointer group bg-[#f8f9fa] border border-gray-100"
+        class="relative flex-shrink-0 w-[260px] h-[260px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm cursor-pointer group bg-[var(--surface-sunken)] border border-[var(--border-color)]"
       >
         <img
           [src]="image.imageUrl"
@@ -144,14 +144,14 @@
       class="w-full flex flex-col items-center justify-center py-6"
     >
       <div
-        class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-400 shadow-inner"
+        class="w-16 h-16 bg-[var(--surface-sunken)] rounded-full flex items-center justify-center mb-4 text-[var(--on-surface-muted)] shadow-inner"
       >
         <mat-icon class="!text-3xl">collections</mat-icon>
       </div>
-      <p class="text-gray-500 font-medium m-0">
+      <p class="text-[var(--on-surface-muted)] font-medium m-0">
         No hay imágenes en la galería.
       </p>
-      <span class="text-gray-400 text-sm mt-1 font-normal"
+      <span class="text-[var(--on-surface-muted)] text-sm mt-1 font-normal"
         >Arrastra archivos o usa el botón superior para añadir</span
       >
     </div>

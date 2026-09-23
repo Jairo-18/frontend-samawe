@@ -4,7 +4,7 @@
   >
     @if (state === 'loading') {
       <app-loader />
-      <p class="text-sm text-gray-500">{{ 'verify_email.verifying' | translate }}</p>
+      <p class="text-sm text-[var(--on-surface-muted)]">{{ 'verify_email.verifying' | translate }}</p>
     }
 
     @if (state === 'success') {
@@ -12,7 +12,7 @@
         >verified</span
       >
       <span class="auth-title font-extrabold text-xl">{{ 'verify_email.success_title' | translate }}</span>
-      <p class="text-sm text-gray-500">
+      <p class="text-sm text-[var(--on-surface-muted)]">
         {{ 'verify_email.success_subtitle' | translate }}
       </p>
       <app-button-landing
@@ -24,9 +24,9 @@
     }
 
     @if (state === 'error') {
-      <span class="material-icons text-6xl text-red-400">error_outline</span>
+      <span class="material-icons text-6xl text-[var(--danger)]">error_outline</span>
       <span class="auth-title font-extrabold text-xl">{{ 'verify_email.error_title' | translate }}</span>
-      <p class="text-sm text-gray-500">{{ errorMessage | translate }}</p>
+      <p class="text-sm text-[var(--on-surface-muted)]">{{ errorMessage | translate }}</p>
       <app-button-landing
         [label]="'verify_email.back_home_btn' | translate"
         variant="transparent"

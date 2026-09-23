@@ -1,5 +1,5 @@
 ::ng-deep .mat-badge-content {
-  background-color: #ef4444 !important; /* Un rojo más moderno (Tailwind red-500) */
+  background-color: var(--danger) !important;
   color: white !important;
   font-weight: normal !important;
   padding-top: 8px !important;

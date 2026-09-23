@@ -51,6 +51,19 @@
           <app-loader></app-loader>
         } @else if (dataSource.data.length > 0) {
           <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="image">
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                {{ 'service_and_product.table.photo' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let product" class="center-text">
+                <img
+                  [src]="itemImage(product)"
+                  [alt]="product?.name | translated"
+                  class="w-9 h-9 min-w-9 shrink-0 rounded-md object-cover border border-[var(--primary-color)] mx-auto cursor-pointer"
+                  (click)="openImagesPreview($event, product)"
+                />
+              </td>
+            </ng-container>
             <ng-container matColumnDef="categoryType">
               <th mat-header-cell *matHeaderCellDef class="center-text">
                 {{ 'service_and_product.table.category' | translate }}
@@ -94,11 +107,11 @@
               >
                 <span
                   [ngClass]="{
-                    'text-red-600 font-bold': (+product.amount || 0) < 5,
-                    'text-yellow-600 font-bold':
+                    'text-[var(--danger)] font-bold': (+product.amount || 0) < 5,
+                    'text-[var(--warning)] font-bold':
                       (+product.amount || 0) >= 5 &&
                       (+product.amount || 0) < 10,
-                    'text-[#06a606] font-bold': (+product.amount || 0) >= 10
+                    'text-[var(--success)] font-bold': (+product.amount || 0) >= 10
                   }"
                 >
                   {{ product.amount }}
@@ -115,8 +128,8 @@
                 class="center-text"
                 [ngClass]="
                   product.isActive
-                    ? 'text-[#06a606] font-bold'
-                    : 'text-red-700 font-bold'
+                    ? 'text-[var(--success)] font-bold'
+                    : 'text-[var(--danger)] font-bold'
                 "
               >
                 {{ product.isActive ? ('service_and_product.values.active' | translate) : ('service_and_product.values.inactive' | translate) }}
@@ -129,7 +142,7 @@
               <td
                 mat-cell
                 *matCellDef="let product"
-                class="right-text text-red-700 font-bold"
+                class="right-text text-[var(--danger)] font-bold"
               >
                 {{ product.priceBuy | formatCop }}
               </td>
@@ -141,7 +154,7 @@
               <td
                 mat-cell
                 *matCellDef="let product"
-                class="right-text text-[#06a606] font-bold"
+                class="right-text text-[var(--success)] font-bold"
               >
                 {{ product.priceSale | formatCop }}
               </td>
@@ -261,6 +274,18 @@
         >
           <div class="table-flip-inner">
             <table mat-table [dataSource]="dataSource" matSort>
+              <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef class="center-text">
+                  {{ 'service_and_product.table.photo' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let product" class="center-text">
+                  <img
+                    [src]="itemImage(product)"
+                    [alt]="product?.name | translated"
+                    class="w-9 h-9 min-w-9 shrink-0 rounded-md object-cover border border-[var(--primary-color)] mx-auto"
+                  />
+                </td>
+              </ng-container>
               <ng-container matColumnDef="categoryType">
                 <th mat-header-cell *matHeaderCellDef class="center-text">
                   {{ 'service_and_product.table.role' | translate }}
@@ -304,11 +329,11 @@
                 >
                   <span
                     [ngClass]="{
-                      'text-red-600 font-bold': (+product.amount || 0) < 5,
-                      'text-yellow-600 font-bold':
+                      'text-[var(--danger)] font-bold': (+product.amount || 0) < 5,
+                      'text-[var(--warning)] font-bold':
                         (+product.amount || 0) >= 5 &&
                         (+product.amount || 0) < 10,
-                      'text-[#06a606] font-bold': (+product.amount || 0) >= 10
+                      'text-[var(--success)] font-bold': (+product.amount || 0) >= 10
                     }"
                   >
                     {{ product.amount }}
@@ -325,8 +350,8 @@
                   class="center-text"
                   [ngClass]="
                     product.isActive
-                      ? 'text-[#06a606] font-bold'
-                      : 'text-red-700 font-bold'
+                      ? 'text-[var(--success)] font-bold'
+                      : 'text-[var(--danger)] font-bold'
                   "
                 >
                   {{ product.isActive ? ('service_and_product.values.active' | translate) : ('service_and_product.values.inactive' | translate) }}
@@ -339,7 +364,7 @@
                 <td
                   mat-cell
                   *matCellDef="let product"
-                  class="right-text text-red-700 font-bold"
+                  class="right-text text-[var(--danger)] font-bold"
                 >
                   {{ product.priceBuy | formatCop }}
                 </td>
@@ -351,7 +376,7 @@
                 <td
                   mat-cell
                   *matCellDef="let product"
-                  class="right-text text-[#06a606] font-bold"
+                  class="right-text text-[var(--success)] font-bold"
                 >
                   {{ product.priceSale | formatCop }}
                 </td>

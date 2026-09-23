@@ -1,7 +1,7 @@
 <form [formGroup]="form" class="py-6 flex flex-col gap-6">
   <!-- Inicio -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">home</mat-icon>
       {{ 'organizational.home_content.main_section' | translate }}
     </span>
@@ -11,7 +11,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.main_description' | translate }}</mat-label>
-      <textarea matInput formControlName="homeDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="homeDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.main_video_url' | translate }}</mat-label>
@@ -23,7 +23,7 @@
 
   <!-- Experiencias -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">explore</mat-icon>
       {{ 'organizational.home_content.experiences_section' | translate }}
     </span>
@@ -33,13 +33,13 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.experiences_description' | translate }}</mat-label>
-      <textarea matInput formControlName="experienceDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="experienceDescriptionEs" rows="6"></textarea>
     </mat-form-field>
   </div>
 
   <!-- Reservas -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">book_online</mat-icon>
       {{ 'organizational.home_content.reservations_section' | translate }}
     </span>
@@ -49,13 +49,13 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.reservations_description' | translate }}</mat-label>
-      <textarea matInput formControlName="reservationDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="reservationDescriptionEs" rows="6"></textarea>
     </mat-form-field>
   </div>
 
   <!-- Sobre Nosotros -->
   <div class="flex flex-col gap-4">
-    <span class="text-lg font-bold border-b pb-2 flex items-center gap-2">
+    <span class="panel-heading text-lg font-bold border-b pb-2 flex items-center gap-2">
       <mat-icon class="text-[var(--primary-color)]">groups</mat-icon>
       {{ 'organizational.home_content.about_us_section' | translate }}
     </span>
@@ -65,7 +65,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.about_us_description' | translate }}</mat-label>
-      <textarea matInput formControlName="aboutUsDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="aboutUsDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.mission_title' | translate }}</mat-label>
@@ -73,7 +73,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.mission_description' | translate }}</mat-label>
-      <textarea matInput formControlName="missionDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="missionDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.vision_title' | translate }}</mat-label>
@@ -81,7 +81,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.vision_description' | translate }}</mat-label>
-      <textarea matInput formControlName="visionDescriptionEs" rows="2"></textarea>
+      <textarea matInput formControlName="visionDescriptionEs" rows="6"></textarea>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.history_title' | translate }}</mat-label>
@@ -89,12 +89,18 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>{{ 'organizational.home_content.history_description' | translate }}</mat-label>
-      <textarea matInput formControlName="historyDescriptionEs" rows="3"></textarea>
+      <textarea matInput formControlName="historyDescriptionEs" rows="6"></textarea>
     </mat-form-field>
   </div>
 
   <div class="flex justify-end mt-2">
-    <button mat-fab extended="true" class="!w-full" (click)="save.emit()">
+    <button
+      mat-fab
+      extended="true"
+      class="!w-full"
+      [disabled]="!form.dirty"
+      (click)="save.emit()"
+    >
       <mat-icon>save</mat-icon>
       {{ 'organizational.home_content.save_home_experience' | translate }}
     </button>

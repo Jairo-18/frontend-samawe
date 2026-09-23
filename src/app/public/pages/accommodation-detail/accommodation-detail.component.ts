@@ -180,8 +180,19 @@ export class AccommodationDetailComponent implements OnInit, OnDestroy {
   }
 
   get images(): { imageUrl: string }[] {
-    const list = (this.accommodation?.images ?? []).filter((i) => !!i.imageUrl);
-    return list.length ? list : [{ imageUrl: 'assets/images/notFound.avif' }];
+    return (this.accommodation?.images ?? []).filter((i) => !!i.imageUrl);
+  }
+
+  /**
+   * El alojamiento no tiene ninguna foto cargada.
+   *
+   * Antes se devolvía `notFound.avif` como si fuera una foto más. Esa imagen
+   * lleva el fondo BLANCO dentro del archivo, así que en modo oscuro dejaba un
+   * rectángulo blanco enorme en mitad de la página. Ahora la plantilla pinta un
+   * hueco propio, con los colores del tema.
+   */
+  get hasImages(): boolean {
+    return this.images.length > 0;
   }
 
   get mainImage(): string {
