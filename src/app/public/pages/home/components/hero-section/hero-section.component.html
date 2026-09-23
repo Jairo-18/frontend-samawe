@@ -1,23 +1,35 @@
-<article class="relative w-full h-[60vh] overflow-hidden">
+<!-- Alto graduado, igual que en accommodation/gastronomy: 60vh fijo en un
+     celular angosto-y-alto deja poco margen. Acá va un poco menos agresivo
+     que allá porque este hero además lleva dos botones debajo del texto.
+     El centrado (`flex items-center justify-center`) va en ESTE artículo, no
+     en el div de adentro: con `min-height` el hijo no puede centrarse con
+     `h-full`. -->
+<article class="relative w-full min-h-[48vh] sm:min-h-[55vh] md:min-h-[60vh] overflow-hidden flex flex-col items-center justify-center">
+  <!-- object-position corrido a la derecha: la cabaña (el sujeto real de la
+       foto) ya llega casi al borde derecho de la imagen original, con selva
+       de sobra a la izquierda. Con el ancla en el centro (default), al
+       angostar la caja en tablet el recorte avanzaba igual desde los dos
+       lados y se comía la cabaña por la derecha antes de tocar el poste de
+       luz de la izquierda, que es solo decorativo. -->
   <img
     src="assets/images/homenew.webp"
     [alt]="(org?.homeTitle | translated) ?? 'Samawe'"
-    class="absolute inset-0 w-full h-full object-cover z-0"
+    class="absolute inset-0 w-full h-full object-cover object-[78%_center] z-0"
   />
   <div class="absolute inset-0 bg-black/40 z-0"></div>
   <div
-    class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
+    class="relative z-10 text-center text-white px-6 py-10"
   >
     <p class="hero-eyebrow text-sm font-semibold uppercase tracking-widest opacity-80 mb-2">
       {{ org?.name ?? '' }}
     </p>
     <h1
-      class="text-xl md:text-4xl font-bold drop-shadow-md max-w-5xl leading-tight"
+      class="text-xl md:text-4xl font-bold drop-shadow-md max-w-5xl mx-auto leading-tight"
     >
       {{ org?.homeTitle | translated }}
     </h1>
     @if (org?.homeDescription) {
-      <p class="mt-4 text-sm md:text-lg drop-shadow-md max-w-3xl opacity-90">
+      <p class="mt-4 text-sm md:text-lg drop-shadow-md max-w-3xl mx-auto opacity-90">
         {{ org?.homeDescription | translated }}
       </p>
     }

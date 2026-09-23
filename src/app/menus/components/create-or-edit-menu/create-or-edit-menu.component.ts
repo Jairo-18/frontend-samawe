@@ -168,6 +168,11 @@ export class CreateOrEditMenuComponent implements OnInit, OnChanges {
     );
   }
 
+  /** Independiente de `canSave`: avisa aunque todavía no haya ningún platillo elegido. */
+  get hasUnsavedChanges(): boolean {
+    return !this.saving && (this.form.dirty || this._recipesChanged);
+  }
+
   private _recipesChanged = false;
 
   isRecipeSelected(recipe: RecipeWithDetails): boolean {

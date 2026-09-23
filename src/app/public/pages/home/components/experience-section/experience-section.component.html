@@ -1,6 +1,13 @@
 <section class="w-full py-16 px-6 md:px-16 bg-[var(--bg-primary-color)]">
+  <!-- A dos columnas recién desde `laptop:` (1440px, custom en
+       tailwind.config.js): el iPad Pro 13" mide 1024px en vertical y 1366px
+       en horizontal — por debajo de `lg:` (1024px) y hasta de `xl:` (1280px)
+       en cualquier orientación caía del lado "desktop" y quedaba con el mismo
+       aprieto de caja ancha y poco alta que forzaba a `object-cover` a
+       recortar de más. Con `laptop:` esa tablet se queda apilada (foto a lo
+       ancho completo) igual que mobile, en las dos orientaciones. -->
   <div
-    class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
+    class="max-w-[1400px] mx-auto grid grid-cols-1 laptop:grid-cols-2 gap-10 items-center"
   >
     <!-- Text -->
     <div class="flex flex-col gap-4">
@@ -19,9 +26,11 @@
         ></app-button-landing>
       </div>
     </div>
-    <!-- Image -->
+    <!-- Image. `aspect-ratio` en vez de altos fijos por breakpoint: el alto
+         sale solo del ancho disponible en cada momento, sin escalones ni
+         huecos entre breakpoints donde la caja quedaba aplastada. -->
     <div
-      class="w-full h-64 md:h-80 rounded-[4px] overflow-hidden shadow-lg border-[1px] border-[var(--primary-color)]"
+      class="w-full aspect-[3/2] rounded-[4px] overflow-hidden shadow-lg border-[1px] border-[var(--primary-color)]"
     >
       <img
         [src]="imageUrl"

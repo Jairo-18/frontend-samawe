@@ -140,11 +140,37 @@
         <!-- País: buscador con autocompletado, igual que en el panel de admin -->
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>{{
-            'organizational.common.search_country' | translate
+            (isPhoneCodeSelected
+              ? 'organizational.common.country'
+              : 'organizational.common.search_country'
+            ) | translate
           }}</mat-label>
           <!-- matPrefix va fuera del @if: dentro de un bloque con varios nodos
                raíz Angular no lo proyecta en el slot y el icono no se pinta. -->
           <mat-icon matPrefix>flag</mat-icon>
+          <!-- El botón de limpiar (matSuffix) también va SUELTO, al mismo
+               nivel que el input: anidarlo dentro de este bloque reproducía el
+               mismo problema de proyección que ya rompió matPrefix (ver
+               arriba) — Angular no lo llevaba al slot y salía sin el layout ni
+               el estilo de botón, suelto debajo del campo.
+               ⚠️ El input y `<mat-autocomplete>` SÍ tienen que ir en el MISMO
+               @if: `[matAutocomplete]="autoPhoneCode"` referencia la variable
+               de plantilla `#autoPhoneCode`, y cada bloque @if es su propio
+               scope — separarlos en dos @if distintos rompe esa referencia
+               (probado: `NG1: Property 'autoPhoneCode' does not exist`). -->
+          @if (editMode && isPhoneCodeSelected) {
+            <button
+              matSuffix
+              mat-icon-button
+              type="button"
+              (click)="clearPhoneCodeSelection()"
+              [matTooltip]="
+                'organizational.common.clear_selection' | translate
+              "
+            >
+              <mat-icon>clear</mat-icon>
+            </button>
+          }
           @if (editMode) {
             <input
               type="text"
@@ -155,19 +181,6 @@
               [readonly]="isPhoneCodeSelected"
               (focus)="onPhoneCodeFocus()"
             />
-            @if (isPhoneCodeSelected) {
-              <button
-                matSuffix
-                mat-icon-button
-                type="button"
-                (click)="clearPhoneCodeSelection()"
-                [matTooltip]="
-                  'organizational.common.clear_selection' | translate
-                "
-              >
-                <mat-icon>clear</mat-icon>
-              </button>
-            }
             <mat-autocomplete
               #autoPhoneCode="matAutocomplete"
               [displayWith]="displayPhoneCode"

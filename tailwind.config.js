@@ -4,6 +4,11 @@ module.exports = {
   theme: {
     extend: {
       screens: {
+        // Portátil real, 14" en adelante. El iPad Pro 13" mide 1366px en
+        // horizontal — por debajo del `xl` (1280px) de fábrica ya lo cruzaba,
+        // así que estas secciones necesitaban un corte propio, más alto que
+        // cualquier iPad en cualquier orientación.
+        laptop: '1440px',
         '3xl': '1920px',
       },
       keyframes: {

@@ -348,6 +348,7 @@
     "selected_dishes": "Platillos seleccionados para esta receta",
     "no_dishes_found": "No se encontraron platillos con receta",
     "select_dish_required": "Debe seleccionar al menos un platillo",
+    "unsaved_changes": "Tienes cambios sin guardar",
     "cancel": "Cancelar",
     "save_changes": "Guardar cambios",
     "see_more": "ver más",
@@ -888,6 +889,7 @@
       "save_changes": "Guardar cambios",
       "save": "Guardar",
       "search_country": "Buscar país",
+      "country": "País",
       "type_to_search": "Escribe para buscar...",
       "searching": "Buscando...",
       "no_results": "No se encontraron resultados",
@@ -1517,7 +1519,11 @@
       "label": "Gastronomía",
       "history": "Historia",
       "kitchen": "Cocina",
-      "ingredients": "Ingredientes"
+      "ingredients": "Ingredientes",
+      "menus_label": "Nuestra Carta",
+      "menus_title": "Menús",
+      "menus_empty": "Todavía no hay menús publicados.",
+      "more_dishes": "platillos más"
     },
     "experience": {
       "label": "Lo que ofrecemos",

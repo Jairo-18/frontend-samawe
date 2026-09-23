@@ -73,7 +73,14 @@
 // `100svh - navbar`, así que el margen se suma por encima del alto de la
 // ventana y fuerza scroll en todas las pantallas.
 .auth-content-center {
-  min-height: calc(100svh - var(--nav-bar-height));
+  // Topado con `min()`: en un celular o laptop normal, `100svh - navbar` es
+  // menor a 900px y manda igual que siempre. En una tablet en VERTICAL
+  // (viewport bien alto, ~1000-1360px de alto) centrar la card contra el
+  // 100% de esa altura dejaba muchísimo aire arriba y abajo de una card que
+  // mide una fracción de eso. Con el tope, la card se centra dentro de una
+  // franja razonable y el resto queda como scroll normal de la página, no
+  // como margen inflado.
+  min-height: min(calc(100svh - var(--nav-bar-height)), 900px);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -343,6 +350,29 @@
 
 .mat-mdc-form-field-error {
   font-size: 12px !important;
+}
+
+/**
+ * Autocompletado del navegador (usuario/contraseña guardados). Chrome/Edge
+ * pintan el campo con un fondo propio —blanco o amarillo pálido— en cuanto
+ * detectan una credencial guardada, y ninguna regla CSS normal lo puede
+ * tocar: el único gancho real es `:-webkit-autofill` + el truco del
+ * `box-shadow` interior (no se puede fijar el `background-color` a secas,
+ * el navegador lo vuelve a pintar encima).
+ *
+ * En modo oscuro el texto del campo es casi blanco (`--on-surface`), así que
+ * ese fondo forzado —también claro— lo dejaba invisible: texto casi blanco
+ * sobre un fondo casi blanco hasta soltar el campo. Bug del login reportado
+ * el 23 sep 2026.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--surface-raised) inset !important;
+  -webkit-text-fill-color: var(--on-surface) !important;
+  caret-color: var(--on-surface);
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 ::-webkit-scrollbar {

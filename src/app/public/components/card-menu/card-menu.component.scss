@@ -1,0 +1,33 @@
+// Gesto del usuario (hover), no animación de entrada — esa la maneja
+// `assets/js/animations.js` sobre el <article> de adentro.
+//
+// Solo en punteros finos con hover real: en táctil `:hover` queda "pegado"
+// tras el toque, y aquí no hay nada que pulsar, así que un hover fantasma
+// solo confundiría.
+@media (hover: hover) and (pointer: fine) {
+  article {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+    }
+
+    &:hover img {
+      transform: scale(1.06);
+    }
+  }
+}
+
+article img {
+  transition: transform 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article,
+  article img {
+    transition: none;
+  }
+}

@@ -153,7 +153,12 @@
       <section class="flex flex-col w-full md:w-[50%] gap-[25px] md:gap-2">
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'organizational.common.search_country' | translate }}</mat-label>
+          <mat-label>{{
+            (isPhoneCodeSelected
+              ? 'organizational.common.country'
+              : 'organizational.common.search_country'
+            ) | translate
+          }}</mat-label>
           <mat-icon matPrefix>flag</mat-icon>
           <input type="text" matInput formControlName="phoneCodeSearch" [matAutocomplete]="autoPhoneCode"
             [placeholder]="'organizational.common.type_to_search' | translate" [readonly]="isPhoneCodeSelected"

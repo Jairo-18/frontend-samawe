@@ -6,8 +6,11 @@
   }
 
   @if (org) {
-    <!-- Hero con ABOUT_US_IMAGE -->
-    <div class="relative w-full h-[60vh] overflow-hidden">
+    <!-- Hero con ABOUT_US_IMAGE. Alto graduado + centrado en ESTE contenedor:
+         con `min-height` el hijo no puede centrarse con `h-full`. Esta
+         página además es la que motivó el cambio: la descripción es un
+         párrafo largo, y con `height` fija se apretaba contra el borde. -->
+    <div class="relative w-full min-h-[38vh] sm:min-h-[48vh] md:min-h-[60vh] overflow-hidden flex flex-col items-center justify-center">
       <img
         [src]="getMedia('ABOUT_US_IMAGE')"
         [alt]="(org.aboutUsTitle | translated) || ('public.about_us.image_alt_fallback' | translate)"
@@ -15,7 +18,7 @@
       />
       <div class="absolute inset-0 bg-black/40 z-0"></div>
       <div
-        class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
+        class="relative z-10 text-center text-white px-6 py-10"
       >
         <p
           class="hero-eyebrow text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
@@ -33,13 +36,13 @@
              usaba `h1`. El tamaño lo dan las clases, así que cambiar la
              etiqueta no altera nada visual. -->
         <h1
-          class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
+          class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl mx-auto leading-tight"
         >
           {{ org.aboutUsTitle | translated }}
         </h1>
         @if (org.aboutUsDescription) {
           <p
-            class="mt-4 text-[10px] md:text-base drop-shadow-md max-w-xl md:max-w-4xl opacity-90"
+            class="mt-4 text-[10px] md:text-base drop-shadow-md max-w-xl md:max-w-4xl mx-auto opacity-90"
           >
             {{ org.aboutUsDescription | translated }}
           </p>
@@ -51,19 +54,22 @@
          antes las tres colgaban de un contenedor común y se leían como un
          bloque continuo. -->
 
-    <!-- Misión -->
+    <!-- Misión. A fila recién desde `laptop:` (1440px) y `aspect-ratio` en
+         vez de alto fijo — mismo ajuste que gastronomía/home: con `md:` el
+         iPad Pro caía del lado "desktop" con una caja de foto ancha y poco
+         alta. -->
     @if (org.missionTitle || org.missionDescription) {
       <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row-reverse gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row-reverse gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('MISSION_IMAGE')"
               [alt]="(org.missionTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -82,15 +88,15 @@
     @if (org.visionTitle || org.visionDescription) {
       <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('VISION_IMAGE')"
               [alt]="(org.visionTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -109,15 +115,15 @@
     @if (org.historyTitle || org.historyDescription) {
       <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row-reverse gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row-reverse gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('HISTORY_IMAGE')"
               [alt]="(org.historyTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">

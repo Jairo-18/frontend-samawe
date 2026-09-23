@@ -48,11 +48,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
         @for (menu of menus; track menu.menuId) {
           <div
-            class="menu-card bg-[var(--surface-raised)] rounded-[4px] border border-[var(--brand)] overflow-hidden transition-all duration-300"
+            class="menu-card bg-[var(--surface-sunken)] rounded-[4px] border border-[var(--brand)] overflow-hidden transition-all duration-300"
           >
             <!-- Menu Header -->
             <div
-              class="flex justify-between items-center px-5 py-4 cursor-pointer hover:bg-[var(--surface-sunken)] transition-colors"
+              class="flex justify-between items-center px-5 py-4 cursor-pointer hover:bg-[var(--surface-raised)] transition-colors"
               (click)="toggleExpanded()"
             >
               <div class="flex flex-col gap-1">
@@ -170,10 +170,15 @@
                             >
                           </div>
                         }
-                        <span
-                          class="font-semibold text-sm text-[var(--on-surface)] line-clamp-2"
-                          >{{ grouped.productName | capitalize }}</span
-                        >
+                        <div class="min-w-0">
+                          <span
+                            class="font-semibold text-sm text-[var(--on-surface)] line-clamp-2 block"
+                            >{{ grouped.productName | capitalize }}</span
+                          >
+                          <span class="text-xs font-medium text-[var(--brand)]">
+                            COP {{ grouped.priceSale | number: '1.0-0' }}
+                          </span>
+                        </div>
                       </div>
 
                       <div class="space-y-1.5">

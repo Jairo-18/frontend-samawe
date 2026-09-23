@@ -334,6 +334,15 @@
       reveal(el, { dur: 600, del: 0, from: 'bottom', px: 25 });
     });
 
+    // Va sobre el <article> de ADENTRO, no sobre <app-card-menu>: el host ya
+    // lleva un `translateY` fijo por Tailwind (el efecto "corona" de
+    // gastronomía) y `reveal()` termina poniendo `transform: none` inline al
+    // revelarse — sobre el host eso borraría la corona. Sobre el artículo de
+    // adentro no hay pisada: los transforms se componen.
+    qsa('app-card-menu article').forEach(function (el, i) {
+      reveal(el, { dur: 600, del: (i % 3) * 90, from: 'bottom', px: 24 });
+    });
+
     qsa('div.shadow-md.border').forEach(function (el) {
       if (seen.has(el)) return;
 

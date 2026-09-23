@@ -348,6 +348,7 @@
     "selected_dishes": "Selected dishes for this recipe",
     "no_dishes_found": "No dishes with recipe found",
     "select_dish_required": "You must select at least one dish",
+    "unsaved_changes": "You have unsaved changes",
     "cancel": "Cancel",
     "save_changes": "Save changes",
     "see_more": "see more",
@@ -888,6 +889,7 @@
       "save_changes": "Save changes",
       "save": "Save",
       "search_country": "Search country",
+      "country": "Country",
       "type_to_search": "Type to search...",
       "searching": "Searching...",
       "no_results": "No results found",
@@ -1517,7 +1519,11 @@
       "label": "Gastronomy",
       "history": "History",
       "kitchen": "Kitchen",
-      "ingredients": "Ingredients"
+      "ingredients": "Ingredients",
+      "menus_label": "Our Menu",
+      "menus_title": "Menus",
+      "menus_empty": "No menus published yet.",
+      "more_dishes": "more dishes"
     },
     "experience": {
       "label": "What we offer",

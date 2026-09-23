@@ -1,5 +1,9 @@
 <section class="w-full h-full bg-[var(--bg-secondary-color)]">
-  <div class="py-5">
+  <!-- pt más alto que el pb: el blog es la única página pública sin hero de
+       imagen antes del encabezado, así que sin esto el título quedaba pegado
+       a la navbar — las demás separan con el hero de 60vh, acá lo da el
+       padding. -->
+  <div class="pt-12 md:pt-16 pb-5">
     <!-- `h1`: esta cabecera ES el título de la página; el blog no tenía
          ningún encabezado principal. -->
     <app-section-header

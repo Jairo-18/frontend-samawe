@@ -222,21 +222,30 @@ mat-form-field {
  * bloque hace muchas más cosas —oculta el círculo numerado, fuerza
  * `flex-wrap`, pone el rótulo al 80% de alto— y no lo usa ningún stepper hoy.
  * Al aplicarlo al registro, la pantalla se descuadra.
+ *
+ * ⚠️ Solo desde `lg:` (1024px, el mismo corte donde `register.component.html`
+ * muestra el panel de imagen a dos columnas). En un celular no hace falta:
+ * el paso 1 es más corto que el 2 de verdad, y forzarlo a la altura del 2
+ * solo le deja aire vacío de sobra en una pantalla donde el espacio ya es
+ * poco. El salto de alto entre pasos, que en desktop se nota feo al lado del
+ * panel de imagen fijo, en mobile pasa desapercibido (todo hace scroll).
  */
-.stable-stepper {
-  .mat-horizontal-content-container {
-    display: grid;
-  }
+@media (min-width: 1024px) {
+  .stable-stepper {
+    .mat-horizontal-content-container {
+      display: grid;
+    }
 
-  .mat-horizontal-stepper-content {
-    grid-area: 1 / 1;
-  }
+    .mat-horizontal-stepper-content {
+      grid-area: 1 / 1;
+    }
 
-  .mat-horizontal-stepper-content-next,
-  .mat-horizontal-stepper-content-previous {
-    height: auto !important;
-    visibility: hidden;
-    pointer-events: none;
+    .mat-horizontal-stepper-content-next,
+    .mat-horizontal-stepper-content-previous {
+      height: auto !important;
+      visibility: hidden;
+      pointer-events: none;
+    }
   }
 }
 

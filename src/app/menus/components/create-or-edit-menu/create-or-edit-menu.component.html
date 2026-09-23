@@ -105,11 +105,11 @@
         <div
           class="recipe-select-card rounded-[4px] border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
           [class.border-[var(--brand)]]="isRecipeSelected(recipe)"
-          [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-raised))]]="
+          [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-sunken))]]="
             isRecipeSelected(recipe)
           "
           [class.border-[var(--border-color)]]="!isRecipeSelected(recipe)"
-          [class.bg-[var(--surface-raised)]]="!isRecipeSelected(recipe)"
+          [class.bg-[var(--surface-sunken)]]="!isRecipeSelected(recipe)"
           (click)="toggleRecipe(recipe)"
         >
           <div class="flex items-center gap-3">
@@ -138,9 +138,14 @@
               <span class="font-semibold text-sm text-[var(--on-surface)] truncate block">{{
                 recipe.productName | capitalize
               }}</span>
-              <span class="text-xs text-[var(--on-surface-muted)]"
-                >{{ recipe.ingredients.length }} ingrediente(s)</span
-              >
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-[var(--brand)]"
+                  >COP {{ recipe.priceSale | number: '1.0-0' }}</span
+                >
+                <span class="text-xs text-[var(--on-surface-muted)]"
+                  >· {{ recipe.ingredients.length }} ingrediente(s)</span
+                >
+              </div>
             </div>
           </div>
 
@@ -176,6 +181,17 @@
     <p class="text-[var(--danger)] text-sm mb-4">
       {{ 'menu.select_dish_required' | translate }}
     </p>
+  }
+
+  @if (hasUnsavedChanges) {
+    <div class="flex justify-end items-center mb-2">
+      <span
+        class="flex items-center gap-1 text-xs md:text-sm text-[var(--warning)]"
+      >
+        <mat-icon class="!text-base !w-4 !h-4 !leading-4">info</mat-icon>
+        {{ 'menu.unsaved_changes' | translate }}
+      </span>
+    </div>
   }
 
   <section

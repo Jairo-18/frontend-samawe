@@ -126,6 +126,7 @@ export class SeeMenusComponent implements OnInit {
   getGroupedRecipes(recipes: MenuRecipeItem[]): {
     productId: number;
     productName: string;
+    priceSale: number;
     imageUrl?: string;
     ingredients: {
       name: string;
@@ -138,6 +139,7 @@ export class SeeMenusComponent implements OnInit {
       {
         productId: number;
         productName: string;
+        priceSale: number;
         imageUrl?: string;
         ingredients: { name: string; quantity: number; unit: string }[];
       }
@@ -151,6 +153,7 @@ export class SeeMenusComponent implements OnInit {
         map.set(pid, {
           productId: pid,
           productName: (recipe.product.name as any)?.['es'] ?? Object.values(recipe.product.name ?? {})[0] ?? '',
+          priceSale: Number(recipe.product.priceSale),
           imageUrl: recipe.product.images?.[0]?.imageUrl,
           ingredients: []
         });

@@ -5,9 +5,13 @@ import { Observable } from 'rxjs';
 import {
   MenuResponse,
   CreateMenuDto,
-  UpdateMenuDto
+  UpdateMenuDto,
+  MenuPublicListItem
 } from '../interfaces/menu.interface';
-import { PaginationInterface } from '../../shared/interfaces/pagination.interface';
+import {
+  PaginationInterface,
+  BasePaginationParams
+} from '../../shared/interfaces/pagination.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 
 @Injectable({ providedIn: 'root' })
@@ -25,6 +29,18 @@ export class MenuService {
       data: MenuResponse[];
       pagination: PaginationInterface;
     }>(`${environment.apiUrl}menus/paginated`, { params });
+  }
+
+  /** Listado público (sin sesión) para la página de gastronomía. */
+  getPublicList(query: BasePaginationParams): Observable<{
+    data: MenuPublicListItem[];
+    pagination: PaginationInterface;
+  }> {
+    const params = this._httpUtilities.httpParamsFromObject(query);
+    return this._httpClient.get<{
+      data: MenuPublicListItem[];
+      pagination: PaginationInterface;
+    }>(`${environment.apiUrl}menus/public/list`, { params });
   }
 
   getById(

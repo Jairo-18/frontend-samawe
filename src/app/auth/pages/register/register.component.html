@@ -187,7 +187,10 @@
               </mat-form-field>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>{{
-                  'register.search_country' | translate
+                  (isPhoneCodeSelected
+                    ? 'organizational.common.country'
+                    : 'register.search_country'
+                  ) | translate
                 }}</mat-label>
                 <mat-icon matPrefix>flag</mat-icon>
                 <input

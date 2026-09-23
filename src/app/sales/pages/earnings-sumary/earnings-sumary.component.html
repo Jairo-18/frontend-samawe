@@ -2,12 +2,15 @@
   [headerTitle]="'sales.title' | translate"
   [contentInfo]="'sales.subtitle' | translate"
   [showContentTitle]="true"
-  [showBorder]="false"
+  [showBorder]="true"
   [showContentTitle]="true"
   [showContentInfo]="true"
   class="text-xs md:text-base"
-  [pxMobile]="false"
 >
+  <!-- Padding propio de esta página, aparte del que ya da app-base-page: el
+     dueño la vio muy pegada a los bordes de la card, comparado con el
+     espacio interno que sí tiene home (BUENAS TARDES / CREAR). -->
+  <div class="px-4 md:px-8 pt-2 pb-6 md:pb-8">
   @if (isLoading) {
     <div class="flex justify-center items-center min-h-[300px]">
       <app-loader></app-loader>
@@ -43,11 +46,15 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="grid gap-6 md:grid-cols-3 sm:grid-cols-1">
+    <!-- Escalón de por medio: `md:grid-cols-3` metía 3 columnas apretadas
+         justo en tablet vertical (768px). Con `sm:grid-cols-2`, 2 columnas
+         se mantienen desde 640px hasta 1439px (cubre 1280) y las 3 recién
+         entran en `laptop:` (1440px, custom en tailwind.config.js). -->
+    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 laptop:grid-cols-3">
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-box text-white"></i>
@@ -57,15 +64,19 @@
             </span>
           </div>
         </div>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <div class="flex justify-between">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.purchase_price' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.purchase_price' | translate
+            }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceBuy ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.sale_price' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.sale_price' | translate
+            }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
@@ -77,16 +88,16 @@
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-file-invoice text-white"></i>
             </div>
-            <span class="text-[var(--on-surface)] font-semibold"
-              >{{ 'sales.billing_balance' | translate }}</span
-            >
+            <span class="text-[var(--on-surface)] font-semibold">{{
+              'sales.billing_balance' | translate
+            }}</span>
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
@@ -94,7 +105,7 @@
             {{ getSelectedPeriodLabel() }}
           </span>
         </div>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <div class="flex justify-between text-[var(--success)] font-semibold">
             <span>{{ 'sales.sales' | translate }}</span>
             <span class="font-semibold">{{
@@ -125,63 +136,76 @@
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-[var(--on-surface)] font-semibold">{{ 'sales.total_inventory' | translate }}</span>
+            <span class="text-[var(--on-surface)] font-semibold">{{
+              'sales.total_inventory' | translate
+            }}</span>
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
             >{{ 'sales.stock' | translate }}</span
           >
         </div>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <div class="flex justify-between text-[var(--success)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.inventory_value' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.inventory_value' | translate
+            }}</span>
             <span class="font-semibold">{{
               productSummary?.totalProductPriceSale ?? 0 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.total_units' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.total_units' | translate
+            }}</span>
             <span class="font-semibold">{{
               inventoryTotal?.totalStock ?? 0
             }}</span>
           </div>
         </div>
-        <div class="flex items-center justify-between mb-4">
+        <!-- Segunda sub-sección de esta card (Estado de Productos), separada
+             de la primera (Inventario) con su propio margen: sin esto quedaban
+             pegadas, sin aire entre "Unidades totales" y este encabezado. -->
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6 mt-6 pt-5 border-t border-[var(--border-color)]">
           <div class="flex items-center space-x-2">
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
             </div>
-            <span class="text-[var(--on-surface)] font-semibold"
-              >{{ 'sales.product_status' | translate }}</span
-            >
+            <span class="text-[var(--on-surface)] font-semibold">{{
+              'sales.product_status' | translate
+            }}</span>
           </div>
           <span
             class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded"
             >{{ 'sales.status' | translate }}</span
           >
         </div>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <div class="flex justify-between text-[var(--success)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.active' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.active' | translate
+            }}</span>
             <span class="font-semibold">{{ activeProductsCount }}</span>
           </div>
           <div class="flex justify-between text-[var(--danger)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.inactive' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.inactive' | translate
+            }}</span>
             <span class="font-semibold">{{ inactiveProductsCount }}</span>
           </div>
         </div>
       </div>
       <div
-        class="p-4 md:p-6 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
             <div class="p-2 bg-[var(--primary-color)] rounded-full">
               <i class="fas fa-warehouse text-white"></i>
@@ -195,46 +219,66 @@
             >{{ 'sales.status' | translate }}</span
           >
         </div>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <div class="flex justify-between text-[var(--success)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.available' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.available' | translate
+            }}</span>
             <span class="font-semibold">{{
               availableAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between text-[var(--warning)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.maintenance' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.maintenance' | translate
+            }}</span>
             <span class="font-semibold">{{
               maintenanceAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between text-[var(--danger)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.occupied' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.occupied' | translate
+            }}</span>
             <span class="font-semibold">{{ occupiedAccommodationsCount }}</span>
           </div>
           <div class="flex justify-between text-[var(--danger)]">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.out_of_service' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.out_of_service' | translate
+            }}</span>
             <span class="font-semibold">{{
               noServiceAccommodationsCount
             }}</span>
           </div>
           <div class="flex justify-between blue-color">
-            <span class="text-[var(--on-surface-muted)]">{{ 'sales.reserved' | translate }}</span>
+            <span class="text-[var(--on-surface-muted)]">{{
+              'sales.reserved' | translate
+            }}</span>
             <span class="font-semibold">{{ reservedAccommodationsCount }}</span>
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-y-4">
-        <button mat-fab extended="true" (click)="payReport()">
-          {{ 'sales.download_payment_report' | translate }}</button
-        ><button mat-stroked-button extended="true" (click)="detaillsReport()">
-          {{ 'sales.download_detailed_report' | translate }}
-        </button>
-      </div>
+    </div>
+    <!-- Fuera de la grilla de cards a propósito: adentro era un 5º item en
+         una grilla de 3 columnas, y en desktop dejaba una celda vacía al
+         lado. Como fila propia, ocupa el ancho completo sin dejar huecos. -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+      <button mat-fab extended="true" (click)="payReport()" class="flex-1">
+        {{ 'sales.download_payment_report' | translate }}
+      </button>
+      <button
+        mat-stroked-button
+        extended="true"
+        (click)="detaillsReport()"
+        class="flex-1"
+      >
+        {{ 'sales.download_detailed_report' | translate }}
+      </button>
     </div>
     <app-grapic
       [invoiceSummaryGroup]="invoiceSummaryGroup"
       [selectedPeriod]="selectedPeriod"
     ></app-grapic>
   }
+  </div>
 </app-base-page>

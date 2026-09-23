@@ -15,6 +15,7 @@ export interface MenuRecipeItem {
   product: {
     productId: number;
     name: TranslatedField;
+    priceSale: number;
     images?: {
       productImageId: number;
       imageUrl: string;
@@ -47,9 +48,25 @@ export interface UpdateMenuDto {
   organizationalId?: string;
 }
 
+export interface MenuPublicDishItem {
+  productId: number;
+  name: TranslatedField;
+  priceSale: number;
+  images: { productImageId: number; imageUrl: string; publicId: string }[];
+}
+
+/** Listado público para la página de gastronomía. */
+export interface MenuPublicListItem {
+  menuId: number;
+  name: TranslatedField;
+  description?: TranslatedField;
+  dishes: MenuPublicDishItem[];
+}
+
 export interface MenuRecipeGrouped {
   productId: number;
   productName: string;
+  priceSale: number;
   images?: {
     productImageId: number;
     imageUrl: string;

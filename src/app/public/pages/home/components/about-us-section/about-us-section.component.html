@@ -1,10 +1,15 @@
 <section class="w-full py-16 px-6 md:px-16 bg-[var(--bg-secondary-color)]">
+  <!-- A dos columnas recién desde `laptop:`, igual que experience-section: a
+       `md:` entraban tablets/iPads con el mismo aprieto de caja ancha y poco
+       alta. -->
   <div
-    class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
+    class="max-w-[1400px] mx-auto grid grid-cols-1 laptop:grid-cols-2 gap-10 items-center"
   >
-    <!-- Image (alternated — image left on desktop) -->
+    <!-- Image (alternated — image left en laptop en adelante).
+         `aspect-ratio` en vez de altos fijos, mismo motivo que
+         experience-section. -->
     <div
-      class="w-full h-64 md:h-80 rounded-[4px] overflow-hidden shadow-lg order-2 md:order-1 border-[1px] border-[var(--primary-color)]"
+      class="w-full aspect-[3/2] rounded-[4px] overflow-hidden shadow-lg order-2 laptop:order-1 border-[1px] border-[var(--primary-color)]"
     >
       <img
         [src]="imageUrl"
@@ -13,7 +18,7 @@
       />
     </div>
     <!-- Text -->
-    <div class="flex flex-col gap-4 order-1 md:order-2">
+    <div class="flex flex-col gap-4 order-1 laptop:order-2">
       <app-section-header
         variant="left"
         [label]="'public.about_us.who_we_are' | translate"

@@ -14,6 +14,8 @@ export interface RecipeIngredient {
 export interface RecipeWithDetails {
   productId: number;
   productName: string;
+  /** Precio de venta del platillo, no el costo de sus ingredientes (`totalRecipeCost`). */
+  priceSale: number;
   images?: {
     productImageId: number;
     imageUrl: string;

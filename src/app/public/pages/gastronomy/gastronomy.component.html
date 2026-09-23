@@ -6,8 +6,11 @@
   }
 
   @if (org) {
-    <!-- Hero con GASTRONOMY_IMAGE -->
-    <div class="relative w-full h-[60vh] overflow-hidden">
+    <!-- Hero con GASTRONOMY_IMAGE. Alto graduado + centrado en ESTE
+         contenedor (no en el de adentro): con `min-height` el hijo no puede
+         centrarse con `h-full`, `height: 100%` no se resuelve contra un
+         padre de alto dependiente del contenido. -->
+    <div class="relative w-full min-h-[38vh] sm:min-h-[48vh] md:min-h-[60vh] overflow-hidden flex flex-col items-center justify-center">
       <img
         [src]="getMedia('GASTRONOMY_IMAGE')"
         [alt]="(org.gastronomyTitle | translated) ?? ('public.gastronomy.label' | translate)"
@@ -15,7 +18,7 @@
       />
       <div class="absolute inset-0 bg-black/40 z-0"></div>
       <div
-        class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-6"
+        class="relative z-10 text-center text-white px-6 py-10"
       >
         <p
           class="hero-eyebrow text-sm font-semibold uppercase tracking-widest opacity-80 mb-2"
@@ -23,13 +26,13 @@
           {{ 'public.gastronomy.label' | translate }}
         </p>
         <h1
-          class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl leading-tight"
+          class="text-xl md:text-4xl font-bold drop-shadow-md max-w-3xl mx-auto leading-tight"
         >
           {{ org.gastronomyTitle | translated }}
         </h1>
         @if (org.gastronomyDescription) {
           <p
-            class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl opacity-90"
+            class="mt-4 text-sm md:text-lg drop-shadow-md max-w-2xl mx-auto opacity-90"
           >
             {{ org.gastronomyDescription | translated }}
           </p>
@@ -43,21 +46,68 @@
          siguiente. Ahora cada una ocupa el ancho completo y va cambiando entre
          los dos fondos de la organización.
          Las imágenes pasan de `object-fill` —que las estira— a `object-cover`,
-         que recorta manteniendo la proporción. -->
+         que recorta manteniendo la proporción.
 
-    <!-- Sección Historia -->
+         Menús va PRIMERO, justo tras el hero: es lo que alguien busca al
+         entrar a una página de gastronomía —qué se puede comer, no la
+         historia de la cocina—, y así el trío narrativo Historia → Cocina →
+         Ingredientes queda intacto como una secuencia, sin una grilla de
+         tarjetas cortándolo por la mitad. -->
+
+    <!-- Sección Menús -->
+    <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+      <div class="max-w-[1400px] mx-auto flex flex-col gap-8">
+        <app-section-header
+          [label]="'public.gastronomy.menus_label' | translate"
+          [title]="'public.gastronomy.menus_title' | translate"
+          variant="centered"
+        />
+
+        @if (menusLoading) {
+          <div class="flex justify-center py-10">
+            <app-loader />
+          </div>
+        } @else if (menus.length === 0) {
+          <p class="text-center text-[var(--subtitle-color)]">
+            {{ 'public.gastronomy.menus_empty' | translate }}
+          </p>
+        } @else {
+          <!-- Efecto "corona": en la fila de 3 (desde lg), las de los lados
+               bajan respecto a la del medio. Es puro `translate`, no margen,
+               para no empujar la fila siguiente — el `gap-y` de más da el aire
+               que ese desplazamiento necesita. Con 3 columnas exactas,
+               `nth-child(3n+1)`/`nth-child(3n)` son siempre el primero y el
+               último de cada fila. -->
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-y-16 lg:items-start"
+          >
+            @for (menu of menus; track menu.menuId) {
+              <app-card-menu
+                [menu]="menu"
+                class="lg:[&:nth-child(3n+1)]:translate-y-8 lg:[&:nth-child(3n)]:translate-y-8"
+              />
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Sección Historia. A fila recién desde `laptop:` (1440px, custom en
+         tailwind.config.js) y `aspect-ratio` en vez de alto fijo — mismo
+         ajuste que ya se hizo en home: con `md:` el iPad Pro caía del lado
+         "desktop" con una caja de foto ancha y poco alta. -->
     @if (org.gastronomyHistoryTitle || org.gastronomyHistoryDescription) {
-      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('GASTRONOMY_HISTORY_IMAGE')"
               [alt]="(org.gastronomyHistoryTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -74,17 +124,17 @@
 
     <!-- Sección Cocina -->
     @if (org.gastronomyKitchenTitle || org.gastronomyKitchenDescription) {
-      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row-reverse gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row-reverse gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('GASTRONOMY_KITCHEN_IMAGE')"
               [alt]="(org.gastronomyKitchenTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -103,17 +153,17 @@
     @if (
       org.gastronomyIngredientsTitle || org.gastronomyIngredientsDescription
     ) {
-      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-primary-color)]">
+      <div class="w-full py-16 px-6 md:px-10 bg-[var(--bg-secondary-color)]">
         <div
-          class="max-w-[1400px] mx-auto flex flex-col md:flex-row gap-10 items-center"
+          class="max-w-[1400px] mx-auto flex flex-col laptop:flex-row gap-10 items-center"
         >
           <div
-            class="w-full md:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
+            class="w-full laptop:w-1/2 rounded-[4px] overflow-hidden shadow-md flex-shrink-0"
           >
             <img
               [src]="getMedia('GASTRONOMY_INGR_IMAGE')"
               [alt]="(org.gastronomyIngredientsTitle | translated) ?? ''"
-              class="w-full h-[200px] md:h-[320px] object-cover"
+              class="w-full aspect-[3/2] object-cover"
             />
           </div>
           <div class="flex flex-col gap-4">
@@ -128,10 +178,10 @@
       </div>
     }
 
-    <!-- Secundario: Ingredientes, justo encima, usa el primario. -->
+    <!-- Ingredientes, justo encima, usa el secundario: esta usa el primario. -->
     <app-reservation-section
       [org]="org"
-      class="!bg-[var(--bg-secondary-color)]"
+      class="!bg-[var(--bg-primary-color)]"
     />
   }
 </section>
