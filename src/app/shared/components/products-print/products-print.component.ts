@@ -7,6 +7,17 @@ import { formatCop } from '../../utilities/currency.utilities.service';
 import { loadPdfMake } from '../../utilities/pdf-maker.utils';
 import { TranslateModule } from '@ngx-translate/core';
 
+// `name` (producto/categoría) es un TranslatedField ({ es, en }), no un
+// string. pdfMake no renderiza objetos: sin esto la celda salía en blanco en
+// vez de tirar un error, porque `{ text: {...} }` no revienta, solo no pinta
+// nada.
+function tField(v: unknown): string {
+  if (!v) return '';
+  if (typeof v === 'string') return v;
+  const obj = v as Record<string, string>;
+  return obj['es'] || obj['en'] || Object.values(obj)[0] || '';
+}
+
 @Component({
   selector: 'app-products-print',
   imports: [FormatCopPipe, CommonModule, TranslatedPipe, TranslateModule],
@@ -36,11 +47,11 @@ export class ProductsPrintComponent {
     const headerStyle = { bold: true, color: '#ffffff', fontSize: 10, fillColor: color };
 
     const rows = this.products.map(p => [
-      { text: p.categoryType?.name?.['es'] || 'N/A', fontSize: 10 },
-      { text: p.name || 'N/A', fontSize: 10 },
-      { text: String(p.amount ?? 0), fontSize: 10, alignment: 'center' },
-      { text: formatCop(p.priceBuy ?? 0), fontSize: 10, alignment: 'right' },
-      { text: formatCop(p.priceSale ?? 0), fontSize: 10, alignment: 'right' }
+      { text: p.categoryType?.code || 'N/A', fontSize: 9 },
+      { text: tField(p.name) || 'N/A', fontSize: 9 },
+      { text: String(p.amount ?? 0), fontSize: 9, alignment: 'center' },
+      { text: formatCop(p.priceBuy ?? 0), fontSize: 8.5, alignment: 'right' },
+      { text: formatCop(p.priceSale ?? 0), fontSize: 8.5, alignment: 'right' }
     ]);
 
     const doc = {
@@ -49,9 +60,11 @@ export class ProductsPrintComponent {
       content: [
         { text: 'Lista de Productos, Bar, Mecato, Restaurante y Otros', bold: true, fontSize: 14, marginBottom: 8 },
         {
+          // Precios en columnas de 85pt (antes 70): "295.000,00 COP" no cabía
+          // a fontSize 10 y pdfMake partía la palabra "COP" a media línea.
           table: {
             headerRows: 1,
-            widths: [80, '*', 40, 70, 70],
+            widths: [50, '*', 35, 85, 85],
             body: [
               [
                 { text: 'Categoría', ...headerStyle },
@@ -64,7 +77,7 @@ export class ProductsPrintComponent {
               [
                 { text: 'Precio Total Del Inventario:', bold: true, colSpan: 4, alignment: 'right', fontSize: 10 },
                 '', '', '',
-                { text: formatCop(this.totalSaleValue), bold: true, alignment: 'right', fontSize: 10 }
+                { text: formatCop(this.totalSaleValue), bold: true, alignment: 'right', fontSize: 9 }
               ]
             ]
           },
