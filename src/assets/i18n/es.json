@@ -1414,6 +1414,8 @@
       "person_plural": "personas",
       "room_singular": "habitación",
       "room_plural": "habitaciones",
+      "min": "Mín.",
+      "max": "Máx.",
       "no_content": "No hay contenido disponible."
     },
     "settings": {

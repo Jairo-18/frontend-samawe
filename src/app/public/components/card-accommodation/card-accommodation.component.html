@@ -112,7 +112,7 @@
           class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
         >
           <span class="material-icons text-sm">person</span>
-          {{ accommodation.amountPerson }}
+          {{ 'public.common.min' | translate }} {{ accommodation.amountPerson }}
           {{
             accommodation.amountPerson !== 1
               ? ('public.common.person_plural' | translate)
@@ -126,15 +126,23 @@
           {{ accommodation.amountRoom }}
           {{ 'public.common.room_singular' | translate }}
         </li>
+        <!--
+          `amountBathroom`: pese al nombre, el campo NO cuenta baños — el
+          hotel lo usa como el AFORO MÁXIMO del hospedaje. El panel de staff
+          ya lo trata así (formulario "Máximo Personas", icono `group`); acá
+          en el sitio público salía con ícono de baño y la palabra
+          "habitación(es)", doblemente mal. Mismo ícono/etiqueta que
+          `most-requested-section.component.html`, que sí lo tenía bien.
+        -->
         <li
           class="flex items-center gap-0.5 bg-white/25 rounded-[4px] px-2 py-0.5"
         >
-          <span class="material-icons text-sm">bathroom</span>
-          {{ accommodation.amountBathroom }}
+          <span class="material-icons text-sm">group</span>
+          {{ 'public.common.max' | translate }} {{ accommodation.amountBathroom }}
           {{
             accommodation.amountBathroom !== 1
-              ? ('public.common.room_plural' | translate)
-              : ('public.common.room_singular' | translate)
+              ? ('public.common.person_plural' | translate)
+              : ('public.common.person_singular' | translate)
           }}
         </li>
         @if (accommodation.bedType) {
