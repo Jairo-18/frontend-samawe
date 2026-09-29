@@ -95,6 +95,11 @@
       <span class="font-bold text-[var(--on-surface)] text-[10px] md:text-sm flex items-center gap-1">
         {{ recipe.productName | capitalize }}
       </span>
+      @if (recipe.description?.['es']; as desc) {
+        <span class="text-[9px] md:text-xs text-[var(--on-surface-muted)] line-clamp-2">
+          {{ desc }}
+        </span>
+      }
       <span class="inline-flex items-center text-[9px] md:text-xs font-semibold rounded-full">
         {{ recipe.availablePortions ?? 0 }} {{ 'recipe.card.portions' | translate }}
       </span>

@@ -24,7 +24,11 @@ import {
   PageEvent
 } from '@angular/material/paginator';
 import { MenuService } from '../../services/menu.service';
-import { MenuResponse, MenuRecipeItem } from '../../interfaces/menu.interface';
+import {
+  MenuResponse,
+  MenuRecipeItem,
+  MenuDirectProductItem
+} from '../../interfaces/menu.interface';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
@@ -121,11 +125,18 @@ export class SeeMenusComponent implements OnInit {
   }
 
   /**
-   * Group the flat recipe rows into distinct products with their ingredients
+   * Agrupa las filas planas de receta (una por ingrediente) en platillos
+   * distintos con sus ingredientes, y les suma los productos normales del
+   * menú (sin receta) con `ingredients: []`, para que ambos se vean con el
+   * mismo shape en el panel.
    */
-  getGroupedRecipes(recipes: MenuRecipeItem[]): {
+  getGroupedRecipes(
+    recipes: MenuRecipeItem[],
+    products?: MenuDirectProductItem[]
+  ): {
     productId: number;
     productName: string;
+    description?: string;
     priceSale: number;
     imageUrl?: string;
     ingredients: {
@@ -139,6 +150,7 @@ export class SeeMenusComponent implements OnInit {
       {
         productId: number;
         productName: string;
+        description?: string;
         priceSale: number;
         imageUrl?: string;
         ingredients: { name: string; quantity: number; unit: string }[];
@@ -153,6 +165,7 @@ export class SeeMenusComponent implements OnInit {
         map.set(pid, {
           productId: pid,
           productName: (recipe.product.name as any)?.['es'] ?? Object.values(recipe.product.name ?? {})[0] ?? '',
+          description: (recipe.product.description as any)?.['es'] ?? Object.values(recipe.product.description ?? {})[0],
           priceSale: Number(recipe.product.priceSale),
           imageUrl: recipe.product.images?.[0]?.imageUrl,
           ingredients: []
@@ -166,6 +179,20 @@ export class SeeMenusComponent implements OnInit {
         name: ingName,
         quantity: Number(recipe.quantity),
         unit: recipe.ingredient?.unitOfMeasure?.code || 'und'
+      });
+    }
+
+    for (const product of products ?? []) {
+      const pid = product.productId;
+      if (map.has(pid)) continue;
+
+      map.set(pid, {
+        productId: pid,
+        productName: (product.name as any)?.['es'] ?? Object.values(product.name ?? {})[0] ?? '',
+        description: (product.description as any)?.['es'] ?? Object.values(product.description ?? {})[0],
+        priceSale: Number(product.priceSale),
+        imageUrl: product.images?.[0]?.imageUrl,
+        ingredients: []
       });
     }
 

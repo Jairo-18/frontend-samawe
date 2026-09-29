@@ -92,7 +92,7 @@
                   </span>
                 }
                 <span class="text-xs text-[var(--on-surface-muted)] ml-8">
-                  {{ getGroupedRecipes(menu.recipes).length }} {{ 'menu.dishes_count' | translate }}
+                  {{ getGroupedRecipes(menu.recipes, menu.products).length }} {{ 'menu.dishes_count' | translate }}
                 </span>
               </div>
 
@@ -131,7 +131,7 @@
               <div class="border-t border-[var(--border-color)] px-5 py-4 animate-in">
                 <div class="grid grid-cols-1 gap-4">
                   @for (
-                    grouped of getGroupedRecipes(menu.recipes);
+                    grouped of getGroupedRecipes(menu.recipes, menu.products);
                     track grouped.productId
                   ) {
                     <div class="relative">
@@ -175,6 +175,12 @@
                             class="font-semibold text-sm text-[var(--on-surface)] line-clamp-2 block"
                             >{{ grouped.productName | capitalize }}</span
                           >
+                          @if (grouped.description) {
+                            <span
+                              class="text-xs text-[var(--on-surface-muted)] line-clamp-2 block"
+                              >{{ grouped.description }}</span
+                            >
+                          }
                           <span class="text-xs font-medium text-[var(--brand)]">
                             COP {{ grouped.priceSale | number: '1.0-0' }}
                           </span>
@@ -201,7 +207,7 @@
                   }
                 </div>
 
-                @if (getGroupedRecipes(menu.recipes).length === 0) {
+                @if (getGroupedRecipes(menu.recipes, menu.products).length === 0) {
                   <div class="text-center text-[var(--on-surface-muted)] py-4">
                     {{ 'menu.no_dishes' | translate }}
                   </div>

@@ -1,4 +1,5 @@
 import { ProductComplete } from '../../service-and-product/interface/product.interface';
+import { TranslatedField } from '../../shared/types/translated-field.type';
 
 export interface RecipeIngredient {
   ingredientProductId: number;
@@ -14,6 +15,7 @@ export interface RecipeIngredient {
 export interface RecipeWithDetails {
   productId: number;
   productName: string;
+  description?: TranslatedField;
   /** Precio de venta del platillo, no el costo de sus ingredientes (`totalRecipeCost`). */
   priceSale: number;
   images?: {

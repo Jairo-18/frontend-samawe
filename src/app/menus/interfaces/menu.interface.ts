@@ -5,9 +5,23 @@ export interface MenuResponse {
   name: TranslatedField;
   description?: TranslatedField;
   recipes: MenuRecipeItem[];
+  /** Productos normales (cualquier categoría) sin receta asociada. */
+  products?: MenuDirectProductItem[];
   organizationalId?: string;
   createdAt: string;
   updatedAt?: string;
+}
+
+export interface MenuDirectProductItem {
+  productId: number;
+  name: TranslatedField;
+  description?: TranslatedField;
+  priceSale: number;
+  images?: {
+    productImageId: number;
+    imageUrl: string;
+    publicId: string;
+  }[];
 }
 
 export interface MenuRecipeItem {
@@ -15,6 +29,7 @@ export interface MenuRecipeItem {
   product: {
     productId: number;
     name: TranslatedField;
+    description?: TranslatedField;
     priceSale: number;
     images?: {
       productImageId: number;

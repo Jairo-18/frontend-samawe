@@ -9,76 +9,52 @@
 
 <form [formGroup]="form" (ngSubmit)="save()" class="mt-4">
   <!-- Name & Description -->
-  <div class="flex flex-col md:flex-row content-between w-full gap-2">
-    <div class="flex flex-col gap-4 w-full md:w-[50%]">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'menu.name_label' | translate }}</mat-label>
-        <input
-          matInput
-          formControlName="name"
-          [placeholder]="'menu.name_placeholder' | translate"
-          appNormalizeTitle
-        />
-        @if (
-          form.get('name')?.hasError('required') && form.get('name')?.touched
-        ) {
-          <mat-error>{{ 'menu.name_required' | translate }}</mat-error>
-        }
-        @if (
-          form.get('name')?.hasError('minlength') && form.get('name')?.touched
-        ) {
-          <mat-error>{{ 'menu.name_minlength' | translate }}</mat-error>
-        }
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'menu.description_label' | translate }}</mat-label>
-        <textarea
-          matInput
-          formControlName="description"
-          cdkTextareaAutosize
-          cdkAutosizeMinRows="3"
-          cdkAutosizeMaxRows="15"
-          maxlength="500"
-          appUppercase
-        ></textarea>
-        <mat-icon matPrefix>notes</mat-icon>
-        <mat-hint align="end">{{ descriptionLength }}{{ 'menu.chars_limit' | translate }}</mat-hint>
-      </mat-form-field>
-    </div>
-    <div class="w-full md:w-[50%] mb-4">
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{ 'menu.search_dish' | translate }}</mat-label>
-        <input
-          matInput
-          [(ngModel)]="recipeSearchTerm"
-          [ngModelOptions]="{ standalone: true }"
-          [placeholder]="'menu.search_dish_placeholder' | translate"
-        />
-        <mat-icon matPrefix>search</mat-icon>
-        @if (recipeSearchTerm) {
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="recipeSearchTerm = ''"
-          >
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-      </mat-form-field>
-    </div>
+  <div class="flex flex-col gap-4 w-full md:w-[50%] mb-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'menu.name_label' | translate }}</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        [placeholder]="'menu.name_placeholder' | translate"
+        appNormalizeTitle
+      />
+      @if (
+        form.get('name')?.hasError('required') && form.get('name')?.touched
+      ) {
+        <mat-error>{{ 'menu.name_required' | translate }}</mat-error>
+      }
+      @if (
+        form.get('name')?.hasError('minlength') && form.get('name')?.touched
+      ) {
+        <mat-error>{{ 'menu.name_minlength' | translate }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ 'menu.description_label' | translate }}</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="3"
+        cdkAutosizeMaxRows="15"
+        maxlength="500"
+        appUppercase
+      ></textarea>
+      <mat-icon matPrefix>notes</mat-icon>
+      <mat-hint align="end">{{ descriptionLength }}{{ 'menu.chars_limit' | translate }}</mat-hint>
+    </mat-form-field>
   </div>
 
-  <!-- Selected Recipes Chips -->
-  @if (selectedRecipeIds.size > 0) {
+  <!-- Selected Items Chips -->
+  @if (selectedProductIds.size > 0) {
     <div class="mb-4">
       <span class="text-sm font-semibold text-[var(--on-surface)] mb-2 block"
         >{{ 'menu.selected_dishes' | translate }} ({{
-          selectedRecipeIds.size
+          selectedProductIds.size
         }})</span
       >
       <div class="flex flex-wrap gap-2">
-        @for (id of Array.from(selectedRecipeIds); track id) {
+        @for (id of Array.from(selectedProductIds); track id) {
           <mat-chip-row (removed)="removeRecipe(id)">
             {{ getRecipeName(id) | capitalize }}
             <button matChipRemove>
@@ -90,94 +66,226 @@
     </div>
   }
 
-  <!-- Recipe Search -->
+  <mat-tab-group class="mb-2" animationDuration="150ms">
+    <!-- Platillos con receta -->
+    <mat-tab [label]="'menu.tab_dishes' | translate">
+      <ng-template matTabContent>
+      <div class="pt-4">
+        <mat-form-field appearance="outline" class="w-full md:w-1/2 mb-2">
+          <mat-label>{{ 'menu.search_dish' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="recipeSearchTerm"
+            [ngModelOptions]="{ standalone: true }"
+            [placeholder]="'menu.search_dish_placeholder' | translate"
+          />
+          <mat-icon matPrefix>search</mat-icon>
+          @if (recipeSearchTerm) {
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="recipeSearchTerm = ''"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
 
-  <!-- Recipes Grid -->
-  @if (loadingRecipes) {
-    <div class="flex justify-center py-8">
-      <app-loader></app-loader>
-    </div>
-  } @else if (filteredRecipes.length > 0) {
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6"
-    >
-      @for (recipe of filteredRecipes; track recipe.productId) {
-        <div
-          class="recipe-select-card rounded-[4px] border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
-          [class.border-[var(--brand)]]="isRecipeSelected(recipe)"
-          [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-sunken))]]="
-            isRecipeSelected(recipe)
-          "
-          [class.border-[var(--border-color)]]="!isRecipeSelected(recipe)"
-          [class.bg-[var(--surface-sunken)]]="!isRecipeSelected(recipe)"
-          (click)="toggleRecipe(recipe)"
-        >
-          <div class="flex items-center gap-3">
-            <mat-checkbox
-              [checked]="isRecipeSelected(recipe)"
-              (click)="$event.stopPropagation()"
-              (change)="toggleRecipe(recipe)"
-              color="primary"
-            ></mat-checkbox>
-
-            @if (recipe.images && recipe.images.length > 0) {
-              <img
-                [src]="recipe.images[0].imageUrl"
-                [alt]="recipe.productName"
-                class="w-10 h-10 rounded-lg object-cover"
-              />
-            } @else {
+        @if (loadingRecipes) {
+          <div class="flex justify-center py-8">
+            <app-loader></app-loader>
+          </div>
+        } @else if (filteredRecipes.length > 0) {
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-2"
+          >
+            @for (recipe of filteredRecipes; track recipe.productId) {
               <div
-                class="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] flex items-center justify-center"
+                class="recipe-select-card rounded-[4px] border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+                [class.border-[var(--brand)]]="isRecipeSelected(recipe)"
+                [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-sunken))]]="
+                  isRecipeSelected(recipe)
+                "
+                [class.border-[var(--border-color)]]="!isRecipeSelected(recipe)"
+                [class.bg-[var(--surface-sunken)]]="!isRecipeSelected(recipe)"
+                (click)="toggleRecipe(recipe)"
               >
-                <mat-icon class="text-[var(--on-surface-muted)] text-lg">restaurant</mat-icon>
+                <div class="flex items-center gap-3">
+                  <mat-checkbox
+                    [checked]="isRecipeSelected(recipe)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleRecipe(recipe)"
+                    color="primary"
+                  ></mat-checkbox>
+
+                  @if (recipe.images && recipe.images.length > 0) {
+                    <img
+                      [src]="recipe.images[0].imageUrl"
+                      [alt]="recipe.productName"
+                      class="w-10 h-10 rounded-lg object-cover"
+                    />
+                  } @else {
+                    <div
+                      class="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] flex items-center justify-center"
+                    >
+                      <mat-icon class="text-[var(--on-surface-muted)] text-lg">restaurant</mat-icon>
+                    </div>
+                  }
+
+                  <div class="flex-1 min-w-0">
+                    <span class="font-semibold text-sm text-[var(--on-surface)] truncate block">{{
+                      recipe.productName | capitalize
+                    }}</span>
+                    @if (recipe.description?.['es']; as desc) {
+                      <span class="text-xs text-[var(--on-surface-muted)] truncate block">{{
+                        desc
+                      }}</span>
+                    }
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-[var(--brand)]"
+                        >COP {{ recipe.priceSale | number: '1.0-0' }}</span
+                      >
+                      <span class="text-xs text-[var(--on-surface-muted)]"
+                        >· {{ recipe.ingredients.length }} ingrediente(s)</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ingredient preview -->
+                @if (isRecipeSelected(recipe)) {
+                  <div class="mt-2 pl-12 space-y-0.5">
+                    @for (
+                      ing of recipe.ingredients.slice(0, 3);
+                      track ing.ingredientProductId
+                    ) {
+                      <span class="text-xs text-[var(--on-surface-muted)] block truncate"
+                        >• {{ ing.ingredientProductName | capitalize }}</span
+                      >
+                    }
+                    @if (recipe.ingredients.length > 3) {
+                      <span class="text-xs text-[var(--on-surface-muted)] italic"
+                        >+{{ recipe.ingredients.length - 3 }} más</span
+                      >
+                    }
+                  </div>
+                }
               </div>
             }
-
-            <div class="flex-1 min-w-0">
-              <span class="font-semibold text-sm text-[var(--on-surface)] truncate block">{{
-                recipe.productName | capitalize
-              }}</span>
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-medium text-[var(--brand)]"
-                  >COP {{ recipe.priceSale | number: '1.0-0' }}</span
-                >
-                <span class="text-xs text-[var(--on-surface-muted)]"
-                  >· {{ recipe.ingredients.length }} ingrediente(s)</span
-                >
-              </div>
-            </div>
           </div>
+        } @else {
+          <div class="text-center py-8 text-[var(--on-surface-muted)]">
+            <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
+            <p>{{ 'menu.no_dishes_found' | translate }}</p>
+          </div>
+        }
+      </div>
+      </ng-template>
+    </mat-tab>
 
-          <!-- Ingredient preview -->
-          @if (isRecipeSelected(recipe)) {
-            <div class="mt-2 pl-12 space-y-0.5">
-              @for (
-                ing of recipe.ingredients.slice(0, 3);
-                track ing.ingredientProductId
-              ) {
-                <span class="text-xs text-[var(--on-surface-muted)] block truncate"
-                  >• {{ ing.ingredientProductName | capitalize }}</span
-                >
-              }
-              @if (recipe.ingredients.length > 3) {
-                <span class="text-xs text-[var(--on-surface-muted)] italic"
-                  >+{{ recipe.ingredients.length - 3 }} más</span
-                >
-              }
-            </div>
+    <!-- Productos normales, cualquier categoría -->
+    <mat-tab [label]="'menu.tab_products' | translate">
+      <ng-template matTabContent>
+      <div class="pt-4">
+        <mat-form-field appearance="outline" class="w-full md:w-1/2 mb-2">
+          <mat-label>{{ 'menu.search_product' | translate }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="productSearchTerm"
+            [ngModelOptions]="{ standalone: true }"
+            [placeholder]="'menu.search_product_placeholder' | translate"
+          />
+          <mat-icon matPrefix>search</mat-icon>
+          @if (productSearchTerm) {
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="productSearchTerm = ''"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
           }
-        </div>
-      }
-    </div>
-  } @else {
-    <div class="text-center py-8 text-[var(--on-surface-muted)]">
-      <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
-      <p>{{ 'menu.no_dishes_found' | translate }}</p>
-    </div>
-  }
+        </mat-form-field>
 
-  @if (form.invalid === false && selectedRecipeIds.size === 0 && form.touched) {
+        @if (loadingProducts) {
+          <div class="flex justify-center py-8">
+            <app-loader></app-loader>
+          </div>
+        } @else if (filteredProducts.length > 0) {
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-2"
+          >
+            @for (product of filteredProducts; track product.productId) {
+              <div
+                class="recipe-select-card rounded-[4px] border-2 p-4 cursor-pointer transition-all duration-200 hover:shadow-md"
+                [class.border-[var(--brand)]]="isProductSelected(product)"
+                [class.bg-[color-mix(in_srgb,var(--brand)_10%,var(--surface-sunken))]]="
+                  isProductSelected(product)
+                "
+                [class.border-[var(--border-color)]]="!isProductSelected(product)"
+                [class.bg-[var(--surface-sunken)]]="!isProductSelected(product)"
+                (click)="toggleProduct(product)"
+              >
+                <div class="flex items-center gap-3">
+                  <mat-checkbox
+                    [checked]="isProductSelected(product)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleProduct(product)"
+                    color="primary"
+                  ></mat-checkbox>
+
+                  @if (product.images && product.images.length > 0) {
+                    <img
+                      [src]="product.images[0].imageUrl"
+                      [alt]="productName(product)"
+                      class="w-10 h-10 rounded-lg object-cover"
+                    />
+                  } @else {
+                    <div
+                      class="w-10 h-10 rounded-lg bg-[var(--surface-sunken)] flex items-center justify-center"
+                    >
+                      <mat-icon class="text-[var(--on-surface-muted)] text-lg">inventory_2</mat-icon>
+                    </div>
+                  }
+
+                  <div class="flex-1 min-w-0">
+                    <span class="font-semibold text-sm text-[var(--on-surface)] truncate block">{{
+                      productName(product) | capitalize
+                    }}</span>
+                    @if (product.description?.['es']; as desc) {
+                      <span class="text-xs text-[var(--on-surface-muted)] truncate block">{{
+                        desc
+                      }}</span>
+                    }
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-[var(--brand)]"
+                        >COP {{ product.priceSale | number: '1.0-0' }}</span
+                      >
+                      @if (product.categoryType.name['es']; as categoryName) {
+                        <span class="text-xs text-[var(--on-surface-muted)]"
+                          >· {{ categoryName | capitalize }}</span
+                        >
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="text-center py-8 text-[var(--on-surface-muted)]">
+            <mat-icon class="text-4xl w-10 h-10 mb-2">search_off</mat-icon>
+            <p>{{ 'menu.no_products_found' | translate }}</p>
+          </div>
+        }
+      </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+
+  @if (form.invalid === false && selectedProductIds.size === 0 && form.touched) {
     <p class="text-[var(--danger)] text-sm mb-4">
       {{ 'menu.select_dish_required' | translate }}
     </p>
