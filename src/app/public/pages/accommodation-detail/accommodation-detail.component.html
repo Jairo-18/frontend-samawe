@@ -191,6 +191,14 @@
         superior usa la misma variable que reserva la barra fija, así no hay
         que recalcularlo si cambia la altura del navbar.
       -->
+      <!--
+        Fondo `--bg-primary-color` (= `--surface-raised`): el mismo que usa
+        la navbar (`navbar-desktop.component.html`). El calendario de adentro
+        (`availability-calendar.component.scss`) usa `--bg-secondary-color`,
+        el de `body` — a propósito los dos tonos son DISTINTOS: la card
+        "flota" como la navbar, y el calendario se ve como un hueco de vuelta
+        al color de la página, no como otra tarjeta encima de la tarjeta.
+      -->
       <aside
         class="lg:sticky lg:top-[calc(var(--nav-bar-height)+1rem)] flex flex-col gap-4 border border-[var(--primary-color)] rounded-[4px] p-4 md:p-5 shadow-sm bg-[var(--bg-primary-color)]"
       >

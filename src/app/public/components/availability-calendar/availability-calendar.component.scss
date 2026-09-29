@@ -1,3 +1,44 @@
+// El fondo VISIBLE del calendario se pone en el wrapper del template
+// (`bg-[var(--bg-secondary-color)]` en el `<div class="availability-calendar">`
+// de availability-calendar.component.html), no acá como token de Material:
+// `<mat-calendar>` standalone no pinta fondo propio (verificado contra el CSS
+// compilado de `@angular/material` — ningún selector `.mat-calendar*` fija
+// `background-color` a nivel contenedor, solo las celdas de los días), así
+// que `--mat-datepicker-calendar-container-background-color` no tiene ningún
+// efecto aquí — ese token solo lo consume el popup `mat-datepicker-content`.
+// No lo dejes puesto pensando que hace algo.
+// El tema Material del proyecto (`mat-config-theme.scss`) está definido con
+// `mat.m2-define-LIGHT-theme(...)`: no hay un tema oscuro M2 aparte, así que
+// TODO lo que `mat.all-component-themes` no calcule con el verde de marca
+// (osea, cualquier token de contraste/fondo neutro) sale con los valores del
+// tema CLARO, incluso con la app en modo oscuro. Los pocos que `variables.scss`
+// ya corrige quedan bien; los que no, hay que fijarlos también acá o quedan
+// con contraste de tema claro sobre fondo oscuro — ilegibles o invisibles.
+:host {
+  // Confirmado en el CSS compilado de Material que estos SÍ son tokens reales
+  // y consumidos (no como el de fondo del contenedor, que no aplicaba nada).
+  //
+  // Hover: ya usaba `--surface-sunken`/`--bg-secondary-color` según el fondo
+  // del calendario en turno — con `--surface-raised` (siempre más claro que
+  // `--bg-secondary-color` en los dos temas) el hover se distingue sin
+  // inventar un color nuevo.
+  --mat-datepicker-calendar-date-hover-state-background-color: var(
+    --surface-raised
+  );
+  --mat-datepicker-calendar-date-focus-state-background-color: var(
+    --surface-raised
+  );
+  // El anillo de "hoy" no estaba cubierto por `variables.scss`: salía con el
+  // gris oscuro semitransparente del tema claro de Material, que sobre un
+  // fondo ya oscuro prácticamente no se ve — el día de hoy no se distinguía
+  // de uno cualquiera. `--primary-color` lo hace visible en los dos temas y
+  // de paso lo conecta visualmente con "Tu estancia" de la leyenda.
+  --mat-datepicker-calendar-date-today-outline-color: var(--primary-color);
+  --mat-datepicker-calendar-date-today-disabled-state-outline-color: var(
+    --primary-color
+  );
+}
+
 // Los días ocupados llegan deshabilitados por `dateFilter`, así que Material ya
 // los pinta en gris claro. Aquí se les añade color para que se lean como
 // "tomado" y no como "fuera del rango del calendario", que es lo que parece con
@@ -5,9 +46,15 @@
 // `mat-calendar` fuera de la encapsulación de este componente.
 :host ::ng-deep {
   .availability-occupied .mat-calendar-body-cell-content {
-    background-color: #fee2e2;
-    border-color: #fca5a5;
-    color: #b91c1c;
+    // Antes en hex fijo (`#fee2e2`/`#fca5a5`/`#b91c1c`, pensados para fondo
+    // blanco): en modo oscuro salía un rectángulo rosa pálido brillante,
+    // fuera de tono con el resto del calendario, y encima no coincidía con
+    // el rojo de la leyenda "Ocupado" de más abajo (que sí usa estos mismos
+    // tokens). Con `--danger-*` el día ocupado se ve consistente con esa
+    // leyenda y con el resto de la app en los dos temas.
+    background-color: var(--danger-bg);
+    border-color: var(--danger-border);
+    color: var(--danger);
     text-decoration: line-through;
   }
 
@@ -25,4 +72,26 @@
       transparent
     );
   }
+
+  // Días PASADOS: se distinguen por INTENSIDAD, no por color — nada de fondo
+  // ni tinte, solo un número bien apagado ("fantasma"). Con dos intentos
+  // anteriores metiendo un fondo sutil de por medio, el resultado eran 3-4
+  // tonos de gris/verde parecidos y difíciles de distinguir entre sí. Sin
+  // fondo compitiendo, "apagado" se lee inequívocamente distinto de "normal"
+  // (libre) o "de color" (ocupado/tu estancia). `:not(.availability-occupied)`
+  // es lo que separa "pasó" de "ocupado": Material pone la misma clase
+  // `.mat-calendar-body-disabled` a los dos, y los ocupados ya tienen su
+  // propio rojo aparte.
+  .mat-calendar-body-cell.mat-calendar-body-disabled:not(
+      .availability-occupied
+    )
+    .mat-calendar-body-cell-content {
+    opacity: 0.35;
+  }
+
+  // Días LIBRES: sin marca — es la convención de la mayoría de calendarios de
+  // reserva (Booking, Airbnb): lo que no tiene color ni está apagado, está
+  // disponible. Los dos intentos con tinte verde (8%, luego 16%) quedaban muy
+  // parecidos al fondo liso o al verde sólido de "Tu estancia" según el tema;
+  // mejor no competir por ese mismo color y dejarlo vacío a propósito.
 }

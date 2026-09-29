@@ -1496,6 +1496,8 @@
       "clear": "Limpiar",
       "legend_selected": "Tu estancia",
       "legend_occupied": "Ocupado",
+      "legend_free": "Libre",
+      "legend_past": "Ya pasó",
       "pick_checkout": "Ahora elige la fecha de salida.",
       "crosses_occupied": "Ese rango pasa por noches ocupadas. Empezamos de nuevo desde la fecha que elegiste.",
       "load_failed": "No pudimos cargar la disponibilidad. Escríbenos y te confirmamos.",

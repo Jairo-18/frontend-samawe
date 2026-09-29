@@ -1496,6 +1496,8 @@
       "clear": "Clear",
       "legend_selected": "Your stay",
       "legend_occupied": "Booked",
+      "legend_free": "Free",
+      "legend_past": "Past",
       "pick_checkout": "Now pick your check-out date.",
       "crosses_occupied": "That range runs through booked nights. Starting over from the date you picked.",
       "load_failed": "We couldn't load availability. Message us and we'll confirm.",

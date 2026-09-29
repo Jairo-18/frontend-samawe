@@ -210,7 +210,8 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     );
     if (filteredFiles.length === 0) return;
     for (const file of filteredFiles) {
-      const croppedBlob = await this.openCropper(file);
+      const toEdit = await this.downscaleForCropper(file);
+      const croppedBlob = await this.openCropper(toEdit);
       if (croppedBlob) {
         const croppedFile = new File([croppedBlob], file.name, {
           type: 'image/webp'
@@ -222,11 +223,58 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
       }
     }
   }
+  /**
+   * Reduce la foto ANTES de abrir el recortador, si hace falta.
+   *
+   * Las fotos de celular llegan a 4000px+ de lado y varios MB. El recortador
+   * (`ngx-image-cropper`) decodifica y pinta esa resolución completa en un
+   * diálogo de ~600px de ancho — con varias fotos seguidas eso es justo lo
+   * que se siente como "tarda tanto en cargar para editarlas". El resultado
+   * final igual se limita a 1200px (`resizeToWidth` del cropper), así que
+   * bajar ANTES a un tope generoso de 2000px no quita margen real para
+   * recortar y ahorra casi todo ese trabajo de decodificación.
+   *
+   * `imageOrientation: 'from-image'` porque `createImageBitmap` no aplica la
+   * rotación EXIF por defecto: sin eso, una foto tomada en vertical saldría
+   * de lado en el recortador aunque en la galería del celular se vea derecha.
+   */
+  private async downscaleForCropper(file: File): Promise<File> {
+    if (!isPlatformBrowser(this._platformId)) return file;
+    const MAX_SIDE = 2000;
+    try {
+      const bitmap = await createImageBitmap(file, {
+        imageOrientation: 'from-image'
+      });
+      if (bitmap.width <= MAX_SIDE && bitmap.height <= MAX_SIDE) {
+        bitmap.close();
+        return file;
+      }
+      const scale = MAX_SIDE / Math.max(bitmap.width, bitmap.height);
+      const width = Math.round(bitmap.width * scale);
+      const height = Math.round(bitmap.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        bitmap.close();
+        return file;
+      }
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close();
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, 'image/webp', 0.92)
+      );
+      return blob ? new File([blob], file.name, { type: 'image/webp' }) : file;
+    } catch {
+      // Si algo falla (formato raro, navegador sin `createImageBitmap`...) se
+      // sigue con el archivo original: esto nunca debe bloquear la subida.
+      return file;
+    }
+  }
   private openCropper(file: File): Promise<Blob | null> {
     const isMobile = isPlatformBrowser(this._platformId) ? window.innerWidth < 768 : false;
     const dialogRef = this.dialog.open(ImageCropperDialogComponent, {
-      // `entityType` decide la proporción con la que se abre el recorte:
-      // cuadrada para productos, apaisada para hospedajes y pasadías.
       data: { file, entityType: this.entityType },
       // 640 y no 500: con proporciones apaisadas o panorámicas, en 500px el
       // recuadro quedaba tan bajo que no se veía qué se estaba recortando.

@@ -15,8 +15,16 @@
     }
   </div>
 
+  <!--
+    `bg-[var(--bg-secondary-color)]` va AQUÍ, en el wrapper, y no como token
+    de Material: `<mat-calendar>` standalone (sin popup de datepicker) no
+    pinta fondo propio —es transparente—, así que sin esto se veía el color
+    de la card padre (`<aside>`) por debajo, calcado. El token
+    `--mat-datepicker-calendar-container-background-color` solo lo consume
+    `mat-datepicker-content` (el popup), nunca el calendario embebido así.
+  -->
   <div
-    class="availability-calendar rounded-[4px] border border-[var(--primary-color)] overflow-hidden"
+    class="availability-calendar rounded-[4px] border border-[var(--primary-color)] overflow-hidden bg-[var(--bg-secondary-color)]"
     [class.opacity-50]="loading"
   >
     <mat-calendar
@@ -35,8 +43,16 @@
       {{ 'public.availability.legend_selected' | translate }}
     </li>
     <li class="flex items-center gap-1.5">
+      <span class="w-3 h-3 rounded-full border border-[var(--border-color)]"></span>
+      {{ 'public.availability.legend_free' | translate }}
+    </li>
+    <li class="flex items-center gap-1.5">
       <span class="w-3 h-3 rounded-full bg-[var(--danger-bg)] border border-[var(--danger-border)]"></span>
       {{ 'public.availability.legend_occupied' | translate }}
+    </li>
+    <li class="flex items-center gap-1.5 opacity-[0.35]">
+      <span class="w-3 h-3 rounded-full border border-[var(--border-color)]"></span>
+      {{ 'public.availability.legend_past' | translate }}
     </li>
   </ul>
 

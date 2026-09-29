@@ -29,19 +29,6 @@ export const CROP_RATIOS: CropRatio[] = [
   { key: '16:9', label: 'Panorámica', icon: 'panorama_wide_angle', value: 16 / 9 }
 ];
 
-/**
- * Proporción con la que se abre el recortador según lo que se esté editando.
- * Es solo el punto de partida: desde el diálogo se puede cambiar a cualquier
- * otra, incluida la libre. Antes estaba fijo en 1/1 para todo, así que una
- * cabaña —que se fotografía apaisada o vertical— se recortaba a cuadrado por la
- * fuerza y había que sacrificar parte de la foto.
- */
-const DEFAULT_RATIO_BY_ENTITY: Record<EntityType, string> = {
-  product: '1:1',
-  accommodation: '4:3',
-  excursion: '4:3'
-};
-
 @Component({
   selector: 'app-image-cropper-dialog',
   standalone: true,
@@ -76,11 +63,10 @@ export class ImageCropperDialogComponent {
     public data: { file: File; entityType?: EntityType }
   ) {
     this.imageFile = data.file;
-    const defaultKey = data.entityType
-      ? DEFAULT_RATIO_BY_ENTITY[data.entityType]
-      : 'free';
-    this.selectedRatio =
-      CROP_RATIOS.find((r) => r.key === defaultKey) ?? CROP_RATIOS[0];
+    // Libre por defecto para todo: el usuario elige la proporción él mismo
+    // desde el diálogo si quiere una fija. Antes se forzaba cuadrada/horizontal
+    // según el tipo y sacrificaba parte de la foto sin que lo pidiera nadie.
+    this.selectedRatio = CROP_RATIOS.find((r) => r.key === 'free')!;
   }
 
   get maintainAspectRatio(): boolean {
