@@ -53,6 +53,9 @@
     <div
       class="flex overflow-x-auto items-center gap-4 py-4 w-full scroll-smooth scrollbar-thin overflow-y-hidden"
       *ngIf="images.length > 0 || pendingPreviews.length > 0 || isUploading"
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="onImageDrop($event)"
     >
       <div
         *ngFor="let preview of pendingPreviews; let i = index"
@@ -102,9 +105,24 @@
         >
       </div>
       <div
-        *ngFor="let image of images"
+        *ngFor="let image of images; let i = index"
+        cdkDrag
+        [cdkDragData]="image"
         class="relative flex-shrink-0 w-[260px] h-[260px] md:w-[280px] md:h-[280px] rounded-xl overflow-hidden shadow-sm cursor-pointer group bg-[var(--surface-sunken)] border border-[var(--border-color)]"
       >
+        <div
+          *ngIf="i === 0"
+          class="absolute top-2 left-2 z-10 bg-[var(--primary-color)] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shadow"
+        >
+          Portada
+        </div>
+        <div
+          class="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-black/45 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-grab active:cursor-grabbing"
+          cdkDragHandle
+          [matTooltip]="'Arrastra para reordenar'"
+        >
+          <mat-icon class="!text-lg">drag_indicator</mat-icon>
+        </div>
         <img
           [src]="image.imageUrl"
           class="w-full h-full"

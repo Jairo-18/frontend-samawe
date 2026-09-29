@@ -5,7 +5,8 @@ import {
   Input,
   OnChanges,
   Output,
-  PLATFORM_ID
+  PLATFORM_ID,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -138,9 +139,37 @@ export class OrganizationalMultimediaComponent implements OnChanges {
     img.src = `${base}?_r=${Date.now()}`;
   }
 
-  ngOnChanges(): void {
-    this.retried = new Set<string>();
-    this.loadedImages = new Set<string>();
+  /**
+   * ⚠️ NO resetear `loadedImages`/`retried` por completo en cada cambio.
+   *
+   * `mediaMap` es un objeto NUEVO cada vez que se sube o borra CUALQUIER
+   * media (`reloadMedias()` en el padre trae de nuevo TODA la organización).
+   * Vaciar los dos Sets enteros aquí ocultaba de golpe todas las tarjetas ya
+   * cargadas detrás del esqueleto `animate-pulse` (que lleva `z-10`, por
+   * encima de los botones de subir/ver/borrar) hasta que su `<img>` disparara
+   * `load` otra vez — cosa que NO pasa si la URL no cambió, porque Angular no
+   * toca el atributo `src` si el binding da el mismo valor. Resultado: subir
+   * UNA foto dejaba el resto de tarjetas con pinta de "cargando en blanco" y
+   * sin poder tocarlas, hasta refrescar la página.
+   *
+   * Por eso solo se limpia el código cuya URL de verdad cambió.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['mediaMap']) return;
+    const previous = (changes['mediaMap'].previousValue ?? {}) as typeof this.mediaMap;
+    const current = (changes['mediaMap'].currentValue ?? {}) as typeof this.mediaMap;
+    const codes = new Set([...Object.keys(previous), ...Object.keys(current)]);
+    for (const code of codes) {
+      if (this.urlOf(previous[code]) !== this.urlOf(current[code])) {
+        this.loadedImages.delete(code);
+        this.retried.delete(code);
+      }
+    }
+  }
+
+  private urlOf(media?: OrganizationalMedia | OrganizationalMedia[]): string | undefined {
+    if (!media) return undefined;
+    return Array.isArray(media) ? media[0]?.url : media.url;
   }
 
   triggerInput(code: string): void {

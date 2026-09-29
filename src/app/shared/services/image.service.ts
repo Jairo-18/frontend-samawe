@@ -66,6 +66,20 @@ export class ImageService {
       `${environment.apiUrl}${entityType}/${entityId}/images/${encodedPublicId}`
     );
   }
+  /**
+   * Persiste el orden final de la galería. `publicIds` va en el orden que
+   * eligió el usuario arrastrando; el primero queda de portada.
+   */
+  reorderImages(
+    entityType: EntityType,
+    entityId: number,
+    publicIds: string[]
+  ): Observable<{ statusCode: number; message: string }> {
+    return this._httpClient.patch<{ statusCode: number; message: string }>(
+      `${environment.apiUrl}${entityType}/${entityId}/images/reorder`,
+      { publicIds }
+    );
+  }
   public mapResponseToStandardItem(
     type: EntityType,
     item: RawImageItem

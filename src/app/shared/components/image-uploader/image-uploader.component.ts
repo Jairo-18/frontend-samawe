@@ -34,6 +34,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { YesNoDialogComponent } from '../yes-no-dialog/yes-no-dialog.component';
 import { ImageCropperDialogComponent } from '../image-cropper-dialog/image-cropper-dialog.component';
 import { lastValueFrom } from 'rxjs';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray
+} from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-image-uploader',
   standalone: true,
@@ -44,7 +49,8 @@ import { lastValueFrom } from 'rxjs';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatTooltipModule,
-    TranslateModule
+    TranslateModule,
+    DragDropModule
   ],
   templateUrl: './image-uploader.component.html',
   styleUrls: ['./image-uploader.component.scss']
@@ -66,6 +72,8 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   pendingFiles: File[] = [];
   pendingPreviews: string[] = [];
   toDeleteImages: ImageItem[] = [];
+  /** El usuario arrastró la galería para cambiar el orden; falta persistirlo. */
+  orderDirty: boolean = false;
   isUploading: boolean = false;
   previewImageUrl: string | null = null;
   isDragging: boolean = false;
@@ -104,14 +112,14 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   private processInitialImages() {
     this.toDeleteImages = [];
     if (this.initialImages && this.initialImages.length > 0) {
-      this.images = this.initialImages
-        .map((img: unknown) =>
-          this.imageService.mapResponseToStandardItem(
-            this.entityType,
-            img as RawImageItem
-          )
+      // Sin reordenar aquí: el orden lo trae el backend por `position` (el
+      // que el usuario armó arrastrando), no por antigüedad.
+      this.images = this.initialImages.map((img: unknown) =>
+        this.imageService.mapResponseToStandardItem(
+          this.entityType,
+          img as RawImageItem
         )
-        .sort((a, b) => b.imageId - a.imageId);
+      );
       this.loadedEntityId = this.entityId;
       this.cdr.detectChanges();
     } else if (this.entityId && this.loadedEntityId !== this.entityId) {
@@ -136,14 +144,31 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
    * que cambió fue la galería: tocar fotos no ensucia el `FormGroup`.
    */
   get hasPendingChanges(): boolean {
-    return this.pendingFiles.length > 0 || this.toDeleteImages.length > 0;
+    return (
+      this.pendingFiles.length > 0 ||
+      this.toDeleteImages.length > 0 ||
+      this.orderDirty
+    );
+  }
+
+  /**
+   * El usuario soltó una foto en otra posición de la galería. Se reordena de
+   * inmediato en pantalla; el `publicId` de cada una se manda al backend
+   * recién al guardar (`applyChanges`), igual que borrados y subidas.
+   */
+  onImageDrop(event: CdkDragDrop<ImageItem[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+    moveItemInArray(this.images, event.previousIndex, event.currentIndex);
+    this.orderDirty = true;
+    this.cdr.detectChanges();
   }
 
   loadImages() {
     this.loadedEntityId = this.entityId;
     this.imageService.getImages(this.entityType, this.entityId).subscribe({
       next: (images) => {
-        this.images = [...images].sort((a, b) => b.imageId - a.imageId);
+        // El backend ya las trae ordenadas por `position`.
+        this.images = [...images];
         this.imagesChanged.emit(this.images);
         this.cdr.detectChanges();
       },
@@ -240,13 +265,30 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
             const res = await lastValueFrom(
               this.imageService.uploadImage(this.entityType, finalId, file)
             );
-            this.images = [res.item, ...this.images];
+            // Al final, no al principio: el backend ya la agrega de última
+            // (`position` = máxima + 1) — el orden lo decide el usuario
+            // arrastrando, no "lo último subido pasa a portada".
+            this.images = [...this.images, res.item];
           } catch (err) {
             console.error('Error subiendo imagen en applyChanges', err);
           }
         }
         this.pendingFiles = [];
         this.pendingPreviews = [];
+      }
+
+      // Se manda siempre que haya galería: una subida nueva también cambia el
+      // orden final (queda al fondo), así que conviene fijar las posiciones
+      // tal cual se ven, no solo cuando el usuario arrastró a mano.
+      if (this.images.length > 0) {
+        await lastValueFrom(
+          this.imageService.reorderImages(
+            this.entityType,
+            finalId,
+            this.images.map((img) => img.publicId)
+          )
+        );
+        this.orderDirty = false;
       }
     } finally {
       this.isUploading = false;
@@ -261,6 +303,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   resetPending() {
     this.pendingFiles = [];
     this.pendingPreviews = [];
+    this.orderDirty = false;
     this.cdr.detectChanges();
   }
 
@@ -281,6 +324,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.pendingFiles = [];
     this.pendingPreviews = [];
     this.toDeleteImages = [];
+    this.orderDirty = false;
     this.loadedEntityId = null;
     this.cdr.detectChanges();
   }
@@ -295,7 +339,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
         .uploadImage(this.entityType, this.entityId, file)
         .subscribe({
           next: (res: UploadResponse) => {
-            this.images = [res.item, ...this.images];
+            this.images = [...this.images, res.item];
             uploadsCompleted++;
             this.checkUploadComplete(uploadsCompleted, files.length);
           },
