@@ -1,0 +1,19 @@
+<div
+  class="trend-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] mt-8 shadow-md"
+>
+  <span
+    class="panel-heading block mb-5 text-xs md:text-lg font-semibold text-[var(--on-surface)]"
+  >
+    {{ 'sales.trend_title' | translate }}
+  </span>
+  @if (chartData) {
+    <div class="relative h-72 md:h-80">
+      <canvas
+        baseChart
+        [data]="chartData"
+        [options]="chartOptions"
+        [type]="'bar'"
+      ></canvas>
+    </div>
+  }
+</div>

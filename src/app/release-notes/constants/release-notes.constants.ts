@@ -31,6 +31,78 @@ type Lang = 'es' | 'en';
 
 const ES: ReleaseSection[] = [
   {
+    version: 'Octubre 2026',
+    date: 'Octubre 2026',
+    notes: [
+      {
+        icon: 'account_balance_wallet',
+        title: 'Facturas a crédito con plazo y abonos',
+        description:
+          'Una venta a crédito ahora lleva un plazo de 30, 60 o 90 días (una cuota cada 30 días) y se le van registrando abonos hasta saldarla. Verás cuánto se ha abonado, cuánto falta y qué cuotas están vencidas.',
+        howTo: [
+          'Crea la venta con tipo de pago “Crédito”. En el estado de pago queda “Pendiente”.',
+          'Abre la factura: aparece el panel “Crédito y abonos”. Elige el plazo.',
+          'Para cada pago del cliente pulsa “Registrar abono” (monto, medio de pago y fecha), o “Abonar todo” para pagar el saldo completo.',
+          'Cuando el saldo llega a cero, el estado de pago pasa solo a “Pagado”. Si borras un abono, vuelve a “Pendiente”.'
+        ],
+        note: 'Cambiar el plazo no borra los abonos, pero el plazo vuelve a contar desde hoy: una cuota que estaba vencida deja de figurar así. Por eso la aplicación te pide confirmar. Un abono nunca puede superar el saldo.'
+      },
+      {
+        icon: 'request_quote',
+        title: 'Cuentas por cobrar y cartera',
+        description:
+          'Una vista con todo lo que los clientes nos deben a crédito, con las vencidas primero. En las listas de facturas, cada venta a crédito muestra lo abonado y el saldo.',
+        howTo: [
+          'En el menú, “Facturación” → “Cuentas por cobrar”. Pulsa una fila para abrir la factura y registrar abonos.',
+          'En “Reportes / Ganancias” hay dos tarjetas nuevas: la cartera a crédito (vendido, cobrado y lo que nos deben) y las facturas por cobrar, que llevan a cada factura con un clic.'
+        ],
+        note: 'Las ventas a crédito antiguas no tienen plazo y aparecen como “Sin plazo”. Para registrarles abonos o emitirlas hay que elegirles uno.'
+      },
+      {
+        icon: 'event',
+        title: 'El plazo se pide al enviar a la DIAN',
+        description:
+          'La DIAN exige la fecha de vencimiento en una venta a crédito. Si al enviarla la factura no tiene plazo (o el plazo ya venció), la aplicación te pide elegirlo ahí mismo y te muestra la fecha resultante.',
+        note: 'El plazo cuenta desde hoy. A la DIAN solo viaja la fecha de vencimiento final: las cuotas y los abonos son de control interno.'
+      },
+      {
+        icon: 'receipt_long',
+        title: 'Ver las notas y la factura de Factus',
+        description:
+          'Desde el menú ⋮ de una factura electrónica puedes ver todas sus notas crédito, débito y de ajuste, con su detalle, y abrir la versión oficial en Factus.',
+        howTo: [
+          'Abre el menú ⋮ de la factura y elige “Ver notas” o “Ver factura en Factus”.',
+          'En “Ver notas” pulsa el ojo para ver el detalle de una nota, o el ícono de enlace para abrirla en Factus.'
+        ],
+        note: 'En facturación electrónica y en documentos soporte la lista va ordenada por número de Factus, el orden oficial ante la DIAN. La etiqueta verde “Enviada a la DIAN” indica que ya está emitida.'
+      },
+      {
+        icon: 'undo',
+        title: 'Anular una nota débito',
+        description:
+          'Factus no permite anular una nota débito ya validada por la DIAN. Lo que se hace —y lo que acepta la DIAN— es emitir una nota crédito sobre la factura que cubra también el valor de la nota débito.',
+        howTo: [
+          'Abre “Nota crédito” de la factura. Si tiene notas débito pendientes, aparece la casilla “Anular también las notas débito pendientes”.',
+          'Márcala: la nota crédito incluirá los conceptos de la nota débito. Si la factura ya estaba anulada, la nota solo neutraliza la nota débito.'
+        ],
+        note: 'Una nota débito neutralizada se marca como tal. Es una función nueva: conviene probarla primero con un caso pequeño.'
+      },
+      {
+        icon: 'rule',
+        title: 'Reglas nuevas del documento soporte',
+        description:
+          'Como lo exige la DIAN, el documento soporte solo se emite a personas naturales que no sean responsables de IVA, y la compra no lleva impuestos.',
+        note: 'Si el proveedor es una empresa o responsable de IVA, la aplicación lo avisa: lo que corresponde es pedirle su factura. En compras a quien no es responsable de IVA, el impuesto queda fijo en “Sin impuesto”. Una factura en $0 tampoco se puede emitir ni corregir con notas.'
+      },
+      {
+        icon: 'picture_as_pdf',
+        title: 'Correcciones',
+        description:
+          'Los PDF de las facturas vuelven a generarse y a adjuntarse al correo, y el Excel de facturas seleccionadas funciona de nuevo.'
+      }
+    ]
+  },
+  {
     version: 'Septiembre 2026',
     date: 'Septiembre 2026',
     notes: [
@@ -279,6 +351,78 @@ const ES: ReleaseSection[] = [
 ];
 
 const EN: ReleaseSection[] = [
+  {
+    version: 'October 2026',
+    date: 'October 2026',
+    notes: [
+      {
+        icon: 'account_balance_wallet',
+        title: 'Credit invoices with terms and payments',
+        description:
+          'A credit sale now carries a 30, 60 or 90-day term (one installment every 30 days) and you record payments until it is settled. You will see how much has been paid, what is left and which installments are overdue.',
+        howTo: [
+          'Create the sale with payment type “Credit”. Its payment status stays “Pending”.',
+          'Open the invoice: the “Credit and payments” panel appears. Choose the term.',
+          'For each customer payment press “Record payment” (amount, method and date), or “Pay all” to pay the full balance.',
+          'When the balance reaches zero the payment status changes to “Paid” by itself. If you delete a payment it goes back to “Pending”.'
+        ],
+        note: 'Changing the term does not delete payments, but the term restarts from today: an installment that was overdue stops showing as overdue. That is why the app asks you to confirm. A payment can never exceed the balance.'
+      },
+      {
+        icon: 'request_quote',
+        title: 'Receivables and credit portfolio',
+        description:
+          'A view with everything customers owe us on credit, overdue first. In the invoice lists, every credit sale shows what has been paid and the balance.',
+        howTo: [
+          'In the menu, “Invoicing” → “Receivables”. Press a row to open the invoice and record payments.',
+          'In “Reports / Earnings” there are two new cards: the credit portfolio (sold, collected and owed) and the invoices to collect, which take you to each invoice with one click.'
+        ],
+        note: 'Older credit sales have no term and show as “No term”. Pick one before recording payments or issuing them.'
+      },
+      {
+        icon: 'event',
+        title: 'The term is requested when sending to DIAN',
+        description:
+          'DIAN requires the due date on a credit sale. If the invoice has no term (or the term has expired) when you send it, the app asks you to choose one right there and shows the resulting date.',
+        note: 'The term counts from today. Only the final due date goes to DIAN: installments and payments are internal control.'
+      },
+      {
+        icon: 'receipt_long',
+        title: 'See the notes and the Factus invoice',
+        description:
+          'From the ⋮ menu of an electronic invoice you can see all its credit, debit and adjustment notes with their details, and open the official version in Factus.',
+        howTo: [
+          'Open the invoice ⋮ menu and choose “View notes” or “View invoice in Factus”.',
+          'In “View notes” press the eye to see a note’s details, or the link icon to open it in Factus.'
+        ],
+        note: 'Electronic invoicing and support documents are sorted by Factus number, the official DIAN order. The green “Sent to DIAN” label means it is already issued.'
+      },
+      {
+        icon: 'undo',
+        title: 'Cancel a debit note',
+        description:
+          'Factus does not allow cancelling a debit note already validated by DIAN. What is done —and what DIAN accepts— is issuing a credit note on the invoice that also covers the debit note value.',
+        howTo: [
+          'Open “Credit note” on the invoice. If it has pending debit notes, the “Also cancel pending debit notes” checkbox appears.',
+          'Tick it: the credit note will include the debit note concepts. If the invoice was already cancelled, the note only neutralizes the debit note.'
+        ],
+        note: 'A neutralized debit note is marked as such. This is a new feature: try it first with a small case.'
+      },
+      {
+        icon: 'rule',
+        title: 'New support document rules',
+        description:
+          'As DIAN requires, a support document can only be issued to natural persons who are not VAT-responsible, and the purchase carries no taxes.',
+        note: 'If the supplier is a company or VAT-responsible, the app tells you: the right step is to ask for their invoice. On purchases from someone who is not VAT-responsible the tax is fixed to “No tax”. An invoice at $0 cannot be issued or corrected with notes either.'
+      },
+      {
+        icon: 'picture_as_pdf',
+        title: 'Fixes',
+        description:
+          'Invoice PDFs are generated and attached to the email again, and the Excel export of selected invoices works again.'
+      }
+    ]
+  },
   {
     version: 'September 2026',
     date: 'September 2026',

@@ -31,6 +31,9 @@
         >
           {{ period.label }}
         </mat-button-toggle>
+        <mat-button-toggle value="custom" class="px-4 py-2 text-sm font-medium">
+          {{ 'sales.custom' | translate }}
+        </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
     <div class="md:hidden flex justify-center my-2 w-full px-2">
@@ -43,16 +46,131 @@
           <mat-option *ngFor="let period of periods" [value]="period.value">
             {{ period.label }}
           </mat-option>
+          <mat-option value="custom">{{ 'sales.custom' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
+    @if (selectedPeriod === 'custom') {
+      <div class="flex justify-center mb-2">
+        <mat-form-field appearance="outline" class="w-full max-w-sm">
+          <mat-label>{{ 'sales.custom_range' | translate }}</mat-label>
+          <mat-date-range-input [formGroup]="range" [rangePicker]="rangePicker" [max]="today">
+            <input matStartDate formControlName="start" placeholder="dd/mm/aaaa" />
+            <input matEndDate formControlName="end" placeholder="dd/mm/aaaa" (dateChange)="onRangeChange()" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangePicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    }
+    <!-- Cifras del período con su comparación y la gráfica en el tiempo. Todo
+         llega ya sumado y neto de notas desde `GET balance/dashboard`. -->
+    @if (dashboardState === 'loading') {
+      <div class="flex justify-center items-center min-h-[200px] mb-8">
+        <app-loader></app-loader>
+      </div>
+    } @else if (dashboardState === 'idle') {
+      <p class="text-center text-[var(--on-surface-muted)] py-8 mb-8">{{ 'sales.pick_dates' | translate }}</p>
+    } @else if (dashboardState === 'loaded' && dashboard) {
+      <div class="grid gap-3 grid-cols-2 lg:grid-cols-5">
+        @for (k of kpis; track k.labelKey) {
+          <div class="earnings-card p-4 md:p-5 rounded-2xl border border-[var(--primary-color)] shadow-md">
+            <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ k.labelKey | translate }}</div>
+            <div class="text-base sm:text-lg md:text-xl font-extrabold mt-1 break-words" [ngClass]="k.valueClass">{{ k.value | formatCop }}</div>
+            <div class="text-xs mt-1 min-h-[1rem]">
+              @if (k.delta) {
+                <span class="font-bold" [ngClass]="k.delta.cls">{{ k.delta.text }}</span>
+                <span class="text-[var(--on-surface-muted)]"> {{ vsPreviousKey | translate }}</span>
+              } @else if (k.count !== undefined) {
+                <span class="text-[var(--on-surface-muted)]">{{ 'sales.invoices_count' | translate: { n: k.count } }}</span>
+              }
+            </div>
+          </div>
+        }
+        <button type="button"
+          class="earnings-card text-left p-4 md:p-5 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl"
+          (click)="openReceivables()">
+          <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'sales.kpi_owed' | translate }}</div>
+          <div class="text-base sm:text-lg md:text-xl font-extrabold mt-1 break-words !text-[var(--danger)]">
+            {{ receivablesState === 'loaded' ? (creditOwed | formatCop) : '—' }}
+          </div>
+          <div class="text-xs mt-1 text-[var(--on-surface-muted)]">
+            @if (receivablesState === 'loaded') {
+              {{ 'sales.invoices_count' | translate: { n: owingInvoices.length } }}
+            }
+          </div>
+        </button>
+      </div>
+      <app-sales-trend-chart class="block mb-8" [dashboard]="dashboard" [period]="selectedPeriod"></app-sales-trend-chart>
+
+      <!-- De dónde vienen las ventas: ambas porciones suman las ventas del período. -->
+      <div class="grid gap-8 grid-cols-1 lg:grid-cols-2 mb-8">
+        <app-breakdown-donut titleKey="sales.by_category" [items]="dashboard.byCategory"></app-breakdown-donut>
+        <app-breakdown-donut titleKey="sales.by_pay_type" [items]="dashboard.byPayType"></app-breakdown-donut>
+      </div>
+
+      <!-- Lo más vendido y el inventario que se está acabando. -->
+      <div class="grid gap-8 grid-cols-1 lg:grid-cols-2 mb-8">
+        <div class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md">
+          <span class="panel-heading block mb-4 text-xs md:text-lg font-semibold text-[var(--on-surface)]">
+            {{ 'sales.top_title' | translate }}
+          </span>
+          @if (dashboard.top.length === 0) {
+            <p class="text-[var(--on-surface-muted)]">{{ 'sales.no_sales_period' | translate }}</p>
+          } @else {
+            <ol class="flex flex-col gap-2">
+              @for (t of dashboard.top; track t.name + t.category; let i = $index) {
+                <li class="flex items-center gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary-color)] px-3 py-2">
+                  <span class="w-6 h-6 shrink-0 rounded-full bg-[var(--primary-color)] text-white text-xs font-bold flex items-center justify-center">{{ i + 1 }}</span>
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate font-semibold text-sm">{{ pretty(t.name) }}</span>
+                    <span class="block text-xs text-[var(--on-surface-muted)]">{{ pretty(t.category) }} · {{ t.quantity }} {{ 'sales.units_short' | translate }}</span>
+                  </span>
+                  <span class="shrink-0 font-semibold text-sm">{{ t.total | formatCop }}</span>
+                </li>
+              }
+            </ol>
+          }
+        </div>
+
+        @if (lowInventoryState === 'loaded') {
+          <div class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md">
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <span class="panel-heading text-xs md:text-lg font-semibold text-[var(--on-surface)]">
+                {{ 'sales.low_inventory' | translate }}
+              </span>
+              @if (lowInventoryTotal > 0) {
+                <span class="text-sm bg-[var(--warning)] text-white px-2 py-1 rounded">{{ lowInventoryTotal }}</span>
+              }
+            </div>
+            @if (lowInventory.length === 0) {
+              <p class="text-[var(--on-surface-muted)]">{{ 'sales.no_low_inventory' | translate }}</p>
+            } @else {
+              <ul class="flex flex-col gap-2">
+                @for (p of lowInventory; track p.name) {
+                  <li class="flex items-center justify-between gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary-color)] px-3 py-2">
+                    <span class="min-w-0 truncate text-sm">{{ pretty(p.name) }}</span>
+                    <span class="shrink-0 font-bold text-sm" [ngClass]="p.amount <= 0 ? '!text-[var(--danger)]' : '!text-[var(--warning)]'">
+                      {{ p.amount }} {{ 'sales.units_short' | translate }}
+                    </span>
+                  </li>
+                }
+              </ul>
+              <button mat-stroked-button class="!w-full !rounded-lg mt-3" (click)="openProducts()">
+                {{ 'sales.see_products' | translate }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
     <!-- Escalón de por medio: `md:grid-cols-3` metía 3 columnas apretadas
          justo en tablet vertical (768px). Con `sm:grid-cols-2`, 2 columnas
          se mantienen desde 640px hasta 1439px (cubre 1280) y las 3 recién
          entran en `laptop:` (1440px, custom en tailwind.config.js). -->
     <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 laptop:grid-cols-3">
       <div
-        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
@@ -88,7 +206,8 @@
         </div>
       </div>
       <div
-        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        [class.hidden]="selectedPeriod === 'custom'"
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
@@ -109,34 +228,34 @@
           <div class="flex justify-between text-[var(--success)] font-semibold">
             <span>{{ 'sales.sales' | translate }}</span>
             <span class="font-semibold">{{
-              invoiceBalance?.[selectedPeriod]?.totalInvoiceSale ?? 0
+              periodBalance?.totalInvoiceSale ?? 0
                 | formatCop
             }}</span>
           </div>
           <div class="flex justify-between text-[var(--warning)]">
             <span>{{ 'sales.purchases' | translate }}</span>
             <span class="font-semibold">{{
-              invoiceBalance?.[selectedPeriod]?.totalInvoiceBuy ?? 0 | formatCop
+              periodBalance?.totalInvoiceBuy ?? 0 | formatCop
             }}</span>
           </div>
           <div
             class="flex justify-between font-semibold"
             [ngClass]="{
               'text-[var(--success)]':
-                +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) >= 0,
+                +(periodBalance?.balanceInvoice ?? 0) >= 0,
               'text-[var(--danger)]':
-                +(invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0) < 0
+                +(periodBalance?.balanceInvoice ?? 0) < 0
             }"
           >
             <span>{{ 'sales.balance' | translate }}</span>
             <span>{{
-              invoiceBalance?.[selectedPeriod]?.balanceInvoice ?? 0 | formatCop
+              periodBalance?.balanceInvoice ?? 0 | formatCop
             }}</span>
           </div>
         </div>
       </div>
       <div
-        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
@@ -203,7 +322,7 @@
         </div>
       </div>
       <div
-        class="p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
       >
         <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
           <div class="flex items-center space-x-2">
@@ -256,9 +375,129 @@
             }}</span>
             <span class="font-semibold">{{ reservedAccommodationsCount }}</span>
           </div>
+          <div>
+            <div class="flex justify-between text-xs md:text-sm mb-1">
+              <span class="text-[var(--on-surface-muted)]">{{ 'sales.occupancy' | translate }}</span>
+              <span class="font-semibold">{{ occupancyPercent }}%</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-[var(--surface-sunken)] overflow-hidden" role="progressbar"
+              [attr.aria-valuenow]="occupancyPercent" aria-valuemin="0" aria-valuemax="100">
+              <div class="h-full bg-[var(--primary-color)]" [style.width.%]="occupancyPercent"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <!-- Cartera de crédito: lo que nos deben y lo que ya se cobró, y las
+         facturas que faltan por cobrar (clic → la factura). -->
+    @if (receivablesState === 'loading') {
+      <div class="flex justify-center items-center min-h-[200px] mt-8">
+        <app-loader></app-loader>
+      </div>
+    } @else if (receivablesState === 'loaded') {
+    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 mt-8">
+      <div
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+      >
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-6">
+          <div class="flex items-center space-x-2">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full flex items-center justify-center">
+              <mat-icon class="!text-white !text-base !w-4 !h-4 !leading-4">account_balance_wallet</mat-icon>
+            </div>
+            <span class="text-[var(--on-surface)] font-semibold">
+              {{ 'sales.credit_portfolio' | translate }}
+            </span>
+          </div>
+          <span class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded">
+            {{ creditCollectedPct }}% {{ 'sales.credit_collected_short' | translate }}
+          </span>
+        </div>
+        <div class="space-y-4">
+          <div class="flex justify-between">
+            <span class="text-[var(--on-surface-muted)]">{{ 'sales.credit_sold' | translate }}</span>
+            <span class="font-semibold">{{ creditSold | formatCop }}</span>
+          </div>
+          <div class="flex justify-between text-[var(--success)] font-semibold">
+            <span>{{ 'sales.credit_collected' | translate }}</span>
+            <span>{{ creditCollected | formatCop }}</span>
+          </div>
+          <div class="flex justify-between text-[var(--danger)] font-semibold">
+            <span>{{ 'sales.credit_owed' | translate }}</span>
+            <span>{{ creditOwed | formatCop }}</span>
+          </div>
+          @if (overdueOwed > 0) {
+            <div class="flex justify-between text-[var(--danger)]">
+              <span class="text-[var(--on-surface-muted)]">{{ 'sales.credit_overdue' | translate }} ({{ overdueCount }})</span>
+              <span class="font-semibold">{{ overdueOwed | formatCop }}</span>
+            </div>
+          }
+          <div class="h-2 w-full rounded-full bg-[var(--surface-sunken)] overflow-hidden" role="progressbar"
+            [attr.aria-valuenow]="creditCollectedPct" aria-valuemin="0" aria-valuemax="100">
+            <div class="h-full bg-[var(--success)]" [style.width.%]="creditCollectedPct"></div>
+          </div>
+          @if (aging.length) {
+            <div class="pt-2">
+              <div class="text-xs md:text-sm font-semibold mb-2">{{ 'sales.aging_title' | translate }}</div>
+              <ul class="flex flex-col gap-1">
+                @for (a of aging; track a.labelKey) {
+                  <li class="flex justify-between text-xs md:text-sm">
+                    <span class="text-[var(--on-surface-muted)]">{{ a.labelKey | translate }} ({{ a.count }})</span>
+                    <span class="font-semibold" [ngClass]="a.tone">{{ a.total | formatCop }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div
+        class="earnings-card p-6 md:p-8 rounded-2xl border border-[var(--primary-color)] shadow-md hover:shadow-xl transition-transform hover:scale-105"
+      >
+        <div class="flex items-center flex-wrap gap-2 justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <div class="p-2 bg-[var(--primary-color)] rounded-full flex items-center justify-center">
+              <mat-icon class="!text-white !text-base !w-4 !h-4 !leading-4">request_quote</mat-icon>
+            </div>
+            <span class="text-[var(--on-surface)] font-semibold">
+              {{ 'sales.owing_invoices' | translate }}
+            </span>
+          </div>
+          <span class="text-sm bg-[var(--primary-color)] text-white px-2 py-1 rounded">
+            {{ owingInvoices.length }}
+          </span>
+        </div>
+        @if (owingInvoices.length === 0) {
+          <p class="text-[var(--on-surface-muted)]">{{ 'sales.no_owing' | translate }}</p>
+        } @else {
+          <ul class="flex flex-col gap-2">
+            @for (r of owingInvoices.slice(0, 5); track r.invoiceId) {
+              <li>
+                <button type="button"
+                  class="w-full flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary-color)] px-3 py-2 text-left hover:bg-[var(--surface-sunken)]"
+                  (click)="openReceivable(r)">
+                  <span class="min-w-0">
+                    <span class="font-semibold">{{ r.code }}</span>
+                    <span class="block truncate text-xs text-[var(--on-surface-muted)]">{{ r.clientName }}</span>
+                  </span>
+                  <span class="shrink-0 text-right">
+                    <span class="font-semibold !text-[var(--danger)]">{{ r.balance | formatCop }}</span>
+                    @if (r.status === 'OVERDUE') {
+                      <span class="block text-xs font-bold !text-[var(--danger)]">{{ 'invoice.credit.status_overdue' | translate }}</span>
+                    }
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+          <button mat-stroked-button class="!w-full !rounded-lg mt-3" (click)="openReceivables()">
+            {{ 'sales.see_all_owing' | translate }}
+            @if (owingInvoices.length > 5) { ({{ owingInvoices.length }}) }
+          </button>
+        }
+      </div>
+    </div>
+    }
     <!-- Fuera de la grilla de cards a propósito: adentro era un 5º item en
          una grilla de 3 columnas, y en desktop dejaba una celda vacía al
          lado. Como fila propia, ocupa el ancho completo sin dejar huecos. -->
@@ -275,10 +514,6 @@
         {{ 'sales.download_detailed_report' | translate }}
       </button>
     </div>
-    <app-grapic
-      [invoiceSummaryGroup]="invoiceSummaryGroup"
-      [selectedPeriod]="selectedPeriod"
-    ></app-grapic>
   }
   </div>
 </app-base-page>

@@ -1,1 +1,12 @@
+// Fondo de las tarjetas del resumen: el SECUNDARIO de la app en claro (gris
+// suave sobre la página blanca) y el PRIMARIO en oscuro. En oscuro
+// `--bg-primary-color` es la superficie elevada y `--bg-secondary-color` la
+// base; con el primario las tarjetas quedan al nivel de la página y las separa
+// el borde.
+.earnings-card {
+  background: var(--bg-secondary-color);
+}
 
+:host-context([data-theme='dark']) .earnings-card {
+  background: var(--bg-primary-color);
+}

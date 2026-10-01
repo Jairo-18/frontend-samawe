@@ -962,6 +962,8 @@ export class SeeInvoicesComponent implements OnInit {
   private askCreditTerm(invoice: any, expired: boolean): void {
     this._matDialog
       .open(CreditTermDialogComponent, {
+        width: '560px',
+        maxWidth: '95vw',
         data: { code: invoice.code, expired }
       })
       .afterClosed()

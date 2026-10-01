@@ -66,18 +66,18 @@
       }
 
       <!-- Resumen -->
-      <div class="grid grid-cols-3 gap-2 text-center">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center">
         <div class="rounded-xl border border-[var(--border-color)] p-2">
           <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.summary.total' | translate }}</div>
-          <div class="text-base md:text-lg font-bold">{{ credit.total | formatCop }}</div>
+          <div class="text-base md:text-lg font-bold break-words">{{ credit.total | formatCop }}</div>
         </div>
         <div class="rounded-xl border border-[var(--border-color)] p-2">
           <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.credit.paid' | translate }}</div>
-          <div class="text-base md:text-lg font-bold !text-[var(--success)]">{{ credit.paid | formatCop }}</div>
+          <div class="text-base md:text-lg font-bold break-words !text-[var(--success)]">{{ credit.paid | formatCop }}</div>
         </div>
         <div class="rounded-xl border border-[var(--border-color)] p-2">
           <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.credit.balance' | translate }}</div>
-          <div class="text-base md:text-lg font-bold" [class.!text-[var(--danger)]]="credit.balance > 0">{{ credit.balance | formatCop }}</div>
+          <div class="text-base md:text-lg font-bold break-words" [class.!text-[var(--danger)]]="credit.balance > 0">{{ credit.balance | formatCop }}</div>
         </div>
       </div>
 

@@ -1,0 +1,8 @@
+// Mismo fondo que las tarjetas del resumen: secundario en claro, primario en oscuro.
+.donut-card {
+  background: var(--bg-secondary-color);
+}
+
+:host-context([data-theme='dark']) .donut-card {
+  background: var(--bg-primary-color);
+}

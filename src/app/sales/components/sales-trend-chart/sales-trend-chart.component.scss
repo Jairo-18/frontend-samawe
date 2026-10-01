@@ -1,0 +1,8 @@
+// Mismo fondo que las tarjetas del resumen: secundario en claro, primario en oscuro.
+.trend-card {
+  background: var(--bg-secondary-color);
+}
+
+:host-context([data-theme='dark']) .trend-card {
+  background: var(--bg-primary-color);
+}

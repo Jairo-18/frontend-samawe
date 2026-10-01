@@ -8,7 +8,10 @@ import {
   InvoiceBalance,
   TotalInventory,
   InvoiceSummaryGroupedResponse,
-  DashboardStateSummary
+  DashboardStateSummary,
+  DashboardPeriodValue,
+  LowInventoryResponse,
+  SalesDashboard
 } from '../interface/earning.interface';
 import { AuthService } from '../../auth/services/auth.service';
 
@@ -52,6 +55,30 @@ export class EarningService {
       ? `${environment.apiUrl}balance/invoice-summary?organizationalId=${orgId}`
       : `${environment.apiUrl}balance/invoice-summary`;
     return this._cached('invoice-summary', () => this._httpClient.get<InvoiceBalance>(url));
+  }
+  /** Cifras del período, comparación con el anterior y serie, ya sumadas en el servidor. */
+  getDashboard(
+    period: DashboardPeriodValue,
+    range?: { from: string; to: string }
+  ): Observable<SalesDashboard> {
+    const query =
+      period === 'custom' && range
+        ? `period=custom&from=${range.from}&to=${range.to}`
+        : `period=${period}`;
+    return this._cached(`dashboard-${query}`, () =>
+      this._httpClient.get<SalesDashboard>(
+        `${environment.apiUrl}balance/dashboard?${query}`
+      )
+    );
+  }
+
+  /** Los 5 productos con menos stock (el backend considera "bajo" menos de 10). */
+  getLowInventory(): Observable<LowInventoryResponse> {
+    return this._cached('inventory-low', () =>
+      this._httpClient.get<LowInventoryResponse>(
+        `${environment.apiUrl}balance/paginated-list-inventory-low?page=1&perPage=5`
+      )
+    );
   }
   getTotalInventory(): Observable<TotalInventory> {
     const orgId = this._authService.getOrganizationalId();

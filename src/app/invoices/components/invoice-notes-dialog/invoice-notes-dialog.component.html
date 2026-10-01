@@ -9,7 +9,7 @@
       <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.none' | translate }}</span>
     } @else {
       @for (n of notes!.creditNotes; track n.creditNoteId) {
-        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
           <div class="flex flex-col min-w-0">
             <span class="font-semibold truncate">
               <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--danger)]">undo</mat-icon>
@@ -17,7 +17,7 @@
             </span>
             <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-1 shrink-0 ml-auto">
             <strong class="!text-[var(--danger)]">− {{ n.total | formatCop }}</strong>
             <button mat-icon-button type="button" (click)="open('credit', n)"
               [attr.aria-label]="'invoice.notes_view.view' | translate">
@@ -33,7 +33,7 @@
         </div>
       }
       @for (n of notes!.debitNotes; track n.debitNoteId) {
-        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
           <div class="flex flex-col min-w-0">
             <span class="font-semibold truncate">
               <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--warning)]">trending_up</mat-icon>
@@ -46,7 +46,7 @@
             }
             <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-1 shrink-0 ml-auto">
             <strong class="!text-[var(--warning)]">+ {{ n.total | formatCop }}</strong>
             <button mat-icon-button type="button" (click)="open('debit', n)"
               [attr.aria-label]="'invoice.notes_view.view' | translate">
@@ -62,7 +62,7 @@
         </div>
       }
       @for (n of notes!.adjustmentNotes; track n.adjustmentNoteId) {
-        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
           <div class="flex flex-col min-w-0">
             <span class="font-semibold truncate">
               <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--danger)]">tune</mat-icon>
@@ -70,7 +70,7 @@
             </span>
             <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
+          <div class="flex items-center gap-1 shrink-0 ml-auto">
             <strong class="!text-[var(--danger)]">− {{ n.total | formatCop }}</strong>
             <button mat-icon-button type="button" (click)="open('adjustment', n)"
               [attr.aria-label]="'invoice.notes_view.view' | translate">

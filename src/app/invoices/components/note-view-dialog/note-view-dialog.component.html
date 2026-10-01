@@ -60,9 +60,9 @@
   </div>
 
   <div actions>
-    <section class="flex content-between gap-x-2">
+    <section class="flex flex-col sm:flex-row gap-2 w-full">
       @if (data.note.factusPublicUrl) {
-        <a mat-fab extended="true" [href]="data.note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+        <a mat-fab extended="true" class="!w-full sm:!w-auto" [href]="data.note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
           <mat-icon>open_in_new</mat-icon>
           {{ 'invoice.list.action_view_factus' | translate }}
         </a>

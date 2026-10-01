@@ -224,6 +224,9 @@ const ADMIN_ITEMS = [
   'Facturas de compra',
   'Documentos soporte',
   'Cotizaciones',
+  // Faltaba en las dos listas: el ítem existía en el menú pero el filtro por
+  // rol lo descartaba, así que no lo veía nadie (ni el administrador).
+  'Cuentas por cobrar',
   'Reportes / Ganancias',
   'Inicio',
   'Restaurante',
@@ -239,6 +242,7 @@ const RECEPTIONIST_ITEMS = [
   'Facturas de venta',
   'Facturas de compra',
   'Cotizaciones',
+  'Cuentas por cobrar',
   'Reportes / Ganancias',
   'Inicio',
   'Restaurante',
