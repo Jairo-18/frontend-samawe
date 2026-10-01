@@ -13,6 +13,11 @@ import {
 } from '../interface/invoice.interface';
 import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
 import {
+  CreateCreditPaymentPayload,
+  InvoiceCredit,
+  ReceivableRow
+} from '../interface/invoiceCredit.interface';
+import {
   CreateCreditNotePayload,
   CreditNote,
   CreditNoteResult
@@ -84,6 +89,50 @@ export class InvoiceService {
   deleteInvoice(invoiceId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}invoices/${invoiceId}`
+    );
+  }
+
+  /** Cuentas por cobrar: ventas a crédito con saldo (o todas con `includePaid`). */
+  getReceivables(includePaid = false): Observable<{ data: ReceivableRow[] }> {
+    return this._httpClient.get<{ data: ReceivableRow[] }>(
+      `${environment.apiUrl}receivables`,
+      { params: { includePaid: String(includePaid) } }
+    );
+  }
+
+  // ── Crédito: plazo, cuotas y abonos ────────────────────────────────────
+  getCredit(invoiceId: number): Observable<{ data: InvoiceCredit }> {
+    return this._httpClient.get<{ data: InvoiceCredit }>(
+      `${environment.apiUrl}invoices/${invoiceId}/credit`
+    );
+  }
+
+  setCreditDays(
+    invoiceId: number,
+    creditDays: number
+  ): Observable<{ data: InvoiceCredit }> {
+    return this._httpClient.put<{ data: InvoiceCredit }>(
+      `${environment.apiUrl}invoices/${invoiceId}/credit`,
+      { creditDays }
+    );
+  }
+
+  addCreditPayment(
+    invoiceId: number,
+    payload: CreateCreditPaymentPayload
+  ): Observable<{ data: InvoiceCredit }> {
+    return this._httpClient.post<{ data: InvoiceCredit }>(
+      `${environment.apiUrl}invoices/${invoiceId}/credit/payments`,
+      payload
+    );
+  }
+
+  deleteCreditPayment(
+    invoiceId: number,
+    paymentId: number
+  ): Observable<{ data: InvoiceCredit }> {
+    return this._httpClient.delete<{ data: InvoiceCredit }>(
+      `${environment.apiUrl}invoices/${invoiceId}/credit/payments/${paymentId}`
     );
   }
 

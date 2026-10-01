@@ -34,4 +34,6 @@ export class BasePageComponent {
   @Input() showBorder: boolean = true;
   @Input() showContentBorder: boolean = true;
   @Input() pxMobile: boolean = true;
+  /** Fondo de la tarjeta: el de la app (por defecto) o el secundario. */
+  @Input() background: 'primary' | 'secondary' = 'primary';
 }

@@ -1,7 +1,22 @@
 <app-base-dialog
   [title]="data?.title || 'Confirmar'"
-  [description]="data?.message || '¿Estás seguro de realizar esta acción?'"
+  [description]="
+    parts ? '' : data?.message || '¿Estás seguro de realizar esta acción?'
+  "
 >
+  <!-- Con `highlights`, el mensaje va en el espacio del formulario para poder
+       resaltar fragmentos; sin ellos, se pinta como descripción de siempre. -->
+  @if (parts) {
+    <p form class="text-base leading-relaxed">
+      @for (part of parts; track $index) {
+        @if (part.cls) {
+          <strong [class]="part.cls">{{ part.text }}</strong>
+        } @else {
+          {{ part.text }}
+        }
+      }
+    </p>
+  }
   <!-- Confirmar en VERDE (la acción) y Cancelar en ROJO (la salida), igual que
        en los diálogos de nota. Estaba al revés: el verde invita a pulsar y era
        el que cancelaba, en el diálogo que sale al BORRAR cosas.
@@ -17,4 +32,3 @@
     </section>
   </div>
 </app-base-dialog>
-

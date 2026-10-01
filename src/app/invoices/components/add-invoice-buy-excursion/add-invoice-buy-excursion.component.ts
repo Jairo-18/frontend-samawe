@@ -71,6 +71,22 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
   @Input() invoiceStartDate?: string;
+  /**
+   * Proveedor no responsable de IVA: la compra no lleva impuestos. Fija el
+   * impuesto en "Sin impuesto" y bloquea el selector (regla del contador).
+   */
+  noTaxesLocked = false;
+  @Input() set noTaxes(value: boolean) {
+    this.noTaxesLocked = !!value;
+    const control = this.form?.get('taxeTypeId');
+    if (!control) return;
+    if (this.noTaxesLocked) {
+      control.setValue(2);
+      control.disable({ emitEvent: false });
+    } else {
+      control.enable({ emitEvent: false });
+    }
+  }
   private readonly _excursionsService: ExcursionsService =
     inject(ExcursionsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
@@ -179,7 +195,7 @@ export class AddInvoiceBuyExcursionComponent implements OnInit {
         priceSale: price,
         priceWithoutTax: price
       }),
-      ...(exc.taxeType?.taxeTypeId != null && {
+      ...(!this.noTaxesLocked && exc.taxeType?.taxeTypeId != null && {
         taxeTypeId: exc.taxeType.taxeTypeId
       })
     });

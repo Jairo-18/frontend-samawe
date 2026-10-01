@@ -111,7 +111,7 @@
   </div>
   <mat-form-field appearance="outline" class="w-full">
     <mat-label>{{ 'invoice.common.tax_type' | translate }}</mat-label>
-    <mat-select formControlName="taxeTypeId">
+    <mat-select formControlName="taxeTypeId" [attr.title]="noTaxesLocked ? ('invoice.form.no_taxes_hint' | translate) : null">
       <mat-option *ngFor="let taxe of taxeTypes" [value]="taxe.taxeTypeId">
         {{ taxe.name | translated }}
       </mat-option>

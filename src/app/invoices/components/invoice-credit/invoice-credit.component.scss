@@ -1,0 +1,44 @@
+// Botón del plazo (30/60/90). El vigente se rellena con el color de marca y
+// lleva ícono y rótulo "Actual": antes solo cambiaba un tinte azul casi
+// invisible y, encima, el `:hover` global de `.mdc-button` lo pintaba con
+// texto blanco sobre ese tinte claro.
+//
+// Los selectores son más específicos que las reglas `!important` de
+// `mat-theming.scss` (outlined/hover/disabled), que de otro modo ganan.
+.credit-days-btn {
+  transition:
+    background-color 0.15s,
+    box-shadow 0.15s;
+
+  &.credit-days-btn--active.mat-mdc-outlined-button.mdc-button {
+    background-color: var(--brand) !important;
+    border-color: var(--brand) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 30%, transparent);
+
+    &:hover:not(:disabled) {
+      background-color: color-mix(in srgb, var(--brand) 78%, #000000) !important;
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand) 40%, transparent);
+    }
+
+    &:disabled {
+      opacity: 0.9;
+    }
+  }
+}
+
+// En oscuro `--brand` es el verde aclarado: el texto blanco no se leería.
+:host-context([data-theme='dark'])
+  .credit-days-btn--active.mat-mdc-outlined-button.mdc-button {
+  color: #0b1410 !important;
+}
+
+.credit-days-current {
+  margin-left: 0.5rem;
+  padding: 0 0.4rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgb(255 255 255 / 0.25);
+}

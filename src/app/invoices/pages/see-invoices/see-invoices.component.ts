@@ -30,9 +30,11 @@ import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { SearchField } from '../../../shared/interfaces/search.interface';
 import { UserComplete } from '../../../organizational/interfaces/create.interface';
 import { YesNoDialogComponent } from '../../../shared/components/yes-no-dialog/yes-no-dialog.component';
+import { CreditTermDialogComponent } from '../../components/credit-term-dialog/credit-term-dialog.component';
+import { InvoiceNotesDialogComponent } from '../../components/invoice-notes-dialog/invoice-notes-dialog.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, formatDate, isPlatformBrowser } from '@angular/common';
 import { SearchFieldsComponent } from '../../../shared/components/search-fields/search-fields.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -101,6 +103,9 @@ export class SeeInvoicesComponent implements OnInit {
    * vía getOptions → quedaba vacío. Ahora viene directo de relatedData.
    */
   private invoiceTypeOptions: any[] = [];
+  private payTypeOptions: any[] = [];
+  private paidTypeOptions: any[] = [];
+  private stateTypeOptions: any[] = [];
   pageTitleKey = 'invoice.list.title_sales';
   pageSubtitleKey = 'invoice.list.subtitle_sales';
   selectedInvoice: any = null;
@@ -275,6 +280,15 @@ export class SeeInvoicesComponent implements OnInit {
       this.searchFields = this.searchFields.filter(
         (f) => f.name !== 'invoiceElectronic'
       );
+      // Columna con el consecutivo de Factus, justo después del código interno.
+      if (!this.displayedColumns.includes('factusNumber')) {
+        const at = this.displayedColumns.indexOf('code') + 1;
+        this.displayedColumns = [
+          ...this.displayedColumns.slice(0, at),
+          'factusNumber',
+          ...this.displayedColumns.slice(at)
+        ];
+      }
     }
   }
   loadRelatedData(): void {
@@ -287,8 +301,10 @@ export class SeeInvoicesComponent implements OnInit {
           ? Number(matchType.invoiceTypeId)
           : null;
         this.invoiceTypeOptions = res.data.invoiceType || [];
+        this.payTypeOptions = res.data.payType || [];
+        this.paidTypeOptions = res.data.paidType || [];
+        this.stateTypeOptions = res.data.stateType || [];
         this.loadInvoices();
-        this.openCreateDialogFromQueryParam();
         const optionMap = {
           invoiceTypeId: res.data.invoiceType,
           identificationTypeId: res.data.identificationType,
@@ -318,6 +334,7 @@ export class SeeInvoicesComponent implements OnInit {
           }
           return field;
         });
+        this.openCreateDialogFromQueryParam();
       },
       error: (err) => {
         console.error('Error loading related data', err);
@@ -331,9 +348,9 @@ export class SeeInvoicesComponent implements OnInit {
    * mismo patrón que `editProduct`/`editAccommodation` en service-and-product.
    *
    * Se llama desde `loadRelatedData` y NO desde `ngOnInit` a propósito: el
-   * diálogo necesita `categoryTypeId` e `invoiceTypeOptions`, que se resuelven
-   * en esa respuesta. Abriéndolo antes, la factura nacería sin tipo — que es
-   * justo lo que la vista tenía que preseleccionar.
+   * diálogo necesita `categoryTypeId`, `invoiceTypeOptions` y las opciones de
+   * `searchFields` (tipo y estado de pago), que se resuelven en esa respuesta.
+   * Abriéndolo antes, la factura nacería sin tipo y con los selects vacíos.
    *
    * El parámetro se limpia de la URL después, para que recargar o volver atrás
    * no lo vuelva a abrir.
@@ -365,9 +382,9 @@ export class SeeInvoicesComponent implements OnInit {
           defaultInvoiceElectronic: this.category === 'electronic',
           relatedData: {
             invoiceType: this.invoiceTypeOptions,
-            payType: this.getOptions('payTypeId'),
-            paidType: this.getOptions('paidTypeId'),
-            stateType: this.getOptions('stateTypeId')
+            payType: this.payTypeOptions,
+            paidType: this.paidTypeOptions,
+            stateType: this.stateTypeOptions
           }
         }
       })
@@ -388,9 +405,9 @@ export class SeeInvoicesComponent implements OnInit {
           invoiceId: invoiceId,
           relatedData: {
             invoiceType: this.invoiceTypeOptions,
-            payType: this.getOptions('payTypeId'),
-            paidType: this.getOptions('paidTypeId'),
-            stateType: this.getOptions('stateTypeId')
+            payType: this.payTypeOptions,
+            paidType: this.paidTypeOptions,
+            stateType: this.stateTypeOptions
           }
         }
       })
@@ -433,7 +450,9 @@ export class SeeInvoicesComponent implements OnInit {
     if (annulled) {
       labelKey = adjustmentCount
         ? 'invoice.list.annulled_support'
-        : 'invoice.list.annulled';
+        : Number(invoice?.pendingDebitNotesCount ?? 0) > 0
+          ? 'invoice.list.annulled_pending_debit'
+          : 'invoice.list.annulled';
     } else if (adjustmentCount) {
       labelKey = 'invoice.list.has_adjustment_note';
     } else if (creditCount) {
@@ -546,8 +565,83 @@ export class SeeInvoicesComponent implements OnInit {
     return !!this.noteBadge(invoice)?.annulled;
   }
 
+  /** ¿Tiene notas crédito o débito que mostrar? */
+  hasNotes(invoice: any): boolean {
+    return (
+      Number(invoice?.creditNotesCount ?? 0) +
+        Number(invoice?.debitNotesCount ?? 0) +
+        Number(invoice?.adjustmentNotesCount ?? 0) >
+      0
+    );
+  }
+
+  /** Lista las notas crédito/débito de la factura, con enlace a Factus. */
+  openNotesDialog(invoice: any): void {
+    this._matDialog.open(InvoiceNotesDialogComponent, {
+      width: '560px',
+      maxWidth: '95vw',
+      data: {
+        invoiceId: invoice.invoiceId,
+        invoiceCode: invoice.factusNumber || invoice.code,
+        invoiceTypeCode: invoice.invoiceType?.code,
+        invoiceTotal: Number(invoice.total ?? 0)
+      }
+    });
+  }
+
+  /**
+   * Factura en $0: no hay valor sobre el cual emitir ni corregir nada. Emitirla
+   * la rechaza la DIAN (y gasta un consecutivo), y una nota sobre $0 no tiene
+   * qué acreditar, sumar ni ajustar. Se mide contra el total ORIGINAL; el caso
+   * "las notas ya cubren el total" lo cubre `isAnnulled`.
+   */
+  hasNoValue(invoice: any): boolean {
+    return Number(invoice?.total ?? 0) <= 0;
+  }
+
+  /** ¿Las notas están bloqueadas? (anulada o en $0). */
+  notesBlocked(invoice: any): boolean {
+    return this.isAnnulled(invoice) || this.hasNoValue(invoice);
+  }
+
+  /** ¿Hay notas débito que ninguna nota crédito ha neutralizado aún? */
+  hasPendingDebit(invoice: any): boolean {
+    return Number(invoice?.pendingDebitNotesCount ?? 0) > 0;
+  }
+
+  /**
+   * La nota CRÉDITO sigue disponible en una factura anulada si le queda una
+   * nota débito por neutralizar: es la única forma de devolver ese valor.
+   */
+  creditNoteBlocked(invoice: any): boolean {
+    if (this.hasNoValue(invoice)) return true;
+    return this.isAnnulled(invoice) && !this.hasPendingDebit(invoice);
+  }
+
+  /** Por qué no se puede emitir la nota crédito; vacío si sí se puede. */
+  creditNoteHint(invoice: any): string {
+    return this.creditNoteBlocked(invoice) ? this.noteHint(invoice) : '';
+  }
+
+  /** Por qué no se puede emitir una nota; vacío si sí se puede. */
+  noteHint(invoice: any): string {
+    if (this.isAnnulled(invoice)) {
+      return this._translate.instant('invoice.list.annulled_hint');
+    }
+    return this.hasNoValue(invoice)
+      ? this._translate.instant('invoice.list.zero_hint')
+      : '';
+  }
+
+  /** Por qué no se puede emitir el documento electrónico; vacío si sí. */
+  emitHint(invoice: any): string {
+    return this.hasNoValue(invoice) && !invoice?.factusNumber
+      ? this._translate.instant('invoice.list.zero_emit_hint')
+      : '';
+  }
+
   openCreditNoteDialog(invoice: any): void {
-    if (!this.canEmitCreditNote(invoice) || this.isAnnulled(invoice)) return;
+    if (!this.canEmitCreditNote(invoice) || this.creditNoteBlocked(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
@@ -586,7 +680,7 @@ export class SeeInvoicesComponent implements OnInit {
   }
 
   openDebitNoteDialog(invoice: any): void {
-    if (!this.canEmitDebitNote(invoice) || this.isAnnulled(invoice)) return;
+    if (!this.canEmitDebitNote(invoice) || this.notesBlocked(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
@@ -619,7 +713,7 @@ export class SeeInvoicesComponent implements OnInit {
   }
 
   openAdjustmentNoteDialog(invoice: any): void {
-    if (!this.canEmitAdjustmentNote(invoice)) return;
+    if (!this.canEmitAdjustmentNote(invoice) || this.notesBlocked(invoice)) return;
     const isMobile = isPlatformBrowser(this._platformId)
       ? window.innerWidth <= 768
       : false;
@@ -641,15 +735,6 @@ export class SeeInvoicesComponent implements OnInit {
       });
   }
 
-  private getOptions(fieldName: string): any[] {
-    const field = this.searchFields.find((f) => f.name === fieldName);
-    return (
-      field?.options?.map((opt) => ({
-        [fieldName.replace('Id', '') + 'Id']: Number(opt.value),
-        name: opt.label
-      })) || []
-    );
-  }
   onSearchSubmit(values: any): void {
     this.params = this.formatParams(values);
     this.paginationParams.page = 1;
@@ -702,6 +787,11 @@ export class SeeInvoicesComponent implements OnInit {
     // La categoría de la vista manda: siempre filtra por su tipo de factura.
     if (this.categoryTypeId) {
       query.invoiceTypeId = this.categoryTypeId;
+    }
+    // Facturación electrónica: el orden útil es el del consecutivo de Factus
+    // (el de la DIAN), no el de creación.
+    if (this.category === 'electronic' || this.category === 'support') {
+      query.sortBy = 'factusNumber';
     }
     this._invoiceService.getInvoiceWithPagination(query).subscribe({
       next: (res) => {
@@ -838,6 +928,59 @@ export class SeeInvoicesComponent implements OnInit {
    */
   sendInvoiceToFactus(invoice: any): void {
     if (invoice.factusNumber || this.sendingFactusIds.has(invoice.invoiceId)) return;
+    if (this.hasNoValue(invoice)) return;
+    // Una venta a crédito necesita vencimiento: Factus exige `due_date` cuando
+    // la forma de pago es crédito, y sale del plazo. Se verifica ANTES de
+    // confirmar para pedirlo aquí mismo en vez de fallar al emitir.
+    const isCreditSale =
+      invoice.payType?.code === 'CRE' &&
+      ['FV', 'FVE'].includes(invoice.invoiceType?.code);
+    if (!isCreditSale) {
+      this.confirmSendToFactus(invoice);
+      return;
+    }
+    this._invoiceService.getCredit(invoice.invoiceId).subscribe({
+      next: (res) => {
+        const credit = res.data;
+        const todayIso = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+        const expired =
+          !!credit.dueDate && credit.dueDate.slice(0, 10) < todayIso;
+        if (!credit.creditDays || !credit.dueDate || expired) {
+          this.askCreditTerm(invoice, expired);
+        } else {
+          this.confirmSendToFactus(invoice, credit.dueDate);
+        }
+      },
+      error: (err) => {
+        const msg = err?.error?.message ?? 'invoice.credit.error_generic';
+        this._notifications.showNotification('error', msg, 'invoice.list.factus_error_title');
+      }
+    });
+  }
+
+  /** Pide el plazo (30/60/90) y, fijado, sigue con la confirmación de emitir. */
+  private askCreditTerm(invoice: any, expired: boolean): void {
+    this._matDialog
+      .open(CreditTermDialogComponent, {
+        data: { code: invoice.code, expired }
+      })
+      .afterClosed()
+      .subscribe((days: number | null) => {
+        if (!days) return;
+        this._invoiceService.setCreditDays(invoice.invoiceId, days).subscribe({
+          next: (res) => this.confirmSendToFactus(invoice, res.data.dueDate),
+          error: (err) => {
+            const msg = err?.error?.message ?? 'invoice.credit.error_generic';
+            this._notifications.showNotification('error', msg, 'invoice.credit.title');
+          }
+        });
+      });
+  }
+
+  private confirmSendToFactus(invoice: any, dueDate?: string | null): void {
+    const dueText = dueDate
+      ? formatDate(dueDate.slice(0, 10) + 'T12:00:00', 'dd/MM/yyyy', 'en-US')
+      : '';
     this._matDialog
       .open(YesNoDialogComponent, {
         data: {
@@ -849,7 +992,14 @@ export class SeeInvoicesComponent implements OnInit {
             (this.convertsToElectronic(invoice)
               ? ' ' +
                 this._translate.instant('invoice.list.factus_confirm_convert')
-              : '')
+              : '') +
+            (dueText
+              ? ' ' +
+                this._translate.instant('invoice.list.factus_confirm_due', {
+                  due: dueText
+                })
+              : ''),
+          highlights: dueText ? [dueText] : []
         }
       })
       .afterClosed()
@@ -902,6 +1052,7 @@ export class SeeInvoicesComponent implements OnInit {
   emitSupportDocument(invoice: any): void {
     if (
       !this.canEmitSupportDocument(invoice) ||
+      this.hasNoValue(invoice) ||
       this.sendingFactusIds.has(invoice.invoiceId)
     ) {
       return;

@@ -1,0 +1,197 @@
+<section class="flex flex-col p-2 md:p-4 gap-3 rounded-2xl border border-[var(--primary-color)] bg-[var(--bg-primary-color)]">
+  <div>
+    <span class="panel-heading text-base md:text-xl font-extrabold">{{ 'invoice.credit.title' | translate }}</span>
+  </div>
+
+  @if (loading) {
+    <span class="text-xs md:text-base text-[var(--on-surface-muted)] text-center">{{ 'invoice.credit.loading' | translate }}</span>
+  } @else if (credit) {
+    <!-- Plazo -->
+    <div class="flex flex-col gap-2">
+      <span class="text-xs md:text-base font-semibold text-[var(--on-surface-muted)]">{{ 'invoice.credit.term' | translate }}</span>
+      <div class="flex flex-wrap gap-2">
+        @for (days of creditDaysOptions; track days) {
+          <button
+            type="button"
+            mat-stroked-button
+            class="credit-days-btn"
+            [class.credit-days-btn--active]="credit.creditDays === days"
+            [attr.aria-pressed]="credit.creditDays === days"
+            [disabled]="saving || dueDateLocked"
+            (click)="setDays(days)"
+          >
+            @if (credit.creditDays === days) {
+              <mat-icon>check_circle</mat-icon>
+            }
+            {{ days }} {{ 'invoice.credit.days' | translate }}
+            <span class="text-xs md:text-sm font-normal ml-1">
+              ({{ installmentsFor(days) }}
+              {{ (installmentsFor(days) === 1 ? 'invoice.credit.installment_one' : 'invoice.credit.installment_many') | translate }})
+            </span>
+            @if (credit.creditDays === days) {
+              <span class="credit-days-current">{{ 'invoice.credit.current' | translate }}</span>
+            }
+          </button>
+        }
+      </div>
+      @if (dueDateLocked) {
+        <span class="text-xs md:text-base text-[var(--on-surface-muted)]">{{ 'invoice.credit.term_locked' | translate }}</span>
+      }
+      @if (!credit.creditDays) {
+        <span class="text-xs md:text-base !text-[var(--warning)] font-semibold">{{ 'invoice.credit.term_required' | translate }}</span>
+      } @else {
+        <span class="text-xs md:text-base text-[var(--on-surface-muted)]">
+          {{ 'invoice.credit.due_date' | translate }}:
+          <strong>{{ credit.dueDate | date: 'dd/MM/yyyy' }}</strong>
+        </span>
+      }
+    </div>
+
+    @if (credit.creditDays) {
+      <!-- Notas: el total a pagar ya las incluye; aquí se explica de dónde sale -->
+      @if (credit.notesNet !== 0) {
+        <div class="rounded-xl border border-[var(--warning-border)] bg-[var(--warning-bg)] px-3 py-2 text-xs md:text-base">
+          {{ 'invoice.credit.notes_adjust' | translate }}:
+          <strong>{{ credit.invoiceTotal | formatCop }}</strong>
+          {{ credit.notesNet < 0 ? '−' : '+' }}
+          <strong>{{ absNotes | formatCop }}</strong>
+          = <strong>{{ credit.total | formatCop }}</strong>
+        </div>
+      }
+      @if (credit.overpaid > 0) {
+        <div class="rounded-xl border border-[var(--info-border)] bg-[var(--info-bg)] px-3 py-2 text-xs md:text-base">
+          {{ 'invoice.credit.overpaid' | translate }}:
+          <strong class="!text-[var(--info)]">{{ credit.overpaid | formatCop }}</strong>
+        </div>
+      }
+
+      <!-- Resumen -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="rounded-xl border border-[var(--border-color)] p-2">
+          <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.summary.total' | translate }}</div>
+          <div class="text-base md:text-lg font-bold">{{ credit.total | formatCop }}</div>
+        </div>
+        <div class="rounded-xl border border-[var(--border-color)] p-2">
+          <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.credit.paid' | translate }}</div>
+          <div class="text-base md:text-lg font-bold !text-[var(--success)]">{{ credit.paid | formatCop }}</div>
+        </div>
+        <div class="rounded-xl border border-[var(--border-color)] p-2">
+          <div class="text-xs md:text-sm text-[var(--on-surface-muted)]">{{ 'invoice.credit.balance' | translate }}</div>
+          <div class="text-base md:text-lg font-bold" [class.!text-[var(--danger)]]="credit.balance > 0">{{ credit.balance | formatCop }}</div>
+        </div>
+      </div>
+
+      <!-- Cuotas -->
+      <div class="flex flex-col gap-1">
+        @for (i of credit.installments; track i.number) {
+          <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2 flex-wrap">
+            <span class="text-xs md:text-base font-semibold">
+              {{ 'invoice.credit.installment' | translate }} {{ i.number }}
+              <span class="text-xs md:text-base font-normal text-[var(--on-surface-muted)]">· {{ i.dueDate | date: 'dd/MM/yyyy' }}</span>
+            </span>
+            <span class="flex items-center gap-2 text-xs md:text-base">
+              <span class="text-xs md:text-base text-[var(--on-surface-muted)]">{{ i.paid | formatCop }} / {{ i.amount | formatCop }}</span>
+              <span class="text-xs md:text-sm font-bold px-2 py-0.5 rounded" [ngClass]="statusClass(i.status)">
+                {{ statusKey(i.status) | translate }}
+              </span>
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Registrar abono -->
+      @if (credit.balance > 0) {
+        <form class="flex flex-col gap-1" (ngSubmit)="requestAddPayment()">
+          <span class="text-xs md:text-base font-semibold text-[var(--on-surface-muted)]">{{ 'invoice.credit.new_payment' | translate }}</span>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'invoice.credit.amount' | translate }}</mat-label>
+              <input matInput [formControl]="amountControl" appCurrencyFormat inputmode="decimal" class="text-right" />
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <button
+                matSuffix
+                mat-button
+                type="button"
+                class="!min-w-0 !px-2 !text-xs md:!text-sm"
+                [disabled]="saving"
+                (click)="fillBalance()"
+              >
+                {{ 'invoice.credit.use_balance' | translate }}
+              </button>
+              <mat-hint align="end">
+                {{ 'invoice.credit.balance' | translate }}: {{ credit.balance | formatCop }}
+              </mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'invoice.credit.method' | translate }}</mat-label>
+              <mat-select name="payTypeId" [(ngModel)]="payTypeId">
+                @for (p of payTypeOptions; track p.payTypeId) {
+                  <mat-option [value]="p.payTypeId">{{ p.name | translated }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'invoice.credit.paid_at' | translate }}</mat-label>
+              <input matInput [matDatepicker]="paidAtPicker" name="paidAt" [(ngModel)]="paidAt" [max]="maxDate" />
+              <mat-datepicker #paidAtPicker></mat-datepicker>
+              <mat-datepicker-toggle [for]="paidAtPicker" matSuffix></mat-datepicker-toggle>
+              <mat-icon matPrefix>event</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>{{ 'invoice.credit.note' | translate }}</mat-label>
+              <input matInput type="text" name="note" maxlength="255" [(ngModel)]="note" />
+            </mat-form-field>
+          </div>
+          <section class="flex flex-col gap-y-2 mt-1">
+            <div class="flex">
+              <button
+                type="button"
+                mat-fab
+                extended="true"
+                class="!w-full !rounded-lg"
+                [disabled]="saving"
+                (click)="requestPayAllBalance()"
+              >
+                {{ 'invoice.credit.pay_all' | translate }}
+              </button>
+            </div>
+            <div class="flex">
+              <button
+                type="submit"
+                mat-stroked-button
+                extended="true"
+                class="!w-full !rounded-lg"
+                [disabled]="saving || !amount || amount <= 0"
+              >
+                {{ 'invoice.credit.add_payment' | translate }}
+              </button>
+            </div>
+          </section>
+        </form>
+      }
+
+      <!-- Abonos registrados -->
+      @if (credit.payments.length) {
+        <div class="flex flex-col gap-1">
+          <span class="text-xs md:text-base font-semibold text-[var(--on-surface-muted)]">{{ 'invoice.credit.payments' | translate }}</span>
+          @for (p of credit.payments; track p.invoicePaymentId) {
+            <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+              <span class="text-xs md:text-base">
+                <strong>{{ p.amount | formatCop }}</strong>
+                <span class="text-xs md:text-base text-[var(--on-surface-muted)]">
+                  · {{ p.paidAt | date: 'dd/MM/yyyy' }}
+                  @if (payTypeName(p.payTypeId); as name) { · {{ name | translated }} }
+                  @if (p.note) { · {{ p.note }} }
+                </span>
+              </span>
+              <button mat-icon-button type="button" [disabled]="saving" (click)="confirmDeletePayment(p)"
+                [attr.aria-label]="'invoice.credit.delete_payment' | translate">
+                <mat-icon class="!text-[var(--danger)]">delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+</section>

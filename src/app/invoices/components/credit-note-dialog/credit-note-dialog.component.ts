@@ -23,6 +23,9 @@ import {
   CreditNote,
   CreditNoteResult
 } from '../../interface/creditNote.interface';
+import { DebitNote } from '../../interface/debitNote.interface';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 interface ItemRow {
   detail: InvoiceDetail;
@@ -72,6 +75,9 @@ export class CreditNoteDialogComponent implements OnInit {
   rows: ItemRow[] = [];
   existing: CreditNote[] = [];
   result: CreditNoteResult | null = null;
+  /** Notas débito que ninguna nota crédito ha neutralizado todavía. */
+  pendingDebit: DebitNote[] = [];
+  includeDebit = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: CreditNoteDialogData) {
     // Cerrar con ESC o clicando fuera devolvía `undefined` aunque la nota SÍ
@@ -96,10 +102,21 @@ export class CreditNoteDialogComponent implements OnInit {
   ngOnInit(): void {
     forkJoin({
       invoice: this._invoiceService.getInvoiceToEdit(this.data.invoiceId),
-      notes: this._invoiceService.getCreditNotes(this.data.invoiceId)
+      notes: this._invoiceService.getCreditNotes(this.data.invoiceId),
+      // Informativo: si falla, el diálogo sigue funcionando sin la opción.
+      debit: this._invoiceService
+        .getDebitNotes(this.data.invoiceId)
+        .pipe(catchError(() => of({ success: false, data: [] as DebitNote[] })))
     }).subscribe({
-      next: ({ invoice, notes }) => {
+      next: ({ invoice, notes, debit }) => {
         this.existing = notes.data ?? [];
+
+        const covered = new Set(
+          this.existing.flatMap((n) => n.neutralizedDebitNoteIds ?? [])
+        );
+        this.pendingDebit = (debit.data ?? []).filter(
+          (d) => !covered.has(d.debitNoteId)
+        );
 
         // Cantidad ya acreditada por ítem en NC previas → el restante es el
         // máximo que se puede acreditar ahora (evita pasarse).
@@ -153,11 +170,24 @@ export class CreditNoteDialogComponent implements OnInit {
     return this.rows.some((r) => r.maxQty > 0);
   }
 
+  /** Valor de las notas débito pendientes (lo que se neutralizaría). */
+  get pendingDebitTotal(): number {
+    return this.pendingDebit.reduce((sum, d) => sum + Number(d.total ?? 0), 0);
+  }
+
+  get pendingDebitLabel(): string {
+    return this.pendingDebit
+      .map((d) => d.factusNumber || d.referenceCode)
+      .join(', ');
+  }
+
   get canSubmit(): boolean {
     if (this.submitting || this.result || this.loading) return false;
-    if (!this.hasRemaining) return false;
+    // Solo neutralizar notas débito: vale aunque ya no quede nada de la factura.
+    const onlyDebit = this.includeDebit && this.pendingDebit.length > 0;
+    if (!this.hasRemaining) return onlyDebit;
     if (this.isTotal) return true;
-    return this.rows.some((r) => r.selected && r.quantity > 0);
+    return onlyDebit || this.rows.some((r) => r.selected && r.quantity > 0);
   }
 
   submit(): void {
@@ -167,7 +197,10 @@ export class CreditNoteDialogComponent implements OnInit {
     const payload: CreateCreditNotePayload = {
       observation: this.observation?.trim() || undefined
     };
-    if (this.isTotal) {
+    if (this.includeDebit && this.pendingDebit.length) {
+      payload.includeDebitNotes = true;
+    }
+    if (this.isTotal && this.hasRemaining) {
       payload.isTotal = true;
     } else {
       payload.items = this.rows

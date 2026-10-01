@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SeeInvoicesComponent } from './pages/see-invoices/see-invoices.component';
+import { ReceivablesComponent } from './pages/receivables/receivables.component';
 import { EditInvoiceComponent } from './pages/edit-invoice/edit-invoice.component';
 export const invoicesRoutes: Routes = [
   {
@@ -16,6 +17,10 @@ export const invoicesRoutes: Routes = [
           {
             path: ':id/edit',
             component: EditInvoiceComponent
+          },
+          {
+            path: 'receivables',
+            component: ReceivablesComponent
           },
           {
             path: 'electronic',

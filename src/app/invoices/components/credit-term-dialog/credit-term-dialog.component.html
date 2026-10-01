@@ -1,0 +1,35 @@
+<app-base-dialog
+  [title]="'invoice.credit.term_dialog_title' | translate"
+  [description]="
+    (data.expired
+      ? 'invoice.credit.term_dialog_expired'
+      : 'invoice.credit.term_dialog_msg'
+    ) | translate: { code: data.code }
+  "
+>
+  <mat-radio-group form class="flex flex-col gap-2" [(ngModel)]="selected">
+    @for (o of options; track o.days) {
+      <mat-radio-button [value]="o.days" class="rounded-xl border border-[var(--border-color)] px-2">
+        <span class="text-base font-semibold">
+          {{ o.days }} {{ 'invoice.credit.days' | translate }}
+        </span>
+        <span class="text-sm text-[var(--on-surface-muted)]">
+          · {{ o.installments }}
+          {{ (o.installments === 1 ? 'invoice.credit.installment_one' : 'invoice.credit.installment_many') | translate }}
+          · {{ 'invoice.credit.due_date' | translate }}
+        </span>
+        <strong class="text-base text-[var(--brand)]"> {{ o.due }}</strong>
+      </mat-radio-button>
+    }
+  </mat-radio-group>
+  <div actions>
+    <section class="flex content-between gap-x-2">
+      <button mat-fab extended="true" [disabled]="!selected" (click)="confirm()">
+        {{ 'invoice.credit.term_dialog_confirm' | translate }}
+      </button>
+      <button mat-fab extended="true" color="warn" (click)="cancel()">
+        {{ 'invoice.common.cancel' | translate }}
+      </button>
+    </section>
+  </div>
+</app-base-dialog>

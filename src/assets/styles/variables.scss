@@ -235,6 +235,22 @@
   --mat-datepicker-calendar-date-hover-state-background-color: var(
     --surface-sunken
   );
+  // Ícono del calendario (`mat-datepicker-toggle`) y los íconos de los campos
+  // (`matPrefix`/`matSuffix`): Material los pinta en un gris casi negro que
+  // sobre superficie oscura desaparece. Vale para TODOS los formularios
+  // `add-*`, no solo el de crédito.
+  --mat-datepicker-toggle-icon-color: var(--on-surface-muted);
+  --mat-datepicker-toggle-active-state-icon-color: var(--brand);
+  --mat-form-field-leading-icon-color: var(--on-surface-muted);
+  --mat-form-field-trailing-icon-color: var(--on-surface-muted);
+  --mat-form-field-disabled-leading-icon-color: var(--border-color);
+  --mat-form-field-disabled-trailing-icon-color: var(--border-color);
+  --mdc-icon-button-icon-color: var(--on-surface-muted);
+  // Botones con borde (p. ej. 30/60/90 días, "Descargar PDF"): el texto salía
+  // en el color de marca oscuro sobre fondo oscuro.
+  --mdc-outlined-button-label-text-color: var(--brand);
+  --mdc-outlined-button-outline-color: var(--brand);
+  --mat-outlined-button-state-layer-color: var(--brand);
   --mat-tab-header-inactive-label-text-color: var(--on-surface-muted);
   --mat-tab-header-active-label-text-color: var(--on-surface);
   --mdc-elevated-card-container-color: var(--surface-raised);
@@ -301,6 +317,12 @@
   .border-x,
   .border-y {
     border-color: var(--border-color) !important;
+  }
+
+  // `mat-theming.scss` fija el borde de los botones con borde en el primario
+  // con `!important`; en oscuro se aclara igual que `--brand`.
+  .mat-mdc-outlined-button:not(:disabled) {
+    border-color: var(--brand) !important;
   }
 
   .divide-y > :not([hidden]) ~ :not([hidden]),

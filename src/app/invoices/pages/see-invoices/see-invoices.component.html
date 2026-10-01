@@ -71,6 +71,16 @@
               {{ invoice?.code || '---' }}
             </td>
           </ng-container>
+          <!-- Consecutivo que asigna Factus/DIAN (p. ej. A852). Solo aparece en
+               la vista de facturación electrónica. -->
+          <ng-container matColumnDef="factusNumber">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'invoice.list.col_factus_number' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let invoice" class="center-text font-bold">
+              {{ invoice?.factusNumber || '---' }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="clientName">
             <th mat-header-cell *matHeaderCellDef class="center-text">
               {{ 'invoice.list.col_client' | translate }}
@@ -176,6 +186,24 @@
                     '!text-[var(--warning)]': invoice.invoiceType?.code === 'CO'
                   }">
               {{ invoice?.total ?? 0 | formatCop }}
+              @if (invoice?.creditBalance !== undefined) {
+                <div class="flex flex-col items-end mt-0.5 leading-tight text-[10px] font-normal">
+                  <span class="!text-[var(--success)]">
+                    {{ 'invoice.credit.paid' | translate }}: {{ invoice.creditPaid | formatCop }}
+                  </span>
+                  <span [class]="invoice.creditBalance > 0 ? '!text-[var(--danger)]' : '!text-[var(--on-surface-muted)]'">
+                    {{ 'invoice.credit.balance' | translate }}: {{ invoice.creditBalance | formatCop }}
+                  </span>
+                </div>
+              }
+              @if (invoice?.factusNumber) {
+                <div class="flex justify-end mt-0.5 leading-tight">
+                  <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[var(--success-bg)] !text-[var(--success)]"
+                    [attr.title]="invoice.factusNumber">
+                    {{ 'invoice.list.electronic_issued' | translate }} · {{ invoice.factusNumber }}
+                  </span>
+                </div>
+              }
               @if (noteBadge(invoice); as badge) {
                 <div class="flex flex-col items-end mt-0.5 leading-tight">
                   <span class="text-[10px] font-bold px-1.5 py-0.5 rounded"
@@ -238,7 +266,8 @@
                 <!-- También sobre facturas de VENTA (FV): al emitir, el backend
                      las convierte a FVE. Ver `canSendToFactus`. -->
                 @if (canSendToFactus(invoice)) {
-                <button mat-menu-item [disabled]="!!invoice.factusNumber || sendingFactusIds.has(invoice.invoiceId)"
+                <span [matTooltip]="emitHint(invoice)">
+                <button mat-menu-item [disabled]="!!invoice.factusNumber || hasNoValue(invoice) || sendingFactusIds.has(invoice.invoiceId)"
                   (click)="sendInvoiceToFactus(invoice)">
                   <mat-icon [class]="invoice.factusNumber ? 'green-color' : 'blue-color'">
                     {{ invoice.factusNumber ? 'verified' : 'send' }}
@@ -251,6 +280,7 @@
                     : ('invoice.list.action_send_factus' | translate) }}
                   </span>
                 </button>
+                </span>
                 }
                 <button mat-menu-item (click)="openEditDialog(invoice.invoiceId)">
                   <mat-icon class="blue-color">edit_document</mat-icon>
@@ -269,6 +299,22 @@
                   <mat-icon class="green-color">print</mat-icon>
                   <span>{{ 'invoice.list.action_download' | translate }}</span>
                 </button>
+                <!-- La factura oficial, tal como la ve la DIAN, en Factus. La
+                     nuestra (arriba) es una representación propia; esta es la
+                     emitida. Solo existe si ya se validó y Factus devolvió su
+                     enlace público. -->
+                @if (invoice.factusPublicUrl) {
+                <a mat-menu-item [href]="invoice.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+                  <mat-icon class="blue-color">open_in_new</mat-icon>
+                  <span>{{ 'invoice.list.action_view_factus' | translate }}</span>
+                </a>
+                }
+                @if (hasNotes(invoice)) {
+                <button mat-menu-item (click)="openNotesDialog(invoice)">
+                  <mat-icon class="blue-color">receipt_long</mat-icon>
+                  <span>{{ 'invoice.list.action_view_notes' | translate }}</span>
+                </button>
+                }
                 <!-- Reenviar por correo: el PDF se regenera con las notas y con
                      la marca de "ANULADA" si aplica. -->
                 @if (canResendEmail(invoice)) {
@@ -289,8 +335,8 @@
                      `pointer-events: none` al botón deshabilitado y el aviso no
                      se vería nunca (misma trampa que en invoice-issuer-dialog). -->
                 @if (canEmitCreditNote(invoice)) {
-                <span [matTooltip]="isAnnulled(invoice) ? ('invoice.list.annulled_hint' | translate) : ''">
-                  <button mat-menu-item [disabled]="isAnnulled(invoice)"
+                <span [matTooltip]="creditNoteHint(invoice)">
+                  <button mat-menu-item [disabled]="creditNoteBlocked(invoice)"
                     (click)="openCreditNoteDialog(invoice)">
                     <mat-icon class="blue-color">note_alt</mat-icon>
                     <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
@@ -299,8 +345,8 @@
                 }
                 <!-- Nota débito: solo ventas emitidas (suma valor). -->
                 @if (canEmitDebitNote(invoice)) {
-                <span [matTooltip]="isAnnulled(invoice) ? ('invoice.list.annulled_hint' | translate) : ''">
-                  <button mat-menu-item [disabled]="isAnnulled(invoice)"
+                <span [matTooltip]="noteHint(invoice)">
+                  <button mat-menu-item [disabled]="notesBlocked(invoice)"
                     (click)="openDebitNoteDialog(invoice)">
                     <mat-icon class="blue-color">trending_up</mat-icon>
                     <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
@@ -308,20 +354,24 @@
                 </span>
                 }
                 @if (canEmitSupportDocument(invoice)) {
-                <button mat-menu-item [disabled]="sendingFactusIds.has(invoice.invoiceId)"
+                <span [matTooltip]="hasNoValue(invoice) ? ('invoice.list.zero_emit_hint' | translate) : ''">
+                <button mat-menu-item [disabled]="hasNoValue(invoice) || sendingFactusIds.has(invoice.invoiceId)"
                   (click)="emitSupportDocument(invoice)">
                   <mat-icon class="blue-color">receipt</mat-icon>
                   <span>{{ (sendingFactusIds.has(invoice.invoiceId)
                     ? 'invoice.list.support_sending'
                     : 'invoice.list.action_support_document') | translate }}</span>
                 </button>
+                </span>
                 }
                 <!-- Nota de ajuste: única forma de corregir un DSE validado. -->
                 @if (canEmitAdjustmentNote(invoice)) {
-                <button mat-menu-item (click)="openAdjustmentNoteDialog(invoice)">
+                <span [matTooltip]="noteHint(invoice)">
+                <button mat-menu-item [disabled]="notesBlocked(invoice)" (click)="openAdjustmentNoteDialog(invoice)">
                   <mat-icon class="blue-color">tune</mat-icon>
                   <span>{{ 'invoice.list.action_adjustment_note' | translate }}</span>
                 </button>
+                </span>
                 }
                 @if (!invoice.factusNumber) {
                 <button mat-menu-item (click)="openDeleteInvoiceDialog(invoice)">
@@ -419,6 +469,14 @@
               </th>
               <td mat-cell *matCellDef="let invoice" class="center-text">
                 {{ invoice?.code || '' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="factusNumber">
+              <th mat-header-cell *matHeaderCellDef class="center-text">
+                {{ 'invoice.list.col_factus_number' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let invoice" class="center-text font-bold">
+                {{ invoice?.factusNumber || '' }}
               </td>
             </ng-container>
             <ng-container matColumnDef="clientName">
@@ -526,6 +584,24 @@
                     '!text-[var(--warning)]': invoice.invoiceType?.code === 'CO'
                   }">
                 {{ invoice?.total ?? 0 | formatCop }}
+                @if (invoice?.creditBalance !== undefined) {
+                  <div class="flex flex-col items-end mt-0.5 leading-tight text-[10px] font-normal">
+                    <span class="!text-[var(--success)]">
+                      {{ 'invoice.credit.paid' | translate }}: {{ invoice.creditPaid | formatCop }}
+                    </span>
+                    <span [class]="invoice.creditBalance > 0 ? '!text-[var(--danger)]' : '!text-[var(--on-surface-muted)]'">
+                      {{ 'invoice.credit.balance' | translate }}: {{ invoice.creditBalance | formatCop }}
+                    </span>
+                  </div>
+                }
+                @if (invoice?.factusNumber) {
+                  <div class="flex justify-end mt-0.5 leading-tight">
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[var(--success-bg)] !text-[var(--success)]"
+                      [attr.title]="invoice.factusNumber">
+                      {{ 'invoice.list.electronic_issued' | translate }} · {{ invoice.factusNumber }}
+                    </span>
+                  </div>
+                }
                 @if (noteBadge(invoice); as badge) {
                   <div class="flex flex-col items-end mt-0.5 leading-tight">
                     <span class="text-[10px] font-bold px-1.5 py-0.5 rounded"
@@ -594,8 +670,8 @@
                 </button>
                 <mat-menu #menu="matMenu">
                   @if (canSendToFactus(selectedInvoice)) {
-                  <button mat-menu-item
-                    [disabled]="!!selectedInvoice?.factusNumber || sendingFactusIds.has(selectedInvoice?.invoiceId)"
+                  <span [matTooltip]="emitHint(selectedInvoice)">
+                  <button mat-menu-item [disabled]="!!selectedInvoice?.factusNumber || hasNoValue(selectedInvoice) || sendingFactusIds.has(selectedInvoice?.invoiceId)"
                     (click)="sendInvoiceToFactus(selectedInvoice)">
                     <mat-icon [class]="selectedInvoice?.factusNumber ? 'green-color' : 'blue-color'">
                       {{ selectedInvoice?.factusNumber ? 'verified' : 'send' }}
@@ -608,6 +684,7 @@
                       : ('invoice.list.action_send_factus' | translate) }}
                     </span>
                   </button>
+                  </span>
                   }
                   <button mat-menu-item (click)="openEditDialog(invoice.invoiceId)">
                     <mat-icon class="blue-color">edit_document</mat-icon>
@@ -623,6 +700,18 @@
                     <mat-icon>print</mat-icon>
                     <span class="green-color">{{ 'invoice.list.action_download' | translate }}</span>
                   </button>
+                  @if (selectedInvoice?.factusPublicUrl) {
+                  <a mat-menu-item [href]="selectedInvoice.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+                    <mat-icon>open_in_new</mat-icon>
+                    <span class="blue-color">{{ 'invoice.list.action_view_factus' | translate }}</span>
+                  </a>
+                  }
+                  @if (hasNotes(selectedInvoice)) {
+                  <button mat-menu-item (click)="openNotesDialog(selectedInvoice)">
+                    <mat-icon>receipt_long</mat-icon>
+                    <span class="blue-color">{{ 'invoice.list.action_view_notes' | translate }}</span>
+                  </button>
+                  }
                   @if (canResendEmail(selectedInvoice)) {
                   <button mat-menu-item [disabled]="resendingIds.has(selectedInvoice?.invoiceId)"
                     (click)="resendInvoiceEmail(selectedInvoice)">
@@ -635,8 +724,8 @@
                   <!-- Ver la nota de la vista de escritorio: anulada → las dos
                        notas deshabilitadas, con el tooltip en el span. -->
                   @if (canEmitCreditNote(selectedInvoice)) {
-                  <span [matTooltip]="isAnnulled(selectedInvoice) ? ('invoice.list.annulled_hint' | translate) : ''">
-                    <button mat-menu-item [disabled]="isAnnulled(selectedInvoice)"
+                  <span [matTooltip]="creditNoteHint(selectedInvoice)">
+                    <button mat-menu-item [disabled]="creditNoteBlocked(selectedInvoice)"
                       (click)="openCreditNoteDialog(selectedInvoice)">
                       <mat-icon class="blue-color">note_alt</mat-icon>
                       <span>{{ 'invoice.list.action_credit_note' | translate }}</span>
@@ -644,8 +733,8 @@
                   </span>
                   }
                   @if (canEmitDebitNote(selectedInvoice)) {
-                  <span [matTooltip]="isAnnulled(selectedInvoice) ? ('invoice.list.annulled_hint' | translate) : ''">
-                    <button mat-menu-item [disabled]="isAnnulled(selectedInvoice)"
+                  <span [matTooltip]="noteHint(selectedInvoice)">
+                    <button mat-menu-item [disabled]="notesBlocked(selectedInvoice)"
                       (click)="openDebitNoteDialog(selectedInvoice)">
                       <mat-icon class="blue-color">trending_up</mat-icon>
                       <span>{{ 'invoice.list.action_debit_note' | translate }}</span>
@@ -653,19 +742,23 @@
                   </span>
                   }
                   @if (canEmitSupportDocument(selectedInvoice)) {
-                  <button mat-menu-item [disabled]="sendingFactusIds.has(selectedInvoice?.invoiceId)"
+                  <span [matTooltip]="hasNoValue(selectedInvoice) ? ('invoice.list.zero_emit_hint' | translate) : ''">
+                  <button mat-menu-item [disabled]="hasNoValue(selectedInvoice) || sendingFactusIds.has(selectedInvoice?.invoiceId)"
                     (click)="emitSupportDocument(selectedInvoice)">
                     <mat-icon class="blue-color">receipt</mat-icon>
                     <span>{{ (sendingFactusIds.has(selectedInvoice?.invoiceId)
                       ? 'invoice.list.support_sending'
                       : 'invoice.list.action_support_document') | translate }}</span>
                   </button>
+                  </span>
                   }
                   @if (canEmitAdjustmentNote(selectedInvoice)) {
-                  <button mat-menu-item (click)="openAdjustmentNoteDialog(selectedInvoice)">
+                  <span [matTooltip]="noteHint(selectedInvoice)">
+                  <button mat-menu-item [disabled]="notesBlocked(selectedInvoice)" (click)="openAdjustmentNoteDialog(selectedInvoice)">
                     <mat-icon class="blue-color">tune</mat-icon>
                     <span>{{ 'invoice.list.action_adjustment_note' | translate }}</span>
                   </button>
+                  </span>
                   }
                   @if (!selectedInvoice?.factusNumber) {
                   <button mat-menu-item (click)="openDeleteInvoiceDialog(selectedInvoice)">

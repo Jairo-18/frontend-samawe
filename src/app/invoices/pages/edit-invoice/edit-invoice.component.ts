@@ -39,12 +39,16 @@ import {
 } from '../../interface/debitNote.interface';
 import { InvoiceDetaillComponent } from '../../components/invoice-detaill/invoice-detaill.component';
 import { InvoiceSummaryComponent } from '../../components/invoice-summary/invoice-summary.component';
+import { InvoiceCreditComponent } from '../../components/invoice-credit/invoice-credit.component';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
 import { InvoicePdfComponent } from '../../components/invoice-pdf/invoice-pdf.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateInvoiceDialogComponent } from '../../components/create-invoice-dialog/create-invoice-dialog.component';
+import { NoteViewDialogComponent } from '../../components/note-view-dialog/note-view-dialog.component';
+import { CreditNote } from '../../interface/creditNote.interface';
+import { AdjustmentNote } from '../../interface/adjustmentNote.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { AddInvoiceBuyComponent } from '../../components/add-invoice-buy/add-invoice-buy.component';
 import { AddInvoiceBuyExcursionComponent } from '../../components/add-invoice-buy-excursion/add-invoice-buy-excursion.component';
@@ -77,6 +81,7 @@ import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
     AddExcursionComponent,
     InvoiceDetaillComponent,
     InvoiceSummaryComponent,
+    InvoiceCreditComponent,
     LoaderComponent,
     InvoicePdfComponent,
     MatButtonModule,
@@ -179,6 +184,55 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       this.getInvoiceToEdit(this.invoiceId, false);
     }
   }
+  /** Nombres de los ítems por id, para mostrar qué acreditó una nota crédito. */
+  private detailNames(): Record<number, string> {
+    const names: Record<number, string> = {};
+    for (const d of this.invoiceData?.invoiceDetails ?? []) {
+      const raw: any =
+        d.product?.name ?? d.accommodation?.name ?? d.excursion?.name;
+      names[d.invoiceDetailId] =
+        typeof raw === 'string'
+          ? raw
+          : (raw?.['es'] ?? (raw ? (Object.values(raw)[0] as string) : ''));
+    }
+    return names;
+  }
+
+  /**
+   * El proveedor de la compra no es responsable de IVA (`ZZ`, "no aplica"): sus
+   * precios no llevan impuestos. Sin dato se asume que sí, que es lo común y lo
+   * que exige el documento soporte.
+   */
+  get supplierWithoutVat(): boolean {
+    const user: any = this.invoiceData?.user;
+    return (user?.factusTributeCode ?? 'ZZ') === 'ZZ';
+  }
+
+  /** Número de la nota crédito que neutralizó esta nota débito (o null). */
+  neutralizedBy(debit: DebitNote): string | null {
+    const credit = this.notes?.creditNotes.find((c) =>
+      (c.neutralizedDebitNoteIds ?? []).includes(debit.debitNoteId)
+    );
+    return credit ? credit.factusNumber || credit.referenceCode : null;
+  }
+
+  /** Detalle de una nota (nuestra versión) con enlace a la de Factus. */
+  openNote(
+    kind: 'credit' | 'debit' | 'adjustment',
+    note: CreditNote | DebitNote | AdjustmentNote
+  ): void {
+    this._dialog.open(NoteViewDialogComponent, {
+      width: '560px',
+      maxWidth: '95vw',
+      data: {
+        kind,
+        note,
+        invoiceCode: this.invoiceData?.factusNumber || this.invoiceData?.code,
+        detailNames: this.detailNames()
+      }
+    });
+  }
+
   openEditInvoiceDialog(): void {
     if (!this.invoiceId) return;
     const isMobile = isPlatformBrowser(this._platformId)

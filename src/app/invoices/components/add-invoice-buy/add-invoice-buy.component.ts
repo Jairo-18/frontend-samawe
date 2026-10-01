@@ -69,6 +69,22 @@ export class AddInvoiceBuyComponent implements OnInit {
   @Output() itemSaved = new EventEmitter<void>();
   @Output() pendingItem = new EventEmitter<PendingInvoiceDetail>();
   @Input() invoiceStartDate?: string;
+  /**
+   * Proveedor no responsable de IVA: la compra no lleva impuestos. Fija el
+   * impuesto en "Sin impuesto" y bloquea el selector (regla del contador).
+   */
+  noTaxesLocked = false;
+  @Input() set noTaxes(value: boolean) {
+    this.noTaxesLocked = !!value;
+    const control = this.form?.get('taxeTypeId');
+    if (!control) return;
+    if (this.noTaxesLocked) {
+      control.setValue(2);
+      control.disable({ emitEvent: false });
+    } else {
+      control.enable({ emitEvent: false });
+    }
+  }
   private readonly _producsService: ProductsService = inject(ProductsService);
   private readonly _invoiceDetaillService: InvoiceDetaillService = inject(
     InvoiceDetaillService
@@ -198,7 +214,7 @@ export class AddInvoiceBuyComponent implements OnInit {
       }),
       amount: product.amount,
       categoryId: product.categoryType?.categoryTypeId,
-      ...(product.taxeType?.taxeTypeId != null && {
+      ...(!this.noTaxesLocked && product.taxeType?.taxeTypeId != null && {
         taxeTypeId: product.taxeType.taxeTypeId
       })
     });

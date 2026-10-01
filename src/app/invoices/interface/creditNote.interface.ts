@@ -6,6 +6,8 @@ export interface CreditNoteItemSelection {
 
 /** Cuerpo para generar una nota crédito sobre una factura. */
 export interface CreateCreditNotePayload {
+  /** Neutraliza también las notas débito pendientes de la factura. */
+  includeDebitNotes?: boolean;
   isTotal?: boolean;
   items?: CreditNoteItemSelection[];
   correctionConceptCode?: string;
@@ -39,5 +41,7 @@ export interface CreditNote {
   observation?: string;
   /** Selección acreditada: base para calcular el restante por ítem. */
   itemsSnapshot?: { invoiceDetailId: number; quantity: number }[];
+  /** Ids de las notas débito que esta nota crédito neutraliza. */
+  neutralizedDebitNoteIds?: number[];
   createdAt: string;
 }

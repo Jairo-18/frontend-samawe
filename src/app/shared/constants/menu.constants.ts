@@ -89,6 +89,12 @@ export const MENU_CONST: MenuInterface[] = [
             titleKey: 'sidebar.invoices_quotes',
             route: '/invoice/invoices/quotes',
             icon: 'request_quote'
+          },
+          {
+            name: 'Cuentas por cobrar',
+            titleKey: 'sidebar.receivables',
+            route: '/invoice/invoices/receivables',
+            icon: 'account_balance_wallet'
           }
         ]
       },

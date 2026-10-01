@@ -97,6 +97,27 @@
         </div>
       }
 
+      }
+
+      <!-- Notas débito pendientes. Factus no permite anular una nota débito ya
+           validada: lo que hace el mercado (y la DIAN acepta) es una nota
+           crédito sobre la FACTURA que cubra también el valor de la débito. -->
+      @if (pendingDebit.length) {
+        <div class="mb-3 rounded-xl border border-[var(--warning-border)] bg-[var(--warning-bg)] p-3">
+          <mat-checkbox [(ngModel)]="includeDebit" color="primary">
+            {{ 'invoice.credit_note.include_debit' | translate }}
+          </mat-checkbox>
+          <p class="text-sm mt-1">
+            <strong>{{ pendingDebitLabel }}</strong> ·
+            <strong>{{ pendingDebitTotal | formatCop }}</strong>
+          </p>
+          <p class="text-xs text-[var(--on-surface-muted)] mt-1">
+            {{ (hasRemaining ? 'invoice.credit_note.include_debit_hint' : 'invoice.credit_note.include_debit_only') | translate }}
+          </p>
+        </div>
+      }
+
+      @if (hasRemaining || (includeDebit && pendingDebit.length)) {
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{ 'invoice.credit_note.observation' | translate }}</mat-label>
         <textarea matInput rows="4" maxlength="250" [(ngModel)]="observation"></textarea>

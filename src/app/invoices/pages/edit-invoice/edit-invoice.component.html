@@ -3,6 +3,7 @@
   [showContentTitle]="true"
   [showBackButton]="true"
   [showBorder]="false"
+  background="secondary"
   [pxMobile]="false"
   [backButtonRoute]="backRoute"
   [backButtonText]="'invoice.edit.back' | translate"
@@ -16,16 +17,22 @@
     } @else {
       <div class="flex flex-col w-full gap-3">
         @if (isLocked) {
-          <div class="flex items-center gap-3 rounded-xl bg-[var(--success-bg)] border border-[var(--success)] px-4 py-3">
+          <div
+            class="flex items-center gap-3 rounded-xl bg-[var(--success-bg)] border border-[var(--success)] px-4 py-3"
+          >
             <mat-icon class="text-[var(--success)]">verified</mat-icon>
             <div class="flex flex-col">
-              <span class="text-[var(--success)] font-bold text-sm">{{ 'invoice.list.action_sent_factus' | translate }}</span>
-              <span class="text-[var(--success)] text-xs">{{ 'invoice.list.factus_locked_edit' | translate }}</span>
+              <span class="text-[var(--success)] font-bold text-sm">{{
+                'invoice.list.action_sent_factus' | translate
+              }}</span>
+              <span class="text-[var(--success)] text-xs">{{
+                'invoice.list.factus_locked_edit' | translate
+              }}</span>
             </div>
           </div>
         }
         <section
-          class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)]"
+          class="flex flex-col p-4 rounded-2xl border border-[var(--primary-color)] bg-[var(--bg-primary-color)]"
         >
           @if (invoiceData) {
             <div
@@ -40,7 +47,9 @@
                 class="w-full md:w-56 mt-2 md:mt-0"
                 *ngIf="invoiceData.invoiceType.code === 'FC'"
               >
-                <mat-label>{{ 'invoice.edit.invoice_date' | translate }}</mat-label>
+                <mat-label>{{
+                  'invoice.edit.invoice_date' | translate
+                }}</mat-label>
                 <input
                   matInput
                   [matDatepicker]="invoiceDatePicker"
@@ -63,7 +72,9 @@
                   invoiceData.invoiceType.code === 'FVE'
                 "
               >
-                <mat-label>{{ 'invoice.edit.invoice_date' | translate }}</mat-label>
+                <mat-label>{{
+                  'invoice.edit.invoice_date' | translate
+                }}</mat-label>
                 <input matInput [value]="getFormattedInvoiceDate()" readonly />
                 <mat-icon matSuffix>event_note</mat-icon>
               </mat-form-field>
@@ -88,7 +99,9 @@
                   </div>
                   <div class="flex flex-row gap-2">
                     <span class="font-bold text-xs md:text-base">
-                      {{ invoiceData.user.identificationType.name | translated }}:
+                      {{
+                        invoiceData.user.identificationType.name | translated
+                      }}:
                     </span>
                     <span class="font-normal text-xs md:text-base">
                       {{ ' ' + invoiceData.user.identificationNumber || '' }}
@@ -108,7 +121,11 @@
             </section>
           }
           <mat-tab-group animationDuration="0ms" *ngIf="!isLocked">
-            @if (invoiceData?.invoiceType?.code === 'FV' || invoiceData?.invoiceType?.code === 'CO' || invoiceData?.invoiceType?.code === 'FVE') {
+            @if (
+              invoiceData?.invoiceType?.code === 'FV' ||
+              invoiceData?.invoiceType?.code === 'CO' ||
+              invoiceData?.invoiceType?.code === 'FVE'
+            ) {
               <mat-tab [label]="'invoice.edit.tab_product' | translate">
                 <ng-template matTabContent>
                   <app-add-product
@@ -134,13 +151,7 @@
                   ></app-add-accommodation>
                 </ng-template>
               </mat-tab>
-              <mat-tab
-                [label]="
-                  invoiceData?.invoiceType?.code === 'FC'
-                    ? ('invoice.edit.tab_services' | translate)
-                    : ('invoice.edit.tab_day_trips' | translate)
-                "
-              >
+              <mat-tab [label]="'invoice.edit.tab_day_trips' | translate">
                 <ng-template matTabContent>
                   <app-add-excursion
                     [categoryTypes]="categoryTypes"
@@ -155,6 +166,7 @@
               <mat-tab [label]="'invoice.edit.tab_products_buy' | translate">
                 <ng-template matTabContent>
                   <app-add-invoice-buy
+                    [noTaxes]="supplierWithoutVat"
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
                     [saveToBackend]="false"
@@ -173,6 +185,7 @@
               >
                 <ng-template matTabContent>
                   <app-add-invoice-buy-excursion
+                    [noTaxes]="supplierWithoutVat"
                     [categoryTypes]="categoryTypes"
                     [taxeTypes]="taxeTypes"
                     [saveToBackend]="false"
@@ -195,12 +208,12 @@
           ></app-pending-items-table>
         }
         <section
-          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[var(--primary-color)]"
+          class="flex flex-col p-2 md:p-4 rounded-2xl border border-[var(--primary-color)] bg-[var(--bg-primary-color)]"
         >
           <div class="w-full text-center">
-            <span class="font-bold text-sm md:text-base"
-              >{{ 'invoice.edit.entered_items' | translate }}</span
-            >
+            <span class="font-bold text-sm md:text-base">{{
+              'invoice.edit.entered_items' | translate
+            }}</span>
           </div>
           <app-invoice-detaill
             *ngIf="invoiceData"
@@ -217,7 +230,9 @@
              hubiera pasado: una nota débito que cobra 50.000 más, o una nota
              crédito que la anula entera, solo se veían desde el listado. -->
         @if (notes) {
-          <section class="flex flex-col p-2 md:p-4 gap-3 rounded-2xl border border-[var(--primary-color)]">
+          <section
+            class="flex flex-col p-2 md:p-4 gap-3 rounded-2xl border border-[var(--primary-color)] bg-[var(--bg-primary-color)]"
+          >
             <div class="w-full text-center">
               <span class="font-bold text-sm md:text-base">
                 {{ 'invoice.edit.notes_title' | translate }}
@@ -225,31 +240,65 @@
             </div>
 
             @if (notes.annulled) {
-              <div class="flex items-center gap-2 rounded-xl bg-[var(--danger-bg)] border border-[var(--danger-border)] px-3 py-2">
-                <mat-icon class="text-[var(--danger)] !text-base !w-4 !h-4 !leading-4 shrink-0">block</mat-icon>
-                <span class="text-[var(--danger)] text-xs md:text-sm font-semibold">
+              <div
+                class="flex items-center gap-2 rounded-xl bg-[var(--danger-bg)] border border-[var(--danger-border)] px-3 py-2"
+              >
+                <mat-icon
+                  class="text-[var(--danger)] !text-base !w-4 !h-4 !leading-4 shrink-0"
+                  >block</mat-icon
+                >
+                <span
+                  class="text-[var(--danger)] text-xs md:text-sm font-semibold"
+                >
                   {{ 'invoice.edit.notes_annulled' | translate }}
                 </span>
               </div>
             }
 
             @for (note of notes.creditNotes; track note.creditNoteId) {
-              <div class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2">
+              <div
+                class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2"
+              >
                 <div class="flex items-center justify-between gap-2 flex-wrap">
                   <span class="text-sm font-semibold">
-                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--danger)]">undo</mat-icon>
+                    <mat-icon
+                      class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--danger)]"
+                      >undo</mat-icon
+                    >
                     {{ 'invoice.edit.note_credit' | translate }}
                     {{ note.factusNumber || note.referenceCode }}
-                    <span class="text-xs font-normal text-[var(--on-surface-muted)]">
-                      · {{ (note.isTotal ? 'invoice.credit_note.total_tag' : 'invoice.credit_note.partial_tag') | translate }}
+                    <span
+                      class="text-xs font-normal text-[var(--on-surface-muted)]"
+                    >
+                      ·
+                      {{
+                        (note.isTotal
+                          ? 'invoice.credit_note.total_tag'
+                          : 'invoice.credit_note.partial_tag'
+                        ) | translate
+                      }}
                     </span>
                   </span>
                   <span class="text-sm font-bold text-[var(--danger)]">
                     − {{ note.total | formatCop }}
                   </span>
                 </div>
+                <div class="flex flex-wrap gap-2">
+                  <button mat-stroked-button type="button" class="!rounded-lg" (click)="openNote('credit', note)">
+                    <mat-icon>visibility</mat-icon>
+                    {{ 'invoice.notes_view.view' | translate }}
+                  </button>
+                  @if (note.factusPublicUrl) {
+                    <a mat-stroked-button class="!rounded-lg" [href]="note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+                      <mat-icon>open_in_new</mat-icon>
+                      {{ 'invoice.list.action_view_factus' | translate }}
+                    </a>
+                  }
+                </div>
                 @if (note.observation) {
-                  <span class="text-xs text-[var(--on-surface-muted)]">{{ note.observation }}</span>
+                  <span class="text-xs text-[var(--on-surface-muted)]">{{
+                    note.observation
+                  }}</span>
                 }
               </div>
             }
@@ -258,34 +307,69 @@
                  están en los ítems de la factura, así que sin este desglose el
                  documento no explica de dónde sale el importe extra. -->
             @for (note of notes.debitNotes; track note.debitNoteId) {
-              <div class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2">
+              <div
+                class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2"
+              >
                 <div class="flex items-center justify-between gap-2 flex-wrap">
                   <span class="text-sm font-semibold">
-                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--warning)]">trending_up</mat-icon>
+                    <mat-icon
+                      class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--warning)]"
+                      >trending_up</mat-icon
+                    >
                     {{ 'invoice.edit.note_debit' | translate }}
                     {{ note.factusNumber || note.referenceCode }}
+                    @if (neutralizedBy(note); as by) {
+                      <span class="ml-1 rounded px-1.5 py-0.5 text-xs font-bold bg-[var(--success-bg)] !text-[var(--success)]">
+                        {{ 'invoice.notes_view.neutralized_by' | translate }} {{ by }}
+                      </span>
+                    }
                   </span>
                   <span class="text-sm font-bold text-[var(--warning)]">
                     + {{ note.total | formatCop }}
                   </span>
                 </div>
                 @for (item of debitItems(note); track $index) {
-                  <div class="flex items-center justify-between gap-2 pl-5 text-xs text-[var(--on-surface-muted)]">
-                    <span class="truncate">{{ item.quantity }} × {{ item.name }}</span>
-                    <span class="shrink-0">{{ debitItemTotal(item) | formatCop }}</span>
+                  <div
+                    class="flex items-center justify-between gap-2 pl-5 text-xs text-[var(--on-surface-muted)]"
+                  >
+                    <span class="truncate"
+                      >{{ item.quantity }} × {{ item.name }}</span
+                    >
+                    <span class="shrink-0">{{
+                      debitItemTotal(item) | formatCop
+                    }}</span>
                   </div>
                 }
+                <div class="flex flex-wrap gap-2">
+                  <button mat-stroked-button type="button" class="!rounded-lg" (click)="openNote('debit', note)">
+                    <mat-icon>visibility</mat-icon>
+                    {{ 'invoice.notes_view.view' | translate }}
+                  </button>
+                  @if (note.factusPublicUrl) {
+                    <a mat-stroked-button class="!rounded-lg" [href]="note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+                      <mat-icon>open_in_new</mat-icon>
+                      {{ 'invoice.list.action_view_factus' | translate }}
+                    </a>
+                  }
+                </div>
                 @if (note.observation) {
-                  <span class="text-xs text-[var(--on-surface-muted)]">{{ note.observation }}</span>
+                  <span class="text-xs text-[var(--on-surface-muted)]">{{
+                    note.observation
+                  }}</span>
                 }
               </div>
             }
 
             @for (note of notes.adjustmentNotes; track note.adjustmentNoteId) {
-              <div class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2">
+              <div
+                class="flex flex-col gap-1 rounded-xl border border-[var(--border-color)] px-3 py-2"
+              >
                 <div class="flex items-center justify-between gap-2 flex-wrap">
                   <span class="text-sm font-semibold">
-                    <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--danger)]">tune</mat-icon>
+                    <mat-icon
+                      class="!text-base !w-4 !h-4 !leading-4 align-middle text-[var(--danger)]"
+                      >tune</mat-icon
+                    >
                     {{ 'invoice.edit.note_adjustment' | translate }}
                     {{ note.factusNumber || note.referenceCode }}
                   </span>
@@ -293,20 +377,54 @@
                     − {{ note.total | formatCop }}
                   </span>
                 </div>
+                <div class="flex flex-wrap gap-2">
+                  <button mat-stroked-button type="button" class="!rounded-lg" (click)="openNote('adjustment', note)">
+                    <mat-icon>visibility</mat-icon>
+                    {{ 'invoice.notes_view.view' | translate }}
+                  </button>
+                  @if (note.factusPublicUrl) {
+                    <a mat-stroked-button class="!rounded-lg" [href]="note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+                      <mat-icon>open_in_new</mat-icon>
+                      {{ 'invoice.list.action_view_factus' | translate }}
+                    </a>
+                  }
+                </div>
                 @if (note.observation) {
-                  <span class="text-xs text-[var(--on-surface-muted)]">{{ note.observation }}</span>
+                  <span class="text-xs text-[var(--on-surface-muted)]">{{
+                    note.observation
+                  }}</span>
                 }
               </div>
             }
 
-            <div class="flex items-center justify-between border-t border-[var(--border-color)] pt-2">
-              <span class="text-sm font-bold">{{ 'invoice.edit.notes_net' | translate }}</span>
-              <span class="text-base font-extrabold">{{ notes.net | formatCop }}</span>
+            <div
+              class="flex items-center justify-between border-t border-[var(--border-color)] pt-2"
+            >
+              <span class="text-sm font-bold">{{
+                'invoice.edit.notes_net' | translate
+              }}</span>
+              <span class="text-base font-extrabold">{{
+                notes.net | formatCop
+              }}</span>
             </div>
           </section>
         }
+        <!-- Cartera: plazo 30/60/90, cuotas y abonos de una venta a crédito. -->
+        @if (
+          invoiceId &&
+          invoiceData?.payType?.code === 'CRE' &&
+          (invoiceData?.invoiceType?.code === 'FV' ||
+            invoiceData?.invoiceType?.code === 'FVE')
+        ) {
+          <app-invoice-credit
+            [invoiceId]="invoiceId"
+            [payTypes]="payTypes"
+            [dueDateLocked]="isLocked"
+            (changed)="onItemSaved()"
+          ></app-invoice-credit>
+        }
         <div
-          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[var(--primary-color)]"
+          class="flex flex-col w-full p-2 md:p-4 h-min rounded-2xl border border-[var(--primary-color)] bg-[var(--bg-primary-color)]"
         >
           <app-invoice-summary
             *ngIf="invoiceData"

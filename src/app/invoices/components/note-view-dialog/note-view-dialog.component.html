@@ -1,0 +1,75 @@
+<app-base-dialog
+  [title]="titleKey | translate"
+  [description]="number"
+>
+  <div form class="flex flex-col gap-2 text-sm md:text-base">
+    @if (data.invoiceCode) {
+      <div class="flex justify-between gap-2">
+        <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.invoice' | translate }}</span>
+        <strong>{{ data.invoiceCode }}</strong>
+      </div>
+    }
+    <div class="flex justify-between gap-2">
+      <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.date' | translate }}</span>
+      <strong>{{ data.note.createdAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
+    </div>
+    <div class="flex justify-between gap-2">
+      <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.concept' | translate }}</span>
+      <strong class="text-right">{{ conceptKey | translate }}</strong>
+    </div>
+    @if (isCredit && credit.isTotal !== undefined) {
+      <div class="flex justify-between gap-2">
+        <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.kind' | translate }}</span>
+        <strong>{{ (credit.isTotal ? 'invoice.credit_note.total_tag' : 'invoice.credit_note.partial_tag') | translate }}</strong>
+      </div>
+    }
+    @if (data.note.observation) {
+      <div class="flex flex-col">
+        <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.observation' | translate }}</span>
+        <span>{{ data.note.observation }}</span>
+      </div>
+    }
+
+    @if (items.length) {
+      <div class="flex flex-col gap-1 mt-1">
+        <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.items' | translate }}</span>
+        @for (item of items; track $index) {
+          <div class="flex justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-1">
+            <span class="truncate">{{ item.quantity }} × {{ item.label }}</span>
+            @if (item.total !== undefined) {
+              <span class="shrink-0">{{ item.total | formatCop }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <div class="flex justify-between gap-2 border-t border-[var(--border-color)] pt-2 mt-1">
+      <span class="font-bold">{{ 'invoice.summary.total' | translate }}</span>
+      <strong [class]="isCredit ? '!text-[var(--danger)]' : '!text-[var(--warning)]'">
+        {{ isCredit ? '−' : '+' }} {{ data.note.total | formatCop }}
+      </strong>
+    </div>
+
+    @if (cude) {
+      <div class="flex flex-col">
+        <span class="text-[var(--on-surface-muted)] text-xs">{{ data.kind === 'adjustment' ? 'CUDS' : 'CUDE' }}</span>
+        <span class="break-all text-xs">{{ cude }}</span>
+      </div>
+    }
+  </div>
+
+  <div actions>
+    <section class="flex content-between gap-x-2">
+      @if (data.note.factusPublicUrl) {
+        <a mat-fab extended="true" [href]="data.note.factusPublicUrl" target="_blank" rel="noopener noreferrer">
+          <mat-icon>open_in_new</mat-icon>
+          {{ 'invoice.list.action_view_factus' | translate }}
+        </a>
+      }
+      <button mat-stroked-button extended="true" class="!w-full" (click)="close()">
+        {{ 'invoice.notes_view.close' | translate }}
+      </button>
+    </section>
+  </div>
+</app-base-dialog>

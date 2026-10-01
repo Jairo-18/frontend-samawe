@@ -126,13 +126,71 @@ export class CreateInvoiceDialogComponent implements OnInit {
     // NO altera el valor de invoiceElectronic (antes una regla lo acoplaba a
     // 'transferencia' y reseteaba la elección del usuario).
 
+    this.form
+      .get('payTypeId')
+      ?.valueChanges.subscribe(() => this.applyCreditDefaults());
+
     if (this.data.editMode && this.data.invoiceId) {
       this.loadInvoiceData(this.data.invoiceId);
       this.disableNonEditableFields();
     } else {
       this.applyDefaultsFromView();
       this.setupClientAutocomplete();
+      this.form
+        .get('invoiceTypeId')
+        ?.valueChanges.subscribe(() => this.applyQuoteDefaults());
+      this.applyQuoteDefaults();
     }
+  }
+
+  /** El estado de pago lo puso el sistema por ser crédito (y no el usuario). */
+  private paidTypeSetByCredit = false;
+
+  /**
+   * Una venta a crédito nace PENDIENTE: aún no se ha cobrado nada. Al elegir
+   * crédito el estado de pago se fija en Pendiente (`PEN`); si después cambian
+   * a otro tipo de pago se limpia, para que lo elijan de nuevo en vez de
+   * quedarse con un "pendiente" que ya no corresponde. Solo se limpia lo que
+   * puso el sistema: un estado elegido a mano no se toca.
+   */
+  private applyCreditDefaults(): void {
+    const selected = this.payTypes.find(
+      (t) =>
+        Number(t.payTypeId) === Number(this.form.get('payTypeId')?.value)
+    );
+    if (selected?.code?.toUpperCase() === 'CRE') {
+      const pending = this.paidTypes.find(
+        (t) => t.code?.toUpperCase() === 'PEN'
+      );
+      if (pending) {
+        this.form.patchValue({ paidTypeId: pending.paidTypeId });
+        this.paidTypeSetByCredit = true;
+      }
+    } else if (this.paidTypeSetByCredit) {
+      this.form.patchValue({ paidTypeId: '' });
+      this.form.get('paidTypeId')?.markAsUntouched();
+      this.paidTypeSetByCredit = false;
+    }
+  }
+
+  /**
+   * Una cotización no se cobra: tipo y estado de pago se llenan con "NO APLICA"
+   * (código `NA` en ambos catálogos). Se busca por `code`, nunca por id ni por
+   * nombre, porque el catálogo se edita desde el panel.
+   */
+  private applyQuoteDefaults(): void {
+    const selected = this.invoiceTypes.find(
+      (t) =>
+        Number(t.invoiceTypeId) ===
+        Number(this.form.get('invoiceTypeId')?.value)
+    );
+    if (selected?.code?.toUpperCase() !== 'CO') return;
+    const payNA = this.payTypes.find((t) => t.code?.toUpperCase() === 'NA');
+    const paidNA = this.paidTypes.find((t) => t.code?.toUpperCase() === 'NA');
+    this.form.patchValue({
+      ...(payNA && { payTypeId: payNA.payTypeId }),
+      ...(paidNA && { paidTypeId: paidNA.paidTypeId })
+    });
   }
 
   /**

@@ -1,0 +1,99 @@
+<app-base-dialog
+  [title]="'invoice.notes_view.list_title' | translate"
+  [description]="data.invoiceCode"
+>
+  <div form class="flex flex-col gap-2 text-sm md:text-base">
+    @if (loading) {
+      <app-loader></app-loader>
+    } @else if (!notes?.any) {
+      <span class="text-[var(--on-surface-muted)]">{{ 'invoice.notes_view.none' | translate }}</span>
+    } @else {
+      @for (n of notes!.creditNotes; track n.creditNoteId) {
+        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+          <div class="flex flex-col min-w-0">
+            <span class="font-semibold truncate">
+              <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--danger)]">undo</mat-icon>
+              {{ 'invoice.edit.note_credit' | translate }} {{ n.factusNumber || n.referenceCode }}
+            </span>
+            <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <strong class="!text-[var(--danger)]">− {{ n.total | formatCop }}</strong>
+            <button mat-icon-button type="button" (click)="open('credit', n)"
+              [attr.aria-label]="'invoice.notes_view.view' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            @if (n.factusPublicUrl) {
+              <a mat-icon-button [href]="n.factusPublicUrl" target="_blank" rel="noopener noreferrer"
+                [attr.aria-label]="'invoice.list.action_view_factus' | translate">
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+            }
+          </div>
+        </div>
+      }
+      @for (n of notes!.debitNotes; track n.debitNoteId) {
+        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+          <div class="flex flex-col min-w-0">
+            <span class="font-semibold truncate">
+              <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--warning)]">trending_up</mat-icon>
+              {{ 'invoice.edit.note_debit' | translate }} {{ n.factusNumber || n.referenceCode }}
+            </span>
+            @if (neutralizedBy(n); as by) {
+              <span class="text-xs font-bold !text-[var(--success)]">
+                {{ 'invoice.notes_view.neutralized_by' | translate }} {{ by }}
+              </span>
+            }
+            <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <strong class="!text-[var(--warning)]">+ {{ n.total | formatCop }}</strong>
+            <button mat-icon-button type="button" (click)="open('debit', n)"
+              [attr.aria-label]="'invoice.notes_view.view' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            @if (n.factusPublicUrl) {
+              <a mat-icon-button [href]="n.factusPublicUrl" target="_blank" rel="noopener noreferrer"
+                [attr.aria-label]="'invoice.list.action_view_factus' | translate">
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+            }
+          </div>
+        </div>
+      }
+      @for (n of notes!.adjustmentNotes; track n.adjustmentNoteId) {
+        <div class="flex items-center justify-between gap-2 rounded-xl border border-[var(--border-color)] px-3 py-2">
+          <div class="flex flex-col min-w-0">
+            <span class="font-semibold truncate">
+              <mat-icon class="!text-base !w-4 !h-4 !leading-4 align-middle !text-[var(--danger)]">tune</mat-icon>
+              {{ 'invoice.edit.note_adjustment' | translate }} {{ n.factusNumber || n.referenceCode }}
+            </span>
+            <span class="text-xs text-[var(--on-surface-muted)]">{{ n.createdAt | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <strong class="!text-[var(--danger)]">− {{ n.total | formatCop }}</strong>
+            <button mat-icon-button type="button" (click)="open('adjustment', n)"
+              [attr.aria-label]="'invoice.notes_view.view' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            @if (n.factusPublicUrl) {
+              <a mat-icon-button [href]="n.factusPublicUrl" target="_blank" rel="noopener noreferrer"
+                [attr.aria-label]="'invoice.list.action_view_factus' | translate">
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+            }
+          </div>
+        </div>
+      }
+      <div class="flex justify-between gap-2 border-t border-[var(--border-color)] pt-2 mt-1">
+        <span class="font-bold">{{ 'invoice.edit.notes_net' | translate }}</span>
+        <strong>{{ notes!.net | formatCop }}</strong>
+      </div>
+    }
+  </div>
+  <div actions>
+    <button mat-stroked-button extended="true" class="!w-full" (click)="close()">
+      {{ 'invoice.notes_view.close' | translate }}
+    </button>
+  </div>
+</app-base-dialog>

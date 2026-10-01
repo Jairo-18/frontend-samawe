@@ -1,0 +1,70 @@
+<app-base-page
+  [headerTitle]="'invoice.receivables.title' | translate"
+  [showContentTitle]="true"
+  [showBackButton]="false"
+  [showBorder]="false"
+  [pxMobile]="false"
+>
+  <div class="flex flex-col gap-3 w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div class="rounded-2xl border border-[var(--border-color)] p-3">
+        <div class="text-xs text-[var(--on-surface-muted)]">{{ 'invoice.receivables.total_balance' | translate }}</div>
+        <div class="text-lg font-extrabold">{{ totalBalance | formatCop }}</div>
+      </div>
+      <div class="rounded-2xl border border-[var(--border-color)] p-3">
+        <div class="text-xs text-[var(--on-surface-muted)]">{{ 'invoice.receivables.overdue_balance' | translate }}</div>
+        <div class="text-lg font-extrabold" [class.!text-[var(--danger)]]="overdueBalance > 0">{{ overdueBalance | formatCop }}</div>
+      </div>
+      <div class="rounded-2xl border border-[var(--border-color)] p-3">
+        <div class="text-xs text-[var(--on-surface-muted)]">{{ 'invoice.receivables.overdue_count' | translate }}</div>
+        <div class="text-lg font-extrabold">{{ overdueCount }}</div>
+      </div>
+    </div>
+
+    <mat-slide-toggle [checked]="includePaid" (change)="toggleIncludePaid($event.checked)">
+      {{ 'invoice.receivables.include_paid' | translate }}
+    </mat-slide-toggle>
+
+    @if (loading) {
+      <div class="flex justify-center py-8"><app-loader></app-loader></div>
+    } @else if (failed) {
+      <div class="text-center text-sm !text-[var(--danger)] py-6">{{ 'invoice.credit.error_generic' | translate }}</div>
+    } @else if (!rows.length) {
+      <div class="text-center text-sm text-[var(--on-surface-muted)] py-6">{{ 'invoice.receivables.empty' | translate }}</div>
+    } @else {
+      <div class="flex flex-col gap-2">
+        @for (r of rows; track r.invoiceId) {
+          <button
+            type="button"
+            class="flex flex-col md:flex-row md:items-center justify-between gap-2 text-left rounded-2xl border border-[var(--border-color)] px-4 py-3 hover:bg-[var(--surface-sunken)] cursor-pointer"
+            (click)="open(r)"
+          >
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-bold truncate">
+                {{ r.clientName || '---' }}
+                <span class="text-xs font-normal text-[var(--on-surface-muted)]">· {{ r.clientIdentification }}</span>
+              </span>
+              <span class="text-xs text-[var(--on-surface-muted)]">
+                {{ 'invoice.list.col_code' | translate }} {{ r.code }}
+                @if (r.factusNumber) { · {{ r.factusNumber }} }
+                @if (r.dueDate) { · {{ 'invoice.credit.due_date' | translate }} {{ r.dueDate | date: 'dd/MM/yyyy' }} }
+                @if (r.creditDays) { · {{ r.creditDays }} {{ 'invoice.credit.days' | translate }} }
+              </span>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap md:justify-end">
+              <span class="text-xs text-[var(--on-surface-muted)]">
+                {{ 'invoice.credit.paid' | translate }} {{ r.paid | formatCop }} / {{ r.total | formatCop }}
+              </span>
+              <span class="text-sm font-extrabold" [class.!text-[var(--danger)]]="r.status === 'OVERDUE'">
+                {{ r.balance | formatCop }}
+              </span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded" [ngClass]="statusClass(r.status)">
+                {{ statusKey(r.status) | translate }}
+              </span>
+            </div>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</app-base-page>
