@@ -65,10 +65,17 @@ export class InvoiceNotesDialogComponent implements OnInit {
       .subscribe((notes) => {
         this.notes = notes;
         this.loading = false;
+        // Los nombres de los ítems solo hacen falta si hay notas que acreditan o
+        // ajustan ítems (la nota débito guarda sus conceptos con nombre). Pedir
+        // la factura completa en cada apertura era una consulta pesada de más.
+        if (notes.creditNotes.length || notes.adjustmentNotes.length) {
+          this.loadDetailNames();
+        }
       });
+  }
 
-    // Informativo: si falla, el detalle muestra el número de ítem en vez del
-    // nombre, que es lo que se veía antes.
+  /** Informativo: si falla, el detalle muestra el número de ítem, como antes. */
+  private loadDetailNames(): void {
     this._invoiceService.getInvoiceToEdit(this.data.invoiceId).subscribe({
       next: (res) => {
         for (const d of res.data?.invoiceDetails ?? []) {

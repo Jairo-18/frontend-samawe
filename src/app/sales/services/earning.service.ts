@@ -16,6 +16,8 @@ import {
 import { AuthService } from '../../auth/services/auth.service';
 
 const CACHE_TTL_MS = 5 * 60 * 1000;
+/** El tablero tiene las ventas de HOY: 5 minutos de retraso confundirían ("acabo de facturar y no sale"). */
+const DASHBOARD_CACHE_MS = 60 * 1000;
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +26,7 @@ export class EarningService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _authService: AuthService = inject(AuthService);
   private readonly _platformId = inject(PLATFORM_ID);
-  private readonly _cache = new Map<string, { obs$: Observable<unknown>; ts: number }>();
+  private readonly _cache = new Map<string, { obs$: Observable<unknown>; ts: number; ttl: number }>();
 
   constructor() {
     this._authService._isLoggedSubject.subscribe(isLogged => {
@@ -32,13 +34,17 @@ export class EarningService {
     });
   }
 
-  private _cached<T>(key: string, factory: () => Observable<T>): Observable<T> {
+  private _cached<T>(
+    key: string,
+    factory: () => Observable<T>,
+    ttl: number = CACHE_TTL_MS
+  ): Observable<T> {
     const cached = this._cache.get(key);
-    if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+    if (cached && Date.now() - cached.ts < cached.ttl) {
       return cached.obs$ as Observable<T>;
     }
     const obs$ = factory().pipe(shareReplay(1));
-    this._cache.set(key, { obs$, ts: Date.now() });
+    this._cache.set(key, { obs$, ts: Date.now(), ttl });
     return obs$;
   }
 
@@ -65,10 +71,13 @@ export class EarningService {
       period === 'custom' && range
         ? `period=custom&from=${range.from}&to=${range.to}`
         : `period=${period}`;
-    return this._cached(`dashboard-${query}`, () =>
-      this._httpClient.get<SalesDashboard>(
-        `${environment.apiUrl}balance/dashboard?${query}`
-      )
+    return this._cached(
+      `dashboard-${query}`,
+      () =>
+        this._httpClient.get<SalesDashboard>(
+          `${environment.apiUrl}balance/dashboard?${query}`
+        ),
+      DASHBOARD_CACHE_MS
     );
   }
 

@@ -152,7 +152,7 @@ export class EarningsSumaryComponent implements OnInit {
    * Antigüedad de lo que nos deben: lo vencido se mide desde la primera cuota
    * vencida sin pagar; lo demás está al día o aún sin plazo.
    */
-  get aging(): { labelKey: string; total: number; count: number; tone: string }[] {
+  private compute_aging(): { labelKey: string; total: number; count: number; tone: string }[] {
     const buckets = {
       current: { labelKey: 'sales.aging_current', total: 0, count: 0, tone: '' },
       d30: { labelKey: 'sales.aging_30', total: 0, count: 0, tone: '!text-[var(--warning)]' },
@@ -205,41 +205,88 @@ export class EarningsSumaryComponent implements OnInit {
   }
 
   /** Vendido a crédito (total a pagar, neto de notas). */
-  get creditSold(): number {
+  private compute_creditSold(): number {
     return this.sumOf(this.receivables, 'total');
   }
 
   /** Lo que ya se cobró de esas ventas. */
-  get creditCollected(): number {
+  private compute_creditCollected(): number {
     return this.sumOf(this.receivables, 'paid');
   }
 
   /** Lo que nos deben. */
-  get creditOwed(): number {
+  private compute_creditOwed(): number {
     return this.sumOf(this.receivables, 'balance');
   }
 
   /** Porcentaje cobrado de lo vendido a crédito (0–100). */
-  get creditCollectedPct(): number {
+  private compute_creditCollectedPct(): number {
     return this.creditSold > 0
       ? Math.round((this.creditCollected / this.creditSold) * 100)
       : 0;
   }
 
   /** Facturas que aún deben algo, vencidas primero (así llegan del backend). */
-  get owingInvoices(): ReceivableRow[] {
+  private compute_owingInvoices(): ReceivableRow[] {
     return this.receivables.filter((r) => r.balance > 0);
   }
 
-  get overdueOwed(): number {
+  private compute_overdueOwed(): number {
     return this.sumOf(
       this.owingInvoices.filter((r) => r.status === 'OVERDUE'),
       'balance'
     );
   }
 
-  get overdueCount(): number {
+  private compute_overdueCount(): number {
     return this.owingInvoices.filter((r) => r.status === 'OVERDUE').length;
+  }
+
+
+  // ── Valores derivados, calculados UNA vez por carga de datos ──────────────
+  //
+  // Eran getters que se recalculaban en cada ciclo de detección de cambios (y
+  // varias veces por ciclo, porque la plantilla los lee más de una vez). Con la
+  // cartera y las cifras del tablero son pocos datos, pero es trabajo inútil en
+  // cada clic y cada movimiento del selector de fechas. Se recalculan solo si
+  // cambia la fuente (`receivables` o `dashboard`), que se reemplaza entera al
+  // cargar.
+  private readonly _memo = new Map<string, { source: unknown; value: unknown }>();
+
+  private memo<T>(key: string, source: unknown, compute: () => T): T {
+    const hit = this._memo.get(key);
+    if (hit && hit.source === source) return hit.value as T;
+    const value = compute();
+    this._memo.set(key, { source, value });
+    return value;
+  }
+
+  get aging(): { labelKey: string; total: number; count: number; tone: string }[] {
+    return this.memo('aging', this.receivables, () => this.compute_aging());
+  }
+  get creditSold(): number {
+    return this.memo('creditSold', this.receivables, () => this.compute_creditSold());
+  }
+  get creditCollected(): number {
+    return this.memo('creditCollected', this.receivables, () => this.compute_creditCollected());
+  }
+  get creditOwed(): number {
+    return this.memo('creditOwed', this.receivables, () => this.compute_creditOwed());
+  }
+  get creditCollectedPct(): number {
+    return this.memo('creditCollectedPct', this.receivables, () => this.compute_creditCollectedPct());
+  }
+  get owingInvoices(): ReceivableRow[] {
+    return this.memo('owingInvoices', this.receivables, () => this.compute_owingInvoices());
+  }
+  get overdueOwed(): number {
+    return this.memo('overdueOwed', this.receivables, () => this.compute_overdueOwed());
+  }
+  get overdueCount(): number {
+    return this.memo('overdueCount', this.receivables, () => this.compute_overdueCount());
+  }
+  get kpis(): ReturnType<EarningsSumaryComponent['compute_kpis']> {
+    return this.memo('kpis', this.dashboard, () => this.compute_kpis());
   }
 
   openReceivable(row: ReceivableRow): void {
@@ -391,7 +438,7 @@ export class EarningsSumaryComponent implements OnInit {
   }
 
   /** Cuatro cifras de la franja; la quinta (por cobrar) sale de la cartera. */
-  get kpis(): {
+  private compute_kpis(): {
     labelKey: string;
     value: number;
     valueClass: string;
