@@ -23,7 +23,10 @@
     </div>
 
     @if (visibleDishes.length > 0) {
-      <ul class="grid grid-cols-3 gap-2 sm:gap-3 p-4 pt-0">
+      <ul
+        class="grid gap-2 sm:gap-3 p-4 pt-0"
+        [ngClass]="visibleDishes.length === 1 ? 'grid-cols-1 max-w-[33%] mx-auto' : 'grid-cols-3'"
+      >
         @for (dish of visibleDishes; track dish.productId) {
           <li class="flex flex-col gap-1">
             <div class="rounded-[4px] overflow-hidden aspect-square">
@@ -36,9 +39,11 @@
             <span class="text-xs font-medium text-[var(--text-color)] leading-snug truncate">
               {{ dish.name | translated | capitalize }}
             </span>
-            <span class="text-xs text-[var(--subtitle-color)]">
-              COP {{ dish.priceSale | number: '1.0-0' }}
-            </span>
+            @if (showPrices) {
+              <span class="text-xs text-[var(--subtitle-color)]">
+                COP {{ dish.priceSale | number: '1.0-0' }}
+              </span>
+            }
           </li>
         }
         @if (extraDishesCount > 0) {
@@ -50,5 +55,14 @@
         }
       </ul>
     }
+
+    <div class="mx-4 mb-4 mt-auto">
+      <app-button-landing
+        [label]="'public.gastronomy.view_menu' | translate"
+        icon="restaurant_menu"
+        variant="solid"
+        (clicked)="openMenu()"
+      />
+    </div>
   </article>
 }

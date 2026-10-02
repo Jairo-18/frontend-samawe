@@ -6,12 +6,52 @@
       }}</span>
     </div>
   } @else if (user) {
-    <div class="p-4">
+    <!-- Escritorio: tarjeta del usuario a la izquierda (30 %) y el resto a la
+         derecha (70 %). En móvil se apilan, con la tarjeta primero. -->
+    <div class="p-4 flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+      <aside class="profile-card w-full lg:w-[30%] lg:sticky lg:top-[calc(var(--nav-bar-height,6rem)+1rem)]">
+      <!-- Avatar -->
+      <div class="flex flex-col items-center">
+        <div
+          class="relative group shrink-0 aspect-square w-28 h-28 md:w-[190px] md:h-[190px] cursor-pointer"
+          (click)="openAvatarPreview()"
+        >
+          <img
+            [src]="displayAvatarUrl"
+            [alt]="'user.profile.avatar_alt' | translate"
+            class="w-28 h-28 md:w-[190px] md:h-[190px] aspect-square rounded-full object-cover border-2 border-[var(--primary-color)]"
+          />
+
+          @if (saving) {
+            <div
+              class="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center"
+            >
+              <mat-spinner diameter="36" />
+            </div>
+          } @else {
+            <div
+              class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+            >
+              <!-- Tamaño de glifo y de caja iguales: con `text-3xl` (30 px) dentro de la caja
+                 de 24 px de mat-icon, el icono se recortaba y salía como un cuadrado. -->
+              <mat-icon class="!text-[24px] !w-[24px] !h-[24px] !leading-[24px] text-white">
+                {{ editMode ? 'photo_camera' : 'zoom_in' }}
+              </mat-icon>
+            </div>
+          }
+        </div>
+
+        <p class="mt-3 text-lg font-semibold text-[var(--title-color)] text-center leading-tight">
+          {{ user.firstName }} {{ user.lastName }}
+        </p>
+        <p class="text-sm text-[var(--text-muted)] text-center break-all">{{ user.email }}</p>
+      </div>
+
       <!-- Acciones -->
-      <div class="flex justify-end items-center gap-3 mb-6">
+      <div class="flex flex-col items-stretch gap-3 mt-6">
         @if (hasUnsavedChanges) {
           <span
-            class="flex items-center gap-1 text-xs md:text-sm text-[var(--warning)]"
+            class="flex items-center justify-center gap-1 text-xs md:text-sm text-[var(--warning)]"
           >
             <mat-icon class="!text-base !w-4 !h-4 !leading-4">info</mat-icon>
             {{ 'user.profile.unsaved_changes' | translate }}
@@ -25,7 +65,7 @@
             (clicked)="toggleEdit()"
           />
         } @else {
-          <div class="flex gap-2">
+          <div class="flex flex-col gap-2">
             <app-button-landing
               [label]="'user.profile.cancel' | translate"
               variant="transparent"
@@ -42,278 +82,328 @@
         }
       </div>
 
-      <!-- Avatar -->
-      <div class="flex flex-col items-center mb-8">
-        <div
-          class="relative group w-28 h-28 md:w-[250px] md:h-[250px] cursor-pointer"
-          (click)="openAvatarPreview()"
-        >
-          <img
-            [src]="displayAvatarUrl"
-            [alt]="'user.profile.avatar_alt' | translate"
-            class="w-28 h-28 md:w-[250px] md:h-[250px] rounded-full object-cover border-2 border-[var(--primary-color)]"
-          />
 
-          @if (saving) {
-            <div
-              class="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center"
-            >
-              <mat-spinner diameter="36" />
-            </div>
-          } @else {
-            <div
-              class="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-            >
-              <mat-icon class="!text-3xl text-white">
-                {{ editMode ? 'photo_camera' : 'zoom_in' }}
-              </mat-icon>
-            </div>
-          }
-        </div>
-
-        <p class="mt-2 text-sm text-[var(--text-muted)]">
-          {{ user.firstName }} {{ user.lastName }}
-        </p>
-      </div>
-
-      <!-- Formulario -->
-      <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.first_name' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="firstName"
-            [readonly]="!editMode"
-            appNormalizeName
-          />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.last_name' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="lastName"
-            [readonly]="!editMode"
-            appNormalizeName
-          />
-        </mat-form-field>
-
-        <!-- El correo se muestra pero no se edita desde el perfil -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.email' | translate }}</mat-label>
-          <input matInput [value]="user.email" readonly />
-          <mat-icon matSuffix class="!text-[var(--text-muted)]">lock</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.id_type' | translate }}</mat-label>
-          @if (editMode) {
-            <mat-select formControlName="identificationType">
-              @for (
-                type of identificationTypes;
-                track type.identificationTypeId
-              ) {
-                <mat-option [value]="type.identificationTypeId">{{
-                  type.name | translated
-                }}</mat-option>
-              }
-            </mat-select>
-          } @else {
-            <input
-              matInput
-              [value]="user.identificationType.name | translated"
-              readonly
-            />
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.id_number' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="identificationNumber"
-            [readonly]="!editMode"
-            appNoSpaces
-          />
-        </mat-form-field>
-
-        <!-- País: buscador con autocompletado, igual que en el panel de admin -->
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{
-            (isPhoneCodeSelected
-              ? 'organizational.common.country'
-              : 'organizational.common.search_country'
-            ) | translate
-          }}</mat-label>
-          <!-- matPrefix va fuera del @if: dentro de un bloque con varios nodos
-               raíz Angular no lo proyecta en el slot y el icono no se pinta. -->
-          <mat-icon matPrefix>flag</mat-icon>
-          <!-- El botón de limpiar (matSuffix) también va SUELTO, al mismo
-               nivel que el input: anidarlo dentro de este bloque reproducía el
-               mismo problema de proyección que ya rompió matPrefix (ver
-               arriba) — Angular no lo llevaba al slot y salía sin el layout ni
-               el estilo de botón, suelto debajo del campo.
-               ⚠️ El input y `<mat-autocomplete>` SÍ tienen que ir en el MISMO
-               @if: `[matAutocomplete]="autoPhoneCode"` referencia la variable
-               de plantilla `#autoPhoneCode`, y cada bloque @if es su propio
-               scope — separarlos en dos @if distintos rompe esa referencia
-               (probado: `NG1: Property 'autoPhoneCode' does not exist`). -->
-          @if (editMode && isPhoneCodeSelected) {
-            <button
-              matSuffix
-              mat-icon-button
-              type="button"
-              (click)="clearPhoneCodeSelection()"
-              [matTooltip]="
-                'organizational.common.clear_selection' | translate
-              "
-            >
-              <mat-icon>clear</mat-icon>
-            </button>
-          }
-          @if (editMode) {
-            <input
-              type="text"
-              matInput
-              formControlName="phoneCodeSearch"
-              [matAutocomplete]="autoPhoneCode"
-              [placeholder]="'organizational.common.type_to_search' | translate"
-              [readonly]="isPhoneCodeSelected"
-              (focus)="onPhoneCodeFocus()"
-            />
-            <mat-autocomplete
-              #autoPhoneCode="matAutocomplete"
-              [displayWith]="displayPhoneCode"
-              (optionSelected)="onPhoneCodeSelected($event.option.value)"
-            >
-              @if (loadingPhoneCodes) {
-                <mat-option disabled>
-                  <span>{{
-                    'organizational.common.searching' | translate
-                  }}</span>
-                </mat-option>
-              } @else if (filteredPhoneCodes.length === 0) {
-                <mat-option disabled>
-                  <span>{{
-                    'organizational.common.no_results' | translate
-                  }}</span>
-                </mat-option>
-              } @else {
-                @for (pc of filteredPhoneCodes; track pc.phoneCodeId) {
-                  <mat-option [value]="pc">
-                    {{ pc.name | capitalize }} {{ pc.code }}
-                  </mat-option>
-                }
-              }
-            </mat-autocomplete>
-            @if (form.get('phoneCodeId')?.hasError('required')) {
-              <mat-error>
-                {{ 'organizational.edit_user.country_required' | translate }}
-              </mat-error>
-            }
-          } @else {
-            <input
-              matInput
-              [value]="
-                phoneCodeLabel || ('user.profile.not_set_country' | translate)
-              "
-              readonly
-            />
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>{{ 'user.profile.phone' | translate }}</mat-label>
-          <input matInput formControlName="phone" [readonly]="!editMode" />
-        </mat-form-field>
-
-        <!-- Ubicación: solo para documentos colombianos (CC, NIT, TI, RC) -->
-        @if (showLocation) {
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{
-              'organizational.edit_user.department' | translate
-            }}</mat-label>
-            <mat-icon matPrefix>map</mat-icon>
-            @if (editMode) {
-              <mat-select formControlName="departmentId">
-                <mat-option value="">
-                  {{ 'organizational.edit_user.select_department' | translate }}
-                </mat-option>
-                @for (
-                  department of departments;
-                  track department.departmentId
-                ) {
-                  <mat-option [value]="department.departmentId">
-                    {{ department.name }}
-                  </mat-option>
-                }
-              </mat-select>
-              @if (form.get('departmentId')?.hasError('required')) {
-                <mat-error>
-                  {{
-                    'organizational.edit_user.department_required' | translate
-                  }}
-                </mat-error>
-              }
-            } @else {
-              <input
-                matInput
-                [value]="
-                  user.department?.name ||
-                  ('user.profile.not_set_department' | translate)
-                "
-                readonly
-              />
-            }
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>{{
-              'organizational.edit_user.municipality' | translate
-            }}</mat-label>
-            <mat-icon matPrefix>location_city</mat-icon>
-            @if (editMode) {
-              <mat-select formControlName="municipalityId">
-                <mat-option value="">
-                  {{
-                    'organizational.edit_user.select_municipality' | translate
-                  }}
-                </mat-option>
-                @for (
-                  municipality of municipalities;
-                  track municipality.municipalityId
-                ) {
-                  <mat-option [value]="municipality.municipalityId">
-                    {{ municipality.name }}
-                  </mat-option>
-                }
-              </mat-select>
-              @if (form.get('municipalityId')?.hasError('required')) {
-                <mat-error>
-                  {{
-                    'organizational.edit_user.municipality_required' | translate
-                  }}
-                </mat-error>
-              }
-            } @else {
-              <input
-                matInput
-                [value]="
-                  user.municipality?.name ||
-                  ('user.profile.not_set_municipality' | translate)
-                "
-                readonly
-              />
-            }
-          </mat-form-field>
+        <!-- Atajos: en la columna de la tarjeta, en vertical. "Cambiar contraseña"
+             ya es una pestaña, así que no se repite aquí. -->
+        @if (!isStaff) {
+          <nav
+            class="flex flex-col gap-1 mt-6 pt-4 border-t profile-shortcuts"
+            [attr.aria-label]="'user.profile.shortcuts' | translate"
+          >
+            <a [routerLink]="route('gastronomy')" class="profile-link">
+              <mat-icon>restaurant_menu</mat-icon>{{ 'user.profile.see_menu' | translate }}
+            </a>
+            <a [routerLink]="route('accommodation')" class="profile-link">
+              <mat-icon>bed</mat-icon>{{ 'user.profile.see_lodging' | translate }}
+            </a>
+            <a [routerLink]="route('blog')" class="profile-link">
+              <mat-icon>rate_review</mat-icon>{{ 'user.profile.leave_review' | translate }}
+            </a>
+          </nav>
         }
 
-        <!--
-          No se muestran "tipo de persona" ni "rol": el tipo de persona lo
-          deriva el backend del tipo de documento en cada guardado, y el rol no
-          es información que el usuario deba ver ni editar aquí.
-        -->
-      </form>
+        <!-- Cerrar sesión a mano: ya no hay página de Configuración para clientes. -->
+        <button type="button" (click)="logout()" class="profile-logout">
+          <mat-icon>logout</mat-icon>{{ 'auth.logout' | translate }}
+        </button>
+      </aside>
+
+      <div class="w-full lg:w-[70%] flex flex-col gap-8 min-w-0">
+
+      <!-- Formulario de datos personales. Va en una plantilla porque se muestra
+           dentro de la pestaña "Mi información" (clientes) o suelto (personal). -->
+      <ng-template #infoForm>
+        <!-- Formulario -->
+        <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.first_name' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="firstName"
+              [readonly]="!editMode"
+              appNormalizeName
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.last_name' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="lastName"
+              [readonly]="!editMode"
+              appNormalizeName
+            />
+          </mat-form-field>
+
+          <!-- El correo se muestra pero no se edita desde el perfil -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.email' | translate }}</mat-label>
+            <input matInput [value]="user.email" readonly />
+            <mat-icon matSuffix class="!text-[var(--text-muted)]">lock</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.id_type' | translate }}</mat-label>
+            @if (editMode) {
+              <mat-select formControlName="identificationType">
+                @for (
+                  type of identificationTypes;
+                  track type.identificationTypeId
+                ) {
+                  <mat-option [value]="type.identificationTypeId">{{
+                    type.name | translated
+                  }}</mat-option>
+                }
+              </mat-select>
+            } @else {
+              <input
+                matInput
+                [value]="user.identificationType.name | translated"
+                readonly
+              />
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.id_number' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="identificationNumber"
+              [readonly]="!editMode"
+              appNoSpaces
+            />
+          </mat-form-field>
+
+          <!-- País: buscador con autocompletado, igual que en el panel de admin -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{
+              (isPhoneCodeSelected
+                ? 'organizational.common.country'
+                : 'organizational.common.search_country'
+              ) | translate
+            }}</mat-label>
+            <!-- matPrefix va fuera del @if: dentro de un bloque con varios nodos
+                 raíz Angular no lo proyecta en el slot y el icono no se pinta. -->
+            <mat-icon matPrefix>flag</mat-icon>
+            <!-- El botón de limpiar (matSuffix) también va SUELTO, al mismo
+                 nivel que el input: anidarlo dentro de este bloque reproducía el
+                 mismo problema de proyección que ya rompió matPrefix (ver
+                 arriba) — Angular no lo llevaba al slot y salía sin el layout ni
+                 el estilo de botón, suelto debajo del campo.
+                 ⚠️ El input y `<mat-autocomplete>` SÍ tienen que ir en el MISMO
+                 @if: `[matAutocomplete]="autoPhoneCode"` referencia la variable
+                 de plantilla `#autoPhoneCode`, y cada bloque @if es su propio
+                 scope — separarlos en dos @if distintos rompe esa referencia
+                 (probado: `NG1: Property 'autoPhoneCode' does not exist`). -->
+            @if (editMode && isPhoneCodeSelected) {
+              <button
+                matSuffix
+                mat-icon-button
+                type="button"
+                (click)="clearPhoneCodeSelection()"
+                [matTooltip]="
+                  'organizational.common.clear_selection' | translate
+                "
+              >
+                <mat-icon>clear</mat-icon>
+              </button>
+            }
+            @if (editMode) {
+              <input
+                type="text"
+                matInput
+                formControlName="phoneCodeSearch"
+                [matAutocomplete]="autoPhoneCode"
+                [placeholder]="'organizational.common.type_to_search' | translate"
+                [readonly]="isPhoneCodeSelected"
+                (focus)="onPhoneCodeFocus()"
+              />
+              <mat-autocomplete
+                #autoPhoneCode="matAutocomplete"
+                [displayWith]="displayPhoneCode"
+                (optionSelected)="onPhoneCodeSelected($event.option.value)"
+              >
+                @if (loadingPhoneCodes) {
+                  <mat-option disabled>
+                    <span>{{
+                      'organizational.common.searching' | translate
+                    }}</span>
+                  </mat-option>
+                } @else if (filteredPhoneCodes.length === 0) {
+                  <mat-option disabled>
+                    <span>{{
+                      'organizational.common.no_results' | translate
+                    }}</span>
+                  </mat-option>
+                } @else {
+                  @for (pc of filteredPhoneCodes; track pc.phoneCodeId) {
+                    <mat-option [value]="pc">
+                      {{ pc.name | capitalize }} {{ pc.code }}
+                    </mat-option>
+                  }
+                }
+              </mat-autocomplete>
+              @if (form.get('phoneCodeId')?.hasError('required')) {
+                <mat-error>
+                  {{ 'organizational.edit_user.country_required' | translate }}
+                </mat-error>
+              }
+            } @else {
+              <input
+                matInput
+                [value]="
+                  phoneCodeLabel || ('user.profile.not_set_country' | translate)
+                "
+                readonly
+              />
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>{{ 'user.profile.phone' | translate }}</mat-label>
+            <input matInput formControlName="phone" [readonly]="!editMode" />
+          </mat-form-field>
+
+          <!-- Ubicación: solo para documentos colombianos (CC, NIT, TI, RC) -->
+          @if (showLocation) {
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>{{
+                'organizational.edit_user.department' | translate
+              }}</mat-label>
+              <mat-icon matPrefix>map</mat-icon>
+              @if (editMode) {
+                <mat-select formControlName="departmentId">
+                  <mat-option value="">
+                    {{ 'organizational.edit_user.select_department' | translate }}
+                  </mat-option>
+                  @for (
+                    department of departments;
+                    track department.departmentId
+                  ) {
+                    <mat-option [value]="department.departmentId">
+                      {{ department.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+                @if (form.get('departmentId')?.hasError('required')) {
+                  <mat-error>
+                    {{
+                      'organizational.edit_user.department_required' | translate
+                    }}
+                  </mat-error>
+                }
+              } @else {
+                <input
+                  matInput
+                  [value]="
+                    user.department?.name ||
+                    ('user.profile.not_set_department' | translate)
+                  "
+                  readonly
+                />
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>{{
+                'organizational.edit_user.municipality' | translate
+              }}</mat-label>
+              <mat-icon matPrefix>location_city</mat-icon>
+              @if (editMode) {
+                <mat-select formControlName="municipalityId">
+                  <mat-option value="">
+                    {{
+                      'organizational.edit_user.select_municipality' | translate
+                    }}
+                  </mat-option>
+                  @for (
+                    municipality of municipalities;
+                    track municipality.municipalityId
+                  ) {
+                    <mat-option [value]="municipality.municipalityId">
+                      {{ municipality.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+                @if (form.get('municipalityId')?.hasError('required')) {
+                  <mat-error>
+                    {{
+                      'organizational.edit_user.municipality_required' | translate
+                    }}
+                  </mat-error>
+                }
+              } @else {
+                <input
+                  matInput
+                  [value]="
+                    user.municipality?.name ||
+                    ('user.profile.not_set_municipality' | translate)
+                  "
+                  readonly
+                />
+              }
+            </mat-form-field>
+          }
+
+          <!--
+            No se muestran "tipo de persona" ni "rol": el tipo de persona lo
+            deriva el backend del tipo de documento en cada guardado, y el rol no
+            es información que el usuario deba ver ni editar aquí.
+          -->
+        </form>
+      </ng-template>
+
+      <mat-tab-group
+        class="profile-tabs"
+        animationDuration="0ms"
+        [(selectedIndex)]="tabIndex"
+        [attr.aria-label]="'user.profile.tabs_label' | translate"
+      >
+        <mat-tab [label]="'user.profile.tab_info' | translate">
+          <ng-template matTabContent>
+          <div class="pt-6">
+            <ng-container *ngTemplateOutlet="infoForm"></ng-container>
+          </div>
+          </ng-template>
+        </mat-tab>
+
+        @if (!isStaff) {
+          <mat-tab [label]="'user.profile.tab_stays' | translate">
+            <ng-template matTabContent>
+            <div class="pt-6">
+              <app-my-invoices-section kind="stays" [hotelName]="hotelName"></app-my-invoices-section>
+            </div>
+          </ng-template>
+          </mat-tab>
+          <mat-tab [label]="'user.profile.tab_orders' | translate">
+            <ng-template matTabContent>
+            <div class="pt-6">
+              <app-my-invoices-section kind="orders"></app-my-invoices-section>
+            </div>
+          </ng-template>
+          </mat-tab>
+          <mat-tab [label]="'user.profile.tab_reviews' | translate">
+            <ng-template matTabContent>
+            <div class="pt-6">
+              @if (reviewsLoading) {
+                <div class="flex justify-center py-10"><app-loader /></div>
+              } @else {
+                <app-my-reviews-list [reviews]="reviews"></app-my-reviews-list>
+              }
+            </div>
+          </ng-template>
+          </mat-tab>
+        }
+
+        <mat-tab [label]="'user.profile.change_password' | translate">
+          <ng-template matTabContent>
+          <div class="pt-6">
+            <app-change-password-form></app-change-password-form>
+          </div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+      </div>
     </div>
   }
 </app-base-page>
@@ -332,10 +422,13 @@
       <mat-icon>close</mat-icon>
     </button>
 
+    <!-- La preview enseña la foto ENTERA: antes iba en un círculo de 250 px con
+         `object-cover`, y una foto vertical (p. ej. un documento) salía como un
+         óvalo aplastado y recortado. El círculo es solo el recorte del perfil. -->
     <img
       [src]="displayAvatarUrl"
       [alt]="'user.profile.avatar_alt' | translate"
-      class="max-w-[250px] max-h-[250px] rounded-full object-cover shadow-2xl ring-4 ring-white/20"
+      class="max-w-[92vw] max-h-[70vh] w-auto h-auto rounded-[4px] object-contain shadow-2xl ring-4 ring-white/20"
       (click)="$event.stopPropagation()"
     />
 

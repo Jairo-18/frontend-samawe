@@ -814,7 +814,6 @@
       "concept_adjustment_5": "Otros",
       "neutralized_by": "Neutralizada por",
       "view": "Ver",
-      "close": "Cerrar",
       "list_title": "Notas de la factura",
       "none": "Esta factura no tiene notas.",
       "invoice": "Factura",
@@ -1628,6 +1627,43 @@
       "photo": "Foto",
       "view_availability": "Ver disponibilidad"
     },
+    "client_home": {
+      "eyebrow": "Tu espacio en {{name}}",
+      "subtitle": "Todo lo tuyo en {{name}}, en un solo lugar.",
+      "nav_label": "Accesos rápidos",
+      "stays_title": "Tus estadías en {{name}}",
+      "stays_empty": "Aún no tienes estadías registradas en {{name}}.",
+      "stays_cta": "Conoce nuestros hospedajes",
+      "orders_title": "Tus órdenes de comida",
+      "orders_empty": "Todavía no has pedido nada de nuestra carta.",
+      "orders_cta": "Ver la carta",
+      "load_error": "No pudimos cargar tu historial. Inténtalo de nuevo en un momento.",
+      "phase": {
+        "upcoming": "Próxima",
+        "current": "En curso",
+        "past": "Finalizada"
+      },
+      "tiles": {
+        "stays_title": "Mis estadías",
+        "stays_desc": "Tus reservas y visitas pasadas",
+        "orders_title": "Mis órdenes",
+        "orders_desc": "Lo que has pedido de la carta",
+        "menu_title": "Ver la carta",
+        "menu_desc": "Platos y bebidas del restaurante",
+        "lodging_title": "Hospedajes",
+        "lodging_desc": "Cabañas y habitaciones",
+        "review_title": "Opinar",
+        "review_desc": "Cuéntanos tu experiencia en el blog",
+        "profile_title": "Mi perfil",
+        "profile_desc": "Tus datos y tu foto",
+        "password_title": "Cambiar contraseña",
+        "password_desc": "Cambia tu clave desde tu cuenta"
+      }
+    },
+    "menu_detail": {
+      "not_found": "No encontramos este menú",
+      "back_to_list": "Volver a gastronomía"
+    },
     "accommodation_detail": {
       "no_image": "Sin fotos todavía",
       "not_found": "No encontramos este hospedaje",
@@ -1670,7 +1706,9 @@
       "menus_label": "Nuestra Carta",
       "menus_title": "Menús",
       "menus_empty": "Todavía no hay menús publicados.",
-      "more_dishes": "platillos más"
+      "more_dishes": "platillos más",
+      "view_menu": "Ver menú",
+      "close": "Cerrar"
     },
     "experience": {
       "label": "Lo que ofrecemos",
@@ -1735,7 +1773,49 @@
       "not_set_department": "Aún no asignas un departamento",
       "not_set_country": "Aún no asignas un país",
       "not_set_generic": "Sin asignar",
-      "close": "Cerrar"
+      "close": "Cerrar",
+      "shortcuts": "Atajos",
+      "my_stays": "Mis estadías",
+      "my_orders": "Mis órdenes",
+      "see_menu": "Ver la carta",
+      "see_lodging": "Hospedajes",
+      "leave_review": "Opinar",
+      "change_password": "Cambiar contraseña",
+      "tabs_label": "Secciones de tu cuenta",
+      "tab_info": "Mi información",
+      "tab_stays": "Mis hospedajes",
+      "tab_orders": "Mis órdenes",
+      "tab_reviews": "Mis opiniones",
+      "reviews_empty": "Aún no has dejado ninguna opinión.",
+      "reviews_cta": "Cuéntanos tu experiencia",
+      "reviews_reply": "Respuesta del hotel"
+    },
+    "change_password": {
+      "back": "Volver a mi perfil",
+      "title": "Cambiar contraseña",
+      "subtitle": "Escribe tu contraseña actual y elige una nueva.",
+      "old": "Contraseña actual",
+      "old_required": "Escribe tu contraseña actual",
+      "forgot_hint": "¿No recuerdas la actual, o entras solo con Google?",
+      "forgot_cta": "Envíame un correo para restablecerla",
+      "reset_sent": "Te enviamos un correo con el enlace para restablecer tu contraseña."
+    },
+    "invoice_detail": {
+      "back": "Volver a mi perfil",
+      "not_found": "No encontramos esta factura",
+      "eyebrow_stay": "Tu estadía",
+      "eyebrow_order": "Tu orden",
+      "night": "noche",
+      "nights": "noches",
+      "subtotal": "Subtotal",
+      "taxes": "Impuestos",
+      "total": "Total",
+      "pending": "Por pagar",
+      "pay_type": "Medio de pago",
+      "paid_type": "Estado del pago",
+      "table": "Mesa",
+      "ordered": "Pedida a las",
+      "served": "Servida a las"
     }
   },
   "recipe": {

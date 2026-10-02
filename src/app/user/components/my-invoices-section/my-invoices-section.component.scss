@@ -1,0 +1,31 @@
+// Paginador compacto en móvil. Material reparte el ancho entre el selector
+// "Mostrar", el rango y los cuatro botones; en 360 px no cabe todo y el rango
+// ("1 - 5 de 15") se partía en cuatro líneas.
+:host ::ng-deep .mat-mdc-paginator {
+  width: 100%;
+  background: transparent;
+
+  .mat-mdc-paginator-container {
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    padding: 0;
+  }
+
+  .mat-mdc-paginator-range-label {
+    white-space: nowrap;
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 639px) {
+  // En el teléfono se queda en 5 por página: el selector solo estorba.
+  :host ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-page-size {
+    display: none;
+  }
+
+  :host ::ng-deep .mat-mdc-paginator .mat-mdc-paginator-range-actions {
+    justify-content: center;
+    width: 100%;
+  }
+}

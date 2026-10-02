@@ -12,6 +12,7 @@ import {
   InvoiceComplete
 } from '../interface/invoice.interface';
 import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
+import { MyInvoice, MyInvoiceDetail } from '../interface/my-invoice.interface';
 import {
   CreateCreditPaymentPayload,
   InvoiceCredit,
@@ -44,6 +45,35 @@ export class InvoiceService {
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private readonly _authService: AuthService = inject(AuthService);
+  /** Detalle de una factura propia (404 si no es suya). */
+  getMineOne(
+    invoiceId: number
+  ): Observable<{ statusCode: number; data: MyInvoiceDetail }> {
+    return this._httpClient.get<{ statusCode: number; data: MyInvoiceDetail }>(
+      `${environment.apiUrl}invoices/mine/${invoiceId}`
+    );
+  }
+
+  /**
+   * Historial del cliente con sesión, de a una página. `kind` separa estadías
+   * de órdenes de comida; el servidor limita `perPage` a 10.
+   */
+  getMine(params: {
+    kind: 'stays' | 'orders';
+    page: number;
+    perPage: number;
+  }): Observable<{ data: MyInvoice[]; pagination: PaginationInterface }> {
+    return this._httpClient.get<{
+      data: MyInvoice[];
+      pagination: PaginationInterface;
+    }>(`${environment.apiUrl}invoices/mine`, {
+      params: {
+        kind: params.kind,
+        page: String(params.page),
+        perPage: String(params.perPage)
+      }
+    });
+  }
   getInvoiceWithPagination(query: BasePaginationParams): Observable<{
     pagination: PaginationInterface;
     data: InvoiceComplete[];

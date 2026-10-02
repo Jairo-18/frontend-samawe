@@ -1,0 +1,121 @@
+// Atajos de la parte alta del perfil: píldoras discretas, no botones sólidos,
+// para no competir con "Editar perfil".
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 999px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+  }
+
+  &:hover {
+    background: var(--primary-color);
+    color: #fff;
+  }
+}
+
+// Tarjeta del usuario (columna del 30 % en escritorio).
+.profile-card {
+  // Sin borde ni fondo propio: la tarjeta se funde con la página.
+  padding: 0.5rem 0.25rem;
+}
+
+.profile-section-title {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  color: var(--title-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+// Pestañas: la etiqueta activa y la barra en el color primario de la organización.
+:host ::ng-deep .profile-tabs {
+  .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+    color: var(--primary-color);
+  }
+
+  .mat-mdc-tab-header {
+    border-bottom: 1px solid color-mix(in srgb, var(--primary-color) 30%, transparent);
+  }
+
+  .mdc-tab-indicator__content--underline {
+    border-color: var(--primary-color);
+  }
+}
+
+// Atajos del costado: filas con icono a la izquierda, discretas.
+.profile-shortcuts {
+  border-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  }
+}
+
+// Las pestañas de Material recortan su contenido (`overflow: hidden`): se
+// comían las sombras al pasar el mouse y el borde de los campos con etiqueta.
+:host ::ng-deep .profile-tabs {
+  .mat-mdc-tab-body-wrapper,
+  .mat-mdc-tab-body.mat-mdc-tab-body-active,
+  .mat-mdc-tab-body-content {
+    overflow: visible;
+  }
+}
+
+.profile-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--danger);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+
+  &:hover {
+    background: var(--danger-bg);
+  }
+}

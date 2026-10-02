@@ -7,6 +7,8 @@
     <app-base-page>
       <app-card-home></app-card-home>
     </app-base-page>
+  } @else if (isClientUser) {
+    <app-client-home [org]="org"></app-client-home>
   } @else {
     <app-hero-section
       [org]="org"

@@ -39,11 +39,23 @@ export class LocalStorageService {
     const parsedData = allData && JSON.parse(allData);
     return parsedData;
   }
+  /**
+   * Preferencias del DISPOSITIVO, no de la sesión: sobreviven al cierre de
+   * sesión. Antes solo se salvaba el idioma, y `clear()` se llevaba también
+   * `_cookieConsent`: cada vez que se cerraba sesión (o caducaba) el aviso de
+   * cookies volvía a salir.
+   */
+  private static readonly _DEVICE_KEYS = ['lang', '_cookieConsent'];
+
   cleanLocalStorage(): void {
     if (!this.isLocalStorageAvailable()) return;
-    const lang = localStorage.getItem('lang');
+    const kept = LocalStorageService._DEVICE_KEYS.map(
+      (key) => [key, localStorage.getItem(key)] as const
+    );
     localStorage.clear();
-    if (lang) localStorage.setItem('lang', lang);
+    kept.forEach(([key, value]) => {
+      if (value !== null) localStorage.setItem(key, value);
+    });
   }
   getItem(key: string) {
     if (!this.isLocalStorageAvailable()) return null;

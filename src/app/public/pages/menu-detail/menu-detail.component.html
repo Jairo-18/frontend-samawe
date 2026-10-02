@@ -1,0 +1,89 @@
+<section class="w-full max-w-[1100px] mx-auto px-4 md:px-6 py-6 md:py-10">
+  @if (loading) {
+    <div class="flex justify-center py-24"><app-loader /></div>
+  } @else if (notFound) {
+    <div class="flex flex-col items-center text-center gap-4 py-24">
+      <mat-icon class="!w-12 !h-12 !text-[48px] text-[var(--primary-color)]">search_off</mat-icon>
+      <h1 class="text-xl font-bold">{{ 'public.menu_detail.not_found' | translate }}</h1>
+      <a [routerLink]="listRoute" class="text-[var(--primary-color)] font-medium hover-underline-animation">
+        {{ 'public.menu_detail.back_to_list' | translate }}
+      </a>
+    </div>
+  } @else if (menu) {
+    <nav class="mb-6 text-sm">
+      <a
+        [routerLink]="listRoute"
+        class="hover-underline-animation text-[var(--on-surface-muted)] hover:text-[var(--primary-color)] inline-flex items-center gap-1 transition-colors duration-200"
+      >
+        <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">arrow_back</mat-icon>
+        {{ 'public.menu_detail.back_to_list' | translate }}
+      </a>
+    </nav>
+
+    <header class="flex flex-col items-center text-center gap-3 pb-10">
+      <span class="text-[11px] uppercase tracking-[0.3em] text-[var(--subtitle-color)] font-[900]">
+        {{ 'public.gastronomy.menus_label' | translate }}
+      </span>
+      <h1
+        class="text-3xl md:text-5xl text-[var(--title-color)] tracking-tight"
+        style="font-family: var(--font-title)"
+      >
+        {{ menu.name | translated | capitalize }}
+      </h1>
+      <!-- Ornamento: filete, rombo, filete -->
+      <div class="flex items-center gap-3 w-48" aria-hidden="true">
+        <span class="h-px flex-1 bg-[var(--primary-color)] opacity-60"></span>
+        <span class="w-1.5 h-1.5 rotate-45 bg-[var(--primary-color)]"></span>
+        <span class="h-px flex-1 bg-[var(--primary-color)] opacity-60"></span>
+      </div>
+      @if (menu.description) {
+        <p class="text-sm md:text-base italic text-[var(--subtitle-color)] max-w-xl leading-relaxed">
+          {{ menu.description | translated }}
+        </p>
+      }
+    </header>
+
+    <!-- Un platillo suelto se centra; con varios, dos columnas desde md. -->
+    <ul
+      class="grid gap-x-10 gap-y-2"
+      [ngClass]="menu.dishes.length === 1 ? 'grid-cols-1 max-w-xl mx-auto' : 'grid-cols-1 md:grid-cols-2'"
+    >
+      @for (dish of menu.dishes; track dish.productId) {
+        <li
+          class="flex items-center gap-4 py-5 border-b"
+          style="border-color: color-mix(in srgb, var(--primary-color) 25%, transparent)"
+        >
+          <img
+            [src]="dishImage(dish)"
+            [alt]="dish.name | translated"
+            loading="lazy"
+            class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover shrink-0 ring-1 ring-[var(--primary-color)] ring-offset-2 ring-offset-[var(--bg-color)]"
+          />
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <div class="flex items-baseline gap-3">
+              <h2 class="text-base md:text-lg font-semibold text-[var(--title-color)] leading-snug">
+                {{ dish.name | translated | capitalize }}
+              </h2>
+              @if (showPrices) {
+                <!-- Puntos guía hasta el precio, como en una carta impresa -->
+                <span
+                  class="flex-1 border-b border-dotted border-[var(--subtitle-color)] opacity-50 self-end mb-1"
+                  aria-hidden="true"
+                ></span>
+                <span class="text-sm md:text-base font-bold text-[var(--primary-color)] whitespace-nowrap">
+                  {{ dish.priceSale | number: '1.0-0' }}
+                  <small class="font-medium text-[var(--subtitle-color)]">COP</small>
+                </span>
+              }
+            </div>
+            @if (dish.description | translated) {
+              <p class="text-sm italic text-[var(--subtitle-color)] leading-snug">
+                {{ dish.description | translated }}
+              </p>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

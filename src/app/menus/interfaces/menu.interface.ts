@@ -66,6 +66,7 @@ export interface UpdateMenuDto {
 export interface MenuPublicDishItem {
   productId: number;
   name: TranslatedField;
+  description?: TranslatedField;
   priceSale: number;
   images: { productImageId: number; imageUrl: string; publicId: string }[];
 }

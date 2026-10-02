@@ -2,7 +2,7 @@
   <img
     [src]="reply.user.avatarUrl || 'assets/images/defaultUser.png'"
     [alt]="reply.user.firstName + ' ' + reply.user.lastName"
-    class="w-8 h-8 rounded-full object-cover mt-0.5 border border-[var(--primary-color)]"
+    class="w-8 h-8 shrink-0 aspect-square rounded-full object-cover mt-0.5 border border-[var(--primary-color)]"
   />
   <div class="flex-1">
     <div class="flex items-center justify-between">

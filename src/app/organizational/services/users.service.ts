@@ -47,6 +47,15 @@ export class UsersService {
       data: UserComplete[];
     }>(`${environment.apiUrl}user/paginated-list`, { params });
   }
+  /** Con sesión: cambia la contraseña verificando la actual. */
+  changePassword(
+    payload: Required<Pick<ChangePassword, 'oldPassword' | 'newPassword' | 'confirmNewPassword'>>
+  ): Observable<ApiResponseInterface<ChangePassword>> {
+    return this._httpClient.post<ApiResponseInterface<ChangePassword>>(
+      `${environment.apiUrl}user/change-password`,
+      payload
+    );
+  }
   recoveryPasswordByUserId(
     changePasswordPayload: ChangePassword
   ): Observable<ApiResponseInterface<ChangePassword>> {

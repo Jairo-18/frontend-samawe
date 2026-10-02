@@ -1,0 +1,65 @@
+// Estilos del inicio del cliente. Todo con las variables del tema: así el modo
+// oscuro y los colores de la organización se aplican solos.
+
+.client-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.1rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  // Fondo del color primario de la organización, igual que el botón sólido.
+  background: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &__icon {
+    color: #fff;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.4rem;
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+    line-height: 1.25;
+  }
+
+  &__desc {
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+// Solo en punteros con hover real: en táctil `:hover` queda "pegado" tras el toque.
+@media (hover: hover) and (pointer: fine) {
+  .client-tile:hover {
+    transform: translateY(-3px);
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.client-tile:focus-visible {
+  outline: 2px solid var(--title-color);
+  outline-offset: 2px;
+}
+
+.client-section-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--title-color);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--primary-color);
+}
+

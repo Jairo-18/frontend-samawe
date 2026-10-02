@@ -29,6 +29,7 @@
       </div>
       <form
         [formGroup]="form"
+        (keydown.enter)="$any($event.target).tagName === 'INPUT' && login()"
         class="flex flex-col w-full items-center gap-0 md:gap-1.5"
       >
         <mat-form-field appearance="outline" class="w-full">

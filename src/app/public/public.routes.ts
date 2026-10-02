@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '../shared/guards/auth.guard';
+import { adminGuard } from '../shared/guards/admin.guard';
 export const publicRoutes: Routes = [
   {
     path: '',
@@ -47,6 +49,15 @@ export const publicRoutes: Routes = [
           )
       },
       {
+        // Mismo patrón que `accommodation/:slug`: "3-desayunos", el id delante
+        // resuelve y el texto es decorativo/SEO. Pública, sin sesión.
+        path: 'gastronomy/menu/:slug',
+        loadComponent: () =>
+          import('./pages/menu-detail/menu-detail.component').then(
+            (m) => m.MenuDetailComponent
+          )
+      },
+      {
         path: 'how-to-arrive',
         data: { reuse: true },
         loadComponent: () =>
@@ -62,6 +73,7 @@ export const publicRoutes: Routes = [
       },
       {
         path: 'settings',
+        canActivate: [authGuard, adminGuard],
         loadComponent: () =>
           import('./pages/settings/settings.component').then(
             (m) => m.SettingsComponent

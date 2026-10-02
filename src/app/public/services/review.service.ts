@@ -21,6 +21,13 @@ export class ReviewService {
     );
   }
 
+  /** Opiniones del usuario con sesión. */
+  getMine(): Observable<ApiResponseInterface<Review[]>> {
+    return this._http.get<ApiResponseInterface<Review[]>>(
+      `${environment.apiUrl}reviews/mine`
+    );
+  }
+
   getPaginated(
     organizationalId: string,
     page: number,

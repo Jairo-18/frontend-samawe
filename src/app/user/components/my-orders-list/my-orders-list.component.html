@@ -1,0 +1,41 @@
+@if (invoices.length === 0) {
+  <div class="client-empty">
+    <p>{{ 'public.client_home.orders_empty' | translate }}</p>
+    <a [routerLink]="menuRoute()" class="client-link">
+      {{ 'public.client_home.orders_cta' | translate }}
+    </a>
+  </div>
+} @else {
+  <ul class="flex flex-col">
+    @for (inv of invoices; track inv.invoiceId) {
+      <li>
+        <a [routerLink]="detailRoute(inv.invoiceId)" class="client-row">
+          <div class="min-w-0">
+            <p class="text-sm text-[var(--subtitle-color)]">
+              {{ inv.createdAt | date: 'd MMM y, h:mm a' }} · #{{ inv.code }}
+            </p>
+            <p class="text-[15px] text-[var(--title-color)] leading-snug mt-1">
+              @for (item of inv.orders; track $index; let last = $last) {
+                {{ item.amount | number: '1.0-2' }}× {{ item.name | translated | capitalize }}@if (!last) {, }
+              }
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <div class="flex flex-col items-end gap-1">
+              <span class="font-bold text-[var(--primary-color)] whitespace-nowrap">
+                {{ inv.total | number: '1.0-0' }}
+                <small class="font-medium text-[var(--subtitle-color)]">COP</small>
+              </span>
+              @if (inv.stateType) {
+                <span class="client-chip" [ngClass]="chipClass(inv.stateType.code)">
+                  {{ inv.stateType.name | translated | capitalize }}
+                </span>
+              }
+            </div>
+            <mat-icon class="client-chevron">chevron_right</mat-icon>
+          </div>
+        </a>
+      </li>
+    }
+  </ul>
+}

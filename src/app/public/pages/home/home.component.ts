@@ -19,6 +19,7 @@ import { ReservationSectionComponent } from './components/reservation-section/re
 import { MostRequestedSectionComponent } from './components/most-requested-section/most-requested-section.component';
 import { HowToArriveSectionComponent } from './components/how-to-arrive-section/how-to-arrive-section.component';
 import { BenefitsSectionComponent } from './components/benefits-section/benefits-section.component';
+import { ClientHomeComponent } from './components/client-home/client-home.component';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -35,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReservationSectionComponent,
     HowToArriveSectionComponent,
     BenefitsSectionComponent,
+    ClientHomeComponent,
     TranslateModule
   ],
   templateUrl: './home.component.html',
@@ -65,6 +67,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   get isStaffUser(): boolean {
     const code = this.userInfo?.roleType?.code;
     return this.isLoggedUser && HomeComponent.STAFF_CODES.includes(code ?? '');
+  }
+
+  /** Cliente con sesión (USER y demás roles no-staff): ve su propio inicio. */
+  get isClientUser(): boolean {
+    return this.isLoggedUser && !this.isStaffUser;
   }
 
   ngOnInit(): void {

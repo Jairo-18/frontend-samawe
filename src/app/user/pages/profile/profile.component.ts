@@ -1,4 +1,15 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatTabsModule } from '@angular/material/tabs';
+import { LangService } from '../../../shared/services/lang.service';
+import { ReviewService } from '../../../public/services/review.service';
+import { Review } from '../../../shared/interfaces/review.interface';
+import { ApplicationService } from '../../../organizational/services/application.service';
+import { ChangePasswordFormComponent } from '../../components/change-password-form/change-password-form.component';
+import { LoaderComponent } from '../../../shared/components/loader/loader.component';
+import { MyInvoicesSectionComponent } from '../../components/my-invoices-section/my-invoices-section.component';
+import { MyReviewsListComponent } from '../../components/my-reviews-list/my-reviews-list.component';
+import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { DEFAULT_AVATAR } from '../../../shared/constants/avatar.constants';
 import { CommonModule } from '@angular/common';
 import {
@@ -52,6 +63,12 @@ import {
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    RouterLink,
+    MatTabsModule,
+    MyInvoicesSectionComponent,
+    ChangePasswordFormComponent,
+    LoaderComponent,
+    MyReviewsListComponent,
     ButtonLandingComponent,
     NormalizeNameDirective,
     NoSpacesDirective,
@@ -70,6 +87,70 @@ export class ProfileComponent implements OnInit, OnDestroy {
     inject(RelatedDataService);
   private readonly _locationService: LocationService = inject(LocationService);
   private readonly _fb: FormBuilder = inject(FormBuilder);
+  private readonly _langService = inject(LangService);
+  private readonly _localStorage = inject(LocalStorageService);
+  private static readonly _STAFF_CODES = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'];
+
+  /** El personal no tiene estadías ni pedidos propios que mostrar. */
+  get isStaff(): boolean {
+    const code = this._localStorage.getUserData()?.roleType?.code;
+    return ProfileComponent._STAFF_CODES.includes(code ?? '');
+  }
+
+
+  private readonly _reviewService = inject(ReviewService);
+  private readonly _applicationService = inject(ApplicationService);
+  private readonly _activatedRoute = inject(ActivatedRoute);
+
+  tabIndex = 0;
+  reviews: Review[] = [];
+  hotelName = '';
+  reviewsLoading = false;
+
+  /**
+   * Pestañas en el orden en que se muestran. El personal no tiene estadías,
+   * órdenes ni opiniones propias, así que solo ve información y contraseña.
+   */
+  private get _tabKeys(): string[] {
+    return this.isStaff
+      ? ['info', 'password']
+      : ['info', 'stays', 'orders', 'reviews', 'password'];
+  }
+
+  /**
+   * Pestaña inicial según `?tab=` (así el detalle de una factura vuelve a la
+   * pestaña de la que se salió) y datos de las pestañas del cliente.
+   */
+  private _loadClientData(): void {
+    const tab = this._activatedRoute.snapshot.queryParamMap.get('tab');
+    const idx = this._tabKeys.indexOf(tab ?? '');
+    this.tabIndex = idx >= 0 ? idx : 0;
+
+    if (this.isStaff) return;
+
+    this._applicationService.currentOrg$.subscribe((org) => {
+      if (org) this.hotelName = org.name;
+    });
+
+    this.reviewsLoading = true;
+    this._reviewService.getMine().subscribe({
+      next: (res) => {
+        this.reviews = res.data ?? [];
+        this.reviewsLoading = false;
+      },
+      error: () => {
+        this.reviewsLoading = false;
+      }
+    });
+  }
+
+  logout(): void {
+    this._authService.signOut();
+  }
+
+  route(path: string): string {
+    return this._langService.route(path);
+  }
 
   /** La ubicación DANE solo aplica a documentos colombianos. */
   private readonly COLOMBIAN_DOC_CODES = ['CC', 'NIT', 'TI', 'RC'];
@@ -102,6 +183,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   form!: FormGroup;
 
   ngOnInit(): void {
+    this._loadClientData();
     // El correo NO es editable desde el perfil (se muestra aparte, leyendo de
     // `user`), así que no tiene control. `personType` tampoco: el backend lo
     // deriva del tipo de documento en cada update (resolvePersonType) e ignora
@@ -314,6 +396,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   toggleEdit(): void {
     this.editMode = !this.editMode;
+    // Los campos están en "Mi información" (siempre la primera pestaña): si se
+    // pulsa "Editar perfil" desde otra, se lleva ahí para que se vea qué se edita.
+    if (this.editMode) this.tabIndex = 0;
     if (!this.editMode) {
       // Cancelar descarta también la foto pendiente, no solo los campos.
       this._discardPendingAvatar();

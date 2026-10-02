@@ -6,7 +6,7 @@
       <img
         [src]="review.user.avatarUrl || 'assets/images/defaultUser.png'"
         [alt]="review.user.firstName + ' ' + review.user.lastName"
-        class="w-10 h-10 rounded-full object-cover border border-[var(--primary-color)]"
+        class="w-10 h-10 shrink-0 aspect-square rounded-full object-cover border border-[var(--primary-color)]"
       />
       <div>
         <p class="text-sm font-semibold text-[var(--title-color)]">
@@ -145,7 +145,7 @@
           <img
             [src]="currentUser?.avatarUrl || 'assets/images/defaultUser.png'"
             [alt]="getInitials()"
-            class="w-8 h-8 rounded-full object-cover border border-[var(--primary-color)] mt-0.5 shrink-0"
+            class="w-8 h-8 aspect-square rounded-full object-cover border border-[var(--primary-color)] mt-0.5 shrink-0"
           />
           <div class="flex-1">
             <mat-form-field appearance="outline" class="w-full">

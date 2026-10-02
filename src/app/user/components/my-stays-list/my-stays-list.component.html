@@ -1,0 +1,47 @@
+@if (invoices.length === 0) {
+  <div class="client-empty">
+    <p>{{ 'public.client_home.stays_empty' | translate: { name: hotelName } }}</p>
+    <a [routerLink]="lodgingRoute()" class="client-link">
+      {{ 'public.client_home.stays_cta' | translate }}
+    </a>
+  </div>
+} @else {
+  <ul class="grid gap-4 md:grid-cols-2">
+    @for (inv of invoices; track inv.invoiceId) {
+      <li>
+        <a [routerLink]="detailRoute(inv.invoiceId)" class="client-card">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              @for (stay of inv.stays; track $index) {
+                <h3 class="text-base md:text-lg font-semibold text-[var(--title-color)] leading-snug">
+                  {{ stay.name | translated | capitalize }}
+                </h3>
+              }
+              @if (inv.stays[0].startDate) {
+                <p class="text-sm text-[var(--subtitle-color)] mt-1">
+                  {{ inv.stays[0].startDate | date: 'd MMM y' }}
+                  @if (inv.stays[inv.stays.length - 1].endDate) {
+                    → {{ inv.stays[inv.stays.length - 1].endDate | date: 'd MMM y' }}
+                  }
+                </p>
+              }
+            </div>
+            <span class="client-chip" [ngClass]="chipClass(phase(inv))">
+              {{ 'public.client_home.phase.' + phase(inv) | translate }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between pt-3 mt-3 border-t client-divider text-sm">
+            <span class="text-[var(--subtitle-color)]">#{{ inv.code }}</span>
+            <span class="flex items-center gap-2">
+              <span class="font-bold text-[var(--primary-color)]">
+                {{ inv.total | number: '1.0-0' }}
+                <small class="font-medium text-[var(--subtitle-color)]">COP</small>
+              </span>
+              <mat-icon class="client-chevron">chevron_right</mat-icon>
+            </span>
+          </div>
+        </a>
+      </li>
+    }
+  </ul>
+}

@@ -9,6 +9,13 @@ export const userRoutes: Routes = [
       )
   },
   {
+    path: 'invoices/:id',
+    loadComponent: () =>
+      import('./pages/invoice-detail/invoice-detail.component').then(
+        (m) => m.InvoiceDetailComponent
+      )
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'profile'

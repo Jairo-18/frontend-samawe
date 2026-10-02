@@ -1,0 +1,69 @@
+<section class="w-full max-w-[1100px] mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-16">
+  <!-- Saludo -->
+  <header class="flex flex-col items-center text-center gap-3 pb-10 md:pb-12">
+    <span class="text-[11px] uppercase tracking-[0.3em] text-[var(--subtitle-color)] font-[900]">
+      {{ 'public.client_home.eyebrow' | translate: { name: hotelName } }}
+    </span>
+    <h1
+      class="text-3xl md:text-5xl text-[var(--title-color)] tracking-tight"
+      style="font-family: var(--font-title)"
+    >
+      {{ greetingKey | translate }}@if (firstName) {, {{ firstName | capitalize }}}
+    </h1>
+    <div class="flex items-center gap-3 w-48" aria-hidden="true">
+      <span class="h-px flex-1 bg-[var(--primary-color)] opacity-60"></span>
+      <span class="w-1.5 h-1.5 rotate-45 bg-[var(--primary-color)]"></span>
+      <span class="h-px flex-1 bg-[var(--primary-color)] opacity-60"></span>
+    </div>
+    <p class="text-sm md:text-base italic text-[var(--subtitle-color)] max-w-xl leading-relaxed">
+      {{ 'public.client_home.subtitle' | translate: { name: hotelName } }}
+    </p>
+  </header>
+
+  <!-- Accesos. `justify-center` + ancho fijo: la última fila queda centrada en
+       vez de pegada a la izquierda cuando el total no es múltiplo de columnas. -->
+  <nav
+    class="flex flex-wrap justify-center gap-4 md:gap-5"
+    [attr.aria-label]="'public.client_home.nav_label' | translate"
+  >
+    @for (tile of tiles; track tile.titleKey) {
+      @if (tile.route) {
+        <a
+          [routerLink]="route(tile.route)"
+          [queryParams]="tile.query"
+          class="client-tile group w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.85rem)] lg:w-[calc(25%-0.95rem)]"
+        >
+          <mat-icon class="client-tile__icon">{{ tile.icon }}</mat-icon>
+          <span class="client-tile__title">{{ tile.titleKey | translate }}</span>
+          <span class="client-tile__desc">{{ tile.descKey | translate }}</span>
+        </a>
+      } @else {
+        <button
+          type="button"
+          (click)="onTile(tile)"
+          class="client-tile group w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.85rem)] lg:w-[calc(25%-0.95rem)] text-left"
+        >
+          <mat-icon class="client-tile__icon">{{ tile.icon }}</mat-icon>
+          <span class="client-tile__title">{{ tile.titleKey | translate }}</span>
+          <span class="client-tile__desc">{{ tile.descKey | translate }}</span>
+        </button>
+      }
+    }
+  </nav>
+
+  <!-- Estadías -->
+  <div id="stays" class="pt-16 scroll-mt-28">
+    <h2 class="client-section-title">
+      {{ 'public.client_home.stays_title' | translate: { name: hotelName } }}
+    </h2>
+    <app-my-invoices-section kind="stays" [hotelName]="hotelName"></app-my-invoices-section>
+  </div>
+
+  <!-- Órdenes de comida -->
+  <div id="orders" class="pt-16 scroll-mt-28">
+    <h2 class="client-section-title">
+      {{ 'public.client_home.orders_title' | translate: { name: hotelName } }}
+    </h2>
+    <app-my-invoices-section kind="orders"></app-my-invoices-section>
+  </div>
+</section>

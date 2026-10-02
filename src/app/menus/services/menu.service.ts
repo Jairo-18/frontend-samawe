@@ -13,12 +13,17 @@ import {
   BasePaginationParams
 } from '../../shared/interfaces/pagination.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
+import { TtlObservableCache } from '../../shared/utils/ttl-observable-cache';
+
+/** Lo público es igual para todos: 60 s bastan para que un cambio del panel se vea rápido. */
+const PUBLIC_CACHE_MS = 60_000;
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
+  private readonly _publicCache = new TtlObservableCache();
 
   getPaginated(query: object): Observable<{
     data: MenuResponse[];
@@ -37,10 +42,27 @@ export class MenuService {
     pagination: PaginationInterface;
   }> {
     const params = this._httpUtilities.httpParamsFromObject(query);
-    return this._httpClient.get<{
-      data: MenuPublicListItem[];
-      pagination: PaginationInterface;
-    }>(`${environment.apiUrl}menus/public/list`, { params });
+    return this._publicCache.get(
+      `list-${params.toString()}`,
+      PUBLIC_CACHE_MS,
+      () =>
+        this._httpClient.get<{
+          data: MenuPublicListItem[];
+          pagination: PaginationInterface;
+        }>(`${environment.apiUrl}menus/public/list`, { params })
+    );
+  }
+
+  /** Un menú con sus platillos para su página pública (sin sesión). */
+  getPublicById(
+    menuId: number
+  ): Observable<{ statusCode: number; data: MenuPublicListItem }> {
+    return this._publicCache.get(`one-${menuId}`, PUBLIC_CACHE_MS, () =>
+      this._httpClient.get<{
+        statusCode: number;
+        data: MenuPublicListItem;
+      }>(`${environment.apiUrl}menus/public/${menuId}`)
+    );
   }
 
   getById(
@@ -55,27 +77,33 @@ export class MenuService {
   create(
     dto: CreateMenuDto
   ): Observable<{ message: string; statusCode: number; data: MenuResponse }> {
-    return this._httpClient.post<{
+    return this._publicCache.invalidateAfter(
+      this._httpClient.post<{
       message: string;
       statusCode: number;
       data: MenuResponse;
-    }>(`${environment.apiUrl}menus`, dto);
+    }>(`${environment.apiUrl}menus`, dto)
+    );
   }
 
   update(
     menuId: number,
     dto: UpdateMenuDto
   ): Observable<{ message: string; statusCode: number; data: MenuResponse }> {
-    return this._httpClient.patch<{
+    return this._publicCache.invalidateAfter(
+      this._httpClient.patch<{
       message: string;
       statusCode: number;
       data: MenuResponse;
-    }>(`${environment.apiUrl}menus/${menuId}`, dto);
+    }>(`${environment.apiUrl}menus/${menuId}`, dto)
+    );
   }
 
   delete(menuId: number): Observable<{ message: string; statusCode: number }> {
-    return this._httpClient.delete<{ message: string; statusCode: number }>(
+    return this._publicCache.invalidateAfter(
+      this._httpClient.delete<{ message: string; statusCode: number }>(
       `${environment.apiUrl}menus/${menuId}`
+    )
     );
   }
 
@@ -83,10 +111,12 @@ export class MenuService {
     menuId: number,
     productId: number
   ): Observable<{ message: string; statusCode: number; data: MenuResponse }> {
-    return this._httpClient.delete<{
+    return this._publicCache.invalidateAfter(
+      this._httpClient.delete<{
       message: string;
       statusCode: number;
       data: MenuResponse;
-    }>(`${environment.apiUrl}menus/${menuId}/product/${productId}`);
+    }>(`${environment.apiUrl}menus/${menuId}/product/${productId}`)
+    );
   }
 }

@@ -1,0 +1,28 @@
+@if (loading) {
+  <div class="flex justify-center py-10"><app-loader /></div>
+} @else if (loadError) {
+  <p class="py-8 text-center italic text-[var(--subtitle-color)]">
+    {{ 'public.client_home.load_error' | translate }}
+  </p>
+} @else {
+  @if (kind === 'stays') {
+    <app-my-stays-list [invoices]="invoices" [hotelName]="hotelName"></app-my-stays-list>
+  } @else {
+    <app-my-orders-list [invoices]="invoices"></app-my-orders-list>
+  }
+
+  <!-- Con una sola página de 5 no hace falta paginador; en cuanto hay más
+       (o se eligió 10 por página) aparece, con primera y última. -->
+  @if (pagination && pagination.total > 5) {
+    <div class="flex justify-center mt-6">
+      <mat-paginator
+        [length]="pagination.total"
+        [pageSize]="pagination.perPage"
+        [pageIndex]="pagination.page - 1"
+        [pageSizeOptions]="[5, 10]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+      />
+    </div>
+  }
+}

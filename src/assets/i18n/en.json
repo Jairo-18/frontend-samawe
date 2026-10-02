@@ -814,7 +814,6 @@
       "concept_adjustment_5": "Other",
       "neutralized_by": "Neutralized by",
       "view": "View",
-      "close": "Close",
       "list_title": "Invoice notes",
       "none": "This invoice has no notes.",
       "invoice": "Invoice",
@@ -1628,6 +1627,43 @@
       "photo": "Photo",
       "view_availability": "See availability"
     },
+    "client_home": {
+      "eyebrow": "Your space at {{name}}",
+      "subtitle": "Everything of yours at {{name}}, in one place.",
+      "nav_label": "Quick links",
+      "stays_title": "Your stays at {{name}}",
+      "stays_empty": "You have no stays recorded at {{name}} yet.",
+      "stays_cta": "Discover our lodging",
+      "orders_title": "Your food orders",
+      "orders_empty": "You have not ordered from our menu yet.",
+      "orders_cta": "See the menu",
+      "load_error": "We could not load your history. Please try again in a moment.",
+      "phase": {
+        "upcoming": "Upcoming",
+        "current": "In progress",
+        "past": "Completed"
+      },
+      "tiles": {
+        "stays_title": "My stays",
+        "stays_desc": "Your bookings and past visits",
+        "orders_title": "My orders",
+        "orders_desc": "What you have ordered from the menu",
+        "menu_title": "See the menu",
+        "menu_desc": "Restaurant dishes and drinks",
+        "lodging_title": "Lodging",
+        "lodging_desc": "Cabins and rooms",
+        "review_title": "Leave a review",
+        "review_desc": "Tell us about your experience on the blog",
+        "profile_title": "My profile",
+        "profile_desc": "Your details and your photo",
+        "password_title": "Change password",
+        "password_desc": "Change it from your account"
+      }
+    },
+    "menu_detail": {
+      "not_found": "We could not find this menu",
+      "back_to_list": "Back to gastronomy"
+    },
     "accommodation_detail": {
       "no_image": "No photos yet",
       "not_found": "We couldn't find this accommodation",
@@ -1670,7 +1706,9 @@
       "menus_label": "Our Menu",
       "menus_title": "Menus",
       "menus_empty": "No menus published yet.",
-      "more_dishes": "more dishes"
+      "more_dishes": "more dishes",
+      "view_menu": "View menu",
+      "close": "Close"
     },
     "experience": {
       "label": "What we offer",
@@ -1735,7 +1773,49 @@
       "not_set_department": "You haven't set a department yet",
       "not_set_country": "You haven't set a country yet",
       "not_set_generic": "Not set",
-      "close": "Close"
+      "close": "Close",
+      "shortcuts": "Shortcuts",
+      "my_stays": "My stays",
+      "my_orders": "My orders",
+      "see_menu": "See the menu",
+      "see_lodging": "Lodging",
+      "leave_review": "Leave a review",
+      "change_password": "Change password",
+      "tabs_label": "Your account sections",
+      "tab_info": "My information",
+      "tab_stays": "My stays",
+      "tab_orders": "My orders",
+      "tab_reviews": "My reviews",
+      "reviews_empty": "You have not left any review yet.",
+      "reviews_cta": "Tell us about your experience",
+      "reviews_reply": "Hotel reply"
+    },
+    "change_password": {
+      "back": "Back to my profile",
+      "title": "Change password",
+      "subtitle": "Enter your current password and choose a new one.",
+      "old": "Current password",
+      "old_required": "Enter your current password",
+      "forgot_hint": "Don't remember it, or you only sign in with Google?",
+      "forgot_cta": "Email me a link to reset it",
+      "reset_sent": "We emailed you a link to reset your password."
+    },
+    "invoice_detail": {
+      "back": "Back to my profile",
+      "not_found": "We could not find this invoice",
+      "eyebrow_stay": "Your stay",
+      "eyebrow_order": "Your order",
+      "night": "night",
+      "nights": "nights",
+      "subtotal": "Subtotal",
+      "taxes": "Taxes",
+      "total": "Total",
+      "pending": "Balance due",
+      "pay_type": "Payment method",
+      "paid_type": "Payment status",
+      "table": "Table",
+      "ordered": "Ordered at",
+      "served": "Served at"
     }
   },
   "recipe": {

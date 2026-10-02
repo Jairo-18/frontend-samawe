@@ -1,0 +1,101 @@
+// Estilos compartidos por las listas del cliente (estadías, órdenes, opiniones).
+// Se importan con `@use` desde cada componente; todo sale de las variables del
+// tema, así el modo oscuro y los colores de la organización se aplican solos.
+
+.client-card {
+  display: block;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--primary-color) 35%, transparent);
+  border-radius: 4px;
+  // Fondo propio para que la tarjeta se distinga de la página (en el perfil el
+  // fondo de la página es el mismo que `--bg-primary-color`).
+  background: var(--bg-secondary-color);
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+// Las tarjetas y filas clicables avisan que se puede entrar.
+a.client-card,
+a.client-row {
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.client-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  a.client-row:hover {
+    background: color-mix(in srgb, var(--primary-color) 6%, transparent);
+  }
+}
+
+a.client-card:focus-visible,
+a.client-row:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.client-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--primary-color) 25%, transparent);
+  color: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.client-divider {
+  border-color: color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+.client-chip {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.client-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.75rem 1rem;
+  text-align: center;
+  font-style: italic;
+  color: var(--subtitle-color);
+}
+
+.client-link {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.client-chevron {
+  color: var(--primary-color);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-card,
+  .client-row {
+    transition: none;
+  }
+}
