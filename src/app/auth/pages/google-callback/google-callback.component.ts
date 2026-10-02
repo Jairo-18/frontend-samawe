@@ -37,6 +37,7 @@ export class GoogleCallbackComponent implements OnInit {
     const userId = params.get('userId');
     const roleTypeId = params.get('roleTypeId') ?? '';
     const roleTypeName = params.get('roleTypeName') ?? '';
+    const roleTypeCode = params.get('roleTypeCode') ?? '';
     const accessSessionId = params.get('accessSessionId') ?? '';
     const organizationalId = params.get('organizationalId') || null;
     const avatarUrl = params.get('avatarUrl') || null;
@@ -52,7 +53,7 @@ export class GoogleCallbackComponent implements OnInit {
       tokens: { accessToken, refreshToken },
       user: {
         userId,
-        roleType: { roleTypeId, name: roleTypeName },
+        roleType: { roleTypeId, name: roleTypeName, code: roleTypeCode },
         organizationalId: organizationalId || null,
         avatarUrl: avatarUrl || null
       },
