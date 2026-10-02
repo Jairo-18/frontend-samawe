@@ -227,7 +227,8 @@
     "pwd_mismatch": "Las contraseñas no coinciden",
     "send_btn": "Enviar",
     "saving": "Guardando...",
-    "continue_btn": "Continuar"
+    "continue_btn": "Continuar",
+    "where_from": "¿De dónde eres?"
   },
   "change_pwd": {
     "title": "Cambiar Contraseña",

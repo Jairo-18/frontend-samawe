@@ -239,13 +239,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.form.patchValue({
       firstName: user.firstName,
       lastName: user.lastName,
-      phone: user.phone,
+      // El alta con Google guarda datos de relleno (`GOOGLE-…` y `0000000000`)
+      // hasta que el usuario completa su perfil. Mostrarlos como si fueran
+      // reales confunde; vacíos, el formulario los pide al editar.
+      phone: user.phone === '0000000000' ? '' : user.phone,
       phoneCodeId: user.phoneCode?.phoneCodeId
         ? String(user.phoneCode.phoneCodeId)
         : '',
       // El autocomplete guarda el objeto completo; `displayPhoneCode` lo pinta.
       phoneCodeSearch: user.phoneCode ?? '',
-      identificationNumber: user.identificationNumber,
+      identificationNumber: user.identificationNumber?.startsWith('GOOGLE-')
+        ? ''
+        : user.identificationNumber,
       identificationType: user.identificationType?.identificationTypeId
     });
 

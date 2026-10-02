@@ -227,7 +227,8 @@
     "pwd_mismatch": "Passwords do not match",
     "send_btn": "Send",
     "saving": "Saving...",
-    "continue_btn": "Continue"
+    "continue_btn": "Continue",
+    "where_from": "Where are you from?"
   },
   "change_pwd": {
     "title": "Change Password",

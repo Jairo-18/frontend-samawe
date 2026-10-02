@@ -19,11 +19,11 @@
     <form
       *ngIf="!loading"
       [formGroup]="form"
-      class="flex flex-col gap-0.5"
+      class="flex flex-col gap-4"
       (ngSubmit)="save()"
     >
       <!-- Nombres -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.first_name' | translate }}</mat-label>
         <input matInput formControlName="firstName" appUppercase />
         <mat-icon matPrefix>person</mat-icon>
@@ -33,7 +33,7 @@
       </mat-form-field>
 
       <!-- Apellidos -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.last_name' | translate }}</mat-label>
         <input matInput formControlName="lastName" appUppercase />
         <mat-icon matPrefix>people</mat-icon>
@@ -43,14 +43,14 @@
       </mat-form-field>
 
       <!-- Tipo de identificación -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.id_type' | translate }}</mat-label>
         <mat-select formControlName="identificationTypeId">
           <mat-option
             *ngFor="let t of identificationType"
             [value]="t.identificationTypeId.toString()"
           >
-            {{ t.name }}
+            {{ t.name | translated | capitalize }}
           </mat-option>
         </mat-select>
         <mat-icon matPrefix>table_chart</mat-icon>
@@ -62,7 +62,7 @@
       </mat-form-field>
 
       <!-- Número de identificación -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.id_number' | translate }}</mat-label>
         <input matInput formControlName="identificationNumber" />
         <mat-icon matPrefix>credit_card</mat-icon>
@@ -74,7 +74,7 @@
       </mat-form-field>
 
       <!-- Código de país (autocomplete) -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.country_code' | translate }}</mat-label>
         <input
           matInput
@@ -108,7 +108,7 @@
       </span>
 
       <!-- Teléfono -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label>{{ 'complete_profile.phone' | translate }}</mat-label>
         <input matInput formControlName="phone" inputmode="numeric" />
         <mat-icon matPrefix>phone_iphone</mat-icon>
@@ -120,8 +120,46 @@
         </mat-error>
       </mat-form-field>
 
+      <!-- Ubicación: solo si el país elegido es Colombia -->
+      <ng-container *ngIf="showLocation">
+        <p class="text-sm font-semibold text-[var(--title-color)] mt-2 -mb-2">
+          {{ 'complete_profile.where_from' | translate }}
+        </p>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.department' | translate }}</mat-label>
+          <mat-select formControlName="departmentId">
+            <mat-option
+              *ngFor="let d of departments"
+              [value]="d.departmentId"
+            >
+              {{ d.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>map</mat-icon>
+          <mat-error *ngIf="form.get('departmentId')?.hasError('required')">
+            {{ 'organizational.edit_user.department_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
+          <mat-label>{{ 'organizational.edit_user.municipality' | translate }}</mat-label>
+          <mat-select formControlName="municipalityId">
+            <mat-option
+              *ngFor="let m of municipalities"
+              [value]="m.municipalityId"
+            >
+              {{ m.name }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>location_city</mat-icon>
+          <mat-error *ngIf="form.get('municipalityId')?.hasError('required')">
+            {{ 'organizational.edit_user.municipality_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+
       <!-- Contraseña (opcional) -->
-      <mat-form-field appearance="outline" class="w-full">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full">
         <mat-label
           >{{ 'complete_profile.password' | translate }}
           <span class="text-xs font-normal text-[var(--on-surface-muted)]"
@@ -155,6 +193,7 @@
       <!-- Confirmar contraseña -->
       <mat-form-field
         appearance="outline"
+        subscriptSizing="dynamic"
         class="w-full"
         *ngIf="form.get('password')?.value"
       >

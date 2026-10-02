@@ -21,6 +21,10 @@ import { ApplicationService } from '../../../organizational/services/application
 import { UsersService } from '../../../organizational/services/users.service';
 import { AuthService } from '../../services/auth.service';
 import { CustomValidationsService } from '../../../shared/validators/customValidations.service';
+import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
+import { LocationService } from '../../../shared/services/location.service';
+import { Department, Municipality } from '../../../shared/interfaces/location.interface';
 import { UppercaseDirective } from '../../../shared/directives/uppercase.directive';
 import {
   IdentificationType,
@@ -47,7 +51,9 @@ import { LangService } from '../../../shared/services/lang.service';
     MatProgressSpinnerModule,
     UppercaseDirective,
     ButtonLandingComponent,
-    TranslateModule
+    TranslateModule,
+    TranslatedPipe,
+    CapitalizePipe
   ],
   templateUrl: './complete-profile.component.html',
   styleUrls: ['./complete-profile.component.scss']
@@ -67,6 +73,11 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
   private readonly _localStorage: LocalStorageService =
     inject(LocalStorageService);
   private readonly _langService = inject(LangService);
+  private readonly _locationService = inject(LocationService);
+
+  departments: Department[] = [];
+  municipalities: Municipality[] = [];
+  private allMunicipalities: Municipality[] = [];
 
   form: FormGroup;
   identificationType: IdentificationType[] = [];
@@ -90,6 +101,8 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
         phoneCodeSearch: [''],
         phoneCodeId: ['', Validators.required],
         phone: ['', [Validators.required, Validators.pattern(/^[0-9]{1,15}$/)]],
+        departmentId: [''],
+        municipalityId: [''],
         personTypeId: [''],
         organizationalId: [''],
         password: ['', [this._customValidations.passwordStrength()]],
@@ -113,6 +126,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
     this.loadRelatedData();
     this.setupPhoneCodeSearch();
     this.setupIdentificationTypeListener();
+    this.setupLocation();
     this.form.get('password')?.valueChanges.subscribe((value) => {
       const confirmCtrl = this.form.get('confirmPassword');
       if (!value) {
@@ -220,6 +234,56 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ── Ubicación DANE (departamento → municipio) ─────────────────────────────
+  private setupLocation(): void {
+    this._locationService.getDepartments().subscribe({
+      next: (departments) => (this.departments = departments),
+      error: (e) => console.error('Error al cargar departamentos:', e)
+    });
+    this._locationService.getAllMunicipalities().subscribe({
+      next: (municipalities) => (this.allMunicipalities = municipalities),
+      error: (e) => console.error('Error al cargar municipios:', e)
+    });
+    this.form.get('phoneCodeId')?.valueChanges.subscribe(() => this.onCountryChange());
+    // Al cambiar el departamento se limpia el municipio y se refiltra la lista.
+    this.form.get('departmentId')?.valueChanges.subscribe((deptId) => {
+      this.form.get('municipalityId')?.setValue('', { emitEvent: false });
+      this.municipalities = deptId
+        ? this.allMunicipalities.filter((m) => m.departmentId === +deptId)
+        : [];
+    });
+  }
+
+  /**
+   * La ubicación (departamento y municipio) solo tiene sentido si el país que
+   * eligió es Colombia. Antes dependía del tipo de documento, y un extranjero
+   * con cédula de extranjería veía igual campos que no le corresponden.
+   */
+  get showLocation(): boolean {
+    const id = this.form.get('phoneCodeId')?.value;
+    const selected = this.phoneCode.find(
+      (pc) => String(pc.phoneCodeId) === String(id)
+    );
+    return (selected?.code ?? '').replace(/\s/g, '') === '+57';
+  }
+
+  /** Obligatorios solo con país Colombia; con otro país se limpian. */
+  private onCountryChange(): void {
+    const required = this.showLocation;
+    const dept = this.form.get('departmentId');
+    const muni = this.form.get('municipalityId');
+    if (!required) {
+      dept?.setValue('', { emitEvent: false });
+      muni?.setValue('', { emitEvent: false });
+      this.municipalities = [];
+    }
+    [dept, muni].forEach((c) => {
+      if (required) c?.setValidators([Validators.required]);
+      else c?.clearValidators();
+      c?.updateValueAndValidity({ emitEvent: false });
+    });
+  }
+
   displayPhoneCode(phoneCode: PhoneCode): string {
     return phoneCode ? `${phoneCode.code} ${phoneCode.name}` : '';
   }
@@ -263,6 +327,10 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
         identificationNumber: v.identificationNumber,
         phoneCode: v.phoneCodeId,
         phone: v.phone,
+        // Otro país: sin ubicación DANE (el backend la deja en null).
+        departmentId: this.showLocation && v.departmentId ? +v.departmentId : null,
+        municipalityId:
+          this.showLocation && v.municipalityId ? +v.municipalityId : null,
         ...(v.personTypeId && { personType: v.personTypeId }),
         ...(v.organizationalId && { organizationalId: v.organizationalId }),
         ...(v.password && {
