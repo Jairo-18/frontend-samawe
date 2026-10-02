@@ -341,6 +341,11 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.profileSaved = true;
+          // `getUserEditPanel` cachea con shareReplay y el navbar ya la pidió
+          // con los datos de relleno del alta con Google: sin invalidar, el
+          // perfil enseñaba esos datos (país +93, sin teléfono) hasta recargar.
+          // `notifyUserUpdated` vacía la caché y avisa al navbar.
+          this._usersService.notifyUserUpdated(userId);
           this._localStorage.removeItem('_pendingGoogleProfile');
           this.isSaving = false;
           this._router.navigateByUrl(this._langService.route(''));
