@@ -5,7 +5,9 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   InvoiceItemUpdate,
-  OrderUpdate
+  GuestNotification,
+  OrderUpdate,
+  ReservationRequest
 } from '../interfaces/order-socket.interface';
 import { LocalStorageService } from './localStorage.service';
 import { AuthService } from '../../auth/services/auth.service';
@@ -28,6 +30,8 @@ export class OrdersSocketService {
 
   private _orderUpdated$ = new Subject<OrderUpdate>();
   private _invoiceItemAdded$ = new Subject<InvoiceItemUpdate>();
+  private _reservationRequested$ = new Subject<ReservationRequest>();
+  private _guestNotification$ = new Subject<GuestNotification>();
 
   // Se recuerda el userId para re-unirse al room personal en cada (re)conexión.
   // emitToUser del backend apunta a `user_<userId>`; si solo nos uniéramos una
@@ -83,6 +87,14 @@ export class OrdersSocketService {
       this.socket.on('invoiceItemAdded', (data: InvoiceItemUpdate) => {
         this._ngZone.run(() => this._invoiceItemAdded$.next(data));
       });
+
+      this.socket.on('guestNotification', (data: GuestNotification) => {
+        this._ngZone.run(() => this._guestNotification$.next(data));
+      });
+
+      this.socket.on('reservationRequested', (data: ReservationRequest) => {
+        this._ngZone.run(() => this._reservationRequested$.next(data));
+      });
     });
   }
 
@@ -108,6 +120,14 @@ export class OrdersSocketService {
 
   onOrderUpdated(): Observable<OrderUpdate> {
     return this._orderUpdated$.asObservable();
+  }
+
+  onGuestNotification(): Observable<GuestNotification> {
+    return this._guestNotification$.asObservable();
+  }
+
+  onReservationRequested(): Observable<ReservationRequest> {
+    return this._reservationRequested$.asObservable();
   }
 
   onInvoiceItemAdded(): Observable<InvoiceItemUpdate> {

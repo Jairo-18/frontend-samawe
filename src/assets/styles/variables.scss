@@ -214,6 +214,14 @@
   --mat-expansion-header-text-color: var(--on-surface);
   --mat-expansion-container-text-color: var(--on-surface);
   --mat-datepicker-calendar-container-background-color: var(--surface-raised);
+  // Selector de hora (`mat-timepicker`): su panel es una lista de `mat-option`
+  // con fondo blanco propio; el texto ya salía claro (token de opción) y
+  // quedaba ilegible sobre blanco. Las capas de hover/selección usan la
+  // superficie hundida para que se vea la opción activa.
+  --mat-timepicker-container-background-color: var(--surface-raised);
+  --mat-option-hover-state-layer-color: var(--surface-sunken);
+  --mat-option-focus-state-layer-color: var(--surface-sunken);
+  --mat-option-selected-state-layer-color: var(--surface-sunken);
   --mat-datepicker-calendar-date-text-color: var(--on-surface);
   --mat-datepicker-calendar-container-text-color: var(--on-surface);
   --mat-datepicker-calendar-body-label-text-color: var(--on-surface-muted);
@@ -329,6 +337,33 @@
   .divide-x > :not([hidden]) ~ :not([hidden]) {
     border-color: var(--border-color) !important;
   }
+}
+
+// ── Paginadores (`mat-paginator`) ───────────────────────────────────────────
+//
+// Íconos NEGROS en claro y BLANCOS en oscuro, en todos los paginadores del
+// sistema (hay 12). Antes no tenían color propio: salían del tema de Material,
+// un gris apagado que en oscuro casi desaparecía.
+//
+// Van por token y sobre el propio `.mat-mdc-paginator` (no en `:root`) para no
+// tocar otros botones de ícono. `:root` delante sube la especificidad por
+// encima de las reglas de Material, que entran después en el `<head>`. Cubre las
+// cuatro flechas (primera, anterior, siguiente, última), la flecha del selector
+// "Mostrar" y su valor; las flechas deshabilitadas quedan atenuadas pero legibles.
+:root .mat-mdc-paginator {
+  --mat-paginator-enabled-icon-color: #000000;
+  --mat-paginator-disabled-icon-color: rgba(0, 0, 0, 0.3);
+  --mat-select-enabled-arrow-color: #000000;
+  --mat-select-enabled-trigger-text-color: #000000;
+  --mat-paginator-container-text-color: #000000;
+}
+
+:root[data-theme='dark'] .mat-mdc-paginator {
+  --mat-paginator-enabled-icon-color: #ffffff;
+  --mat-paginator-disabled-icon-color: rgba(255, 255, 255, 0.3);
+  --mat-select-enabled-arrow-color: #ffffff;
+  --mat-select-enabled-trigger-text-color: #ffffff;
+  --mat-paginator-container-text-color: #ffffff;
 }
 
 $white-color-base: #ffffff;

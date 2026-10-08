@@ -50,8 +50,8 @@
                 <span class="font-bold text-xs md:text-base">
                   {{ 'recipe.edit_order.attended_by' | translate }}
                   <span class="font-normal text-xs md:text-base">
-                    {{ invoiceData.employee.firstName || '' }}
-                    {{ invoiceData.employee.lastName || '' }}
+                    {{ invoiceData.employee?.firstName || '' }}
+                    {{ invoiceData.employee?.lastName || '' }}
                   </span>
                 </span>
               </div>

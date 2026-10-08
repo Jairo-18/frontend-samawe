@@ -2,12 +2,16 @@
 import { InvoiceService } from './../../services/invoice.service';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   OnInit,
   PLATFORM_ID,
   ViewChild
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs';
+import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -88,6 +92,8 @@ export class SeeInvoicesComponent implements OnInit {
   private readonly _notifications: NotificationsService = inject(NotificationsService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _router: Router = inject(Router);
+  private readonly _ordersSocket = inject(OrdersSocketService);
+  private readonly _destroyRef = inject(DestroyRef);
 
   /** Vista actual: cada ruta del side fija una categoría de factura. */
   category: 'electronic' | 'sales' | 'purchases' | 'support' | 'quotes' =
@@ -226,6 +232,24 @@ export class SeeInvoicesComponent implements OnInit {
     // loadRelatedData resuelve el invoiceTypeId de la categoría y luego carga
     // las facturas (necesita el id antes de filtrar). Si falla, se cargan igual.
     this.loadRelatedData();
+    this.listenForNewReservations();
+  }
+
+  /**
+   * Una reserva en línea nueva es una factura de venta: la lista de ventas se
+   * refresca sola al llegar, sin depender de que el personal abra la pestaña
+   * "Reservaciones" de las notificaciones. Solo recarga la página actual con sus
+   * filtros (no los reinicia) y únicamente en la vista que la contiene.
+   */
+  private listenForNewReservations(): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+    this._ordersSocket
+      .onReservationRequested()
+      // Varias solicitudes seguidas hacen una sola recarga.
+      .pipe(debounceTime(500), takeUntilDestroyed(this._destroyRef))
+      .subscribe(() => {
+        if (this.category === 'sales') this.loadInvoices();
+      });
   }
 
   /** Configura la vista según la categoría fijada por la ruta. */
@@ -595,6 +619,64 @@ export class SeeInvoicesComponent implements OnInit {
    * qué acreditar, sumar ni ajustar. Se mide contra el total ORIGINAL; el caso
    * "las notas ya cubren el total" lo cubre `isAnnulled`.
    */
+  /** Reserva hecha por el huésped que sigue sin pagar y con vencimiento vigente. */
+  isOnlineReservationPending(invoice: any): boolean {
+    return (
+      invoice?.reservationSource === 'ONLINE' &&
+      !!invoice?.reservationExpiresAt &&
+      invoice?.paidType?.code?.trim().toLowerCase() === 'res'
+    );
+  }
+
+  confirmReservationPayment(invoice: any): void {
+    this._matDialog
+      .open(YesNoDialogComponent, {
+        data: {
+          title: this._translate.instant('invoice.list.reservation_confirm_title'),
+          message: this._translate.instant('invoice.list.reservation_confirm_msg')
+        }
+      })
+      .afterClosed()
+      .subscribe((confirm) => {
+        if (!confirm) return;
+        this._invoiceService
+          .confirmReservationPayment(invoice.invoiceId)
+          .subscribe({
+            next: () => {
+              this._notifications.showNotification(
+                'success',
+                'invoice.list.reservation_confirmed',
+                'invoice.list.action_confirm_reservation'
+              );
+              this.loadInvoices();
+            },
+            error: (err) => this._reservationError(err)
+          });
+      });
+  }
+
+  extendReservation(invoice: any): void {
+    this._invoiceService.extendReservation(invoice.invoiceId).subscribe({
+      next: () => {
+        this._notifications.showNotification(
+          'success',
+          'invoice.list.reservation_extended',
+          'invoice.list.action_extend_reservation'
+        );
+        this.loadInvoices();
+      },
+      error: (err) => this._reservationError(err)
+    });
+  }
+
+  private _reservationError(err: any): void {
+    this._notifications.showNotification(
+      'error',
+      err?.error?.message ?? 'invoice.list.resend_error_title',
+      'invoice.list.action_confirm_reservation'
+    );
+  }
+
   hasNoValue(invoice: any): boolean {
     return Number(invoice?.total ?? 0) <= 0;
   }
@@ -806,7 +888,9 @@ export class SeeInvoicesComponent implements OnInit {
             invoice.user?.identificationType?.name || '---',
           employeeName: invoice.employee
             ? `${invoice.employee.firstName} ${invoice.employee.lastName}`
-            : '---',
+            : invoice.reservationSource === 'ONLINE'
+              ? this._translate.instant('invoice.edit.web_reservation')
+              : '---',
           tableNumber: invoice.tableNumber ?? null,
           stateType: invoice.stateType?.name?.['es'] ?? null,
           taxeType: invoice.invoiceDetails?.[0]?.taxeType || null,

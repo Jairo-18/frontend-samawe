@@ -36,7 +36,7 @@ export interface Invoice {
   startDate: string;
   endDate: string;
   user: UserComplete;
-  employee: UserComplete;
+  employee: UserComplete | null;
   cash?: number;
   transfer?: number;
   createdAt: string;
@@ -57,6 +57,10 @@ export interface Invoice {
   factusCufe?: string;
   factusQrCode?: string;
   factusPublicUrl?: string;
+  /** 'ONLINE' si la reservó el huésped; ausente si la creó el personal. */
+  reservationSource?: string;
+  /** Hasta cuándo se retienen las fechas sin pago (solo reservas online). */
+  reservationExpiresAt?: string;
 }
 export interface CreateInvoice {
   invoiceTypeId: number;
@@ -94,7 +98,7 @@ export interface InvoiceComplete {
   totalIco5?: number;
   endDate: string;
   user: UserComplete;
-  employee: UserComplete;
+  employee: UserComplete | null;
   cash?: number;
   transfer?: number;
   createdAt: string;

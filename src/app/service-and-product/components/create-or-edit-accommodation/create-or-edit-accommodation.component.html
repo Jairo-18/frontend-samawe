@@ -186,6 +186,21 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{
+          'service_and_product.form.extra_person_price' | translate
+        }}</mat-label>
+        <input
+          matInput
+          formControlName="extraPersonPrice"
+          appCurrencyFormat
+          class="text-right"
+        />
+        <mat-hint>{{
+          'service_and_product.form.extra_person_price_hint' | translate
+        }}</mat-hint>
+        <mat-icon matSuffix>person_add</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{
           'service_and_product.form.tax_type' | translate
         }}</mat-label>
         <mat-select formControlName="taxeTypeId">

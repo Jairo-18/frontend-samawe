@@ -1,0 +1,101 @@
+@if (hidden) {
+  @if (stay) {
+    <p class="text-xs text-[var(--on-surface-muted)] text-center">
+      {{ 'public.online_booking.client_only' | translate }}
+    </p>
+  }
+} @else {
+  @if (created) {
+    <!-- Reserva creada: se explica el plazo y el siguiente paso (pagar). -->
+    <div class="flex flex-col gap-3 rounded-[4px] border border-[var(--primary-color)] p-4">
+      <div class="flex items-center gap-2 font-bold text-[var(--primary-color)]">
+        <mat-icon>check_circle</mat-icon>
+        {{ 'public.online_booking.created_title' | translate }}
+      </div>
+      <p class="text-sm">
+        {{ 'public.online_booking.created_msg' | translate: {
+          code: created.code,
+          total: (created.total | number: '1.0-0'),
+          expires: (created.expiresAt | date: 'short')
+        } }}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        @if (hotelPhone) {
+          <app-button-landing
+            class="w-full"
+            icon="chat"
+            [label]="'public.online_booking.send_proof' | translate"
+            (clicked)="openWhatsapp()"
+          />
+        }
+        <a
+          [routerLink]="detailRoute"
+          class="w-full text-center text-sm font-medium text-[var(--primary-color)] hover-underline-animation py-2"
+        >
+          {{ 'public.online_booking.view_reservation' | translate }}
+        </a>
+      </div>
+    </div>
+  } @else if (!isLogged) {
+    @if (stay) {
+      <app-button-landing
+        class="w-full"
+        icon="login"
+        [label]="'public.online_booking.login_to_book' | translate"
+        (clicked)="goToLogin()"
+      />
+    }
+  } @else if (stay) {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-1">
+      <p class="text-sm text-[var(--on-surface-muted)] mb-2">
+        {{ 'public.online_booking.summary' | translate: {
+          nights: stay.nights,
+          total: (estimatedTotal | number: '1.0-0')
+        } }}
+      </p>
+      @if (extraGuests > 0 && extraPersonPrice > 0) {
+        <p class="text-xs text-[var(--on-surface-muted)] -mt-1 mb-2">
+          {{ 'public.online_booking.extra_note' | translate: {
+            count: extraGuests,
+            price: (extraPersonPrice | number: '1.0-0')
+          } }}
+        </p>
+      }
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'public.online_booking.guests' | translate }}</mat-label>
+        <input matInput type="number" min="1" [max]="maxGuests || 50" formControlName="guests" />
+        @if (form.controls.guests.hasError('max')) {
+          <mat-error>{{ 'public.online_booking.guests_max' | translate: { max: maxGuests } }}</mat-error>
+        } @else if (form.controls.guests.invalid) {
+          <mat-error>{{ 'public.online_booking.guests_invalid' | translate }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'public.online_booking.arrival_time' | translate }}</mat-label>
+        <input matInput [matTimepicker]="arrivalPicker" formControlName="arrivalTime" />
+        <mat-timepicker #arrivalPicker format="12h"></mat-timepicker>
+        <mat-timepicker-toggle [for]="arrivalPicker" matSuffix></mat-timepicker-toggle>
+        <mat-icon matPrefix>access_time</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{ 'public.online_booking.notes' | translate }}</mat-label>
+        <textarea matInput rows="2" maxlength="300" formControlName="notes"></textarea>
+      </mat-form-field>
+
+      <app-button-landing
+        class="w-full mt-2"
+        type="submit"
+        [label]="'public.online_booking.book_now' | translate"
+        [loading]="saving"
+        [disabled]="saving"
+        (clicked)="submit()"
+      />
+      <span class="text-xs text-[var(--on-surface-muted)] text-center">
+        {{ 'public.online_booking.hold_note' | translate }}
+      </span>
+    </form>
+  }
+}

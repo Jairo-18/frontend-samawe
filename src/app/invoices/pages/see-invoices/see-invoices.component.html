@@ -282,6 +282,16 @@
                 </button>
                 </span>
                 }
+                @if (isOnlineReservationPending(invoice)) {
+                <button mat-menu-item (click)="confirmReservationPayment(invoice)">
+                  <mat-icon class="green-color">paid</mat-icon>
+                  <span>{{ 'invoice.list.action_confirm_reservation' | translate }}</span>
+                </button>
+                <button mat-menu-item (click)="extendReservation(invoice)">
+                  <mat-icon class="blue-color">more_time</mat-icon>
+                  <span>{{ 'invoice.list.action_extend_reservation' | translate }}</span>
+                </button>
+                }
                 <button mat-menu-item (click)="openEditDialog(invoice.invoiceId)">
                   <mat-icon class="blue-color">edit_document</mat-icon>
                   <span>{{ 'invoice.list.action_edit' | translate }}</span>
@@ -685,6 +695,16 @@
                     </span>
                   </button>
                   </span>
+                  }
+                  @if (isOnlineReservationPending(selectedInvoice)) {
+                  <button mat-menu-item (click)="confirmReservationPayment(selectedInvoice)">
+                    <mat-icon class="green-color">paid</mat-icon>
+                    <span>{{ 'invoice.list.action_confirm_reservation' | translate }}</span>
+                  </button>
+                  <button mat-menu-item (click)="extendReservation(selectedInvoice)">
+                    <mat-icon class="blue-color">more_time</mat-icon>
+                    <span>{{ 'invoice.list.action_extend_reservation' | translate }}</span>
+                  </button>
                   }
                   <button mat-menu-item (click)="openEditDialog(invoice.invoiceId)">
                     <mat-icon class="blue-color">edit_document</mat-icon>

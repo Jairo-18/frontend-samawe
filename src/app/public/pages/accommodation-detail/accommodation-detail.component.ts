@@ -26,6 +26,7 @@ import {
   AvailabilityCalendarComponent,
   SelectedStay
 } from '../../components/availability-calendar/availability-calendar.component';
+import { ReservationBookingComponent } from '../../components/reservation-booking/reservation-booking.component';
 
 @Component({
   selector: 'app-accommodation-detail',
@@ -39,7 +40,8 @@ import {
     ButtonLandingComponent,
     TranslatedPipe,
     CapitalizePipe,
-    AvailabilityCalendarComponent
+    AvailabilityCalendarComponent,
+    ReservationBookingComponent
   ],
   templateUrl: './accommodation-detail.component.html'
 })

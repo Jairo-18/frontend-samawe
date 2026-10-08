@@ -43,6 +43,30 @@
       }
     </header>
 
+    <!-- Estado de la reserva en línea -->
+    @if (reservation; as r) {
+      <div
+        class="flex items-start gap-3 rounded-[4px] border px-4 py-3 mb-6"
+        [style.background]="'var(--' + r.tone + '-bg)'"
+        [style.border-color]="'var(--' + r.tone + ')'"
+        role="status"
+      >
+        <mat-icon class="shrink-0" [style.color]="'var(--' + r.tone + ')'">{{ r.icon }}</mat-icon>
+        <div class="min-w-0">
+          <p class="font-bold" [style.color]="'var(--' + r.tone + ')'">
+            {{ 'user.invoice_detail.reservation.' + invoice.reservationStatus + '.title' | translate }}
+          </p>
+          <p class="text-sm text-[var(--on-surface)] mt-0.5">
+            {{ 'user.invoice_detail.reservation.' + invoice.reservationStatus + '.text' | translate }}
+            @if (invoice.reservationStatus === 'PENDING' && invoice.reservationExpiresAt) {
+              {{ 'user.invoice_detail.reservation.hold_until' | translate }}
+              <strong>{{ invoice.reservationExpiresAt | date: "d 'de' MMMM, h:mm a" }}</strong>.
+            }
+          </p>
+        </div>
+      </div>
+    }
+
     <!-- Renglones -->
     <div class="rounded-[4px] border border-[var(--primary-color)] bg-[var(--bg-primary-color)]">
       <ul>
@@ -77,6 +101,7 @@
       </ul>
 
       <!-- Totales -->
+      @if (!invoice.closed) {
       <dl
         class="px-5 py-4 flex flex-col gap-1.5 text-sm border-t"
         style="border-color: color-mix(in srgb, var(--primary-color) 25%, transparent)"
@@ -100,6 +125,7 @@
           </div>
         }
       </dl>
+      }
     </div>
 
     <!-- Datos de pago y de la orden -->

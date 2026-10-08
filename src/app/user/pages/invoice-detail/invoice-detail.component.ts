@@ -73,6 +73,22 @@ export class InvoiceDetailComponent implements OnInit {
     return { tab: this.isStay ? 'stays' : 'orders' };
   }
 
+  /** Estado visible de una reserva en línea; `null` si no es una. */
+  get reservation(): { icon: string; tone: string } | null {
+    switch (this.invoice?.reservationStatus) {
+      case 'PENDING':
+        return { icon: 'hourglass_top', tone: 'warning' };
+      case 'APPROVED':
+        return { icon: 'check_circle', tone: 'success' };
+      case 'REJECTED':
+      case 'CANCELLED':
+      case 'EXPIRED':
+        return { icon: 'cancel', tone: 'danger' };
+      default:
+        return null;
+    }
+  }
+
   get pending(): number {
     return Math.max((this.invoice?.total ?? 0) - (this.invoice?.paidTotal ?? 0), 0);
   }

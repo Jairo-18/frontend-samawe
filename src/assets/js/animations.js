@@ -64,9 +64,14 @@
     '/en/legal/privacity'
   ];
 
+  // Fichas de detalle (`/es/accommodation/7-cabana-2`,
+  // `/es/gastronomy/menu/6-comidas-rapidas`): llevan un slug al final, así que
+  // no pueden estar en la lista de rutas exactas.
+  var DETAIL_PATH = /^\/(?:(?:es|en)\/)?(?:accommodation|gastronomy\/menu)\/[^/]+\/?$/;
+
   function isPublicRoute() {
     var p = window.location.pathname;
-    return p === '/' || PUBLIC_PATHS.indexOf(p) !== -1;
+    return p === '/' || PUBLIC_PATHS.indexOf(p) !== -1 || DETAIL_PATH.test(p);
   }
 
   function isPublicView() {
@@ -328,6 +333,25 @@
 
     qsa('app-card-accommodation').forEach(function (el) {
       reveal(el, { dur: 700, del: 0, from: 'bottom', px: 30 });
+    });
+
+    // ── Fichas de detalle ───────────────────────────────────────────────────
+    // Menú: cabecera en cascada y los platillos de a poco.
+    qsa('app-menu-detail header > *').forEach(function (el, i) {
+      reveal(el, { dur: 700, del: i * 100, from: 'bottom', px: 24 });
+    });
+    qsa('app-menu-detail ul > li').forEach(function (el, i) {
+      reveal(el, { dur: 600, del: Math.min(i * 70, 420), from: 'bottom', px: 20 });
+    });
+    // Hospedaje: galería, datos y caja de reserva. La caja es `sticky`; el
+    // `transform: none` final no la afecta.
+    qsa('app-accommodation-detail .grid > div:first-child > *').forEach(
+      function (el, i) {
+        reveal(el, { dur: 700, del: Math.min(i * 90, 360), from: 'bottom', px: 24 });
+      }
+    );
+    qsa('app-accommodation-detail aside').forEach(function (el) {
+      reveal(el, { dur: 800, del: 150, from: 'right', px: 30 });
     });
 
     qsa('app-review-card').forEach(function (el) {

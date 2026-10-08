@@ -250,6 +250,12 @@
   "common": {
     "loading": "Loading..."
   },
+  "guest_notifications": {
+    "empty": "You have no notices for now.",
+    "title": "My notices",
+    "read_all": "Mark all as read",
+    "mark_read": "Mark as read"
+  },
   "notifications": {
     "title": "Notifications",
     "unread": "unread notifications",
@@ -258,6 +264,10 @@
     "clear": "Clear",
     "kitchen": "Kitchen",
     "delivered": "Delivered",
+    "reservations": "Reservations",
+    "reservation": "Reservation",
+    "nights": "night(s)",
+    "guests": "guest(s)",
     "empty": "You have no notifications here",
     "invoice": "Invoice",
     "status": "Status",
@@ -741,6 +751,13 @@
       "annulled_hint": "This invoice is already annulled by a credit note: it accepts no further notes. If you need to charge again, issue a new invoice.",
       "action_resend_email": "Resend by email",
       "resend_sending": "Sending email...",
+      "action_confirm_reservation": "Confirm reservation payment",
+      "action_extend_reservation": "Extend hold 24 h",
+      "reservation_confirm_title": "Confirm payment for this reservation?",
+      "reservation_confirm_msg": "The reservation will change to Reserved - Paid and stop expiring.",
+      "reservation_confirmed": "Reservation confirmed as paid.",
+      "reservation_extended": "Hold extended by 24 hours.",
+      "reservation_expires": "Expires {{date}}",
       "resend_confirm_title": "Resend the invoice to the customer?",
       "resend_confirm_msg": "An email with the invoice PDF and the DIAN QR code will be sent to the customer's registered address.",
       "resend_confirm_annulled": "Note: this invoice is ANNULLED, so the PDF will carry the watermark and the notes breakdown.",
@@ -842,6 +859,7 @@
       "supplier": "SUPPLIER:",
       "client": "CLIENT:",
       "employee": "EMPLOYEE:",
+      "web_reservation": "WEB RESERVATION",
       "tab_product": "Product",
       "tab_accommodation": "Accommodation",
       "tab_services": "Services",
@@ -1497,6 +1515,8 @@
       "description_max": "Maximum 500 characters",
       "price_buy": "Purchase price",
       "price_sell": "Sale price",
+      "extra_person_price": "Extra guest price (per night)",
+      "extra_person_price_hint": "Added per guest above the minimum people. 0 = no extra charge.",
       "tax_type": "Tax type",
       "no_tax": "No tax",
       "unit_of_measure": "Unit of measure",
@@ -1633,6 +1653,7 @@
       "subtitle": "Everything of yours at {{name}}, in one place.",
       "nav_label": "Quick links",
       "stays_title": "Your stays at {{name}}",
+      "reservation": { "PENDING": "Pending", "APPROVED": "Approved" },
       "stays_empty": "You have no stays recorded at {{name}} yet.",
       "stays_cta": "Discover our lodging",
       "orders_title": "Your food orders",
@@ -1665,7 +1686,27 @@
       "not_found": "We could not find this menu",
       "back_to_list": "Back to gastronomy"
     },
+    "online_booking": {
+      "extra_note": "Includes {{count}} extra guest(s) at COP {{price}} each per night.",
+      "title": "Online booking",
+      "client_only": "Online booking is for customer accounts only. With a staff account, create the reservation from the invoices panel.",
+      "summary": "{{nights}} night(s) · Total COP {{total}}",
+      "guests": "Guests",
+      "guests_max": "This lodging holds at most {{max}}",
+      "guests_invalid": "Tell us how many guests",
+      "arrival_time": "Estimated arrival time (optional)",
+      "notes": "Notes or requests (optional)",
+      "book_now": "Book now",
+      "hold_note": "We hold the dates for 24 hours while you make the payment.",
+      "login_to_book": "Log in to book",
+      "created_title": "Booking created!",
+      "created_msg": "Your booking {{code}} for COP {{total}} is held until {{expires}}. Make the payment and send us the receipt; if we don't get it in time, the dates are released.",
+      "send_proof": "Send receipt",
+      "view_reservation": "View my booking",
+      "error_generic": "We couldn't create the booking. Try again or message us on WhatsApp."
+    },
     "accommodation_detail": {
+      "extra_person": "Price for {{included}} guest(s). Each extra guest: +COP {{price}} per night.",
       "no_image": "No photos yet",
       "not_found": "We couldn't find this accommodation",
       "back_to_list": "See all accommodations",
@@ -1802,6 +1843,14 @@
       "reset_sent": "We emailed you a link to reset your password."
     },
     "invoice_detail": {
+      "reservation": {
+        "PENDING": { "title": "Reservation pending", "text": "We received your request and it is awaiting approval. We will let you know as soon as we review it." },
+        "APPROVED": { "title": "Stay approved", "text": "Your reservation is confirmed! We look forward to seeing you." },
+        "REJECTED": { "title": "Reservation not accepted", "text": "Unfortunately your request could not be accepted. Write to us if you have questions." },
+        "CANCELLED": { "title": "Reservation cancelled", "text": "Your reservation was cancelled and the dates were released. Write to us if you have questions." },
+        "EXPIRED": { "title": "Reservation expired", "text": "Your request expired without payment and the dates were released." },
+        "hold_until": "We are holding your dates until"
+      },
       "back": "Back to my profile",
       "not_found": "We could not find this invoice",
       "eyebrow_stay": "Your stay",

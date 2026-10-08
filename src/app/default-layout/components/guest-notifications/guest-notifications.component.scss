@@ -1,0 +1,262 @@
+// Campana flotante del huésped, justo debajo del navbar. `--nav-bar-height` es
+// la misma variable que reserva espacio para la barra (global.scss).
+:host {
+  position: fixed;
+  top: calc(var(--nav-bar-height, 64px) + 0.5rem);
+  right: 1rem;
+  z-index: 40;
+}
+
+// En escritorio la barra se ve más alta que `--nav-bar-height` y la campana
+// quedaba pegada a ella; en móvil ya estaba bien, así que solo baja desde aquí.
+@media (min-width: 769px) {
+  :host {
+    top: calc(var(--nav-bar-height, 64px) + 1.75rem);
+  }
+}
+
+.wrap {
+  position: relative;
+}
+
+.bell {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-raised);
+  color: var(--brand);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.badge {
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 9999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+// El único aviso de algo nuevo: la campana se sacude un momento y el número
+// "late". Sin sonido. Si el sistema pide menos movimiento, no hay animación.
+@media (prefers-reduced-motion: no-preference) {
+  .bell--nudge mat-icon {
+    animation: bell-ring 1.2s ease-in-out;
+    transform-origin: 50% 10%;
+  }
+
+  .badge--nudge {
+    animation: badge-pop 0.9s ease-in-out 2;
+  }
+}
+
+@keyframes bell-ring {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  15% {
+    transform: rotate(16deg);
+  }
+  30% {
+    transform: rotate(-14deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes badge-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(26rem, 70vh);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--brand);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--on-surface);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+
+    h2 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+  }
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--brand);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &--unread {
+    background: color-mix(in srgb, var(--brand) 9%, transparent);
+    box-shadow: inset 3px 0 0 var(--brand);
+  }
+
+  &__icon {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    background: var(--info-bg);
+    color: var(--info);
+
+    mat-icon {
+      font-size: 1.15rem;
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+
+    &[data-status='APPROVED'] {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    &[data-status='EXPIRED'],
+    &[data-status='CANCELLED'] {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    &[data-status='PENDING'] {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+
+    &--link {
+      cursor: pointer;
+    }
+
+    p {
+      margin: 0.15rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--on-surface-muted);
+    }
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+
+    small {
+      flex: none;
+      font-size: 0.68rem;
+      color: var(--on-surface-muted);
+    }
+  }
+
+  &__read {
+    flex: none;
+    width: 1.9rem;
+    height: 1.9rem;
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--brand);
+    cursor: pointer;
+
+    mat-icon {
+      font-size: 1.05rem;
+      width: 1.05rem;
+      height: 1.05rem;
+    }
+
+    &:hover {
+      background: var(--surface-sunken);
+    }
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: 1.25rem 0.9rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--on-surface-muted);
+}

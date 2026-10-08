@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatCopPipe } from '../../../shared/pipes/format-cop.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslatedPipe } from '../../../shared/pipes/translated.pipe';
+import { showArrivalTimeIn12h } from '../../../shared/utilities/time-format.utils';
 @Component({
   selector: 'app-invoice-summary',
   standalone: true,
@@ -26,6 +27,10 @@ export class InvoiceSummaryComponent {
   @Output() downloadRequested = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();
   @Output() toggleAllPaymentStatus = new EventEmitter<boolean>();
+  /** Observaciones tal como se muestran: la hora de llegada en 12 h. */
+  get observationsText(): string {
+    return showArrivalTimeIn12h(this.invoiceData.observations);
+  }
   get paidTotal(): number {
     if (this.invoiceData.paidTotal !== undefined) {
       return this.invoiceData.paidTotal;

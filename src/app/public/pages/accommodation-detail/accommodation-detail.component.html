@@ -209,7 +209,12 @@
       <aside
         class="lg:sticky lg:top-[calc(var(--nav-bar-height)+1rem)] flex flex-col gap-4 border border-[var(--primary-color)] rounded-[4px] p-4 md:p-5 shadow-sm bg-[var(--bg-primary-color)]"
       >
+        <!-- `ngSkipHydration`: el calendario depende de la fecha de hoy y de las
+             noches ocupadas, que solo existen en el navegador. El HTML del
+             servidor no coincide con el del cliente (NG0500) y Angular lo
+             rehace igual; así se evita el desajuste y el error en consola. -->
         <app-availability-calendar
+          ngSkipHydration
           [accommodationId]="accommodation.accommodationId"
           [pricePerNight]="accommodation.priceSale"
           (stayChange)="onStayChange($event)"
@@ -223,12 +228,33 @@
             <p class="text-2xl font-bold">
               COP {{ accommodation.priceSale | number: '1.0-0' }}
             </p>
+            @if ((accommodation.extraPersonPrice ?? 0) > 0) {
+              <span class="text-xs text-[var(--on-surface-muted)]">
+                {{ 'public.accommodation_detail.extra_person' | translate: {
+                  included: accommodation.amountPerson,
+                  price: (accommodation.extraPersonPrice | number: '1.0-0')
+                } }}
+              </span>
+            }
           </div>
+
+          <!-- Reserva en línea (cliente con sesión). WhatsApp queda como
+               alternativa para el personal, proveedores y quien prefiera
+               hablar con recepción. -->
+          <app-reservation-booking
+            [accommodationId]="accommodation.accommodationId"
+            [stay]="stay"
+            [maxGuests]="accommodation.amountBathroom"
+            [pricePerNight]="accommodation.priceSale"
+            [includedGuests]="accommodation.amountPerson"
+            [extraPersonPrice]="accommodation.extraPersonPrice ?? 0"
+            [hotelPhone]="org?.phone ?? ''"
+          />
 
           @if (canRequestBooking) {
             <app-button-landing
               [label]="'public.card_accommodation.reserve' | translate"
-              variant="solid"
+              variant="transparent"
               (clicked)="requestBooking()"
               class="w-full"
             />

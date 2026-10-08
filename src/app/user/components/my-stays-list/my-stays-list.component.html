@@ -26,9 +26,20 @@
                 </p>
               }
             </div>
-            <span class="client-chip" [ngClass]="chipClass(phase(inv))">
-              {{ 'public.client_home.phase.' + phase(inv) | translate }}
-            </span>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              @if (inv.reservationStatus) {
+                <span
+                  class="client-chip"
+                  [style.color]="'var(--' + (inv.reservationStatus === 'PENDING' ? 'warning' : 'success') + ')'"
+                  [style.border-color]="'var(--' + (inv.reservationStatus === 'PENDING' ? 'warning' : 'success') + ')'"
+                >
+                  {{ 'public.client_home.reservation.' + inv.reservationStatus | translate }}
+                </span>
+              }
+              <span class="client-chip" [ngClass]="chipClass(phase(inv))">
+                {{ 'public.client_home.phase.' + phase(inv) | translate }}
+              </span>
+            </div>
           </div>
           <div class="flex items-center justify-between pt-3 mt-3 border-t client-divider text-sm">
             <span class="text-[var(--subtitle-color)]">#{{ inv.code }}</span>

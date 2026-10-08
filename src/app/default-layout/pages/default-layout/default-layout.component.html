@@ -26,6 +26,10 @@
       <app-nav-bar class="brand-nav-bar"></app-nav-bar>
     }
 
+    @if (showGuestNotifications) {
+      <app-guest-notifications [userInfo]="userInfo"></app-guest-notifications>
+    }
+
     <app-notification-button
       [showNotificationsIcon]="showNotificationsIcon"
       [userInfo]="userInfo"

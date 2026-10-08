@@ -250,6 +250,12 @@
   "common": {
     "loading": "Cargando..."
   },
+  "guest_notifications": {
+    "empty": "No tienes avisos por ahora.",
+    "title": "Mis avisos",
+    "read_all": "Marcar todo como leído",
+    "mark_read": "Marcar como leído"
+  },
   "notifications": {
     "title": "Notificaciones",
     "unread": "notificaciones sin leer",
@@ -258,6 +264,10 @@
     "clear": "Limpiar",
     "kitchen": "Cocina",
     "delivered": "Entregado",
+    "reservations": "Reservaciones",
+    "reservation": "Reserva",
+    "nights": "noche(s)",
+    "guests": "huésped(es)",
     "empty": "No tienes notificaciones aquí",
     "invoice": "Factura",
     "status": "Estado",
@@ -741,6 +751,13 @@
       "annulled_hint": "Esta factura ya está anulada por nota crédito: no admite más notas. Si hay que cobrar de nuevo, emite una factura nueva.",
       "action_resend_email": "Reenviar por correo",
       "resend_sending": "Enviando correo...",
+      "action_confirm_reservation": "Confirmar pago de la reserva",
+      "action_extend_reservation": "Extender retención 24 h",
+      "reservation_confirm_title": "¿Confirmar el pago de esta reserva?",
+      "reservation_confirm_msg": "La reserva pasará a Reservado - Pagado y dejará de vencer.",
+      "reservation_confirmed": "Reserva confirmada como pagada.",
+      "reservation_extended": "Retención extendida 24 horas.",
+      "reservation_expires": "Vence {{date}}",
       "resend_confirm_title": "¿Reenviar la factura al cliente?",
       "resend_confirm_msg": "Se le enviará el correo con la factura en PDF y el QR de la DIAN al correo registrado del cliente.",
       "resend_confirm_annulled": "Ojo: esta factura está ANULADA, así que el PDF saldrá con la marca de agua y el detalle de las notas.",
@@ -842,6 +859,7 @@
       "supplier": "PROVEEDOR:",
       "client": "CLIENTE:",
       "employee": "EMPLEADO:",
+      "web_reservation": "RESERVACIÓN WEB",
       "tab_product": "Producto",
       "tab_accommodation": "Hospedaje",
       "tab_services": "Servicios",
@@ -1497,6 +1515,8 @@
       "description_max": "Máximo 500 caracteres",
       "price_buy": "Precio de compra",
       "price_sell": "Precio de venta",
+      "extra_person_price": "Valor por persona adicional (por noche)",
+      "extra_person_price_hint": "Se suma por cada huésped sobre el mínimo de personas. 0 = no cobra extra.",
       "tax_type": "Tipo de impuesto",
       "no_tax": "Sin impuesto",
       "unit_of_measure": "Unidad de medida",
@@ -1633,6 +1653,7 @@
       "subtitle": "Todo lo tuyo en {{name}}, en un solo lugar.",
       "nav_label": "Accesos rápidos",
       "stays_title": "Tus estadías en {{name}}",
+      "reservation": { "PENDING": "En espera", "APPROVED": "Aprobada" },
       "stays_empty": "Aún no tienes estadías registradas en {{name}}.",
       "stays_cta": "Conoce nuestros hospedajes",
       "orders_title": "Tus órdenes de comida",
@@ -1665,7 +1686,27 @@
       "not_found": "No encontramos este menú",
       "back_to_list": "Volver a gastronomía"
     },
+    "online_booking": {
+      "extra_note": "Incluye {{count}} huésped(es) adicional(es) a COP {{price}} c/u por noche.",
+      "title": "Reserva en línea",
+      "client_only": "La reserva en línea es solo para cuentas de cliente. Con tu cuenta de personal, crea la reserva desde el panel de facturas.",
+      "summary": "{{nights}} noche(s) · Total COP {{total}}",
+      "guests": "Huéspedes",
+      "guests_max": "Este hospedaje admite máximo {{max}}",
+      "guests_invalid": "Indica cuántos huéspedes serán",
+      "arrival_time": "Hora estimada de llegada (opcional)",
+      "notes": "Notas o peticiones (opcional)",
+      "book_now": "Reservar ahora",
+      "hold_note": "Retenemos las fechas por 24 horas mientras realizas el pago.",
+      "login_to_book": "Inicia sesión para reservar",
+      "created_title": "¡Reserva creada!",
+      "created_msg": "Tu reserva {{code}} por COP {{total}} queda retenida hasta el {{expires}}. Realiza el pago y envíanos el comprobante; si no lo recibimos a tiempo, las fechas se liberan.",
+      "send_proof": "Enviar comprobante",
+      "view_reservation": "Ver mi reserva",
+      "error_generic": "No pudimos crear la reserva. Inténtalo de nuevo o escríbenos por WhatsApp."
+    },
     "accommodation_detail": {
+      "extra_person": "Precio para {{included}} persona(s). Cada huésped adicional: +COP {{price}} por noche.",
       "no_image": "Sin fotos todavía",
       "not_found": "No encontramos este hospedaje",
       "back_to_list": "Ver todos los hospedajes",
@@ -1802,6 +1843,14 @@
       "reset_sent": "Te enviamos un correo con el enlace para restablecer tu contraseña."
     },
     "invoice_detail": {
+      "reservation": {
+        "PENDING": { "title": "Reserva en espera", "text": "Recibimos tu solicitud y está pendiente de aprobación. Te avisaremos apenas la revisemos." },
+        "APPROVED": { "title": "Estadía aprobada", "text": "¡Tu reserva está confirmada! Te esperamos." },
+        "REJECTED": { "title": "Reserva no aceptada", "text": "Lamentablemente tu solicitud no pudo ser aceptada. Escríbenos si tienes dudas." },
+        "CANCELLED": { "title": "Reserva cancelada", "text": "Tu reserva fue cancelada y las fechas quedaron libres. Escríbenos si tienes dudas." },
+        "EXPIRED": { "title": "Reserva vencida", "text": "Tu solicitud venció sin recibir el pago y las fechas quedaron libres." },
+        "hold_until": "Retenemos tus fechas hasta el"
+      },
       "back": "Volver a mi perfil",
       "not_found": "No encontramos esta factura",
       "eyebrow_stay": "Tu estadía",

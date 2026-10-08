@@ -100,6 +100,22 @@
                 ></app-notification-tab-content>
               </ng-template>
             </mat-tab>
+            <mat-tab
+              [label]="('notifications.reservations' | translate) + ' ' + (tabStates['RSV'].pagination?.total || 0)"
+            >
+              <ng-template matTabContent>
+                <app-notification-tab-content
+                  *ngIf="tabStates['RSV']?.data"
+                  [list]="tabStates['RSV'].data"
+                  [stateCode]="'RSV'"
+                  [loading]="tabStates['RSV'].loading"
+                  (scrollContent)="onScroll($event.event, $event.stateCode)"
+                  (itemClick)="goToOrder($event)"
+                  (toggleRead)="toggleRead($event.event, $event.notif)"
+                  (delete)="deleteNotification($event.event, $event.notif)"
+                ></app-notification-tab-content>
+              </ng-template>
+            </mat-tab>
           </mat-tab-group>
         </div>
       </article>

@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { LocalStorageService } from '../../../shared/services/localStorage.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
 import { NotificationButtonComponent } from '../../components/notification-button/notification-button.component';
+import { GuestNotificationsComponent } from '../../components/guest-notifications/guest-notifications.component';
 import { MobileMenuComponent } from '../../components/mobile-menu/mobile-menu.component';
 import { RelatedDataService } from '../../../shared/services/relatedData.service';
 import { LoaderComponent } from '../../../shared/components/loader/loader.component';
@@ -32,6 +33,7 @@ import { SidebarStateService } from '../../../shared/services/sidebar-state.serv
     RouterOutlet,
     CommonModule,
     NotificationButtonComponent,
+    GuestNotificationsComponent,
     MobileMenuComponent,
     LoaderComponent,
     FooterComponent,
@@ -66,6 +68,8 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   user?: UserInterface;
   closeSideBar: boolean = false;
   showNotificationsIcon: boolean = false;
+  /** Campana del huésped (rol USER), debajo del navbar. */
+  showGuestNotifications: boolean = false;
   showNavBar: boolean = false;
   showSideBar: boolean = false;
   showMobileMenu: boolean = false;
@@ -152,6 +156,7 @@ export class DefaultLayoutComponent implements OnInit, OnDestroy {
   private checkRolesForNotifications() {
     const code = this.userInfo?.roleType?.code;
     this.showNotificationsIcon = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'].includes(code ?? '');
+    this.showGuestNotifications = this.isLoggedUser && code === 'USER';
   }
 
   private checkRolesForNavBar() {

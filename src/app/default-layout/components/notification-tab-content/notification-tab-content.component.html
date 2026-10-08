@@ -32,10 +32,12 @@
                 'bg-[var(--warning-bg)] text-[var(--warning)]':
                   notif.metadata?.stateCode === 'ENC',
                 'bg-[var(--success-bg)] text-[var(--success)]':
-                  notif.metadata?.stateCode === 'ENT'
+                  notif.metadata?.stateCode === 'ENT',
+                'bg-[var(--info-bg)] text-[var(--brand)]':
+                  notif.metadata?.stateCode === 'RSV'
               }"
             >
-              <mat-icon>restaurant</mat-icon>
+              <mat-icon>{{ notif.metadata?.stateCode === 'RSV' ? 'event_available' : 'restaurant' }}</mat-icon>
             </div>
           </div>
 
@@ -45,25 +47,37 @@
               <span
                 class="font-bold text-sm"
                 [ngClass]="{ 'text-[var(--brand)]': !notif.read }"
-                >{{ 'notifications.invoice' | translate }}: {{ notif.metadata?.code }}</span
+                >{{ (notif.metadata?.stateCode === 'RSV' ? 'notifications.reservation' : 'notifications.invoice') | translate }}: {{ notif.metadata?.code }}</span
               >
               <span class="text-[10px] text-[var(--on-surface-muted)] text-right">{{
                 notif.createdAt | relativeTime
               }}</span>
             </div>
 
-            <div
-              class="flex flex-col text-xs font-semibold mb-1"
-              [ngClass]="{
-                'text-[var(--warning)]': notif.metadata?.stateCode === 'ENC',
-                'text-[var(--success)]': notif.metadata?.stateCode === 'ENT'
-              }"
-            >
-              {{ 'notifications.status' | translate }}: {{ notif.metadata?.state }}
-              @if (notif.metadata?.tableNumber) {
-                <span class="text-[var(--on-surface-muted)]">{{ 'notifications.table' | translate }}: {{ notif.metadata?.tableNumber }}</span>
-              }
-            </div>
+            @if (notif.metadata?.stateCode === 'RSV') {
+              <div class="flex flex-col text-xs font-semibold mb-1 text-[var(--brand)]">
+                {{ notif.metadata?.accommodationName }}
+                <span class="font-normal text-[var(--on-surface-muted)]">
+                  {{ notif.metadata?.startDate }} → {{ notif.metadata?.endDate }}
+                  · {{ notif.metadata?.nights }} {{ 'notifications.nights' | translate }}
+                  · {{ notif.metadata?.guests }} {{ 'notifications.guests' | translate }}
+                  · COP {{ notif.metadata?.total | number: '1.0-0' }}
+                </span>
+              </div>
+            } @else {
+              <div
+                class="flex flex-col text-xs font-semibold mb-1"
+                [ngClass]="{
+                  'text-[var(--warning)]': notif.metadata?.stateCode === 'ENC',
+                  'text-[var(--success)]': notif.metadata?.stateCode === 'ENT'
+                }"
+              >
+                {{ 'notifications.status' | translate }}: {{ notif.metadata?.state }}
+                @if (notif.metadata?.tableNumber) {
+                  <span class="text-[var(--on-surface-muted)]">{{ 'notifications.table' | translate }}: {{ notif.metadata?.tableNumber }}</span>
+                }
+              </div>
+            }
 
             <div class="text-[11px] text-[var(--on-surface-muted)] leading-tight mb-2">
               {{ notif.message }}

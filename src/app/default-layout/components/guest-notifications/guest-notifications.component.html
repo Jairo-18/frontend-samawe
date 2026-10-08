@@ -1,0 +1,65 @@
+<div class="wrap">
+    <button
+      type="button"
+      class="bell"
+      [class.bell--nudge]="nudge"
+      [class.bell--unread]="unread > 0"
+      [attr.aria-label]="'guest_notifications.title' | translate"
+      [attr.aria-expanded]="isOpen"
+      (click)="toggle($event)"
+    >
+      <mat-icon>notifications</mat-icon>
+      @if (unread > 0) {
+        <span class="badge" [class.badge--nudge]="nudge">{{ unread }}</span>
+      }
+    </button>
+
+    @if (isOpen) {
+      <section class="panel" (click)="$event.stopPropagation()">
+        <header class="panel__head">
+          <h2>{{ 'guest_notifications.title' | translate }}</h2>
+          @if (unread > 0) {
+            <button type="button" class="link" (click)="markAllRead()">
+              {{ 'guest_notifications.read_all' | translate }}
+            </button>
+          }
+        </header>
+
+        @if (list.length === 0) {
+          <p class="empty">{{ 'guest_notifications.empty' | translate }}</p>
+        }
+
+        <ul class="panel__list">
+          @for (n of list; track n.notificationId) {
+            <li class="item" [class.item--unread]="!n.read">
+              <span class="item__icon" [attr.data-status]="n.metadata.status">
+                <mat-icon>{{ iconOf(n) }}</mat-icon>
+              </span>
+              <div
+                class="item__body"
+                [class.item__body--link]="canOpen(n)"
+                (click)="open(n)"
+              >
+                <div class="item__top">
+                  <strong>{{ n.title }}</strong>
+                  <small>{{ n.createdAt | relativeTime }}</small>
+                </div>
+                <p>{{ n.message }}</p>
+              </div>
+              @if (!n.read) {
+                <button
+                  type="button"
+                  class="item__read"
+                  [title]="'guest_notifications.mark_read' | translate"
+                  [attr.aria-label]="'guest_notifications.mark_read' | translate"
+                  (click)="toggleRead($event, n)"
+                >
+                  <mat-icon>done</mat-icon>
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </div>

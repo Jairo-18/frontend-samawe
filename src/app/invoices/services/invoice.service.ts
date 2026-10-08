@@ -13,6 +13,7 @@ import {
 } from '../interface/invoice.interface';
 import { CreateInvoiceDetaill } from '../interface/invoiceDetaill.interface';
 import { MyInvoice, MyInvoiceDetail } from '../interface/my-invoice.interface';
+import { CreatedReservation } from '../interface/reservation.interface';
 import {
   CreateCreditPaymentPayload,
   InvoiceCredit,
@@ -116,6 +117,37 @@ export class InvoiceService {
       invoice
     );
   }
+  /** El huésped reserva una estadía; queda retenida hasta confirmar el pago. */
+  createReservation(body: {
+    accommodationId: number;
+    startDate: string;
+    endDate: string;
+    guests: number;
+    arrivalTime?: string;
+    notes?: string;
+  }): Observable<{ data: CreatedReservation }> {
+    return this._httpClient.post<{ data: CreatedReservation }>(
+      `${environment.apiUrl}invoices/reservations`,
+      body
+    );
+  }
+
+  /** Personal: confirma el pago de una reserva (RES → RES2). */
+  confirmReservationPayment(invoiceId: number): Observable<unknown> {
+    return this._httpClient.post(
+      `${environment.apiUrl}invoices/${invoiceId}/reservation/confirm-payment`,
+      {}
+    );
+  }
+
+  /** Personal: suma otro periodo de retención a una reserva sin pagar. */
+  extendReservation(invoiceId: number): Observable<unknown> {
+    return this._httpClient.post(
+      `${environment.apiUrl}invoices/${invoiceId}/reservation/extend`,
+      {}
+    );
+  }
+
   deleteInvoice(invoiceId: number): Observable<unknown> {
     return this._httpClient.delete(
       `${environment.apiUrl}invoices/${invoiceId}`

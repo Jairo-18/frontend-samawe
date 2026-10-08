@@ -146,6 +146,10 @@ export class CreateOrEditAccommodationComponent
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
+      extraPersonPrice: [
+        0,
+        [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
+      ],
       stateTypeId: [2, [Validators.required]],
       taxeTypeId: [1, [Validators.required]]
     });
@@ -190,6 +194,7 @@ export class CreateOrEditAccommodationComponent
       amountBathroom: accommodation.amountBathroom ?? 0,
       priceBuy: accommodation.priceBuy,
       priceSale: accommodation.priceSale,
+      extraPersonPrice: accommodation.extraPersonPrice ?? 0,
       stateTypeId: accommodation.stateType?.stateTypeId,
       taxeTypeId:
         accommodation.taxeType?.taxeTypeId ?? accommodation.taxeTypeId ?? null
@@ -210,6 +215,7 @@ export class CreateOrEditAccommodationComponent
       amountBathroom: 0,
       priceBuy: 0,
       priceSale: 0,
+      extraPersonPrice: 0,
       stateTypeId: null,
       taxeTypeId: 1
     });
@@ -292,6 +298,7 @@ export class CreateOrEditAccommodationComponent
         amountBathroom: Math.trunc(Number(formValue.amountBathroom)),
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
+        extraPersonPrice: Math.abs(Number(formValue.extraPersonPrice ?? 0)),
         categoryTypeId: formValue.categoryTypeId,
         bedTypeId: formValue.bedTypeId,
         stateTypeId: formValue.stateTypeId,

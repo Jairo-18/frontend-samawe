@@ -20,6 +20,7 @@ export interface CreateAccommodationPanel {
   taxe?: number;
   taxeTypeId?: number;
   priceSale: number;
+  extraPersonPrice?: number;
   categoryTypeId: number;
   bedTypeId: number;
   stateTypeId?: number;
@@ -36,6 +37,7 @@ export interface AccommodationComplete {
   amountBathroom: number;
   priceBuy: number;
   priceSale: number;
+  extraPersonPrice?: number;
   taxe?: number;
   taxeTypeId?: number;
   taxeType?: TaxeType;
@@ -59,6 +61,7 @@ export interface GetAccommodationPaginatedList {
   amountBathroom: number;
   priceBuy: number;
   priceSale: number;
+  extraPersonPrice?: number;
   categoryTypeId: number;
   bedTypeId: number;
   stateTypeId?: number;
@@ -75,6 +78,7 @@ export interface MostRequestedAccommodation {
   amountBathroom: number;
   jacuzzi: boolean;
   priceSale: number;
+  extraPersonPrice?: number;
   categoryType: { categoryTypeId: number; code: string; name: string } | null;
   bedType: { bedTypeId: number; code: string; name: string } | null;
   stateType: { stateTypeId: number; code: string; name: string } | null;
@@ -91,6 +95,7 @@ export interface PublicAccommodationListItem {
   amountBathroom: number;
   jacuzzi: boolean;
   priceSale: number;
+  extraPersonPrice?: number;
   categoryType: { categoryTypeId: number; code: string; name: string } | null;
   bedType: { bedTypeId: number; code: string; name: string } | null;
   stateType: { stateTypeId: number; code: string; name: string } | null;

@@ -112,9 +112,14 @@
               <div class="flex w-full md:w-[50%] justify-start md:justify-end">
                 <span class="font-bold text-xs md:text-base">
                   {{ 'invoice.edit.employee' | translate }}
+                  <!-- Una reserva en línea no tiene empleado (`employee` es null). -->
                   <span class="font-normal text-xs md:text-base">
-                    {{ invoiceData.employee.firstName || '' }}
-                    {{ invoiceData.employee.lastName || '' }}
+                    @if (invoiceData.employee) {
+                      {{ invoiceData.employee.firstName || '' }}
+                      {{ invoiceData.employee.lastName || '' }}
+                    } @else if (invoiceData.reservationSource === 'ONLINE') {
+                      {{ 'invoice.edit.web_reservation' | translate }}
+                    }
                   </span>
                 </span>
               </div>

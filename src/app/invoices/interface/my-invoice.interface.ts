@@ -8,6 +8,8 @@ export interface MyInvoice {
   total: number;
   invoiceType?: { code: string; name: TranslatedField };
   stateType?: { code: string; name: TranslatedField };
+  /** Solo reservas en línea vivas: en espera o aprobada. */
+  reservationStatus?: 'PENDING' | 'APPROVED';
   stays: { name: TranslatedField; startDate?: string; endDate?: string }[];
   orders: { name: TranslatedField; amount: number }[];
   excursions: { name: TranslatedField }[];
@@ -26,6 +28,11 @@ export interface MyInvoiceDetail {
   taxes: number;
   total: number;
   paidTotal: number;
+  /** Solo reservas en línea: en espera, aprobada, no aceptada o vencida. */
+  reservationStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'CANCELLED';
+  reservationExpiresAt?: string;
+  /** La factura ya no existe (rechazada o vencida): solo hay un resumen. */
+  closed?: boolean;
   invoiceType?: { code: string; name: TranslatedField };
   payType?: { code: string; name: TranslatedField };
   paidType?: { code: string; name: TranslatedField };

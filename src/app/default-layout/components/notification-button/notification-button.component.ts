@@ -21,7 +21,10 @@ import { Router } from '@angular/router';
 import { OrdersSocketService } from '../../../shared/services/orders-socket.service';
 import { NotificationApiService } from '../../../shared/services/notification-api.service';
 import { UserInterface } from '../../../shared/interfaces/user.interface';
-import { OrderUpdate } from '../../../shared/interfaces/order-socket.interface';
+import {
+  OrderUpdate,
+  ReservationRequest
+} from '../../../shared/interfaces/order-socket.interface';
 import { OrderNotification } from '../../../shared/interfaces/order-notification.interface';
 import { PaginationInterface } from '../../../shared/interfaces/pagination.interface';
 import { NotificationTabContentComponent } from '../notification-tab-content/notification-tab-content.component';
@@ -72,7 +75,8 @@ export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy
     }
   > = {
     ENC: { data: [], pagination: null, loading: false },
-    ENT: { data: [], pagination: null, loading: false }
+    ENT: { data: [], pagination: null, loading: false },
+    RSV: { data: [], pagination: null, loading: false }
   };
 
   private hasLoadedNotifications: boolean = false;
@@ -101,6 +105,12 @@ export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy
     this._subscription.add(
       this._ordersSocket.onOrderUpdated().subscribe((liveUpdate) => {
         this.handleLiveNotification(liveUpdate);
+      })
+    );
+
+    this._subscription.add(
+      this._ordersSocket.onReservationRequested().subscribe((request) => {
+        this.handleLiveReservation(request);
       })
     );
 
@@ -137,7 +147,7 @@ export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy
   private loadNotifications() {
     if (!this.showNotificationsIcon || this.hasLoadedNotifications) return;
 
-    const states = ['ENC', 'ENT'];
+    const states = ['ENC', 'ENT', 'RSV'];
     states.forEach((stateCode) => {
       this.tabStates[stateCode].loading = true;
     });
@@ -310,6 +320,41 @@ export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy
     this.updateGlobalUnreadCount();
   }
 
+  private handleLiveReservation(request: ReservationRequest) {
+    if (!this.showNotificationsIcon) return;
+
+    this.playNotificationSound();
+
+    const newNotif: OrderNotification = {
+      notificationId: request.notificationId,
+      title: request.title,
+      message: request.message,
+      read: false,
+      type: 'RESERVATION_REQUESTED',
+      metadata: {
+        invoiceId: request.invoiceId,
+        code: request.code,
+        state: '',
+        stateCode: request.stateCode,
+        guestName: request.guestName,
+        accommodationName: request.accommodationName,
+        startDate: request.startDate,
+        endDate: request.endDate,
+        nights: request.nights,
+        guests: request.guests,
+        total: request.total,
+        expiresAt: request.expiresAt
+      },
+      createdAt: new Date(request.createdAt)
+    };
+
+    const tab = this.tabStates['RSV'];
+    tab.data = [newNotif, ...tab.data];
+    if (tab.pagination) tab.pagination.total += 1;
+
+    this.updateGlobalUnreadCount();
+  }
+
   private checkRolesForNotifications() {
     if (!this.userInfo?.roleType?.code || !this.showNotificationsIcon) {
       this.hasLoadedNotifications = false;
@@ -367,10 +412,15 @@ export class NotificationButtonComponent implements OnInit, OnChanges, OnDestroy
   }
 
   goToOrder(notif: OrderNotification) {
-    if (notif.metadata?.invoiceId) {
-      this._router.navigate([
-        `/recipes/restaurant-order/${notif.metadata.invoiceId}/edit`
-      ]);
+    if (!notif.metadata?.invoiceId) return;
+    // Una solicitud de reserva se atiende en la factura, no en la comanda.
+    if (notif.metadata.stateCode === 'RSV') {
+      this.isMenuOpen = false;
+      this._router.navigate([`/invoice/invoices/${notif.metadata.invoiceId}/edit`]);
+      return;
     }
+    this._router.navigate([
+      `/recipes/restaurant-order/${notif.metadata.invoiceId}/edit`
+    ]);
   }
 }
