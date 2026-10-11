@@ -35,8 +35,29 @@ export interface LoginSuccessInterface {
 export interface User {
   userId: string;
   roleType: RoleType;
+  /**
+   * La organización en la que OPERA la sesión. Para un super administrador que
+   * eligió otra con el selector, es esa (no la suya): todo el panel la usa.
+   */
   organizationalId: string | null;
   avatarUrl?: string | null;
+  /** Super administrador: su organización propia mientras está en otra. */
+  homeOrganizationalId?: string | null;
+  /** Super administrador: la organización elegida, si no es la propia. */
+  actingOrganization?: ActingOrganization | null;
+}
+
+export interface ActingOrganization {
+  organizationalId: string;
+  name: string;
+  slug: string;
+}
+
+export interface SwitchOrganizationResponse {
+  tokens: Tokens;
+  organization: ActingOrganization;
+  homeOrganizationalId: string | null;
+  isActingOrganization: boolean;
 }
 export interface Tokens {
   accessToken: string;

@@ -24,10 +24,12 @@ import { LoaderComponent } from '../../../shared/components/loader/loader.compon
 import { FooterComponent } from '../../components/footer/footer.component';
 import { CookieConsentComponent } from '../../../shared/components/cookie-consent/cookie-consent.component';
 import { SidebarStateService } from '../../../shared/services/sidebar-state.service';
+import { ActingOrganizationBannerComponent } from '../../components/acting-organization-banner/acting-organization-banner.component';
 @Component({
   selector: 'app-default-layout',
   standalone: true,
   imports: [
+    ActingOrganizationBannerComponent,
     SideBarComponent,
     NavBarComponent,
     RouterOutlet,

@@ -27,6 +27,16 @@
           {{ 'login.subtitle' | translate }}
         </span>
       </div>
+      @if (hotel) {
+        <div
+          class="w-full flex flex-wrap items-center justify-center gap-x-2 text-sm rounded-[4px] border border-[var(--primary-color)] px-3 py-2"
+        >
+          <span>{{ 'login.hotel_banner' | translate: { name: hotel.name } }}</span>
+          <button type="button" class="underline" (click)="useDefaultHotel()">
+            {{ 'login.hotel_reset' | translate }}
+          </button>
+        </div>
+      }
       <form
         [formGroup]="form"
         (keydown.enter)="$any($event.target).tagName === 'INPUT' && login()"

@@ -52,11 +52,16 @@ export class SettingsComponent implements OnInit {
     if (roleCode === 'ADMIN' || roleCode === 'SUPERADMIN') {
       this.settingsItems = [
         ...profileItems,
-        {
-          label: this._translate.instant('sidebar.management'),
-          icon: 'category',
-          route: 'organizational/types/manage'
-        },
+        // Gestión (catálogos globales) es del Panel de Superadministrador.
+        ...(roleCode === 'SUPERADMIN'
+          ? [
+              {
+                label: this._translate.instant('sidebar.management'),
+                icon: 'category',
+                route: 'organizational/types/manage'
+              }
+            ]
+          : []),
         {
           label: this._translate.instant('sidebar.application'),
           icon: 'settings_applications',

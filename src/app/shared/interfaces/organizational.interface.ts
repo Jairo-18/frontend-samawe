@@ -152,3 +152,43 @@ export interface Organizational {
   benefitSections?: BenefitSection[];
   legalSections?: LegalSection[];
 }
+
+/** Host que atiende a una organización (tabla `organization_domains`). */
+export interface OrganizationDomainInfo {
+  hostname: string;
+  kind: 'web' | 'api' | 'staging';
+  status: 'pending' | 'active' | 'disabled';
+  isPrimary: boolean;
+}
+
+/** Cuánto uso tiene una organización (para el listado de plataforma). */
+export interface OrganizationStats {
+  users: number;
+  invoices: number;
+  products: number;
+  accommodations: number;
+  excursions: number;
+}
+
+/** Una organización tal como la devuelve `GET /organizational` (plataforma). */
+export interface PlatformOrganization extends Organizational {
+  domains: OrganizationDomainInfo[];
+  stats: OrganizationStats;
+}
+
+/** Lo que manda el formulario de organizaciones al crear o editar. */
+export interface SaveOrganization {
+  name: string;
+  legalName?: string;
+  slug: string;
+  identificationType?: string;
+  identificationNumber?: string;
+  email?: string;
+  phoneCode?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  department?: string;
+  website?: string;
+  status: boolean;
+}

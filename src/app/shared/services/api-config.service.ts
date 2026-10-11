@@ -5,6 +5,13 @@ import { environment } from '../../../environments/environment';
 export interface ApiConfig {
   apiUrl: string;
 }
+/** Hotel elegido con `?hotel=` en el login (slug de `environment.hotelApis`). */
+const HOTEL_KEY = 'api-hotel';
+export interface HotelApi {
+  slug: string;
+  name: string;
+  apiUrl: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +27,12 @@ export class ApiConfigService {
     return isPlatformBrowser(this._platformId);
   }
   private loadConfig(): void {
+    // Hotel elegido: manda sobre todo lo demás, también en desarrollo.
+    const hotel = this.getHotel();
+    if (hotel) {
+      this.config = { apiUrl: hotel.apiUrl };
+      return;
+    }
     if (!environment.production) {
       this.config = { apiUrl: environment.apiUrl };
       return;
@@ -44,6 +57,42 @@ export class ApiConfigService {
       return;
     }
   }
+  /** Hotel activo distinto de Samawe, o `null`. */
+  getHotel(): HotelApi | null {
+    if (!this.isBrowser) return null;
+    let slug: string | null = null;
+    try {
+      slug = localStorage.getItem(HOTEL_KEY);
+    } catch {
+      return null;
+    }
+    const hotel = slug ? environment.hotelApis[slug] : undefined;
+    return slug && hotel ? { slug, ...hotel } : null;
+  }
+
+  /**
+   * Elige el hotel con el que habla el panel. Un slug que no está en
+   * `hotelApis` (por ejemplo `ecohotelsamawe`) vuelve a la API de Samawe.
+   * Devuelve `true` si cambió la API: la sesión que hubiera era de otro hotel.
+   */
+  selectHotel(slug: string): boolean {
+    if (!this.isBrowser) return false;
+    const before = this.config.apiUrl;
+    const hotel = environment.hotelApis[slug];
+    try {
+      if (hotel) localStorage.setItem(HOTEL_KEY, slug);
+      else localStorage.removeItem(HOTEL_KEY);
+    } catch {
+      /* sin almacenamiento: queda solo para esta pestaña */
+    }
+    if (hotel) this.config = { apiUrl: hotel.apiUrl };
+    else {
+      this.config = { apiUrl: environment.apiUrl };
+      this.loadConfig();
+    }
+    return this.config.apiUrl !== before;
+  }
+
   getApiUrl(): string {
     return this.config.apiUrl;
   }

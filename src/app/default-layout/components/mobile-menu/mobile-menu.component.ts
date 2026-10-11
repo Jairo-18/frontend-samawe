@@ -206,7 +206,13 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
     // día a día, y así el desplegable se recorre sin mezclarlo todo.
     this.loggedMenuItems = [
       ...(MOBILE_LOGGED_CONST[roleCode || ''] || []),
-      ...this.buildAdminItems(allowedItems, allowedModules)
+      ...this.buildAdminItems(allowedItems, allowedModules),
+      ...this.buildAdminItems(
+        allowedItems,
+        allowedModules,
+        'Panel de Superadministrador',
+        'sidebar.superadmin_section'
+      )
     ];
     this.menuItems = finalItems;
   }
@@ -229,9 +235,10 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
    */
   private buildAdminItems(
     allowedItems: string[],
-    allowedModules: string[]
+    allowedModules: string[],
+    MODULE = 'Panel de Administrador',
+    sectionTitle = 'sidebar.admin_section'
   ): NavItem[] {
-    const MODULE = 'Panel de Administrador';
     if (!allowedModules.includes(MODULE)) return [];
 
     const children = MENU_CONST.filter((module) => module.module === MODULE)
@@ -240,7 +247,7 @@ export class MobileMenuComponent implements OnInit, OnDestroy {
       .map((item) => MobileMenuComponent.toNavItem(item));
 
     if (!children.length) return [];
-    return [{ title: 'sidebar.admin_section', children }];
+    return [{ title: sectionTitle, children }];
   }
 
   /**

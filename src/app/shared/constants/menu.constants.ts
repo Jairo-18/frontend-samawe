@@ -185,6 +185,31 @@ export const MENU_CONST: MenuInterface[] = [
     order: 3,
     items: [
       {
+        name: 'Aplicación',
+        titleKey: 'sidebar.application',
+        route: '/organizational/application',
+        icon: 'settings',
+        order: 1
+      },
+      {
+        name: 'Numeración DIAN',
+        titleKey: 'sidebar.numbering',
+        route: '/organizational/numbering',
+        icon: 'confirmation_number',
+        order: 2
+      }
+    ]
+  },
+  {
+    // Solo SUPER ADMINISTRADOR: lo que afecta a toda la plataforma. Los
+    // catálogos de "Gestión" son globales (un cambio llega a todos los
+    // hoteles) y "Organizaciones" administra los hoteles.
+    module: 'Panel de Superadministrador',
+    moduleKey: 'sidebar.module_superadmin',
+    icon: 'admin_panel_settings',
+    order: 4,
+    items: [
+      {
         name: 'Gestión',
         titleKey: 'sidebar.management',
         route: '/organizational/types/manage',
@@ -192,18 +217,11 @@ export const MENU_CONST: MenuInterface[] = [
         order: 1
       },
       {
-        name: 'Aplicación',
-        titleKey: 'sidebar.application',
-        route: '/organizational/application',
-        icon: 'settings',
+        name: 'Organizaciones',
+        titleKey: 'sidebar.organizations',
+        route: '/organizational/organizations',
+        icon: 'apartment',
         order: 2
-      },
-      {
-        name: 'Numeración DIAN',
-        titleKey: 'sidebar.numbering',
-        route: '/organizational/numbering',
-        icon: 'confirmation_number',
-        order: 3
       }
     ]
   }
@@ -213,7 +231,6 @@ const ADMIN_ITEMS = [
   'Productos y Servicios',
   'Recetas',
   'Menú',
-  'Gestión',
   'Aplicación',
   // La vista es de consulta para ADMIN; el backend solo deja CAMBIAR el rango
   // elegido a SUPERADMIN.
@@ -261,11 +278,14 @@ const KITCHEN_ITEMS = [
   'Notas de versión'
 ];
 
+/** Lo del administrador más las vistas del Panel de Superadministrador. */
+const SUPERADMIN_ITEMS = [...ADMIN_ITEMS, 'Gestión', 'Organizaciones'];
+
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
   USER: [''],
   EMP: RECEPTIONIST_ITEMS,
   ADMIN: ADMIN_ITEMS,
-  SUPERADMIN: ADMIN_ITEMS,
+  SUPERADMIN: SUPERADMIN_ITEMS,
   CHE: KITCHEN_ITEMS,
   MES: KITCHEN_ITEMS
 };
@@ -276,5 +296,9 @@ export const ALLOWED_MODULES_BY_ROLE: Record<string, string[]> = {
   CHE: ['Panel de Chef / Mesero'],
   MES: ['Panel de Chef / Mesero'],
   ADMIN: ['Panel de Administrador', 'Panel de Recepcionista'],
-  SUPERADMIN: ['Panel de Administrador', 'Panel de Recepcionista']
+  SUPERADMIN: [
+    'Panel de Administrador',
+    'Panel de Recepcionista',
+    'Panel de Superadministrador'
+  ]
 };

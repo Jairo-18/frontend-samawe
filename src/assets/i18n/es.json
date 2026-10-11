@@ -116,6 +116,8 @@
     "settings": "Configuraciones"
   },
   "login": {
+    "hotel_banner": "Entrando a {{name}}",
+    "hotel_reset": "Entrar a Eco Hotel Samawe",
     "title": "Iniciar Sesión",
     "subtitle": "Ingrese sus datos para acceder a su cuenta",
     "email": "Correo electrónico",
@@ -298,12 +300,21 @@
     "management": "Gestión",
     "application": "Aplicación",
     "numbering": "Numeración DIAN",
+    "organizations": "Organizaciones",
+    "organization_switcher": {
+      "label": "Organización",
+      "mine": "la mía",
+      "banner": "Estás dentro de «{{name}}»: lo que crees o edites se guarda en esa organización. La facturación electrónica está bloqueada aquí.",
+      "back": "Volver a mi organización"
+    },
     "settings": "Ajustes",
     "release_notes": "Notas de versión",
     "module_receptionist": "Panel de Recepcionista",
     "module_chef": "Panel de Chef / Mesero",
     "module_admin": "Panel de Administrador",
-    "admin_section": "Administración"
+    "admin_section": "Administración",
+    "module_superadmin": "Panel de Superadministrador",
+    "superadmin_section": "Superadministración"
   },
   "release_notes": {
     "title": "Notas de versión",
@@ -1008,6 +1019,7 @@
       "reply_deleted": "Respuesta eliminada correctamente"
     },
     "organizational": {
+      "created": "Organización creada correctamente",
       "updated": "Organización actualizada correctamente",
       "deleted": "Organización eliminada correctamente",
       "file_uploaded": "Se ha subido el archivo correctamente",
@@ -1037,6 +1049,86 @@
     }
   },
   "organizational": {
+    "organizations": {
+      "enter": {
+        "action": "Entrar a esta organización (ver y operar su panel)",
+        "already": "Ya estás en esta organización"
+      },
+      "list": {
+        "title": "Organizaciones",
+        "subtitle": "Todos los hoteles de la plataforma, con sus dominios y su uso",
+        "not_found": "No se encontraron organizaciones"
+      },
+      "search": {
+        "text": "Buscar por nombre, NIT, correo, ciudad o dominio",
+        "status": "Estado",
+        "status_placeholder": "Todos"
+      },
+      "actions": {
+        "clear_filters": "Limpiar filtros"
+      },
+      "table": {
+        "logo": "Logo",
+        "name": "Organización",
+        "identification": "Identificación",
+        "contact": "Contacto",
+        "location": "Ubicación",
+        "domains": "Dominios",
+        "usage": "Uso",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "stats": {
+        "users": "Usuarios",
+        "invoices": "Facturas",
+        "products": "Productos",
+        "accommodations": "Hospedajes",
+        "excursions": "Servicios"
+      },
+      "values": {
+        "active": "Activa",
+        "inactive": "Inactiva",
+        "current": "Sitio actual",
+        "no_domains": "Sin dominios"
+      },
+      "form": {
+        "create_title": "Nueva organización",
+        "create_subtitle": "Registra un hotel nuevo en la plataforma",
+        "edit_title": "Editar organización",
+        "edit_subtitle": "Actualiza los datos del hotel seleccionado",
+        "name": "Nombre",
+        "name_required": "El nombre es obligatorio",
+        "legal_name": "Razón social",
+        "slug": "Identificador (slug)",
+        "slug_required": "El identificador es obligatorio",
+        "slug_pattern": "Solo minúsculas, números y guiones (ej. hotel-ejemplo)",
+        "slug_hint": "Se arma solo a partir del nombre; no se podrá cambiar después",
+        "slug_locked_hint": "No se cambia: el sitio carga su marca con este identificador",
+        "identification_type": "Tipo de documento",
+        "identification_number": "Número de identificación (NIT)",
+        "email": "Correo",
+        "email_invalid": "Correo no válido",
+        "phone_code": "Indicativo",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "department": "Departamento",
+        "website": "Sitio web",
+        "status": "Estado",
+        "status_locked_hint": "Es la organización del sitio en uso: no se puede desactivar desde aquí",
+        "cancel": "Cancelar",
+        "save_changes": "Guardar cambios",
+        "create_btn": "Crear organización",
+        "incomplete": "Revisa los campos marcados en rojo antes de guardar"
+      },
+      "delete": {
+        "action": "Eliminar",
+        "title": "¿Eliminar la organización \"{{name}}\"?",
+        "message": "Se borran también sus archivos (logo, imágenes). Esta acción no se puede deshacer.",
+        "blocked_current": "Es la organización del sitio en uso: no se puede eliminar",
+        "blocked_data": "Tiene usuarios, facturas o catálogo: desactívala en lugar de eliminarla"
+      }
+    },
     "common": {
       "clear_filters": "Limpiar filtros",
       "search": "Búsqueda",

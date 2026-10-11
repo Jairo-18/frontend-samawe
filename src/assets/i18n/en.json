@@ -116,6 +116,8 @@
     "settings": "Settings"
   },
   "login": {
+    "hotel_banner": "Signing in to {{name}}",
+    "hotel_reset": "Sign in to Eco Hotel Samawe",
     "title": "Sign In",
     "subtitle": "Enter your details to access your account",
     "email": "Email address",
@@ -298,12 +300,21 @@
     "management": "Management",
     "application": "Application",
     "numbering": "DIAN numbering",
+    "organizations": "Organizations",
+    "organization_switcher": {
+      "label": "Organization",
+      "mine": "mine",
+      "banner": "You are inside “{{name}}”: anything you create or edit is saved to that organization. Electronic invoicing is blocked here.",
+      "back": "Back to my organization"
+    },
     "settings": "Settings",
     "release_notes": "Release notes",
     "module_receptionist": "Receptionist Panel",
     "module_chef": "Chef / Waiter Panel",
     "module_admin": "Administrator Panel",
-    "admin_section": "Administration"
+    "admin_section": "Administration",
+    "module_superadmin": "Super Administrator Panel",
+    "superadmin_section": "Super administration"
   },
   "release_notes": {
     "title": "Release notes",
@@ -1008,6 +1019,7 @@
       "reply_deleted": "Reply deleted successfully"
     },
     "organizational": {
+      "created": "Organization created successfully",
       "updated": "Organization updated successfully",
       "deleted": "Organization deleted successfully",
       "file_uploaded": "File uploaded successfully",
@@ -1037,6 +1049,86 @@
     }
   },
   "organizational": {
+    "organizations": {
+      "enter": {
+        "action": "Enter this organization (view and operate its panel)",
+        "already": "You are already in this organization"
+      },
+      "list": {
+        "title": "Organizations",
+        "subtitle": "Every hotel on the platform, with its domains and usage",
+        "not_found": "No organizations found"
+      },
+      "search": {
+        "text": "Search by name, tax ID, email, city or domain",
+        "status": "Status",
+        "status_placeholder": "All"
+      },
+      "actions": {
+        "clear_filters": "Clear filters"
+      },
+      "table": {
+        "logo": "Logo",
+        "name": "Organization",
+        "identification": "Identification",
+        "contact": "Contact",
+        "location": "Location",
+        "domains": "Domains",
+        "usage": "Usage",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "stats": {
+        "users": "Users",
+        "invoices": "Invoices",
+        "products": "Products",
+        "accommodations": "Lodging",
+        "excursions": "Services"
+      },
+      "values": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "current": "Current site",
+        "no_domains": "No domains"
+      },
+      "form": {
+        "create_title": "New organization",
+        "create_subtitle": "Register a new hotel on the platform",
+        "edit_title": "Edit organization",
+        "edit_subtitle": "Update the selected hotel's details",
+        "name": "Name",
+        "name_required": "Name is required",
+        "legal_name": "Legal name",
+        "slug": "Identifier (slug)",
+        "slug_required": "Identifier is required",
+        "slug_pattern": "Lowercase letters, numbers and hyphens only (e.g. sample-hotel)",
+        "slug_hint": "Built from the name; it cannot be changed later",
+        "slug_locked_hint": "Not editable: the site loads its branding with this identifier",
+        "identification_type": "Document type",
+        "identification_number": "Identification number (tax ID)",
+        "email": "Email",
+        "email_invalid": "Invalid email",
+        "phone_code": "Country code",
+        "phone": "Phone",
+        "address": "Address",
+        "city": "City",
+        "department": "State / department",
+        "website": "Website",
+        "status": "Status",
+        "status_locked_hint": "This is the organization of the site in use: it cannot be deactivated here",
+        "cancel": "Cancel",
+        "save_changes": "Save changes",
+        "create_btn": "Create organization",
+        "incomplete": "Check the fields marked in red before saving"
+      },
+      "delete": {
+        "action": "Delete",
+        "title": "Delete the organization \"{{name}}\"?",
+        "message": "Its files (logo, images) are deleted too. This cannot be undone.",
+        "blocked_current": "This is the organization of the site in use: it cannot be deleted",
+        "blocked_data": "It has users, invoices or catalog items: deactivate it instead of deleting it"
+      }
+    },
     "common": {
       "clear_filters": "Clear filters",
       "search": "Search",

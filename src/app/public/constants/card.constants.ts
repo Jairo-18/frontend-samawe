@@ -4,6 +4,8 @@ import {
 } from '../interface/card.interface';
 
 const ADMIN_CODES = ['ADMIN', 'SUPERADMIN'];
+/** Panel de Superadministrador (Gestión de catálogos globales). */
+const SUPERADMIN_CODES = ['SUPERADMIN', 'PLATFORM_ADMIN'];
 const RECEPTIONIST_CODES = ['ADMIN', 'SUPERADMIN', 'EMP'];
 const KITCHEN_CODES = ['ADMIN', 'SUPERADMIN', 'EMP', 'MES', 'CHE'];
 
@@ -212,7 +214,7 @@ export const DASHBOARD_CARDS: DashboardCard[] = [
     description: 'home.cards.management.description',
     route: '/organizational/types/manage',
     iconNext: 'navigate_next',
-    allowedRoles: ADMIN_CODES
+    allowedRoles: SUPERADMIN_CODES
   },
   {
     icon: 'apps',

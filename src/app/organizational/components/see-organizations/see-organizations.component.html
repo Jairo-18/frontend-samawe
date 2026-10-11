@@ -1,0 +1,226 @@
+<app-section-header
+  [title]="'organizational.organizations.list.title' | translate"
+  [subtitle]="'organizational.organizations.list.subtitle' | translate"
+></app-section-header>
+<app-search-fields
+  [searchFields]="searchFields"
+  [debounceTime]="300"
+  (searchSubmit)="onSearchSubmit($event)"
+  (searchChange)="onSearchChange($event)"
+></app-search-fields>
+<section class="flex w-full justify-end items-center gap-2">
+  <div class="w-full md:w-[24%]">
+    <button
+      class="!w-full"
+      mat-fab
+      extended="true"
+      color="warn"
+      (click)="searchComponent.reset()"
+      [disabled]="!showClearButton"
+    >
+      {{ 'organizational.organizations.actions.clear_filters' | translate }}
+    </button>
+  </div>
+</section>
+<div class="mt-4">
+  <mat-paginator
+    [hidden]="loading || dataSource.data.length === 0"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+  ></mat-paginator>
+  <div class="table-flip-wrapper mb-3">
+    <div class="table-flip-inner">
+      @if (loading) {
+        <app-loader></app-loader>
+      } @else if (dataSource.data.length > 0) {
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="logo">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.logo' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org" class="center-text">
+              <img
+                [src]="logoOf(org)"
+                [alt]="org.name"
+                class="w-9 h-9 min-w-9 shrink-0 rounded-md object-contain border border-[var(--border-color)] mx-auto bg-white"
+              />
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.name' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org">
+              <div class="flex flex-col">
+                <span class="font-bold">{{ org.name }}</span>
+                @if (org.legalName) {
+                  <span class="text-xs opacity-75">{{ org.legalName }}</span>
+                }
+                <span class="text-xs opacity-60">/{{ org.slug }}</span>
+                @if (isActive(org)) {
+                  <span class="text-xs font-bold text-[var(--primary-color)]">
+                    {{ 'organizational.organizations.values.current' | translate }}
+                  </span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="identification">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.identification' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org" class="center-text">
+              @if (org.identificationNumber) {
+                {{ org.identificationType?.code || '' }} {{ org.identificationNumber }}
+              } @else {
+                -
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="contact">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.contact' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org">
+              <div class="flex flex-col text-sm">
+                <span>{{ org.email || '-' }}</span>
+                @if (org.phone) {
+                  <span class="opacity-75">{{ org.phoneCode?.code || '' }} {{ org.phone }}</span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="location">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.location' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org">
+              {{ locationOf(org) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="domains">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.domains' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org">
+              <div class="flex flex-col text-xs gap-0.5">
+                @for (d of org.domains; track d.hostname) {
+                  <span [class.font-bold]="d.isPrimary" [class.opacity-50]="d.status !== 'active'">
+                    {{ d.hostname }}
+                    <span class="opacity-60">({{ d.kind }})</span>
+                  </span>
+                } @empty {
+                  <span class="text-[var(--warning)] font-bold">
+                    {{ 'organizational.organizations.values.no_domains' | translate }}
+                  </span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="usage">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.usage' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let org">
+              <div class="flex flex-col text-xs">
+                <span>{{ 'organizational.organizations.stats.users' | translate }}: {{ org.stats?.users ?? 0 }}</span>
+                <span>{{ 'organizational.organizations.stats.invoices' | translate }}: {{ org.stats?.invoices ?? 0 }}</span>
+                <span>{{ 'organizational.organizations.stats.products' | translate }}: {{ org.stats?.products ?? 0 }}</span>
+                <span>
+                  {{ 'organizational.organizations.stats.accommodations' | translate }}: {{ org.stats?.accommodations ?? 0 }}
+                  · {{ 'organizational.organizations.stats.excursions' | translate }}: {{ org.stats?.excursions ?? 0 }}
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.status' | translate }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let org"
+              class="center-text font-bold"
+              [ngClass]="org.status ? 'text-[var(--success)]' : 'text-[var(--danger)]'"
+            >
+              {{
+                (org.status
+                  ? 'organizational.organizations.values.active'
+                  : 'organizational.organizations.values.inactive'
+                ) | translate
+              }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="center-text">
+              {{ 'organizational.organizations.table.actions' | translate }}
+            </th>
+            <!-- `stopPropagation`: sin esto, pulsar "eliminar" abriría además
+                 la organización por debajo del diálogo de confirmación. -->
+            <td
+              mat-cell
+              *matCellDef="let org"
+              class="center-text whitespace-nowrap"
+              (click)="$event.stopPropagation()"
+            >
+              <span
+                [matTooltip]="
+                  (isActive(org)
+                    ? 'organizational.organizations.enter.already'
+                    : 'organizational.organizations.enter.action'
+                  ) | translate
+                "
+              >
+                <button
+                  mat-icon-button
+                  color="primary"
+                  [disabled]="isActive(org) || !!enteringId"
+                  (click)="enterOrganization(org)"
+                >
+                  <mat-icon>{{ enteringId === org.organizationalId ? 'hourglass_top' : 'login' }}</mat-icon>
+                </button>
+              </span>
+              <button mat-icon-button color="primary" (click)="openOrganization(org)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <!-- El tooltip va en un span: un botón deshabilitado no recibe
+                   eventos de ratón y el tooltip no saldría. -->
+              <span [matTooltip]="deleteTooltip(org)">
+                <button
+                  mat-icon-button
+                  color="warn"
+                  [disabled]="!canDelete(org)"
+                  (click)="openDeleteDialog(org)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            class="clickable-row"
+            tabindex="0"
+            (click)="openOrganization(row)"
+            (keydown.enter)="openOrganization(row)"
+          ></tr>
+        </table>
+      } @else {
+        <div class="w-full justify-center items-center flex">
+          <p>{{ 'organizational.organizations.list.not_found' | translate }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { ApiConfigService } from './api-config.service';
 import {
   InvoiceItemUpdate,
   GuestNotification,
@@ -21,6 +21,7 @@ export class OrdersSocketService {
   private readonly _ngZone: NgZone = inject(NgZone);
   private readonly _localStorageService: LocalStorageService = inject(LocalStorageService);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
 
   private _notifications = new BehaviorSubject<OrderUpdate[]>([]);
   public notifications$ = this._notifications.asObservable();
@@ -58,9 +59,9 @@ export class OrdersSocketService {
     if (this.socket?.connected) return;
 
     this._ngZone.runOutsideAngular(() => {
-      const baseUrl = environment.apiUrl.endsWith('/')
-        ? environment.apiUrl.slice(0, -1)
-        : environment.apiUrl;
+      // La del hotel activo: el interceptor no ve el socket.
+      const apiUrl = this._apiConfig.getApiUrl();
+      const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
 
       this.socket = io(`${baseUrl}/orders`, {
         auth: (cb: (data: object) => void) => cb({ token: this._localStorageService.getAccessToken() }),

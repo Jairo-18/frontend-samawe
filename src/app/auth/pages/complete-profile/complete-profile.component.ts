@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import { ApiConfigService } from '../../../shared/services/api-config.service';
 import {
   FormBuilder,
   FormGroup,
@@ -67,6 +67,7 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
     inject(ApplicationService);
   private readonly _usersService: UsersService = inject(UsersService);
   private readonly _authService: AuthService = inject(AuthService);
+  private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
   private readonly _customValidations: CustomValidationsService = inject(
     CustomValidationsService
   );
@@ -299,7 +300,8 @@ export class CompleteProfileComponent implements OnInit, OnDestroy {
     const userId = this._authService.getCurrentUserId();
     const token = this._authService.getAuthToken();
     if (userId && token) {
-      fetch(`${environment.apiUrl}user/${userId}`, {
+      // `fetch` no pasa por el interceptor: la API del hotel activo, a mano.
+      fetch(`${this._apiConfig.getApiUrl()}user/${userId}`, {
         method: 'DELETE',
         keepalive: true,
         headers: { Authorization: `Bearer ${token}` }

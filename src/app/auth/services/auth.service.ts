@@ -5,9 +5,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, map, Observable, of, ReplaySubject, tap } from 'rxjs';
 import {
+  ActingOrganization,
   LoginCredentials,
   LoginSuccessInterface,
-  RawLoginResponse
+  RawLoginResponse,
+  SwitchOrganizationResponse
 } from '../interfaces/login.interface';
 import { HttpUtilitiesService } from '../../shared/utilities/http-utilities.service';
 import { ApiResponseInterface } from '../../shared/interfaces/api-response.interface';
@@ -300,6 +302,65 @@ export class AuthService {
       return null;
     }
   }
+  /**
+   * Super administrador: pasa el panel a otra organización (o de vuelta a la
+   * propia). Guarda los tokens nuevos y recarga la aplicación entera: los
+   * servicios cachean datos de la organización anterior (catálogos, marca,
+   * listados) y una recarga es la única forma segura de no mezclarlos.
+   */
+  switchOrganization(organizationalId: string): Observable<void> {
+    return this._httpClient
+      .post<ApiResponseInterface<SwitchOrganizationResponse>>(
+        `${environment.apiUrl}auth/switch-organization`,
+        { organizationalId }
+      )
+      .pipe(
+        map((res) => {
+          const data = res.data;
+          const session: LoginSuccessInterface | null =
+            this._localStorageService.getAllSessionData();
+          if (!data?.tokens || !session) {
+            throw new Error('No se pudo cambiar de organización.');
+          }
+          const home =
+            session.user.homeOrganizationalId ??
+            data.homeOrganizationalId ??
+            session.user.organizationalId;
+          session.tokens = data.tokens;
+          session.user.organizationalId = data.organization.organizationalId;
+          session.user.homeOrganizationalId = home;
+          session.user.actingOrganization = data.isActingOrganization
+            ? data.organization
+            : null;
+          this._localStorageService.setItem(
+            this._tokensStorageKey,
+            JSON.stringify(session)
+          );
+        })
+      );
+  }
+
+  /** Organización elegida con el selector, si el super admin está en otra. */
+  getActingOrganization(): ActingOrganization | null {
+    try {
+      return (
+        this._localStorageService.getAllSessionData()?.user
+          ?.actingOrganization ?? null
+      );
+    } catch {
+      return null;
+    }
+  }
+
+  getHomeOrganizationalId(): string | null {
+    try {
+      const user = this._localStorageService.getAllSessionData()?.user;
+      return user?.homeOrganizationalId ?? user?.organizationalId ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   getOrganizationalId(): string | null {
     try {
       const userData = this._localStorageService.getAllSessionData();
