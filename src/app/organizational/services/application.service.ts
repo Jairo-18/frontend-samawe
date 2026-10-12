@@ -99,121 +99,105 @@ export class ApplicationService {
   }
 
   loadBrandingBySlug(slug: string): void {
-    this.getOrganizationBySlug(slug).subscribe({
-      next: (res) => {
-        if (res.data) {
-          const org = res.data;
-          // Lo que pida la web con este id va a la API de Samawe aunque el
-          // panel esté en modo hotel (ver ApiConfigService.routeFor).
-          this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
-          // applyFromOrg escribe el title/description GENÉRICOS de la
-          // organización, así que va antes de publicar el org: las páginas
-          // suscritas a currentOrg$ llaman updatePage() con su propio
-          // title/description y deben ser las últimas en escribir. Al revés
-          // (next → applyFromOrg) lo genérico pisaba lo específico y las
-          // cuatro páginas terminaban con el mismo title en el HTML.
-          this._seoService.applyFromOrg(org);
-          this._currentOrgSubject.next(org);
-          this.updateMediaFromOrg(org);
-          if (isPlatformBrowser(this._platformId)) {
-            if (org.primaryColor) {
-              document.documentElement.style.setProperty(
-                '--primary-color',
-                org.primaryColor
-              );
-            }
-            if (org.secondaryColor) {
-              document.documentElement.style.setProperty(
-                '--secondary-color',
-                org.secondaryColor
-              );
-            }
-            if (org.tertiaryColor) {
-              document.documentElement.style.setProperty(
-                '--tertiary-color',
-                org.tertiaryColor
-              );
-            }
-            // ⚠️ Estos cinco van a `--org-*`, NO a `--title-color` y compañía.
-            //
-            // `setProperty` escribe un estilo EN LÍNEA en `<html>`, que gana a
-            // cualquier regla CSS: escribiendo directo en `--text-color`, el
-            // modo oscuro no podría cambiarlo jamás. `variables.scss` lee estos
-            // valores en modo claro y los ignora en oscuro, donde manda la capa
-            // neutra. Los de MARCA (primario, secundario, terciario) sí van
-            // directos: son identidad y no cambian con el tema.
-            if (org.titleColor) {
-              document.documentElement.style.setProperty(
-                '--org-title-color',
-                org.titleColor
-              );
-            }
-            if (org.subtitleColor) {
-              document.documentElement.style.setProperty(
-                '--org-subtitle-color',
-                org.subtitleColor
-              );
-            }
-            if (org.textColor) {
-              document.documentElement.style.setProperty(
-                '--org-text-color',
-                org.textColor
-              );
-            }
-            if (org.bgPrimaryColor) {
-              document.documentElement.style.setProperty(
-                '--org-bg-primary-color',
-                org.bgPrimaryColor
-              );
-            }
-            if (org.bgSecondaryColor) {
-              document.documentElement.style.setProperty(
-                '--org-bg-secondary-color',
-                org.bgSecondaryColor
-              );
-            }
-
-            // Modo oscuro. Se aplican SIEMPRE, esté o no activo: son variables
-            // que solo lee el bloque `[data-theme='dark']`, así que en claro no
-            // pintan nada y al encender el modo ya están puestas —sin esperar a
-            // que la organización se vuelva a cargar.
-            const darkColors: [string, string | undefined][] = [
-              ['--org-dark-title-color', org.darkTitleColor],
-              ['--org-dark-subtitle-color', org.darkSubtitleColor],
-              ['--org-dark-text-color', org.darkTextColor],
-              ['--org-dark-bg-primary-color', org.darkBgPrimaryColor],
-              ['--org-dark-bg-secondary-color', org.darkBgSecondaryColor]
-            ];
-            for (const [token, value] of darkColors) {
-              if (value) {
-                document.documentElement.style.setProperty(token, value);
-              }
-            }
-
-            // Tipografía. A diferencia de los colores, el valor guardado NO se
-            // aplica tal cual: se resuelve contra el catálogo del front, que
-            // es una lista cerrada. Así, lo que no esté en ella —una familia
-            // retirada, o un valor manipulado en la base— se ignora y queda el
-            // de `variables.scss`, en vez de acabar dentro del `setProperty`.
-            const titleStack = resolveFontStack(org.fontTitle, TITLE_FONTS);
-            if (titleStack) {
-              document.documentElement.style.setProperty(
-                '--font-title',
-                titleStack
-              );
-            }
-            const bodyStack = resolveFontStack(org.fontBody, BODY_FONTS);
-            if (bodyStack) {
-              document.documentElement.style.setProperty(
-                '--font-body',
-                bodyStack
-              );
-            }
-          }
-        }
-      },
-      error: (err) => console.error('Error loading branding by slug:', err)
+    this._loadBranding(this.getOrganizationBySlug(slug), (org) => {
+      // Lo que pida la web con este id va a la API de Samawe aunque el
+      // panel esté en modo hotel (ver ApiConfigService.routeFor).
+      this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
     });
+  }
+
+  /**
+   * Marca del hotel del HOST de la API (`organizational/current`). En el login
+   * en modo hotel (`?hotel=`) la petición va a la API de ese hotel, así que es
+   * su marca, no la de Samawe.
+   */
+  loadCurrentBranding(): void {
+    this._loadBranding(
+      this._http.get<ApiResponseInterface<Organizational>>(
+        `${environment.apiUrl}organizational/current`
+      )
+    );
+  }
+
+  /**
+   * Marca de la organización de la SESIÓN en el panel: el admin de otro hotel
+   * (o un superadmin que entró a otro hotel) ve la suya, no la de Samawe. Antes
+   * el arranque cargaba siempre la de Samawe por slug, y solo la pantalla de
+   * Aplicación ponía la del hotel: al recargar volvía a la de Samawe.
+   * `organizational/:id` no trae los medios: van aparte (`getMedia`).
+   */
+  loadPanelBranding(organizationalId: string): void {
+    this._loadBranding(this.getOrganization(organizationalId));
+    this.getMedia(organizationalId).subscribe({
+      error: (err) => console.error('Error loading panel media:', err)
+    });
+  }
+
+  private _loadBranding(
+    source: Observable<ApiResponseInterface<Organizational>>,
+    beforeApply?: (org: Organizational) => void
+  ): void {
+    source.subscribe({
+      next: (res) => {
+        if (!res.data) return;
+        const org = res.data;
+        beforeApply?.(org);
+        // applyFromOrg escribe el title/description GENÉRICOS de la
+        // organización, así que va antes de publicar el org: las páginas
+        // suscritas a currentOrg$ llaman updatePage() con su propio
+        // title/description y deben ser las últimas en escribir. Al revés
+        // (next → applyFromOrg) lo genérico pisaba lo específico y las
+        // cuatro páginas terminaban con el mismo title en el HTML.
+        this._seoService.applyFromOrg(org);
+        this._currentOrgSubject.next(org);
+        this.updateMediaFromOrg(org);
+        this._applyBrandingStyles(org);
+      },
+      error: (err) => console.error('Error loading branding:', err)
+    });
+  }
+
+  /**
+   * Colores y tipografía de la organización en `<html>`. Lo que la
+   * organización no define se BORRA: al pasar de una marca a otra (web pública
+   * de Samawe <-> panel de otro hotel) no deben quedar colores de la anterior.
+   */
+  private _applyBrandingStyles(org: Organizational): void {
+    if (!isPlatformBrowser(this._platformId)) return;
+    const style = document.documentElement.style;
+    const set = (token: string, value: string | null | undefined) =>
+      value ? style.setProperty(token, value) : style.removeProperty(token);
+    set('--primary-color', org.primaryColor);
+    set('--secondary-color', org.secondaryColor);
+    set('--tertiary-color', org.tertiaryColor);
+    // ⚠️ Estos cinco van a `--org-*`, NO a `--title-color` y compañía.
+    //
+    // `setProperty` escribe un estilo EN LÍNEA en `<html>`, que gana a
+    // cualquier regla CSS: escribiendo directo en `--text-color`, el
+    // modo oscuro no podría cambiarlo jamás. `variables.scss` lee estos
+    // valores en modo claro y los ignora en oscuro, donde manda la capa
+    // neutra. Los de MARCA (primario, secundario, terciario) sí van
+    // directos: son identidad y no cambian con el tema.
+    set('--org-title-color', org.titleColor);
+    set('--org-subtitle-color', org.subtitleColor);
+    set('--org-text-color', org.textColor);
+    set('--org-bg-primary-color', org.bgPrimaryColor);
+    set('--org-bg-secondary-color', org.bgSecondaryColor);
+    // Modo oscuro. Se aplican SIEMPRE, esté o no activo: son variables
+    // que solo lee el bloque `[data-theme='dark']`, así que en claro no
+    // pintan nada y al encender el modo ya están puestas.
+    set('--org-dark-title-color', org.darkTitleColor);
+    set('--org-dark-subtitle-color', org.darkSubtitleColor);
+    set('--org-dark-text-color', org.darkTextColor);
+    set('--org-dark-bg-primary-color', org.darkBgPrimaryColor);
+    set('--org-dark-bg-secondary-color', org.darkBgSecondaryColor);
+    // Tipografía. A diferencia de los colores, el valor guardado NO se
+    // aplica tal cual: se resuelve contra el catálogo del front, que
+    // es una lista cerrada. Así, lo que no esté en ella —una familia
+    // retirada, o un valor manipulado en la base— se ignora y queda el
+    // de `variables.scss`, en vez de acabar dentro del `setProperty`.
+    set('--font-title', resolveFontStack(org.fontTitle, TITLE_FONTS));
+    set('--font-body', resolveFontStack(org.fontBody, BODY_FONTS));
   }
 
   private updateMediaFromOrg(org: Organizational): void {

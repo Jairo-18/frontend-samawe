@@ -15,6 +15,7 @@ import { ApplicationService } from './organizational/services/application.servic
 import { AuthService } from './auth/services/auth.service';
 import { RelatedDataService } from './shared/services/relatedData.service';
 import { ThemeService } from './shared/services/theme.service';
+import { ApiConfigService } from './shared/services/api-config.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,9 @@ export class AppComponent implements OnDestroy {
   private readonly _relatedDataService: RelatedDataService =
     inject(RelatedDataService);
   private readonly _themeService: ThemeService = inject(ThemeService);
+  private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
+  /** Qué marca está aplicada: 'public' (Samawe), 'current' o un id de organización. */
+  private _brandingKey: string | null = null;
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
@@ -60,7 +64,30 @@ export class AppComponent implements OnDestroy {
   }
 
   private _loadInitialBranding(): void {
+    this._brandingKey = 'public';
     this._applicationService.loadBrandingBySlug('ecohotelsamawe');
+  }
+
+  /**
+   * La web pública es de Samawe; el panel muestra la marca de la organización
+   * de la sesión (otro hotel, o el que eligió un superadmin) y el login en
+   * modo hotel, la de ese hotel. Solo recarga cuando cambia.
+   */
+  private _syncBranding(url: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const path = url.split(/[?#]/)[0];
+    let key = 'public';
+    if (!ApiConfigService.isPublicSitePath(path)) {
+      const orgId = this._authService.getOrganizationalId();
+      const defaultId = this._apiConfig.defaultOrganizationalId;
+      if (orgId && orgId !== defaultId) key = orgId;
+      else if (!orgId && this._apiConfig.getHotel()) key = 'current';
+    }
+    if (key === this._brandingKey) return;
+    this._brandingKey = key;
+    if (key === 'public') this._applicationService.loadBrandingBySlug('ecohotelsamawe');
+    else if (key === 'current') this._applicationService.loadCurrentBranding();
+    else this._applicationService.loadPanelBranding(key);
   }
   private _setMaterialOutlinedIconsDefault(): void {
     this._iconRegistry.setDefaultFontSetClass('material-icons');
@@ -70,6 +97,7 @@ export class AppComponent implements OnDestroy {
       (event: unknown): void => {
         if (event instanceof NavigationEnd) {
           this._setScrollOnTop();
+          this._syncBranding(event.urlAfterRedirects);
         }
       }
     );

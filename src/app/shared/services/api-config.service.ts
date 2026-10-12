@@ -108,6 +108,18 @@ export class ApiConfigService {
     this._defaultOrganizationalId = id ?? null;
   }
 
+  get defaultOrganizationalId(): string | null {
+    return this._defaultOrganizationalId;
+  }
+
+  /** Web pública (`/es/...`, `/en/...`) salvo login y perfil. */
+  static isPublicSitePath(path: string): boolean {
+    return (
+      /^\/(es|en)(\/|$|\?|#)/.test(path) &&
+      !/^\/(es|en)\/(auth|user|complete-profile)(\/|$|\?|#)/.test(path)
+    );
+  }
+
   /**
    * A qué API va UNA petición. En modo hotel (`?hotel=` en el login) el panel
    * habla con la API de ese hotel, pero este dominio sigue siendo la web de
@@ -124,10 +136,7 @@ export class ApiConfigService {
     const namesDefaultHotel =
       url.includes(`/slug/${DEFAULT_HOTEL_SLUG}`) ||
       (!!this._defaultOrganizationalId && url.includes(this._defaultOrganizationalId));
-    const path = window.location.pathname;
-    const onPublicSite =
-      /^\/(es|en)(\/|$)/.test(path) &&
-      !/^\/(es|en)\/(auth|user|complete-profile)(\/|$)/.test(path);
+    const onPublicSite = ApiConfigService.isPublicSitePath(window.location.pathname);
     return namesDefaultHotel || onPublicSite
       ? { apiUrl: environment.apiUrl, withSession: false }
       : { apiUrl, withSession: true };
