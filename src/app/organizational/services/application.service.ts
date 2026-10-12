@@ -3,7 +3,7 @@ import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, shareReplay } from 'rxjs';
 import {
   Organizational,
   OrganizationalMedia,
@@ -98,38 +98,80 @@ export class ApplicationService {
       );
   }
 
-  loadBrandingBySlug(slug: string): void {
-    this._loadBranding(this.getOrganizationBySlug(slug), (org) => {
-      // El id de Samawe: su panel usa la marca pública, sin recargarla.
-      if (slug === 'ecohotelsamawe') {
-        this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
+  loadBrandingBySlug(slug: string, showLoader = false): void {
+    this._loadBranding(
+      this.getOrganizationBySlug(slug).pipe(map((res) => ({ org: res.data ?? null }))),
+      showLoader,
+      (org) => {
+        // El id de Samawe: su panel usa la marca pública, sin recargarla.
+        if (slug === 'ecohotelsamawe') {
+          this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
+        }
       }
-    });
+    );
   }
 
   /**
    * Marca de la organización de la SESIÓN en el panel: el admin de otro hotel
-   * (o un superadmin que entró a otro hotel) ve la suya, no la de Samawe. Antes
-   * el arranque cargaba siempre la de Samawe por slug, y solo la pantalla de
-   * Aplicación ponía la del hotel: al recargar volvía a la de Samawe.
-   * `organizational/:id` no trae los medios: van aparte (`getMedia`).
+   * (o un superadmin que entró a otro hotel) ve la suya, no la de Samawe.
+   * `organizational/:id` no trae los medios: van aparte y se aplican JUNTOS
+   * (logo y colores a la vez, sin mezcla de dos hoteles mientras tanto).
    */
-  loadPanelBranding(organizationalId: string): void {
-    this._loadBranding(this.getOrganization(organizationalId));
-    this.getMedia(organizationalId).subscribe({
-      error: (err) => console.error('Error loading panel media:', err)
-    });
+  loadPanelBranding(organizationalId: string, showLoader = false): void {
+    this._loadBranding(
+      forkJoin({
+        org: this.getOrganization(organizationalId).pipe(map((res) => res.data ?? null)),
+        media: this._http
+          .get<ApiResponseInterface<Record<string, OrganizationalMedia[]>>>(
+            `${environment.apiUrl}organizational/${organizationalId}/media`
+          )
+          .pipe(
+            map((res) => res.data ?? null),
+            catchError(() => of(null))
+          )
+      }),
+      showLoader
+    );
   }
 
+  /** La organización cuya marca está aplicada ahora (o `null`). */
+  get currentOrg(): Organizational | null {
+    return this._currentOrgSubject.value;
+  }
+
+  /**
+   * Hay una marca cargándose que todavía no se ve: la app tapa la pantalla con
+   * un loader neutro (sin logo ni colores, que aún no se saben). Solo cuando
+   * quien la pide lo indica: la web pública ya llega armada del servidor.
+   */
+  private _brandingLoadingSubject = new BehaviorSubject<boolean>(false);
+  public brandingLoading$ = this._brandingLoadingSubject.asObservable();
+
+  /**
+   * Número de la última marca pedida. Al abrir la app pueden pedirse dos casi a
+   * la vez; ganaba la que LLEGABA última y pisaba a la otra. Ahora solo se
+   * aplica la última PEDIDA.
+   */
+  private _brandingRequest = 0;
+
   private _loadBranding(
-    source: Observable<ApiResponseInterface<Organizational>>,
+    source: Observable<{
+      org: Organizational | null;
+      media?: Record<string, OrganizationalMedia[]> | null;
+    }>,
+    showLoader: boolean,
     beforeApply?: (org: Organizational) => void
   ): void {
+    const request = ++this._brandingRequest;
+    this._brandingLoadingSubject.next(showLoader);
+    const done = () => {
+      if (request === this._brandingRequest) this._brandingLoadingSubject.next(false);
+    };
     source.subscribe({
-      next: (res) => {
-        if (!res.data) return;
-        const org = res.data;
+      next: ({ org, media }) => {
+        if (!org) return done();
         beforeApply?.(org);
+        if (request !== this._brandingRequest) return; // llegó tarde: hay otra pedida después
         // applyFromOrg escribe el title/description GENÉRICOS de la
         // organización, así que va antes de publicar el org: las páginas
         // suscritas a currentOrg$ llaman updatePage() con su propio
@@ -138,10 +180,15 @@ export class ApplicationService {
         // cuatro páginas terminaban con el mismo title en el HTML.
         this._seoService.applyFromOrg(org);
         this._currentOrgSubject.next(org);
-        this.updateMediaFromOrg(org);
+        if (media) this._mediaMapSubject.next(media);
+        else this.updateMediaFromOrg(org);
         this._applyBrandingStyles(org);
+        done();
       },
-      error: (err) => console.error('Error loading branding:', err)
+      error: (err) => {
+        console.error('Error loading branding:', err);
+        done();
+      }
     });
   }
 

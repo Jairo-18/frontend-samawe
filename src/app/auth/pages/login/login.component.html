@@ -31,10 +31,9 @@
         <div
           class="w-full flex flex-wrap items-center justify-center gap-x-2 text-sm rounded-[4px] border border-[var(--primary-color)] px-3 py-2"
         >
-          <span>{{ 'login.hotel_banner' | translate: { name: hotel.name } }}</span>
-          <button type="button" class="underline" (click)="useDefaultHotel()">
-            {{ 'login.hotel_reset' | translate }}
-          </button>
+          <span>{{
+            'login.hotel_banner' | translate: { name: hotel.name }
+          }}</span>
         </div>
       }
       <form
@@ -102,6 +101,10 @@
             class="w-full"
           />
 
+          <!-- En modo hotel (?hotel=) no se muestra nada de Samawe: Google,
+               el registro de clientes y sus términos son de Samawe, y a un
+               motel no le sirve que quede rastro del otro hotel. -->
+          @if (!hotel) {
           <app-button-landing
             [label]="'login.google' | translate"
             variant="transparent"
@@ -132,14 +135,17 @@
               />
             </svg>
           </app-button-landing>
+          }
           <div>
             <a
               class="cursor-pointer text-[var(--primary-color)] hover:text-[var(--primary-color)] hover-underline-animation font-medium text-sm md:text-base"
               routerLink="../recovery-password"
+              queryParamsHandling="preserve"
             >
               {{ 'login.forgot_password' | translate }}
             </a>
           </div>
+          @if (!hotel) {
           <div
             class="flex w-full content-between items-center justify-center gap-1"
           >
@@ -170,17 +176,20 @@
               >{{ 'footer.terms' | translate }}</a
             >.
           </p>
+          }
         </div>
       </form>
     </section>
-    <section class="relative w-full hidden lg:flex flex-col bg-[var(--surface-sunken)]">
+    <section
+      class="relative w-full hidden lg:flex flex-col bg-[var(--surface-sunken)]"
+    >
       <img
         *ngIf="loginBgUrl"
         [ngSrc]="loginBgUrl"
         priority
         fill
         alt="Login Background"
-        class="object-cover"
+        class="object-fit"
       />
     </section>
   </article>

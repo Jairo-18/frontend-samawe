@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { ApiConfigService } from '../../../shared/services/api-config.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faWhatsapp,
@@ -33,6 +34,16 @@ export class FooterComponent implements OnInit, OnDestroy {
   private readonly _applicationService: ApplicationService =
     inject(ApplicationService);
   readonly lang: LangService = inject(LangService);
+  private readonly _router: Router = inject(Router);
+
+  /**
+   * Login/recuperación en modo hotel (`?hotel=`): sin los enlaces a la web y a
+   * los términos de Samawe. A un motel no le sirve que quede rastro del otro
+   * hotel. Nombre, contacto y copyright son del hotel elegido y se quedan.
+   */
+  get brandOnly(): boolean {
+    return !!ApiConfigService.hotelSlugFromUrl(this._router.url);
+  }
   private _subscription = new Subscription();
 
   currentYear = new Date().getFullYear();

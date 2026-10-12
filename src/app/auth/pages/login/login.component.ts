@@ -97,9 +97,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const slug = this._route.snapshot.queryParamMap.get('hotel');
-    this.hotel = this._apiConfig.getLoginHotel();
-    if (slug) this._selectHotel(slug);
+    // El modo hotel sale de la URL: el componente se reutiliza si solo cambia
+    // la query, así que se escucha (no basta el snapshot).
+    this._subscription.add(
+      this._route.queryParamMap.subscribe((params) => this._selectHotel(params.get('hotel') ?? ''))
+    );
     this.loadLoginBg();
     this.form.valueChanges.subscribe(() => {
       if (this.cooldownRemaining > 0) {
@@ -119,8 +121,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   /**
    * `?hotel=<slug>`: se valida contra el backend (que exista y esté activo) y
-   * se guarda con su nombre para el aviso. `ecohotelsamawe` o un slug que no
-   * existe vuelven al login de Samawe.
+   * se recuerda su nombre para el aviso. Sin slug, `ecohotelsamawe` o uno que
+   * no existe: login de Samawe. La marca la pone AppComponent según la URL.
    */
   private _selectHotel(slug: string): void {
     const clean = slug.trim().toLowerCase();
@@ -128,13 +130,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.useDefaultHotel();
       return;
     }
+    // Modo hotel YA, con lo que diga la URL: si se esperaba a la validación,
+    // durante ese instante se veía lo de Samawe (Google, registro, términos).
+    // El nombre sale del último validado (volver desde "Recuperar contraseña")
+    // o, mientras tanto, del slug.
+    this.hotel = this._apiConfig.getLoginHotel() ?? { slug: clean, name: clean };
     this._applicationService.getOrganizationBySlug(clean).subscribe({
       next: (res) => {
         const org = res.data;
         if (!org) return this.useDefaultHotel();
         this.hotel = { slug: org.slug ?? clean, name: org.name };
         this._apiConfig.setLoginHotel(this.hotel);
-        this._applicationService.loadBrandingBySlug(this.hotel.slug);
       },
       error: () => this.useDefaultHotel()
     });
@@ -188,6 +194,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this._authService.login(this.form.value).subscribe({
       next: () => {
         this.loggingIn = false;
+        // Para volver al login de ESTE hotel al cerrar sesión o si vence.
+        this._apiConfig.setSessionHotel(this.hotel?.slug ?? null);
         this._router.navigateByUrl('/home');
         this._authService.cleanRedirectUrl();
       },

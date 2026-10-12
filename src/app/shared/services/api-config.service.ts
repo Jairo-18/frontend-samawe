@@ -6,13 +6,16 @@ export interface ApiConfig {
   apiUrl: string;
 }
 /**
- * Hotel elegido con `?hotel=<slug>` en el login. Es solo una PISTA para el
- * login (en qué hotel buscar la cuenta: el mismo correo puede existir en
- * varios) y para la marca de la pantalla de login. Todas las peticiones van a
- * la misma API: en el host del panel, con sesión, el backend opera en el hotel
- * del usuario (`organization_domains.isPanel`).
+ * Login de OTRO hotel: `/:lang/auth/...?hotel=<slug>`. El modo hotel sale SOLO
+ * de la URL (no se guarda en el navegador): sin `?hotel=`, o cortando la URL,
+ * todo vuelve a ser de Samawe. El slug le dice al backend en qué hotel buscar
+ * la cuenta (el mismo correo puede existir en varios) y da la marca del login.
  */
-const HOTEL_KEY = 'api-hotel';
+const DEFAULT_HOTEL_SLUG = 'ecohotelsamawe';
+/** Hotel por el que se inició la sesión: para volver a SU login al salir. Se borra al cerrar sesión. */
+const SESSION_HOTEL_KEY = 'session-hotel';
+/** Versión anterior: el hotel se guardaba en el dispositivo. Se limpia al arrancar. */
+const LEGACY_HOTEL_KEY = 'api-hotel';
 export interface LoginHotel {
   slug: string;
   name: string;
@@ -27,6 +30,13 @@ export class ApiConfigService {
   };
   constructor() {
     this.loadConfig();
+    if (this.isBrowser) {
+      try {
+        localStorage.removeItem(LEGACY_HOTEL_KEY);
+      } catch {
+        /* sin almacenamiento */
+      }
+    }
   }
   private get isBrowser(): boolean {
     return isPlatformBrowser(this._platformId);
@@ -56,32 +66,45 @@ export class ApiConfigService {
       return;
     }
   }
-  /** Hotel elegido para el login, o `null` (Samawe). */
+  /** Slug de `?hotel=` en una ruta de login/recuperación (`/:lang/auth/...`); `null` = Samawe. */
+  static hotelSlugFromUrl(url: string): string | null {
+    const [path, rest = ''] = url.split('?');
+    if (!/^\/(es|en)\/auth(\/|$)/.test(path)) return null;
+    const slug = new URLSearchParams(rest.split('#')[0]).get('hotel')?.trim().toLowerCase();
+    return slug && slug !== DEFAULT_HOTEL_SLUG ? slug : null;
+  }
+
+  /** Nombre ya validado contra el backend (lo pone el login), para el aviso. */
+  private _loginHotel: LoginHotel | null = null;
+
+  /** Hotel del login de la URL ACTUAL, o `null` (Samawe). */
   getLoginHotel(): LoginHotel | null {
     if (!this.isBrowser) return null;
-    let raw: string | null = null;
-    try {
-      raw = localStorage.getItem(HOTEL_KEY);
-    } catch {
-      return null;
-    }
-    if (!raw) return null;
-    try {
-      const parsed = JSON.parse(raw) as LoginHotel;
-      return parsed?.slug ? parsed : null;
-    } catch {
-      // Formato viejo: solo el slug.
-      return { slug: raw, name: raw };
-    }
+    const slug = ApiConfigService.hotelSlugFromUrl(window.location.pathname + window.location.search);
+    if (!slug) return null;
+    return this._loginHotel?.slug === slug ? this._loginHotel : { slug, name: slug };
   }
 
   setLoginHotel(hotel: LoginHotel | null): void {
+    this._loginHotel = hotel;
+  }
+
+  getSessionHotel(): string | null {
+    if (!this.isBrowser) return null;
+    try {
+      return localStorage.getItem(SESSION_HOTEL_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  setSessionHotel(slug: string | null): void {
     if (!this.isBrowser) return;
     try {
-      if (hotel) localStorage.setItem(HOTEL_KEY, JSON.stringify(hotel));
-      else localStorage.removeItem(HOTEL_KEY);
+      if (slug) localStorage.setItem(SESSION_HOTEL_KEY, slug);
+      else localStorage.removeItem(SESSION_HOTEL_KEY);
     } catch {
-      /* sin almacenamiento: queda solo para esta pestaña */
+      /* sin almacenamiento */
     }
   }
 

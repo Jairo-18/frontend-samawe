@@ -17,9 +17,11 @@
           {{ org?.name | capitalize }}
         </span>
       </div>
-      <p class="text-sm leading-relaxed text-white/70">
-        {{ (org?.description | translated) || ('footer.default_description' | translate) }}
-      </p>
+      <!-- Sin descripción no se inventa una: el texto por defecto era de Samawe
+           y salía en el pie de cualquier hotel. -->
+      @if (org?.description | translated; as description) {
+        <p class="text-sm leading-relaxed text-white/70">{{ description }}</p>
+      }
       <!-- Redes sociales -->
       <div class="flex items-center gap-3 mt-1">
         @if (org?.facebookUrl) {
@@ -54,7 +56,9 @@
     </div>
 
     <!-- Col 2: Navegación. `<nav>` y no `<div>`: es una lista de enlaces de
-         navegación, así los lectores de pantalla la anuncian como tal. -->
+         navegación, así los lectores de pantalla la anuncian como tal.
+         En el login de otro hotel (`brandOnly`) no va: son páginas de Samawe. -->
+    @if (!brandOnly) {
     <nav class="flex flex-col gap-3">
       <span
         class="footer-heading text-white font-semibold text-sm uppercase tracking-widest pb-1 border-b border-white/20 mb-1"
@@ -67,6 +71,7 @@
       <a [routerLink]="lang.route('about-us')"      class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.about_us'      | translate }}</a>
       <a [routerLink]="lang.route('how-to-arrive')" class="text-sm text-white/70 hover:text-white transition-colors">{{ 'footer.how_to_arrive' | translate }}</a>
     </nav>
+    }
 
     <!-- Col 3: Contacto -->
     <div class="flex flex-col gap-3">
@@ -109,11 +114,13 @@
       class="max-w-7xl 3xl:max-w-[1600px] mx-auto px-6 py-4 flex flex-row flex-wrap items-center justify-between gap-2 text-xs text-white/50"
     >
       <span class="footer-copy">© {{ currentYear }} {{ org?.name }}. {{ 'footer.rights' | translate }}</span>
+      @if (!brandOnly) {
       <div class="footer-legal flex items-center gap-4">
         <a [routerLink]="lang.route('legal/privacity')" class="hover:text-white transition-colors">{{ 'footer.privacy' | translate }}</a>
         <span>·</span>
         <a [routerLink]="lang.route('legal/terms')" class="hover:text-white transition-colors">{{ 'footer.terms' | translate }}</a>
       </div>
+      }
       <span class="footer-copy">{{ 'footer.developed_by' | translate }} <a href="https://jhonlegardaportfolio.netlify.app/home" target="_blank" rel="noopener" class="text-white font-medium hover:text-white/80 transition-colors underline underline-offset-2">Jhon Jairo Legarda Erazo</a></span>
     </div>
   </div>

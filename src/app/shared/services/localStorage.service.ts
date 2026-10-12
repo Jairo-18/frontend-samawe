@@ -44,11 +44,8 @@ export class LocalStorageService {
    * sesión. Antes solo se salvaba el idioma, y `clear()` se llevaba también
    * `_cookieConsent`: cada vez que se cerraba sesión (o caducaba) el aviso de
    * cookies volvía a salir.
-   * `api-hotel` (hotel elegido en el login, ver ApiConfigService) también es
-   * del dispositivo: el admin de otro hotel no tiene que volver a elegirlo cada
-   * vez que caduca la sesión.
    */
-  private static readonly _DEVICE_KEYS = ['lang', '_cookieConsent', 'api-hotel'];
+  private static readonly _DEVICE_KEYS = ['lang', '_cookieConsent'];
 
   cleanLocalStorage(): void {
     if (!this.isLocalStorageAvailable()) return;

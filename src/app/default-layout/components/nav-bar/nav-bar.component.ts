@@ -1,3 +1,4 @@
+import { ApiConfigService } from '../../../shared/services/api-config.service';
 import {
   Component,
   inject,
@@ -116,8 +117,22 @@ export class NavBarComponent implements OnInit, OnDestroy {
     return url === '/es' || url === '/en' || url === '/es/' || url === '/en/';
   }
 
+  /**
+   * Login/recuperación en modo hotel (`?hotel=`): la barra muestra solo la
+   * marca de ese hotel, sin el menú de la web de Samawe ni el enlace del logo
+   * a ella. A un motel no le sirve que quede rastro del otro hotel.
+   */
+  get brandOnly(): boolean {
+    return !!ApiConfigService.hotelSlugFromUrl(this._router.url);
+  }
+
   private _buildNavItems(): void {
     const r = (path: string) => this._langService.route(path);
+    if (this.brandOnly) {
+      this.navBarItems = [];
+      this.loginItem = undefined;
+      return;
+    }
     this.navBarItems = [
       {
         title: this._translate.instant('nav.home'),

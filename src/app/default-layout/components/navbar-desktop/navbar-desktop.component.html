@@ -27,10 +27,11 @@
       class="order-1 flex flex-1 items-center gap-x-3 transition-colors duration-300"
     >
       <img
-        routerLink="/"
+        [routerLink]="brandOnly ? null : '/'"
         [src]="logoUrl"
         [alt]="organizationalName"
-        class="h-14 w-14 2xl:h-[70px] 2xl:w-[70px] cursor-pointer transition-all duration-300"
+        [class.cursor-pointer]="!brandOnly"
+        class="h-14 w-14 2xl:h-[70px] 2xl:w-[70px] transition-all duration-300 rounded-full"
       />
       <span
         class="nav-label hidden lg:block text-base 2xl:text-base 3xl:text-lg font-semibold transition-colors duration-300"
@@ -57,7 +58,9 @@
         <a
           [routerLink]="item.route"
           routerLinkActive="!text-[var(--brand)]"
-          [routerLinkActiveOptions]="item.exact ? exactOptionsStrict : exactOptions"
+          [routerLinkActiveOptions]="
+            item.exact ? exactOptionsStrict : exactOptions
+          "
           class="nav-label cursor-pointer hover-underline-animation font-medium text-sm lg:text-base px-1 lg:px-1 3xl:px-2 py-1 transition-colors duration-200 whitespace-nowrap flex items-center gap-2"
         >
           <mat-icon class="scale-90" *ngIf="item.icon">{{

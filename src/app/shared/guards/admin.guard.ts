@@ -8,7 +8,9 @@ export const adminGuard: CanActivateFn = () => {
   const userData = localStorageService.getUserData();
   const code = userData?.roleType?.code;
   if (!code || !STAFF_CODES.includes(code)) {
-    router.navigate(['/']);
+    // A `/home` y no a `/`: decide según el hotel (con la sesión de otro hotel,
+    // `/` era la web de Samawe).
+    router.navigate(['/home']);
     return false;
   }
   return true;

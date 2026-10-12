@@ -186,9 +186,15 @@
     width: auto;
     max-width: 400px;
     margin: 10px;
-    background-color: white;
+    // Fondo y texto del tema (claro u oscuro); el color del tipo va en el
+    // borde, el icono, el título y la barra. `!important` en el texto:
+    // ngx-toastr trae `color: #FFFFFF` en `.toast-container .ngx-toastr`, con
+    // la misma especificidad y cargado DESPUÉS, y el mensaje salía blanco
+    // sobre el fondo claro.
+    background-color: var(--surface-raised);
+    color: var(--on-surface) !important;
     border-radius: 4px !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
     display: flex;
     align-items: center;
     // `!important` porque ngx-toastr trae `padding: 15px 15px 15px 50px` en
@@ -247,6 +253,7 @@
       }
 
       .toast-message {
+        color: var(--on-surface) !important;
         font-size: 0.95rem;
 
         @media (max-width: 768px) {
@@ -265,38 +272,58 @@
     }
 
     &.brand-toast-success {
-      border: 1px solid $toast-success-border;
-      color: $toast-success-color;
+      border: 1px solid var(--toast-success);
+      border-left-width: 4px;
+
+      .toast-icon,
+      .toast-title {
+        color: var(--toast-success);
+      }
 
       .toast-progress {
-        background-color: $toast-success-border;
+        background-color: var(--toast-success);
       }
     }
 
     &.brand-toast-warning {
-      border: 1px solid $toast-warning-border;
-      color: $toast-warning-color;
+      border: 1px solid var(--toast-warning);
+      border-left-width: 4px;
+
+      .toast-icon,
+      .toast-title {
+        color: var(--toast-warning);
+      }
 
       .toast-progress {
-        background-color: $toast-warning-border;
+        background-color: var(--toast-warning);
       }
     }
 
     &.brand-toast-error {
-      border: 1px solid $toast-error-border;
-      color: $toast-error-color;
+      border: 1px solid var(--toast-error);
+      border-left-width: 4px;
+
+      .toast-icon,
+      .toast-title {
+        color: var(--toast-error);
+      }
 
       .toast-progress {
-        background-color: $toast-error-border;
+        background-color: var(--toast-error);
       }
     }
 
     &.brand-toast-info {
-      border: 1px solid $toast-info-border;
-      color: $toast-info-color;
+      border: 1px solid var(--toast-info);
+      border-left-width: 4px;
+
+      .toast-icon,
+      .toast-title {
+        color: var(--toast-info);
+      }
 
       .toast-progress {
-        background-color: $toast-info-border;
+        background-color: var(--toast-info);
       }
     }
   }

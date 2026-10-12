@@ -1,2 +1,8 @@
 <router-outlet />
-
+<!-- Cargando la marca de un hotel: pantalla neutra (sin logo ni colores, que
+     aún no se saben) para no mostrar un instante la de otro hotel. -->
+@if (brandingLoading$ | async) {
+  <div class="branding-loader" role="status" aria-live="polite">
+    <span class="branding-loader__spinner" aria-hidden="true"></span>
+  </div>
+}

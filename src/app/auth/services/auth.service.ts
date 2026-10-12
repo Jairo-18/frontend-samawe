@@ -1,7 +1,8 @@
+import { ApplicationService } from '../../organizational/services/application.service';
 import { ApiConfigService } from '../../shared/services/api-config.service';
 import { LocalStorageService } from './../../shared/services/localStorage.service';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, Injector, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, map, Observable, of, ReplaySubject, tap } from 'rxjs';
@@ -30,6 +31,8 @@ export class AuthService {
     inject(LocalStorageService);
   private readonly _httpClient: HttpClient = inject(HttpClient);
   private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
+  // Por Injector y no inject() directo: ApplicationService se pide recién al salir.
+  private readonly _injector: Injector = inject(Injector);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private readonly _sidebarState: SidebarStateService =
@@ -118,6 +121,9 @@ export class AuthService {
    */
   signOut(): void {
     if (this._signingOut) return;
+    // El login de destino se decide AHORA, con la sesión todavía en pie: más
+    // abajo se borra, y calcularlo después mandaba siempre al de Samawe.
+    const loginUrl = this._loginUrlForSession();
 
     const session = this._localStorageService.getAllSessionData();
     if (
@@ -127,7 +133,7 @@ export class AuthService {
     ) {
       // Sin datos completos no hay nada que cerrar en el servidor, pero la
       // sesión local sí hay que dejarla limpia.
-      this._finishSignOut();
+      this._finishSignOut(loginUrl);
       return;
     }
 
@@ -137,18 +143,18 @@ export class AuthService {
       accessToken: session.tokens.accessToken,
       accessSessionId: session.session.accessSessionId
     }).subscribe({
-      next: () => this._finishSignOut(),
+      next: () => this._finishSignOut(loginUrl),
       // Si el servidor falla igual hay que sacar a la persona: dejarla dentro
       // con la sesión a medias es peor que perder el registro del cierre.
-      error: () => this._finishSignOut()
+      error: () => this._finishSignOut(loginUrl)
     });
   }
 
-  private _finishSignOut(): void {
+  private _finishSignOut(loginUrl: string): void {
     this._signingOut = false;
     this._sidebarState.closeForLogout();
     this._sidebarState.clearCache();
-    this.cleanStorageAndRedirectToLogin();
+    this.cleanStorageAndRedirectToLogin(loginUrl);
   }
 
   logout(data: LogOutInterface): Observable<unknown> {
@@ -157,10 +163,9 @@ export class AuthService {
       .post<unknown>(`${environment.apiUrl}auth/sign-out`, params)
       .pipe(
         tap(() => {
+          // Sin navegar: lo hace `signOut()` una sola vez, con el login que
+          // calculó antes de borrar la sesión.
           this._clearRefreshTimer();
-          this._localStorageService.cleanLocalStorage();
-          this._isLoggedSubject.next(false);
-          this._router.navigateByUrl('/auth/login');
         })
       );
   }
@@ -276,11 +281,31 @@ export class AuthService {
     }
   }
 
-  cleanStorageAndRedirectToLogin(): void {
+  cleanStorageAndRedirectToLogin(loginUrl: string = this._loginUrlForSession()): void {
     this._clearRefreshTimer();
     this._localStorageService.cleanLocalStorage();
     this._isLoggedEmit();
-    this._router.navigate(['/auth/login']);
+    this._router.navigateByUrl(loginUrl);
+  }
+
+  /**
+   * A qué login vuelve quien cierra sesión (o a quien se le vence), leído ANTES
+   * de limpiarla: el de su hotel. Samawe -> su login de siempre; otro hotel ->
+   * `/auth/login?hotel=<slug>`, sin nada de Samawe. Sale del hotel con que
+   * entró; si la sesión no lo tiene (abierta antes de este cambio), del hotel
+   * cuya marca tiene el panel, si es el del usuario.
+   */
+  private _loginUrlForSession(): string {
+    let hotel = this._apiConfig.getSessionHotel();
+    if (!hotel) {
+      const org = this._injector.get(ApplicationService).currentOrg;
+      // El hotel de la CUENTA, no en el que actúa: un superadmin dentro de otro
+      // hotel sigue siendo de Samawe y vuelve a su login.
+      if (org?.slug && org.organizationalId === this.getHomeOrganizationalId()) hotel = org.slug;
+    }
+    return hotel && hotel !== 'ecohotelsamawe'
+      ? `/auth/login?hotel=${encodeURIComponent(hotel)}`
+      : '/auth/login';
   }
   getUserLoggedIn(): UserInterface {
     return this._localStorageService.getUserData();

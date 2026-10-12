@@ -44,6 +44,41 @@
   --mdc-radio-selected-focus-icon-color: var(--primary-color);
   --mdc-radio-selected-hover-icon-color: var(--primary-color);
   --mdc-radio-selected-pressed-icon-color: var(--primary-color);
+  // El tema de Material está compilado con una paleta VERDE fija (la de
+  // Samawe): sin esto, el interruptor de modo oscuro, los spinners, las
+  // pestañas… salían verdes en cualquier hotel. Todo al primario del hotel.
+  --mdc-switch-selected-handle-color: var(--primary-color);
+  --mdc-switch-selected-hover-handle-color: var(--primary-color);
+  --mdc-switch-selected-focus-handle-color: var(--primary-color);
+  --mdc-switch-selected-pressed-handle-color: var(--primary-color);
+  --mdc-switch-selected-track-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  --mdc-switch-selected-hover-track-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  --mdc-switch-selected-focus-track-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  --mdc-switch-selected-pressed-track-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  --mdc-switch-selected-hover-state-layer-color: var(--primary-color);
+  --mdc-switch-selected-focus-state-layer-color: var(--primary-color);
+  --mdc-switch-selected-pressed-state-layer-color: var(--primary-color);
+  --mdc-switch-selected-icon-color: #ffffff;
+  --mdc-circular-progress-active-indicator-color: var(--primary-color);
+  --mdc-linear-progress-active-indicator-color: var(--primary-color);
+  --mdc-outlined-text-field-focus-outline-color: var(--primary-color);
+  --mat-form-field-focus-select-arrow-color: var(--primary-color);
+  --mat-select-focused-arrow-color: var(--primary-color);
+  --mat-option-selected-state-label-text-color: var(--primary-color);
+  --mdc-tab-indicator-active-indicator-color: var(--primary-color);
+  --mat-tab-header-active-label-text-color: var(--primary-color);
+  --mat-tab-header-active-focus-label-text-color: var(--primary-color);
+  --mat-tab-header-active-hover-label-text-color: var(--primary-color);
+  --mat-tab-header-active-focus-indicator-color: var(--primary-color);
+  --mat-tab-header-active-hover-indicator-color: var(--primary-color);
+  --mat-datepicker-calendar-date-selected-state-background-color: var(--primary-color);
+
+  // Toasts: el de ÉXITO es el primario del hotel (decisión del dueño); error,
+  // aviso e info quedan semánticos.
+  --toast-success: var(--primary-color);
+  --toast-error: #c62828;
+  --toast-warning: #b26a00;
+  --toast-info: #1565c0;
 
   // ── Capa neutra, para el modo oscuro ──────────────────────────────────────
   //
@@ -112,6 +147,12 @@
 // Se usa `color-mix` para que siga siendo SU color —funciona con el que sea—
 // en vez de un verde claro fijo que ignoraría la configuración.
 :root[data-theme='dark'] {
+  // Toasts en oscuro: más claros para que se lean. El de éxito, el primario
+  // del hotel aclarado con `color-mix` (sigue siendo SU color).
+  --toast-success: color-mix(in srgb, var(--primary-color) 70%, white);
+  --toast-error: #ef5350;
+  --toast-warning: #ffb74d;
+  --toast-info: #64b5f6;
   // Igual que en claro: el valor lo puede fijar la organización desde
   // Apariencia (`--org-dark-*`), y si no hay nada guardado rige el de aquí.
   --surface: var(--org-dark-bg-secondary-color, #14181d);

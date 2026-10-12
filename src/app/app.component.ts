@@ -8,7 +8,7 @@ import {
 import { Meta } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
-import { isPlatformBrowser } from '@angular/common';
+import { AsyncPipe, isPlatformBrowser } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 import { ApplicationService } from './organizational/services/application.service';
@@ -19,7 +19,7 @@ import { ApiConfigService } from './shared/services/api-config.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, AsyncPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -36,6 +36,7 @@ export class AppComponent implements OnDestroy {
   private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
   /** Qué marca está aplicada: 'public' (Samawe), 'hotel:<slug>' (login) o un id de organización. */
   private _brandingKey: string | null = null;
+  readonly brandingLoading$ = this._applicationService.brandingLoading$;
   private _routerSubscription!: Subscription;
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) {
@@ -63,7 +64,17 @@ export class AppComponent implements OnDestroy {
     }
   }
 
+  /**
+   * En el servidor, siempre Samawe: de ahí salen el title y la meta de la web
+   * pública (lo que ve Googlebot). En el navegador se decide con la URL y la
+   * sesión desde el primer momento, para no pedir primero la de Samawe y
+   * después la del hotel (se veía un instante la marca equivocada).
+   */
   private _loadInitialBranding(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this._syncBranding(window.location.pathname + window.location.search);
+      return;
+    }
     this._brandingKey = 'public';
     this._applicationService.loadBrandingBySlug('ecohotelsamawe');
   }
@@ -81,15 +92,23 @@ export class AppComponent implements OnDestroy {
       const orgId = this._authService.getOrganizationalId();
       const defaultId = this._apiConfig.defaultOrganizationalId;
       if (orgId && orgId !== defaultId) key = orgId;
-      else if (!orgId && this._apiConfig.getLoginHotel()) {
-        key = `hotel:${this._apiConfig.getLoginHotel()!.slug}`;
+      else if (!orgId) {
+        const hotel = ApiConfigService.hotelSlugFromUrl(url);
+        if (hotel) key = `hotel:${hotel}`;
       }
     }
     if (key === this._brandingKey) return;
     this._brandingKey = key;
+    // Si esa marca ya es la que se ve (p. ej. el panel de Samawe tras su web),
+    // no se pide otra vez ni se tapa la pantalla.
+    const current = this._applicationService.currentOrg;
+    const target = key === 'public' ? 'ecohotelsamawe' : key.startsWith('hotel:') ? key.slice(6) : key;
+    if (current && (current.slug === target || current.organizationalId === target)) return;
+    // Loader solo fuera de la web pública: esa llega armada del servidor.
+    const loader = key !== 'public';
     if (key === 'public') this._applicationService.loadBrandingBySlug('ecohotelsamawe');
-    else if (key.startsWith('hotel:')) this._applicationService.loadBrandingBySlug(key.slice(6));
-    else this._applicationService.loadPanelBranding(key);
+    else if (key.startsWith('hotel:')) this._applicationService.loadBrandingBySlug(key.slice(6), loader);
+    else this._applicationService.loadPanelBranding(key, loader);
   }
   private _setMaterialOutlinedIconsDefault(): void {
     this._iconRegistry.setDefaultFontSetClass('material-icons');

@@ -1,0 +1,33 @@
+
+// Loader neutro mientras carga la marca de un hotel: sin colores de marca
+// (aún no se saben), solo los del tema claro/oscuro.
+.branding-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f6f6;
+}
+:host-context([data-theme='dark']) .branding-loader {
+  background: #121212;
+}
+.branding-loader__spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid rgba(128, 128, 128, 0.25);
+  border-top-color: rgba(128, 128, 128, 0.85);
+  animation: branding-loader-spin 0.8s linear infinite;
+}
+@keyframes branding-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .branding-loader__spinner {
+    animation-duration: 2.4s;
+  }
+}

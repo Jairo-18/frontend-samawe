@@ -38,6 +38,8 @@ export class NavbarDesktopComponent {
   @Input() navBarItems: NavItem[] = [];
   @Input() loginItem?: NavItem;
   @Input() isLoggedUser: boolean = false;
+  /** Solo la marca: el logo no enlaza a la web de Samawe (login en modo hotel). */
+  @Input() brandOnly = false;
   @Input() userInfo?: UserInterface;
   @Input() loggedMenuItems: NavItem[] = [];
   @Input() isScrolled: boolean = false;
