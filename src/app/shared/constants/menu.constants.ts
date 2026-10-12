@@ -9,7 +9,8 @@ export const MENU_CONST: MenuInterface[] = [
       {
         name: 'Inicio',
         titleKey: 'sidebar.home',
-        route: '/home',
+        // Inicio del panel (accesos rápidos), para el personal de todos los hoteles.
+        route: '/dashboard',
         icon: 'home',
         order: 1,
         subItems: []
@@ -125,7 +126,8 @@ export const MENU_CONST: MenuInterface[] = [
       {
         name: 'Inicio',
         titleKey: 'sidebar.home',
-        route: '/home',
+        // Inicio del panel (accesos rápidos), para el personal de todos los hoteles.
+        route: '/dashboard',
         icon: 'home',
         order: 1,
         subItems: []

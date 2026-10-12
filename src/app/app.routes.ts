@@ -47,7 +47,7 @@ export const routes: Routes = [
   { path: 'paquetes', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'samawe-1', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'excursion', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
-  // "Inicio": la web de Samawe para Samawe; para otro hotel, su panel (ver el guard).
+  // "Inicio": el personal va al inicio del panel; clientes y visitantes, a la web (ver el guard).
   { path: 'home', canActivate: [homeRedirectGuard], children: [], pathMatch: 'full' },
   { path: 'accommodation', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'about-us', redirectTo: '/es/about-us', pathMatch: 'full' },
@@ -140,6 +140,15 @@ export const routes: Routes = [
     path: '',
     component: DefaultLayoutComponent,
     children: [
+      {
+        // Inicio del panel: accesos rápidos, para el personal de todos los hoteles.
+        canActivate: [authGuard, adminGuard],
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./default-layout/pages/panel-home/panel-home.component').then(
+            (m) => m.PanelHomeComponent
+          )
+      },
       {
         canActivate: [authGuard, adminGuard],
         path: 'organizational',
