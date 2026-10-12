@@ -1,3 +1,4 @@
+import { ApiConfigService } from '../../shared/services/api-config.service';
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +30,7 @@ export class ApplicationService {
   private readonly _http: HttpClient = inject(HttpClient);
   private readonly _seoService: SeoService = inject(SeoService);
   private readonly _platformId = inject(PLATFORM_ID);
+  private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
   private _mediaMapSubject = new BehaviorSubject<Record<
     string,
     OrganizationalMedia[]
@@ -101,6 +103,9 @@ export class ApplicationService {
       next: (res) => {
         if (res.data) {
           const org = res.data;
+          // Lo que pida la web con este id va a la API de Samawe aunque el
+          // panel esté en modo hotel (ver ApiConfigService.routeFor).
+          this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
           // applyFromOrg escribe el title/description GENÉRICOS de la
           // organización, así que va antes de publicar el org: las páginas
           // suscritas a currentOrg$ llaman updatePage() con su propio

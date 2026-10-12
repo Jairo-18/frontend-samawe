@@ -1,3 +1,4 @@
+import { WITHOUT_SESSION } from '../services/api-config.service';
 import {
   HttpErrorResponse,
   HttpInterceptorFn,
@@ -105,6 +106,10 @@ export const addTokenToRequest = (
   req: HttpRequest<unknown>,
   refreshToken?: string
 ): HttpRequest<unknown> => {
+  // Va a la API de Samawe estando en modo hotel: el token es de otro hotel.
+  if (req.context.get(WITHOUT_SESSION)) {
+    return req.clone({ setHeaders: { 'X-Client-Key': environment.clientApiKey } });
+  }
   const authService: AuthService = inject(AuthService);
   const authToken: string = refreshToken ?? (authService.getAuthToken() || '');
   return req.clone({

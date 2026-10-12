@@ -1,12 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpContextToken } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 export interface ApiConfig {
   apiUrl: string;
 }
 /** Hotel elegido con `?hotel=` en el login (slug de `environment.hotelApis`). */
 const HOTEL_KEY = 'api-hotel';
+/** El hotel dueño de este dominio (su web pública vive aquí). */
+const DEFAULT_HOTEL_SLUG = 'ecohotelsamawe';
+/**
+ * Petición que va a la API de Samawe estando en modo hotel: sale SIN el token
+ * de la sesión, que es de otro hotel (ese backend la rechazaría).
+ */
+export const WITHOUT_SESSION = new HttpContextToken<boolean>(() => false);
 export interface HotelApi {
   slug: string;
   name: string;
@@ -91,6 +99,38 @@ export class ApiConfigService {
       this.loadConfig();
     }
     return this.config.apiUrl !== before;
+  }
+
+  /** Id de Samawe (sale del branding por slug); ver `routeFor`. */
+  private _defaultOrganizationalId: string | null = null;
+
+  setDefaultOrganizationalId(id: string | null | undefined): void {
+    this._defaultOrganizationalId = id ?? null;
+  }
+
+  /**
+   * A qué API va UNA petición. En modo hotel (`?hotel=` en el login) el panel
+   * habla con la API de ese hotel, pero este dominio sigue siendo la web de
+   * Samawe: lo que nombra a Samawe (su slug, su id) y lo que pide la web
+   * pública (`/es/...`, `/en/...`, salvo login y perfil) va a la API de
+   * Samawe y sin sesión. Antes iba todo a la del hotel, que respondía 404
+   * (correcto: era un registro de otro hotel) y el panel mostraba "Not Found".
+   */
+  routeFor(url: string): { apiUrl: string; withSession: boolean } {
+    const apiUrl = this.config.apiUrl;
+    if (!this.isBrowser || apiUrl === environment.apiUrl || !this.getHotel()) {
+      return { apiUrl, withSession: true };
+    }
+    const namesDefaultHotel =
+      url.includes(`/slug/${DEFAULT_HOTEL_SLUG}`) ||
+      (!!this._defaultOrganizationalId && url.includes(this._defaultOrganizationalId));
+    const path = window.location.pathname;
+    const onPublicSite =
+      /^\/(es|en)(\/|$)/.test(path) &&
+      !/^\/(es|en)\/(auth|user|complete-profile)(\/|$)/.test(path);
+    return namesDefaultHotel || onPublicSite
+      ? { apiUrl: environment.apiUrl, withSession: false }
+      : { apiUrl, withSession: true };
   }
 
   getApiUrl(): string {
