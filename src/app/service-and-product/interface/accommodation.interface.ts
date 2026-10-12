@@ -7,6 +7,12 @@ import {
 import { ImageItem } from '../../shared/interfaces/image.interface';
 import { TranslatedField } from '../../shared/types/translated-field.type';
 
+/** Tarifa por horas de estadía (Crazy Love: 4, 8, 12… h; Samawe: solo 24 h). */
+export interface AccommodationRate {
+  hours: number;
+  price: number;
+}
+
 export interface CreateAccommodationPanel {
   accommodationId?: number;
   code: string;
@@ -21,6 +27,9 @@ export interface CreateAccommodationPanel {
   taxeTypeId?: number;
   priceSale: number;
   extraPersonPrice?: number;
+  hasMotorcycleParking?: boolean;
+  hasCarParking?: boolean;
+  rates?: AccommodationRate[];
   categoryTypeId: number;
   bedTypeId: number;
   stateTypeId?: number;
@@ -38,6 +47,9 @@ export interface AccommodationComplete {
   priceBuy: number;
   priceSale: number;
   extraPersonPrice?: number;
+  hasMotorcycleParking?: boolean;
+  hasCarParking?: boolean;
+  rates?: AccommodationRate[];
   taxe?: number;
   taxeTypeId?: number;
   taxeType?: TaxeType;

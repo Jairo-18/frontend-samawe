@@ -150,6 +150,32 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>{{
+          'service_and_product.form.motorcycle_parking_question' | translate
+        }}</mat-label>
+        <mat-select formControlName="hasMotorcycleParking">
+          <mat-option [value]="true">{{
+            'service_and_product.values.yes' | translate
+          }}</mat-option>
+          <mat-option [value]="false">{{
+            'service_and_product.values.no' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{
+          'service_and_product.form.car_parking_question' | translate
+        }}</mat-label>
+        <mat-select formControlName="hasCarParking">
+          <mat-option [value]="true">{{
+            'service_and_product.values.yes' | translate
+          }}</mat-option>
+          <mat-option [value]="false">{{
+            'service_and_product.values.no' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{
           'service_and_product.form.rooms' | translate
         }}</mat-label>
         <input matInput formControlName="amountRoom" type="number" required />
@@ -215,6 +241,52 @@
       </mat-form-field>
     </section>
   </div>
+  <section class="w-full mt-4 flex flex-col gap-2" formArrayName="rates">
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex flex-col">
+        <span class="font-semibold">{{
+          'service_and_product.form.rates_title' | translate
+        }}</span>
+        <span class="text-sm opacity-75">{{
+          'service_and_product.form.rates_hint' | translate
+        }}</span>
+      </div>
+      <button mat-stroked-button type="button" (click)="addRate()">
+        <mat-icon>add</mat-icon>
+        {{ 'service_and_product.form.add_rate' | translate }}
+      </button>
+    </div>
+    <div
+      *ngFor="let rate of rates.controls; let i = index"
+      [formGroupName]="i"
+      class="flex flex-col sm:flex-row gap-x-4 sm:items-start"
+    >
+      <mat-form-field appearance="outline" class="w-full sm:w-[30%]">
+        <mat-label>{{ 'service_and_product.form.rate_hours' | translate }}</mat-label>
+        <input matInput formControlName="hours" type="number" min="1" max="72" />
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full sm:flex-1">
+        <mat-label>{{ 'service_and_product.form.rate_price' | translate }}</mat-label>
+        <input matInput formControlName="price" appCurrencyFormat class="text-right" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+      <button
+        mat-icon-button
+        type="button"
+        class="self-center"
+        (click)="removeRate(i)"
+        [attr.aria-label]="'service_and_product.form.remove_rate' | translate"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    @if (hasDuplicateRateHours) {
+      <span class="text-sm text-[var(--warn-color,#d32f2f)]">{{
+        'service_and_product.form.rates_duplicate' | translate
+      }}</span>
+    }
+  </section>
   <section class="w-full mt-4 mb-4">
     <app-image-uploader
       #imageUploader

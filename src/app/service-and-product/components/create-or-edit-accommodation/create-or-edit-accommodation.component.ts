@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule, NgFor } from '@angular/common';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
@@ -27,7 +28,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyFormatDirective } from '../../../shared/directives/currency-format.directive';
-import { CreateAccommodationPanel } from '../../interface/accommodation.interface';
+import {
+  AccommodationRate,
+  CreateAccommodationPanel
+} from '../../interface/accommodation.interface';
 import { AccommodationsService } from '../../services/accommodations.service';
 import {
   BedType,
@@ -150,9 +154,75 @@ export class CreateOrEditAccommodationComponent
         0,
         [Validators.pattern(/^\d+(\.\d{1,2})?$/), Validators.min(0.0)]
       ],
+      hasMotorcycleParking: [false],
+      hasCarParking: [false],
+      rates: this._fb.array([]),
       stateTypeId: [2, [Validators.required]],
       taxeTypeId: [1, [Validators.required]]
     });
+    // La tarifa de 24 h ES el precio de venta (el que usa la factura): editar
+    // uno actualiza el otro, para que guardar no pise el cambio con el valor viejo.
+    this.accommodationForm.get('priceSale')!.valueChanges.subscribe((price) => {
+      const base = this._rateGroup(CreateOrEditAccommodationComponent.BASE_RATE_HOURS);
+      if (base && Number(base.get('price')!.value) !== Number(price)) {
+        base.get('price')!.setValue(price, { emitEvent: false });
+      }
+    });
+    this.rates.valueChanges.subscribe(() => {
+      const base = this._rateGroup(CreateOrEditAccommodationComponent.BASE_RATE_HOURS);
+      const priceSale = this.accommodationForm.get('priceSale')!;
+      if (base && Number(base.get('price')!.value) !== Number(priceSale.value)) {
+        priceSale.setValue(base.get('price')!.value, { emitEvent: false });
+      }
+    });
+  }
+
+  /** Horas de la tarifa que equivale al precio de venta. */
+  static readonly BASE_RATE_HOURS = 24;
+  /** Tiempos que maneja un motel; se puede escribir cualquier otro. */
+  readonly suggestedRateHours = [4, 8, 12, 16, 20, 24];
+
+  get rates(): FormArray {
+    return this.accommodationForm.get('rates') as FormArray;
+  }
+
+  private _newRate(rate?: Partial<AccommodationRate>): FormGroup {
+    return this._fb.group({
+      hours: [rate?.hours ?? null, [Validators.required, Validators.min(1), Validators.max(72)]],
+      price: [rate?.price ?? 0, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  private _rateGroup(hours: number): FormGroup | undefined {
+    return this.rates.controls.find(
+      (c) => Number(c.get('hours')!.value) === hours
+    ) as FormGroup | undefined;
+  }
+
+  private _setRates(rates: AccommodationRate[]): void {
+    this.rates.clear({ emitEvent: false });
+    for (const r of [...rates].sort((a, b) => a.hours - b.hours)) {
+      this.rates.push(this._newRate(r), { emitEvent: false });
+    }
+  }
+
+  /** Agrega una fila con el siguiente tiempo sugerido que falte. */
+  addRate(): void {
+    const used = new Set(this.rates.controls.map((c) => Number(c.get('hours')!.value)));
+    const next = this.suggestedRateHours.find((h) => !used.has(h)) ?? null;
+    this.rates.push(this._newRate({ hours: next ?? undefined }));
+    this.rates.markAsDirty();
+  }
+
+  removeRate(index: number): void {
+    this.rates.removeAt(index);
+    this.rates.markAsDirty();
+  }
+
+  /** Dos filas con las mismas horas: el backend lo rechaza, se avisa antes. */
+  get hasDuplicateRateHours(): boolean {
+    const hours = this.rates.controls.map((c) => Number(c.get('hours')!.value));
+    return new Set(hours).size !== hours.length;
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['currentAccommodation']) {
@@ -195,10 +265,13 @@ export class CreateOrEditAccommodationComponent
       priceBuy: accommodation.priceBuy,
       priceSale: accommodation.priceSale,
       extraPersonPrice: accommodation.extraPersonPrice ?? 0,
+      hasMotorcycleParking: accommodation.hasMotorcycleParking ?? false,
+      hasCarParking: accommodation.hasCarParking ?? false,
       stateTypeId: accommodation.stateType?.stateTypeId,
       taxeTypeId:
         accommodation.taxeType?.taxeTypeId ?? accommodation.taxeTypeId ?? null
     });
+    this._setRates(accommodation.rates ?? []);
     this.accommodationImages = accommodation.images || [];
     this.cdr.detectChanges();
   }
@@ -216,9 +289,12 @@ export class CreateOrEditAccommodationComponent
       priceBuy: 0,
       priceSale: 0,
       extraPersonPrice: 0,
+      hasMotorcycleParking: false,
+      hasCarParking: false,
       stateTypeId: null,
       taxeTypeId: 1
     });
+    this._setRates([]);
     this.accommodationImages = [];
     this.accommodationId = 0;
     if (this.imageUploader) {
@@ -281,7 +357,7 @@ export class CreateOrEditAccommodationComponent
   }
 
   save() {
-    if (this.accommodationForm.valid) {
+    if (this.accommodationForm.valid && !this.hasDuplicateRateHours) {
       const formValue = this.accommodationForm.value;
       const nameObj: Record<string, string> = { es: formValue.nameEs };
       const descObj: Record<string, string> | undefined = formValue.descriptionEs?.trim()
@@ -299,6 +375,16 @@ export class CreateOrEditAccommodationComponent
         priceBuy: Math.abs(Number(formValue.priceBuy)),
         priceSale: Math.abs(Number(formValue.priceSale)),
         extraPersonPrice: Math.abs(Number(formValue.extraPersonPrice ?? 0)),
+        hasMotorcycleParking: !!formValue.hasMotorcycleParking,
+        hasCarParking: !!formValue.hasCarParking,
+        // Sin filas no se mandan: el backend deja (o crea) la de 24 h con el
+        // precio de venta, que es lo que necesita un hotel como Samawe.
+        rates: formValue.rates?.length
+          ? formValue.rates.map((r: AccommodationRate) => ({
+              hours: Math.trunc(Number(r.hours)),
+              price: Math.abs(Number(r.price))
+            }))
+          : undefined,
         categoryTypeId: formValue.categoryTypeId,
         bedTypeId: formValue.bedTypeId,
         stateTypeId: formValue.stateTypeId,
