@@ -100,23 +100,11 @@ export class ApplicationService {
 
   loadBrandingBySlug(slug: string): void {
     this._loadBranding(this.getOrganizationBySlug(slug), (org) => {
-      // Lo que pida la web con este id va a la API de Samawe aunque el
-      // panel esté en modo hotel (ver ApiConfigService.routeFor).
-      this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
+      // El id de Samawe: su panel usa la marca pública, sin recargarla.
+      if (slug === 'ecohotelsamawe') {
+        this._apiConfig.setDefaultOrganizationalId(org.organizationalId);
+      }
     });
-  }
-
-  /**
-   * Marca del hotel del HOST de la API (`organizational/current`). En el login
-   * en modo hotel (`?hotel=`) la petición va a la API de ese hotel, así que es
-   * su marca, no la de Samawe.
-   */
-  loadCurrentBranding(): void {
-    this._loadBranding(
-      this._http.get<ApiResponseInterface<Organizational>>(
-        `${environment.apiUrl}organizational/current`
-      )
-    );
   }
 
   /**

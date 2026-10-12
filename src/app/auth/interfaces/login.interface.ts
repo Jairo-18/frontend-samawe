@@ -6,6 +6,8 @@ export interface RoleType {
 export interface LoginCredentials {
   email: string;
   password: string;
+  /** Slug del hotel donde buscar la cuenta (`?hotel=` en el login). */
+  hotel?: string;
 }
 export interface Session {
   accessSessionId: string;

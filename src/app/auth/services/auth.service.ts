@@ -1,3 +1,4 @@
+import { ApiConfigService } from '../../shared/services/api-config.service';
 import { LocalStorageService } from './../../shared/services/localStorage.service';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
@@ -28,6 +29,7 @@ export class AuthService {
   private readonly _localStorageService: LocalStorageService =
     inject(LocalStorageService);
   private readonly _httpClient: HttpClient = inject(HttpClient);
+  private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
   private readonly _httpUtilities: HttpUtilitiesService =
     inject(HttpUtilitiesService);
   private readonly _sidebarState: SidebarStateService =
@@ -46,7 +48,9 @@ export class AuthService {
     if (!email || !this.isValidEmail(email)) {
       throw new Error('El correo electrónico proporcionado no es válido.');
     }
-    return this._httpClient.post<ChangePassword>(endpoint, { email });
+    // Hotel del login (`?hotel=`): dónde buscar la cuenta.
+    const hotel = this._apiConfig.getLoginHotel()?.slug;
+    return this._httpClient.post<ChangePassword>(endpoint, { email, ...(hotel && { hotel }) });
   }
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,7 +59,12 @@ export class AuthService {
   login(
     credentials: LoginCredentials
   ): Observable<ApiResponseInterface<LoginSuccessInterface>> {
-    const params = this._httpUtilities.httpParamsFromObject(credentials);
+    // Hotel del login (`?hotel=`): el mismo correo puede tener cuenta en
+    // varios hoteles; el backend la busca en ese.
+    const hotel = this._apiConfig.getLoginHotel()?.slug;
+    const params = this._httpUtilities.httpParamsFromObject(
+      hotel ? { ...credentials, hotel } : credentials
+    );
     return this._httpClient
       .post<
         ApiResponseInterface<RawLoginResponse>

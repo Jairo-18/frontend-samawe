@@ -22,9 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LangService } from '../../../shared/services/lang.service';
 import {
   ApiConfigService,
-  HotelApi
+  LoginHotel
 } from '../../../shared/services/api-config.service';
-import { LocalStorageService } from '../../../shared/services/localStorage.service';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -54,8 +53,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   private readonly _langService: LangService = inject(LangService);
   private readonly _route: ActivatedRoute = inject(ActivatedRoute);
   private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
-  private readonly _localStorage: LocalStorageService =
-    inject(LocalStorageService);
 
   /** Rutas legales con el prefijo de idioma activo (`/es/legal/...`). */
   get privacyRoute(): string {
@@ -74,7 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   cooldownRemaining: number = 0;
   loginError: boolean = false;
   /** Otro hotel de la plataforma (`?hotel=<slug>`); `null` = Samawe. */
-  hotel: HotelApi | null = null;
+  hotel: LoginHotel | null = null;
 
   /**
    * Hay un intento en vuelo.
@@ -101,8 +98,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const slug = this._route.snapshot.queryParamMap.get('hotel');
+    this.hotel = this._apiConfig.getLoginHotel();
     if (slug) this._selectHotel(slug);
-    this.hotel = this._apiConfig.getHotel();
     this.loadLoginBg();
     this.form.valueChanges.subscribe(() => {
       if (this.cooldownRemaining > 0) {
@@ -116,13 +113,31 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   /** Vuelve a la API de Samawe. */
   useDefaultHotel(): void {
-    this._selectHotel('ecohotelsamawe');
+    this._apiConfig.setLoginHotel(null);
     this.hotel = null;
   }
 
-  /** Cambiar de API deja inservible la sesión guardada: era de otro hotel. */
+  /**
+   * `?hotel=<slug>`: se valida contra el backend (que exista y esté activo) y
+   * se guarda con su nombre para el aviso. `ecohotelsamawe` o un slug que no
+   * existe vuelven al login de Samawe.
+   */
   private _selectHotel(slug: string): void {
-    if (this._apiConfig.selectHotel(slug)) this._localStorage.cleanLocalStorage();
+    const clean = slug.trim().toLowerCase();
+    if (!clean || clean === 'ecohotelsamawe') {
+      this.useDefaultHotel();
+      return;
+    }
+    this._applicationService.getOrganizationBySlug(clean).subscribe({
+      next: (res) => {
+        const org = res.data;
+        if (!org) return this.useDefaultHotel();
+        this.hotel = { slug: org.slug ?? clean, name: org.name };
+        this._apiConfig.setLoginHotel(this.hotel);
+        this._applicationService.loadBrandingBySlug(this.hotel.slug);
+      },
+      error: () => this.useDefaultHotel()
+    });
   }
 
   private loadLoginBg(): void {

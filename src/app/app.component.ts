@@ -34,7 +34,7 @@ export class AppComponent implements OnDestroy {
     inject(RelatedDataService);
   private readonly _themeService: ThemeService = inject(ThemeService);
   private readonly _apiConfig: ApiConfigService = inject(ApiConfigService);
-  /** Qué marca está aplicada: 'public' (Samawe), 'current' o un id de organización. */
+  /** Qué marca está aplicada: 'public' (Samawe), 'hotel:<slug>' (login) o un id de organización. */
   private _brandingKey: string | null = null;
   private _routerSubscription!: Subscription;
 
@@ -81,12 +81,14 @@ export class AppComponent implements OnDestroy {
       const orgId = this._authService.getOrganizationalId();
       const defaultId = this._apiConfig.defaultOrganizationalId;
       if (orgId && orgId !== defaultId) key = orgId;
-      else if (!orgId && this._apiConfig.getHotel()) key = 'current';
+      else if (!orgId && this._apiConfig.getLoginHotel()) {
+        key = `hotel:${this._apiConfig.getLoginHotel()!.slug}`;
+      }
     }
     if (key === this._brandingKey) return;
     this._brandingKey = key;
     if (key === 'public') this._applicationService.loadBrandingBySlug('ecohotelsamawe');
-    else if (key === 'current') this._applicationService.loadCurrentBranding();
+    else if (key.startsWith('hotel:')) this._applicationService.loadBrandingBySlug(key.slice(6));
     else this._applicationService.loadPanelBranding(key);
   }
   private _setMaterialOutlinedIconsDefault(): void {
