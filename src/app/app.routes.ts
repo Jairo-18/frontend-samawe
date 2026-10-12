@@ -8,6 +8,7 @@ import { authGuard } from './shared/guards/auth.guard';
 import { invoicesRoutes } from './invoices/invoices.routes';
 import { isLoggedGuard } from './shared/guards/isLogged.guard';
 import { pendingProfileGuard } from './shared/guards/pending-profile.guard';
+import { homeRedirectGuard } from './shared/guards/home-redirect.guard';
 import { langGuard } from './shared/guards/lang.guard';
 
 const publicChildren = () =>
@@ -46,7 +47,8 @@ export const routes: Routes = [
   { path: 'paquetes', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'samawe-1', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'excursion', redirectTo: '/es/how-to-arrive', pathMatch: 'full' },
-  { path: 'home', redirectTo: () => `/${inject(LangService).detectPreferred()}`, pathMatch: 'full' },
+  // "Inicio": la web de Samawe para Samawe; para otro hotel, su panel (ver el guard).
+  { path: 'home', canActivate: [homeRedirectGuard], children: [], pathMatch: 'full' },
   { path: 'accommodation', redirectTo: '/es/accommodation', pathMatch: 'full' },
   { path: 'about-us', redirectTo: '/es/about-us', pathMatch: 'full' },
   { path: 'gastronomy', redirectTo: '/es/gastronomy', pathMatch: 'full' },
