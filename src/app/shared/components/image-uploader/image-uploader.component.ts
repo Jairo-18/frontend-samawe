@@ -84,6 +84,17 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef
   ) {}
+  /**
+   * Repinta el uploader Y marca a los ancestros para revisión. Solo con
+   * `detectChanges()` se revisaba esta vista: los formularios padre son
+   * `OnPush` y su `canSave` (que pregunta `hasPendingChanges`) no se
+   * reevaluaba tras cerrar el recortador —asíncrono—, así que el botón
+   * "Guardar" seguía gris hasta tocar cualquier campo del formulario.
+   */
+  private refresh() {
+    this.cdr.markForCheck();
+    this.cdr.detectChanges();
+  }
   ngOnInit() {
     this.processInitialImages();
   }
@@ -121,7 +132,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
         )
       );
       this.loadedEntityId = this.entityId;
-      this.cdr.detectChanges();
+      this.refresh();
     } else if (this.entityId && this.loadedEntityId !== this.entityId) {
       // Respaldo: la entidad tiene id pero su respuesta no trajo imágenes.
       // Se piden aparte por `GET /:id/images`.
@@ -129,7 +140,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     } else if (!this.entityId) {
       // Alta nueva (o formulario reseteado): no hay galería que mostrar.
       this.images = [];
-      this.cdr.detectChanges();
+      this.refresh();
     }
     // ⚠️ Si el id es el mismo que ya se cargó y llega `initialImages` vacío, NO
     // se vacía la galería: el formulario padre asigna `initialImages` DOS veces
@@ -160,7 +171,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     if (event.previousIndex === event.currentIndex) return;
     moveItemInArray(this.images, event.previousIndex, event.currentIndex);
     this.orderDirty = true;
-    this.cdr.detectChanges();
+    this.refresh();
   }
 
   loadImages() {
@@ -170,7 +181,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
         // El backend ya las trae ordenadas por `position`.
         this.images = [...images];
         this.imagesChanged.emit(this.images);
-        this.cdr.detectChanges();
+        this.refresh();
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error cargando imágenes', err);
@@ -219,7 +230,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
 
         this.pendingFiles.push(croppedFile);
         this.pendingPreviews.push(URL.createObjectURL(croppedFile));
-        this.cdr.detectChanges();
+        this.refresh();
       }
     }
   }
@@ -288,13 +299,13 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   removePendingFile(index: number) {
     this.pendingFiles.splice(index, 1);
     this.pendingPreviews.splice(index, 1);
-    this.cdr.detectChanges();
+    this.refresh();
   }
   async applyChanges(targetEntityId: number): Promise<void> {
     const finalId = targetEntityId || this.entityId;
     if (!finalId) return;
     this.isUploading = true;
-    this.cdr.detectChanges();
+    this.refresh();
     try {
       for (const image of this.toDeleteImages) {
         await lastValueFrom(
@@ -341,7 +352,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     } finally {
       this.isUploading = false;
       this.imagesChanged.emit(this.images);
-      this.cdr.detectChanges();
+      this.refresh();
     }
   }
 
@@ -352,7 +363,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.pendingFiles = [];
     this.pendingPreviews = [];
     this.orderDirty = false;
-    this.cdr.detectChanges();
+    this.refresh();
   }
 
   /**
@@ -374,7 +385,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     this.toDeleteImages = [];
     this.orderDirty = false;
     this.loadedEntityId = null;
-    this.cdr.detectChanges();
+    this.refresh();
   }
   uploadFiles(files: File[]) {
     if (!this.entityId) {
@@ -416,7 +427,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
   private markForDeletion(image: ImageItem) {
     this.images = this.images.filter((img) => img.imageId !== image.imageId);
     this.toDeleteImages.push(image);
-    this.cdr.detectChanges();
+    this.refresh();
   }
   @ViewChild('previewTpl') private previewTpl!: TemplateRef<unknown>;
   private _previewRef?: MatDialogRef<unknown>;
@@ -449,7 +460,7 @@ export class ImageUploaderComponent implements OnInit, OnChanges {
     if (completed === total) {
       this.isUploading = false;
       this.imagesChanged.emit(this.images);
-      this.cdr.detectChanges();
+      this.refresh();
     }
   }
 }
